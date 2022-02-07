@@ -30,3 +30,19 @@
 *.exe
 *.out
 *.app
+
+# Vim files
+*.swp
+
+coord/lcoord
+coord/coord
+coord/libcoord.a
+coord/lib
+coord/dep
+.vscode
+
+CMakeFiles
+node_modules
+core.*
+*.log
+*.pid

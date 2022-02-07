@@ -1,0 +1,23 @@
+syntax="proto3";
+package model;
+option go_package = "./;model";
+
+
+message User {
+    int64 userid = 1;
+    string openid = 2;
+    string nickname = 3;
+    int64 coin = 4;
+    int64 score = 5;
+    int64 medal = 6;
+    int64 diamond = 7;
+    int64 level = 8;
+}
+
+
+message RankUser {
+    string openid = 1;
+    string nickname = 2;
+    string avatar = 3;
+    int64 score = 4;
+}

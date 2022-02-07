@@ -1,0 +1,4 @@
+$cfile "hostd.h"
+$cfile "hostd/hostd_server.h"
+$cfile "hostd/hostd_agent.h"
+$cfile "hostd/hostd_request.h"

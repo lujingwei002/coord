@@ -1,0 +1,1 @@
+#include "coord/component/component.h"
