@@ -255,7 +255,7 @@ coord_BINARY_DIR:STATIC=/root/coord/coord/build
 coord_SOURCE_DIR:STATIC=/root/coord/coord
 
 //Dependencies for the target
-libcoord_LIB_DEPENDS:STATIC=general;/root/coord/coord/lib/liblua.a;general;/root/coord/coord/lib/libtolua++.a;general;/root/coord/coord/lib/libhttp_parser.a;general;/root/coord/coord/lib/libprotobuf.a;general;/root/coord/coord/lib/libuv.a;general;/root/coord/coord/lib/libhiredis.a;general;/root/coord/coord/lib/libmysqlclient.a;general;/root/coord/coord/lib/libccronexpr.a;
+libcoord_LIB_DEPENDS:STATIC=general;/root/coord/coord/lib/liblua.a;general;/root/coord/coord/lib/libtolua++.a;general;/root/coord/coord/lib/libhttp_parser.a;general;/root/coord/coord/lib/libprotobuf.a;general;/root/coord/coord/lib/libuv.a;general;/root/coord/coord/lib/libhiredis.a;general;/root/coord/coord/lib/libmysqlclient.a;general;/root/coord/coord/lib/libccronexpr.a;general;/root/coord/coord/lib/libcjson.a;
 
 
 ########################

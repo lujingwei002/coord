@@ -6,7 +6,7 @@
 #include "coord/script/reflect.h"
 #include "coord/json/json_mgr.h"
 
-#include "lua-cjson/lua-cjson.h"
+#include "lua-cjson/lua_cjson.h"
 
 #include <iostream>
 

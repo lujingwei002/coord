@@ -1,6 +1,7 @@
 #ifndef __LUA_CJSON__
 #define __LUA_CJSON__
 
+extern "C" {
 int cjson_decode(lua_State *l, void* ctx, const char* data, size_t json_len);
 const char* cjson_encode(lua_State *l, void* ctx, int lindex, size_t* json_len);
 
@@ -15,4 +16,5 @@ int json_cfg_encode_number_precision(lua_State *l, void *ctx, int encode_number_
 int json_cfg_decode_max_depth(lua_State *l, void *ctx, int decode_max_depth);
 int json_cfg_encode_max_depth(lua_State *l, void *ctx, int encode_max_depth);
 int json_cfg_encode_sparse_array(lua_State *l, void *ctx, int encode_sparse_convert, int encode_sparse_ratio, int encode_sparse_safe);
+}
 #endif

@@ -6,7 +6,7 @@
 #include <string.h>
 #include <iostream>
 #include <cstdlib>
-#include "lua-cjson/lua-cjson.h"
+#include "lua-cjson/lua_cjson.h"
 
 class TestScript : public testing::Test {
 public:

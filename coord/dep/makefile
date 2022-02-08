@@ -353,6 +353,7 @@ $(JSON11_DIR)/install:
 
 CJSON_VERSION=2.1.0
 CJSON_DIR=lua-cjson-$(CJSON_VERSION)
+CJSON_LIB=$(CJSON_DIR)/libcjson.a
 
 $(CJSON_DIR):
 	@echo
@@ -360,21 +361,24 @@ $(CJSON_DIR):
 	@echo
 	curl "https://codeload.github.com/mpx/lua-cjson/tar.gz/refs/tags/$(CJSON_VERSION)" | tar xz
 
+$(CJSON_LIB): $(CJSON_DIR)
+	cp -rf lua-cjson/Makefile $(CJSON_DIR)
+	cp -rf lua-cjson/lua_cjson.c $(CJSON_DIR)
+	$(MAKE) -C $(CJSON_DIR)
+
 $(CJSON_DIR)/install:
 	@echo
 	@echo '=== install mpx cjson ==='
 	@echo
 	@mkdir -p ../lib
 	@mkdir -p ../include
-	rm -rf ../src/lua-cjson;mkdir -p ../src/lua-cjson
-	cp -rf $(CJSON_DIR)/*.h ../src/lua-cjson
-	cp -rf $(CJSON_DIR)/*.c ../src/lua-cjson
-	cp -rf lua-cjson/*.h ../src/lua-cjson
-
+	cp $(CJSON_LIB) ../lib 
+	rm -rf ../include/lua-cjson;mkdir -p ../include/lua-cjson
+	cp -rf lua-cjson/lua_cjson.h ../include/lua-cjson
 
 fetch: $(HIREDIS_DIR) $(HTTPPARSER_DIR) $(LUA_DIR) $(PROTOBUF_DIR) $(TOLUA_DIR) $(GTEST_DIR) $(LIBUV_DIR) $(CCRONEXPR_DIR) $(BENCHMARK_DIR) $(INIPP_DIR) $(MYSQL_DIR) $(INIPP_DIR) $(JSON11_DIR) $(CJSON_DIR)
 
-default: $(HIREDIS_LIB) $(HTTPPARSER_LIB) $(LUA_LIB) $(PROTOBUF_LIB) $(TOLUA_LIB) $(GTEST_LIB) $(LIBUV_LIB) $(CCRONEXPR_LIB) $(BENCHMARK_LIB)
+default: $(HIREDIS_LIB) $(HTTPPARSER_LIB) $(LUA_LIB) $(PROTOBUF_LIB) $(TOLUA_LIB) $(GTEST_LIB) $(LIBUV_LIB) $(CCRONEXPR_LIB) $(BENCHMARK_LIB) $(CJSON_LIB)
 
 install: $(HIREDIS_DIR)/install $(HTTPPARSER_DIR)/install $(LUA_DIR)/install $(PROTOBUF_DIR)/install $(TOLUA_DIR)/install $(GTEST_DIR)/install $(LIBUV_DIR)/install $(CCRONEXPR_DIR)/install $(BENCHMARK_DIR)/install $(JSON_DIR)/install $(MYSQL_DIR)/install $(INIPP_DIR)/install $(JSON11_DIR)/install $(CJSON_DIR)/install
 
