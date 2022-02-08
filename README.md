@@ -1,5 +1,9 @@
 # coord
 
+### 环境
+cmake 3.17.5
+gcc++
+
 #### 介绍
 game framework
 
