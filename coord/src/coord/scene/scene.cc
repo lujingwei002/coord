@@ -113,7 +113,7 @@ void Scene::onReload() {
 } 
 
 void Scene::onAwake() {
-    this->coord->coreLogError("[Scene<%s>] onAwake", this->name);
+    this->coord->coreLogDebug("[Scene<%s>] onAwake", this->name);
     std::vector<Object*> objectArr;
     for (auto object : this->objectArr) {
         objectArr.push_back(object);

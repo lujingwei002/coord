@@ -25,12 +25,11 @@ void Component::onDestory(){
 }
 
 void Component::onAwake(){
-    printf("aaa %p\n", this->coord);
-    this->coord->coreLogError("[Component<%s>] onAwake", this->TypeName());
+    this->coord->coreLogDebug("[Component<%s>] onAwake", this->TypeName());
 }
 
 void Component::onStart(){
-    this->coord->coreLogError("[Component<%s>] onStart", this->TypeName());
+    this->coord->coreLogDebug("[Component<%s>] onStart", this->TypeName());
 }
 
 void Component::onUpdate(uint64_t cur_tick){

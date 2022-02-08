@@ -47,19 +47,19 @@ int Client::Connect() {
     }
     if (c->err != 0) {
         redisFree(c);
-        this->coord->coreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, c->errstr);
+        this->coord->coreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, ""/*c->errstr */);
         return -1;
     }
     if(!(c->flags & REDIS_CONNECTED)){
         redisFree(c);
-        this->coord->coreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, c->errstr);
+        this->coord->coreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, ""/* c->errstr */);
         return -1;
     }
     this->context = c;
     if (this->config.Password.length() > 0) {
         Reply reply = this->AUTH(this->config.Password.c_str());
         if(reply.Error()) {
-            this->coord->coreLogError("[%s] Connect failed, function='AUTH', password='%s', error='%s'", this->TypeName(), this->config.Password.c_str(), c->errstr);
+            this->coord->coreLogError("[%s] Connect failed, function='AUTH', password='%s', error='%s'", this->TypeName(), this->config.Password.c_str(), ""/* c->errstr */);
             this->Close();
             return -1;
         }
@@ -67,7 +67,7 @@ int Client::Connect() {
     if (this->config.DB.length() > 0) {
         Reply reply = this->SELECT(this->config.DB.c_str());
         if(reply.Error()) {
-            this->coord->coreLogError("[%s] Connect failed, function='SELECT', db='%s', error='%s'", this->TypeName(), this->config.DB.c_str(), c->errstr);
+            this->coord->coreLogError("[%s] Connect failed, function='SELECT', db='%s', error='%s'", this->TypeName(), this->config.DB.c_str(), ""/* c->errstr */);
             this->Close();
             return -1;
         }

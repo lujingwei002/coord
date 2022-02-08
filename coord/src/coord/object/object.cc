@@ -79,7 +79,7 @@ int Object::AddComponent(Component* component) {
     if (script) {
         typeName = script->GetScriptName();
     }
-    this->coord->coreLogError("[Object<%s>] AddComponent, type='%s'", this->name, typeName);
+    this->coord->coreLogDebug("[Object<%s>] AddComponent, type='%s'", this->name, typeName);
     auto it = this->componentDict.find(typeName);
     if (it != this->componentDict.end()) {
         this->coord->coreLogError("[Object<%s>] AddComponent failed, type='%s'", this->name, typeName);
@@ -278,7 +278,7 @@ void Object::onDestory() {
 }
 
 void Object::onAwake() {
-    this->coord->coreLogError("[Object<%s>] onAwake", this->name);
+    this->coord->coreLogDebug("[Object<%s>] onAwake", this->name);
     this->transform = this->AddComponent<Transform>();
 }
 

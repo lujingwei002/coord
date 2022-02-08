@@ -351,7 +351,7 @@ namespace coord {
     
     int Coord::onAwake(){   
         if (this->workerRole == worker_role_master) {   
-            this->coreLogError("[coord] onAwake at %ld", this->Time()/1000);
+            this->coreLogMsg("[coord] onAwake at %ld", this->Time()/1000);
         }
         this->pid = uv_os_getpid();
         this->PidPath = this->config->Basic.Pid + this->config->Basic.Name + ".pid";

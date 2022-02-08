@@ -57,10 +57,10 @@ int Environment::main() {
         }
         this->CoordDir = buffer;
     }
-    printf("ExecPath: %s\n", this->ExecPath.c_str());
-    printf("ExecDir: %s\n", this->ExecDir.c_str());
-    printf("CoordDir: %s\n", this->CoordDir.c_str());
-    printf("ProjectDir: %s\n", this->ProjectDir.c_str());
+    //printf("ExecPath: %s\n", this->ExecPath.c_str());
+    //printf("ExecDir: %s\n", this->ExecDir.c_str());
+    //printf("CoordDir: %s\n", this->CoordDir.c_str());
+    //printf("ProjectDir: %s\n", this->ProjectDir.c_str());
     return 0;
 }
 

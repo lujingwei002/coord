@@ -50,7 +50,7 @@ TEST_F(TestTable, TestReflect) {
     table2.SetTable();
     table2.SetString("Name", "3333");
     table.SetTable(3, table2);
-    ASSERT_STREQ(table.ToShortString(), "{[1]='world','hello'='world',[3]={'Name'='3333',},'servers'={[1]='ljw2',},'user'={'nickname'='ljw',},}");
+    ASSERT_STREQ(table.ToShortString(), "{[1]='world','hello'='world','servers'={[1]='ljw2',},[3]={'Name'='3333',},'user'={'nickname'='ljw',},}");
 }
 
 TEST_F(TestTable, TestReflectSetGet) {
@@ -85,7 +85,7 @@ TEST_F(TestTable, TestReflectSerialize) {
     ASSERT_TRUE(table3.IsNil());
     err = table3.Decode(buffer);
     ASSERT_TRUE(table3.IsTable());
-    ASSERT_STREQ(table3.ToShortString(), "{[1]='world',[3]={'Name'='3333',},'hello'='world','servers'={[1]='ljw2',},'user'={'nickname'='ljw',},}");
+    ASSERT_STREQ(table3.ToShortString(), "{[1]='world','servers'={[1]='ljw2',},'hello'='world',[3]={'Name'='3333',},'user'={'nickname'='ljw',},}");
 }
 
 TEST_F(TestTable, TestReflectString) {

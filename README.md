@@ -19,3 +19,9 @@ cmake3 ..
 make
 ```
 
+### 测试
+```bash
+cd coord
+bin/test
+bin/test --gtest_filter=TestRedis.*
+```
