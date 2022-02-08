@@ -103,6 +103,8 @@ $(LUA_DIR):
 
 $(LUA_LIB): $(LUA_DIR)
 	$(MAKE) -C $(LUA_DIR) linux
+	@mkdir -p ../lib
+	cp $(LUA_LIB) ../lib 
 
 $(LUA_DIR)/clean:
 	$(MAKE) -C $(LUA_DIR) clean
@@ -141,6 +143,7 @@ $(TOLUA_DIR)/install:
 	@echo
 	@mkdir -p ../lib
 	@mkdir -p ../include
+	@mkdir -p ../bin
 	cp $(TOLUA_LIB) ../lib/libtolua++.a
 	rm -rf ../include/tolua++;mkdir ../include/tolua++
 	cp -rf $(TOLUA_DIR)/*.h ../include/tolua++
@@ -177,9 +180,10 @@ $(PROTOBUF_DIR)/install:
 	@echo
 	@mkdir -p ../lib
 	@mkdir -p ../include
+	@mkdir -p ../bin
 	@mkdir -p ../include/google
 	cp $(PROTOBUF_LIB) ../lib
-	cp $(PROTOBUF_DIR)/libprotobuf/bin/protoc ../bin
+	cp $(PROTOBUF_DIR)/libprotobuf/bin/protoc ../bin/protoc
 	rm -rf ../include/google/protobuf
 	cp -rf $(PROTOBUF_DIR)/libprotobuf/include/google/protobuf ../include/google
 
@@ -376,7 +380,7 @@ $(CJSON_DIR)/install:
 	rm -rf ../include/lua-cjson;mkdir -p ../include/lua-cjson
 	cp -rf lua-cjson/lua_cjson.h ../include/lua-cjson
 
-fetch: $(HIREDIS_DIR) $(HTTPPARSER_DIR) $(LUA_DIR) $(PROTOBUF_DIR) $(TOLUA_DIR) $(GTEST_DIR) $(LIBUV_DIR) $(CCRONEXPR_DIR) $(BENCHMARK_DIR) $(INIPP_DIR) $(MYSQL_DIR) $(INIPP_DIR) $(JSON11_DIR) $(CJSON_DIR)
+fetch: $(HIREDIS_DIR) $(HTTPPARSER_DIR) $(LUA_DIR) $(PROTOBUF_DIR) $(TOLUA_DIR) $(GTEST_DIR) $(LIBUV_DIR) $(CCRONEXPR_DIR) $(BENCHMARK_DIR) $(INIPP_DIR) $(JSON_DIR) $(MYSQL_DIR) $(INIPP_DIR) $(JSON11_DIR) $(CJSON_DIR)
 
 default: $(HIREDIS_LIB) $(HTTPPARSER_LIB) $(LUA_LIB) $(PROTOBUF_LIB) $(TOLUA_LIB) $(GTEST_LIB) $(LIBUV_LIB) $(CCRONEXPR_LIB) $(BENCHMARK_LIB) $(CJSON_LIB)
 
