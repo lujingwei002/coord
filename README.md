@@ -1,8 +1,8 @@
 # coord
 
 ### 环境
-cmake 3.17.5
-gcc++ 7.3.1
+- cmake 3.17.5
+- g++ 7.3.1
 
 ### 编译coord
 ```bash
