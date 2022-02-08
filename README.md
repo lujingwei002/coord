@@ -25,3 +25,9 @@ cd coord
 bin/test
 bin/test --gtest_filter=TestRedis.*
 ```
+
+### 压力测试
+```bash
+cd coord
+bin/benchmark
+```
