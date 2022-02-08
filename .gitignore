@@ -34,11 +34,13 @@
 # Vim files
 *.swp
 
-coord/lcoord
-coord/coord
-coord/libcoord.a
+coord/bin
 coord/lib
-coord/dep
+coord/include
+coord/build
+coord/src/json11
+coord/src/lua-cjson
+
 .vscode
 
 CMakeFiles

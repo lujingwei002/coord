@@ -9,6 +9,19 @@
 
 namespace coord {
 
+template <typename CharT, typename T>
+inline bool get_value(const std::map<std::basic_string<CharT>, std::basic_string<CharT>> & sec, const std::basic_string<CharT> & key, T & dst) {
+    const auto it = sec.find(key);
+    if (it == sec.end()) return false;
+    return inipp::extract(it->second, dst);
+}
+
+template <typename CharT, typename T>
+inline bool get_value(const std::map<std::basic_string<CharT>, std::basic_string<CharT>>& sec, const CharT* key, T& dst) {
+    return get_value(sec, std::basic_string<CharT>(key), dst);
+}
+
+
 Config *newConfig(Coord* coord) {
     Config *config = new Config(coord);
     return config;
@@ -71,22 +84,22 @@ int Config::parse(const char* filePath) {
         }
         return 1;
     }
-    inipp::get_value(this->ini.sections["DEFAULT"], "registery", this->Basic.Registery);
-    inipp::get_value(this->ini.sections["DEFAULT"], "main", this->Basic.Main);
-    inipp::get_value(this->ini.sections["DEFAULT"], "scene", this->Basic.Scene);
-    inipp::get_value(this->ini.sections["DEFAULT"], "package", this->Basic.Package);
-    inipp::get_value(this->ini.sections["DEFAULT"], "gc", this->Basic.GC);
-    inipp::get_value(this->ini.sections["DEFAULT"], "update", this->Basic.Update);
-    inipp::get_value(this->ini.sections["DEFAULT"], "worker", this->Basic.Worker);
-    inipp::get_value(this->ini.sections["DEFAULT"], "worker_num", this->Basic.WorkerNum);
-    inipp::get_value(this->ini.sections["DEFAULT"], "proto", this->Basic.Proto);
-    inipp::get_value(this->ini.sections["DEFAULT"], "name", this->Basic.Name);
-    inipp::get_value(this->ini.sections["DEFAULT"], "core_logger", this->Basic.CoreLogger);
-    inipp::get_value(this->ini.sections["DEFAULT"], "core_logger_maxbyte", this->Basic.CoreLoggerMaxByte);
-    inipp::get_value(this->ini.sections["DEFAULT"], "logger", this->Basic.Logger);
-    inipp::get_value(this->ini.sections["DEFAULT"], "logger_maxbyte", this->Basic.LoggerMaxByte);
-    inipp::get_value(this->ini.sections["DEFAULT"], "pid", this->Basic.Pid);
-    inipp::get_value(this->ini.sections["DEFAULT"], "version", this->Basic.Version);
+    get_value(this->ini.sections["DEFAULT"], "registery", this->Basic.Registery);
+    get_value(this->ini.sections["DEFAULT"], "main", this->Basic.Main);
+    get_value(this->ini.sections["DEFAULT"], "scene", this->Basic.Scene);
+    get_value(this->ini.sections["DEFAULT"], "package", this->Basic.Package);
+    get_value(this->ini.sections["DEFAULT"], "gc", this->Basic.GC);
+    get_value(this->ini.sections["DEFAULT"], "update", this->Basic.Update);
+    get_value(this->ini.sections["DEFAULT"], "worker", this->Basic.Worker);
+    get_value(this->ini.sections["DEFAULT"], "worker_num", this->Basic.WorkerNum);
+    get_value(this->ini.sections["DEFAULT"], "proto", this->Basic.Proto);
+    get_value(this->ini.sections["DEFAULT"], "name", this->Basic.Name);
+    get_value(this->ini.sections["DEFAULT"], "core_logger", this->Basic.CoreLogger);
+    get_value(this->ini.sections["DEFAULT"], "core_logger_maxbyte", this->Basic.CoreLoggerMaxByte);
+    get_value(this->ini.sections["DEFAULT"], "logger", this->Basic.Logger);
+    get_value(this->ini.sections["DEFAULT"], "logger_maxbyte", this->Basic.LoggerMaxByte);
+    get_value(this->ini.sections["DEFAULT"], "pid", this->Basic.Pid);
+    get_value(this->ini.sections["DEFAULT"], "version", this->Basic.Version);
     int first = 0;
     auto it = std::find_if(this->Basic.Version.begin(), this->Basic.Version.end(), [&first](char c) {
         if (c == '.')first++;
@@ -100,78 +113,78 @@ int Config::parse(const char* filePath) {
 
     if(this->ini.sections.find("WEB") != this->ini.sections.end()) {
         auto const it = this->ini.sections.find("WEB");
-        inipp::get_value(it->second, "port", this->Web.Port);
-        inipp::get_value(it->second, "host", this->Web.Host);
-        inipp::get_value(it->second, "backlog", this->Web.Backlog);
-        inipp::get_value(it->second, "recv_buffer", this->Web.RecvBuffer);
-        inipp::get_value(it->second, "ssl_encrypt", this->Web.SSLEncrypt);
-        inipp::get_value(it->second, "ssl_pem", this->Web.SSLPemFile);
-        inipp::get_value(it->second, "ssl_key", this->Web.SSLKeyFile);
-        inipp::get_value(it->second, "asset_dir", this->Web.AssetDir);
-        inipp::get_value(it->second, "use_etag", this->Web.UseEtag);
+        get_value(it->second, "port", this->Web.Port);
+        get_value(it->second, "host", this->Web.Host);
+        get_value(it->second, "backlog", this->Web.Backlog);
+        get_value(it->second, "recv_buffer", this->Web.RecvBuffer);
+        get_value(it->second, "ssl_encrypt", this->Web.SSLEncrypt);
+        get_value(it->second, "ssl_pem", this->Web.SSLPemFile);
+        get_value(it->second, "ssl_key", this->Web.SSLKeyFile);
+        get_value(it->second, "asset_dir", this->Web.AssetDir);
+        get_value(it->second, "use_etag", this->Web.UseEtag);
     }
 
     if(this->ini.sections.find("Login") != this->ini.sections.end()) {
         auto const it = this->ini.sections.find("Login");
-        inipp::get_value(it->second, "port", this->Login.Port);
-        inipp::get_value(it->second, "host", this->Login.Host);
-        inipp::get_value(it->second, "backlog", this->Login.Backlog);
-        inipp::get_value(it->second, "recv_buffer", this->Login.RecvBufferSize);
-        inipp::get_value(it->second, "ssl_encrypt", this->Login.SSLEncrypt);
-        inipp::get_value(it->second, "ssl_pem", this->Login.SSLPemFile);
-        inipp::get_value(it->second, "ssl_key", this->Login.SSLKeyFile);
-        inipp::get_value(it->second, "cluster", this->Login.Cluster);
+        get_value(it->second, "port", this->Login.Port);
+        get_value(it->second, "host", this->Login.Host);
+        get_value(it->second, "backlog", this->Login.Backlog);
+        get_value(it->second, "recv_buffer", this->Login.RecvBufferSize);
+        get_value(it->second, "ssl_encrypt", this->Login.SSLEncrypt);
+        get_value(it->second, "ssl_pem", this->Login.SSLPemFile);
+        get_value(it->second, "ssl_key", this->Login.SSLKeyFile);
+        get_value(it->second, "cluster", this->Login.Cluster);
     } 
 
     if(this->ini.sections.find("GATE") != this->ini.sections.end()) {
         auto const it = this->ini.sections.find("GATE");
-        inipp::get_value(it->second, "server_name", this->Gate.ServerName);
-        inipp::get_value(it->second, "port", this->Gate.Port);
-        inipp::get_value(it->second, "host", this->Gate.Host);
-        inipp::get_value(it->second, "network", this->Gate.Network);
-        inipp::get_value(it->second, "rsa_encrypt", this->Gate.RsaEncrypt);
-        inipp::get_value(it->second, "rsa_keyfile", this->Gate.RsaKeyFile);
-        inipp::get_value(it->second, "heartbeat", this->Gate.Heartbeat);
-        inipp::get_value(it->second, "backlog", this->Gate.Backlog);
-        inipp::get_value(it->second, "recv_buffer", this->Gate.RecvBuffer);
-        inipp::get_value(it->second, "ssl_encrypt", this->Gate.SSLEncrypt);
-        inipp::get_value(it->second, "ssl_pem", this->Gate.SSLPemFile);
-        inipp::get_value(it->second, "ssl_key", this->Gate.SSLKeyFile);
-        inipp::get_value(it->second, "max_user", this->Gate.MaxUser);
-        inipp::get_value(it->second, "max_connection", this->Gate.MaxConnection);
-        inipp::get_value(it->second, "cluster", this->Gate.Cluster);
-        inipp::get_value(it->second, "register_expire", this->Gate.RegisterExpire);
-        inipp::get_value(it->second, "register_interval", this->Gate.RegisterInterval);
+        get_value(it->second, "server_name", this->Gate.ServerName);
+        get_value(it->second, "port", this->Gate.Port);
+        get_value(it->second, "host", this->Gate.Host);
+        get_value(it->second, "network", this->Gate.Network);
+        get_value(it->second, "rsa_encrypt", this->Gate.RsaEncrypt);
+        get_value(it->second, "rsa_keyfile", this->Gate.RsaKeyFile);
+        get_value(it->second, "heartbeat", this->Gate.Heartbeat);
+        get_value(it->second, "backlog", this->Gate.Backlog);
+        get_value(it->second, "recv_buffer", this->Gate.RecvBuffer);
+        get_value(it->second, "ssl_encrypt", this->Gate.SSLEncrypt);
+        get_value(it->second, "ssl_pem", this->Gate.SSLPemFile);
+        get_value(it->second, "ssl_key", this->Gate.SSLKeyFile);
+        get_value(it->second, "max_user", this->Gate.MaxUser);
+        get_value(it->second, "max_connection", this->Gate.MaxConnection);
+        get_value(it->second, "cluster", this->Gate.Cluster);
+        get_value(it->second, "register_expire", this->Gate.RegisterExpire);
+        get_value(it->second, "register_interval", this->Gate.RegisterInterval);
     }
     if(this->ini.sections.find("CACHE") != this->ini.sections.end()) {
         auto const it = this->ini.sections.find("CACHE");
-        inipp::get_value(it->second, "password", this->Cache.Password);
-        inipp::get_value(it->second, "db", this->Cache.DB);
-        inipp::get_value(it->second, "port", this->Cache.Port);
-        inipp::get_value(it->second, "host", this->Cache.Host);
-        inipp::get_value(it->second, "expire", this->Cache.ExpireTime);
+        get_value(it->second, "password", this->Cache.Password);
+        get_value(it->second, "db", this->Cache.DB);
+        get_value(it->second, "port", this->Cache.Port);
+        get_value(it->second, "host", this->Cache.Host);
+        get_value(it->second, "expire", this->Cache.ExpireTime);
     }
 
     if(this->ini.sections.find("CLUSTER") != this->ini.sections.end()) {
         auto const it = this->ini.sections.find("CLUSTER");
-        inipp::get_value(it->second, "port", this->Cluster.Port);
-        inipp::get_value(it->second, "host", this->Cluster.Host);
-        inipp::get_value(it->second, "driver", this->Cluster.Driver);
-        inipp::get_value(it->second, "heartbeat", this->Cluster.Heartbeat);
-        inipp::get_value(it->second, "expire", this->Cluster.Expire);
-        inipp::get_value(it->second, "reload_interval", this->Cluster.ReloadInterval);
-        inipp::get_value(it->second, "reconnect_interval", this->Cluster.ReconnectInterval);
-        inipp::get_value(it->second, "register_interval", this->Cluster.RegisterInterval);
-        inipp::get_value(it->second, "name", this->Cluster.Name);
-        inipp::get_value(it->second, "recv_buffer", this->Cluster.RecvBuffer);
+        get_value(it->second, "port", this->Cluster.Port);
+        get_value(it->second, "host", this->Cluster.Host);
+        get_value(it->second, "driver", this->Cluster.Driver);
+        get_value(it->second, "heartbeat", this->Cluster.Heartbeat);
+        get_value(it->second, "expire", this->Cluster.Expire);
+        get_value(it->second, "reload_interval", this->Cluster.ReloadInterval);
+        get_value(it->second, "reconnect_interval", this->Cluster.ReconnectInterval);
+        get_value(it->second, "register_interval", this->Cluster.RegisterInterval);
+        get_value(it->second, "name", this->Cluster.Name);
+        get_value(it->second, "recv_buffer", this->Cluster.RecvBuffer);
     }
 
     if(this->ini.sections.find("MANAGED") != this->ini.sections.end()) {
         auto const it = this->ini.sections.find("MANAGED");
-        inipp::get_value(it->second, "port", this->Managed.Port);
-        inipp::get_value(it->second, "port", this->Managed.Port);
-        inipp::get_value(it->second, "user", this->Managed.User);
-        inipp::get_value(it->second, "password", this->Managed.Password);
+        get_value(it->second, "port", this->Managed.Port);
+        get_value(it->second, "port", this->Managed.Port);
+        get_value(it->second, "user", this->Managed.User);
+        get_value(it->second, "password", this->Managed.Password);
     }
     //std::cout << "bitbucket.org compression level: " << this->Role << std::endl;
     return 0;
@@ -190,25 +203,25 @@ int Config::SQLConfig(const char* section, sql::SQLConfig* config) {
     if (it == this->ini.sections.end()){
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "user", config->User)) {
+    if(!get_value(it->second, "user", config->User)) {
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "password", config->Password)) {
+    if(!get_value(it->second, "password", config->Password)) {
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "host", config->Host)) {
+    if(!get_value(it->second, "host", config->Host)) {
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "port", config->Port)) {
+    if(!get_value(it->second, "port", config->Port)) {
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "character_set", config->CharacterSet)) {
+    if(!get_value(it->second, "character_set", config->CharacterSet)) {
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "db", config->DB)) {
+    if(!get_value(it->second, "db", config->DB)) {
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "driver", config->Driver)) {
+    if(!get_value(it->second, "driver", config->Driver)) {
         return ErrorConfigNotExist;
     }
     return 0;
@@ -219,16 +232,16 @@ int Config::RedisConfig(const char* section, redis::RedisConfig* config) {
     if (it == this->ini.sections.end()){
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "password", config->Password)) {
+    if(!get_value(it->second, "password", config->Password)) {
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "host", config->Host)) {
+    if(!get_value(it->second, "host", config->Host)) {
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "port", config->Port)) {
+    if(!get_value(it->second, "port", config->Port)) {
         return ErrorConfigNotExist;
     }
-    if(!inipp::get_value(it->second, "db", config->DB)) {
+    if(!get_value(it->second, "db", config->DB)) {
         return ErrorConfigNotExist;
     }
     return 0;

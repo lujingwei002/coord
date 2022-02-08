@@ -63,8 +63,10 @@ public:
     bool SectionExist(const char* section);
     template <typename T>
     bool Get(const char* section, const char* key, T& dst) {
-        return inipp::get_value(this->ini.sections[section], key, dst);
+        return inipp::extract(this->ini.sections[section][key], dst);
     }
+
+private:
 public:
     int parse(const char* filePath);
 public:
