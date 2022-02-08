@@ -5,7 +5,7 @@
 #include "coord/builtin/slice.h"
 #include "coord/builtin/argument.h"
 #include "coord/json/init.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 #include <tuple>
 #include "coord/builtin/slice.h"

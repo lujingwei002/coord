@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 #include <string>
 #include <tuple>

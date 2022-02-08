@@ -3,7 +3,7 @@
 
 #include "coord/builtin/type.h"
 
-#include <libuv/uv.h>
+#include <uv.h>
 namespace coord {
 
 namespace net {

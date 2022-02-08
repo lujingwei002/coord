@@ -145,6 +145,11 @@ add_custom_target(tolua
     COMMAND ${PROJECT_SOURCE_DIR}/bin/tolua++/tolua++ -n coord -o interface.cc interface.pkg
 )
 
+add_custom_target(protoc
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND ${PROJECT_SOURCE_DIR}/bin/protoc --cpp_out=src proto/*.proto
+)
+
 add_custom_target(runtest
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMAND ${PROJECT_SOURCE_DIR}/bin/test

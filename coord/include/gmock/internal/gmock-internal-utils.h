@@ -34,6 +34,8 @@
 // Mock.  They are subject to change without notice, so please DO NOT
 // USE THEM IN USER CODE.
 
+// GOOGLETEST_CM0002 DO NOT DELETE
+
 #ifndef GOOGLEMOCK_INCLUDE_GMOCK_INTERNAL_GMOCK_INTERNAL_UTILS_H_
 #define GOOGLEMOCK_INCLUDE_GMOCK_INTERNAL_GMOCK_INTERNAL_UTILS_H_
 
@@ -279,7 +281,7 @@ class WithoutMatchers {
 GTEST_API_ WithoutMatchers GetWithoutMatchers();
 
 // Disable MSVC warnings for infinite recursion, since in this case the
-// recursion is unreachable.
+// the recursion is unreachable.
 #ifdef _MSC_VER
 # pragma warning(push)
 # pragma warning(disable:4717)
@@ -446,8 +448,6 @@ struct Function<R(Args...)> {
 
 template <typename R, typename... Args>
 constexpr size_t Function<R(Args...)>::ArgumentCount;
-
-bool Base64Unescape(const std::string& encoded, std::string* decoded);
 
 #ifdef _MSC_VER
 # pragma warning(pop)

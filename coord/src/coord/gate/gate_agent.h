@@ -7,7 +7,7 @@
 #include "coord/net/tcp_agent.h"
 #include "coord/websocket/websocket_agent.h"
 #include <stdlib.h>
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 #include <string>
 

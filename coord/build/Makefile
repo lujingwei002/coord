@@ -144,6 +144,19 @@ runtest/fast:
 .PHONY : runtest/fast
 
 #=============================================================================
+# Target rules for targets named protoc
+
+# Build rule for target.
+protoc: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 protoc
+.PHONY : protoc
+
+# fast build rule for target.
+protoc/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/protoc.dir/build.make CMakeFiles/protoc.dir/build
+.PHONY : protoc/fast
+
+#=============================================================================
 # Target rules for targets named tolua
 
 # Build rule for target.
@@ -4069,86 +4082,140 @@ src/json11/test.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/json11/test.cpp.s
 .PHONY : src/json11/test.cpp.s
 
-src/lua-cjson/fpconv.o: src/lua-cjson/fpconv.cc.o
+src/lua-cjson/dtoa.o: src/lua-cjson/dtoa.c.o
+
+.PHONY : src/lua-cjson/dtoa.o
+
+# target to build an object file
+src/lua-cjson/dtoa.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/dtoa.c.o
+.PHONY : src/lua-cjson/dtoa.c.o
+
+src/lua-cjson/dtoa.i: src/lua-cjson/dtoa.c.i
+
+.PHONY : src/lua-cjson/dtoa.i
+
+# target to preprocess a source file
+src/lua-cjson/dtoa.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/dtoa.c.i
+.PHONY : src/lua-cjson/dtoa.c.i
+
+src/lua-cjson/dtoa.s: src/lua-cjson/dtoa.c.s
+
+.PHONY : src/lua-cjson/dtoa.s
+
+# target to generate assembly for a file
+src/lua-cjson/dtoa.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/dtoa.c.s
+.PHONY : src/lua-cjson/dtoa.c.s
+
+src/lua-cjson/fpconv.o: src/lua-cjson/fpconv.c.o
 
 .PHONY : src/lua-cjson/fpconv.o
 
 # target to build an object file
-src/lua-cjson/fpconv.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/fpconv.cc.o
-.PHONY : src/lua-cjson/fpconv.cc.o
+src/lua-cjson/fpconv.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/fpconv.c.o
+.PHONY : src/lua-cjson/fpconv.c.o
 
-src/lua-cjson/fpconv.i: src/lua-cjson/fpconv.cc.i
+src/lua-cjson/fpconv.i: src/lua-cjson/fpconv.c.i
 
 .PHONY : src/lua-cjson/fpconv.i
 
 # target to preprocess a source file
-src/lua-cjson/fpconv.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/fpconv.cc.i
-.PHONY : src/lua-cjson/fpconv.cc.i
+src/lua-cjson/fpconv.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/fpconv.c.i
+.PHONY : src/lua-cjson/fpconv.c.i
 
-src/lua-cjson/fpconv.s: src/lua-cjson/fpconv.cc.s
+src/lua-cjson/fpconv.s: src/lua-cjson/fpconv.c.s
 
 .PHONY : src/lua-cjson/fpconv.s
 
 # target to generate assembly for a file
-src/lua-cjson/fpconv.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/fpconv.cc.s
-.PHONY : src/lua-cjson/fpconv.cc.s
+src/lua-cjson/fpconv.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/fpconv.c.s
+.PHONY : src/lua-cjson/fpconv.c.s
 
-src/lua-cjson/lua_cjson.o: src/lua-cjson/lua_cjson.cc.o
+src/lua-cjson/g_fmt.o: src/lua-cjson/g_fmt.c.o
+
+.PHONY : src/lua-cjson/g_fmt.o
+
+# target to build an object file
+src/lua-cjson/g_fmt.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/g_fmt.c.o
+.PHONY : src/lua-cjson/g_fmt.c.o
+
+src/lua-cjson/g_fmt.i: src/lua-cjson/g_fmt.c.i
+
+.PHONY : src/lua-cjson/g_fmt.i
+
+# target to preprocess a source file
+src/lua-cjson/g_fmt.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/g_fmt.c.i
+.PHONY : src/lua-cjson/g_fmt.c.i
+
+src/lua-cjson/g_fmt.s: src/lua-cjson/g_fmt.c.s
+
+.PHONY : src/lua-cjson/g_fmt.s
+
+# target to generate assembly for a file
+src/lua-cjson/g_fmt.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/g_fmt.c.s
+.PHONY : src/lua-cjson/g_fmt.c.s
+
+src/lua-cjson/lua_cjson.o: src/lua-cjson/lua_cjson.c.o
 
 .PHONY : src/lua-cjson/lua_cjson.o
 
 # target to build an object file
-src/lua-cjson/lua_cjson.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/lua_cjson.cc.o
-.PHONY : src/lua-cjson/lua_cjson.cc.o
+src/lua-cjson/lua_cjson.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/lua_cjson.c.o
+.PHONY : src/lua-cjson/lua_cjson.c.o
 
-src/lua-cjson/lua_cjson.i: src/lua-cjson/lua_cjson.cc.i
+src/lua-cjson/lua_cjson.i: src/lua-cjson/lua_cjson.c.i
 
 .PHONY : src/lua-cjson/lua_cjson.i
 
 # target to preprocess a source file
-src/lua-cjson/lua_cjson.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/lua_cjson.cc.i
-.PHONY : src/lua-cjson/lua_cjson.cc.i
+src/lua-cjson/lua_cjson.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/lua_cjson.c.i
+.PHONY : src/lua-cjson/lua_cjson.c.i
 
-src/lua-cjson/lua_cjson.s: src/lua-cjson/lua_cjson.cc.s
+src/lua-cjson/lua_cjson.s: src/lua-cjson/lua_cjson.c.s
 
 .PHONY : src/lua-cjson/lua_cjson.s
 
 # target to generate assembly for a file
-src/lua-cjson/lua_cjson.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/lua_cjson.cc.s
-.PHONY : src/lua-cjson/lua_cjson.cc.s
+src/lua-cjson/lua_cjson.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/lua_cjson.c.s
+.PHONY : src/lua-cjson/lua_cjson.c.s
 
-src/lua-cjson/strbuf.o: src/lua-cjson/strbuf.cc.o
+src/lua-cjson/strbuf.o: src/lua-cjson/strbuf.c.o
 
 .PHONY : src/lua-cjson/strbuf.o
 
 # target to build an object file
-src/lua-cjson/strbuf.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/strbuf.cc.o
-.PHONY : src/lua-cjson/strbuf.cc.o
+src/lua-cjson/strbuf.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/strbuf.c.o
+.PHONY : src/lua-cjson/strbuf.c.o
 
-src/lua-cjson/strbuf.i: src/lua-cjson/strbuf.cc.i
+src/lua-cjson/strbuf.i: src/lua-cjson/strbuf.c.i
 
 .PHONY : src/lua-cjson/strbuf.i
 
 # target to preprocess a source file
-src/lua-cjson/strbuf.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/strbuf.cc.i
-.PHONY : src/lua-cjson/strbuf.cc.i
+src/lua-cjson/strbuf.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/strbuf.c.i
+.PHONY : src/lua-cjson/strbuf.c.i
 
-src/lua-cjson/strbuf.s: src/lua-cjson/strbuf.cc.s
+src/lua-cjson/strbuf.s: src/lua-cjson/strbuf.c.s
 
 .PHONY : src/lua-cjson/strbuf.s
 
 # target to generate assembly for a file
-src/lua-cjson/strbuf.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/strbuf.cc.s
-.PHONY : src/lua-cjson/strbuf.cc.s
+src/lua-cjson/strbuf.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libcoord.dir/build.make CMakeFiles/libcoord.dir/src/lua-cjson/strbuf.c.s
+.PHONY : src/lua-cjson/strbuf.c.s
 
 src/proto/cluster.pb.o: src/proto/cluster.pb.cc.o
 
@@ -4347,6 +4414,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... protoc"
 	@echo "... runtest"
 	@echo "... tolua"
 	@echo "... benchmark"
@@ -4782,9 +4850,15 @@ help:
 	@echo "... src/json11/test.o"
 	@echo "... src/json11/test.i"
 	@echo "... src/json11/test.s"
+	@echo "... src/lua-cjson/dtoa.o"
+	@echo "... src/lua-cjson/dtoa.i"
+	@echo "... src/lua-cjson/dtoa.s"
 	@echo "... src/lua-cjson/fpconv.o"
 	@echo "... src/lua-cjson/fpconv.i"
 	@echo "... src/lua-cjson/fpconv.s"
+	@echo "... src/lua-cjson/g_fmt.o"
+	@echo "... src/lua-cjson/g_fmt.i"
+	@echo "... src/lua-cjson/g_fmt.s"
 	@echo "... src/lua-cjson/lua_cjson.o"
 	@echo "... src/lua-cjson/lua_cjson.i"
 	@echo "... src/lua-cjson/lua_cjson.s"

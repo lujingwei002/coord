@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/init.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <vector>
 #include <iostream>
 #include <stdint.h>

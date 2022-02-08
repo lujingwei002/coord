@@ -2,7 +2,7 @@
 
 #include "coord/builtin/type.h"
 #include "coord/protobuf/init.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 #include <tuple>
 

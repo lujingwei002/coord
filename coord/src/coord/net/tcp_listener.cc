@@ -3,7 +3,7 @@
 #include "coord/object/object.h"
 #include "coord/log/log.h"
 #include "coord/coord.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <limits>
 
 namespace coord {

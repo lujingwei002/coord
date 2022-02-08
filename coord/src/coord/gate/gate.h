@@ -7,7 +7,7 @@
 #include "coord/timer/timer.h"
 #include "coord/builtin/slice.h"
 #include "coord/gate/gate_config.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 #include <string>
 

@@ -1,7 +1,7 @@
 #include "coord/builtin/object_pool_mgr.h"
 #include "coord/builtin/object_pool.h"
 #include "coord/log/log.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <vector>
 
 namespace coord {

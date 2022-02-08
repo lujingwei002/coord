@@ -3,7 +3,7 @@
 #include "coord/timer/timer.h"
 #include "coord/script/script.h"
 #include "coord/closure/closure_mgr.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <vector>
 #include <map>
 extern "C" {

@@ -3,7 +3,7 @@
 #include "coord/component/component.h"
 #include "coord/builtin/slice.h"
 #include <stdlib.h>
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 #include <string>
 

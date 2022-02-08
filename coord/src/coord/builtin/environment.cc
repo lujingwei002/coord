@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstring>
 #include <vector>
-#include <libuv/uv.h>
+#include <uv.h>
 
 namespace coord {
 

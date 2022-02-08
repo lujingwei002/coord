@@ -35,6 +35,8 @@
 // end with _ are part of Google Mock's public API and can be used by
 // code outside Google Mock.
 
+// GOOGLETEST_CM0002 DO NOT DELETE
+
 #ifndef GOOGLEMOCK_INCLUDE_GMOCK_INTERNAL_GMOCK_PORT_H_
 #define GOOGLEMOCK_INCLUDE_GMOCK_INTERNAL_GMOCK_PORT_H_
 

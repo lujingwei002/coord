@@ -4,7 +4,7 @@
 #include "coord/builtin/type.h"
 #include "coord/builtin/slice.h"
 #include "coord/net/recv_buffer.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <string>
 namespace coord {//tolua_export
 class Coord;

@@ -5,7 +5,7 @@
 #include "coord/event/event.h"
 #include "coord/event/event_listener.h"
 #include <functional>
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 extern "C" {
 #include <lua/lua.h>

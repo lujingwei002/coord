@@ -1,7 +1,7 @@
 #pragma once 
 #include "coord/builtin/type.h"
 #include "coord/builtin/slice.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <stdint.h>
 
 namespace coord {//tolua_export

@@ -6,7 +6,7 @@
 #include "coord/sql/sql_rows.h"
 #include "coord/protobuf/init.h"
 #include "tolua++/tolua++.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <vector>
 #include <iostream>
 #include <stdint.h>

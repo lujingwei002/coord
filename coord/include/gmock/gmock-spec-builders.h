@@ -56,6 +56,8 @@
 // where all clauses are optional, and .InSequence()/.After()/
 // .WillOnce() can appear any number of times.
 
+// GOOGLETEST_CM0002 DO NOT DELETE
+
 #ifndef GOOGLEMOCK_INCLUDE_GMOCK_GMOCK_SPEC_BUILDERS_H_
 #define GOOGLEMOCK_INCLUDE_GMOCK_GMOCK_SPEC_BUILDERS_H_
 
@@ -888,7 +890,7 @@ class GTEST_API_ ExpectationBase {
   mutable Mutex mutex_;  // Protects action_count_checked_.
 };  // class ExpectationBase
 
-// Implements an expectation for the given function type.
+// Impements an expectation for the given function type.
 template <typename F>
 class TypedExpectation : public ExpectationBase {
  public:

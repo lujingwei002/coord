@@ -46,7 +46,7 @@ typedef struct redisLibevEvents {
 
 static void redisLibevReadEvent(EV_P_ ev_io *watcher, int revents) {
 #if EV_MULTIPLICITY
-    ((void)EV_A);
+    ((void)loop);
 #endif
     ((void)revents);
 
@@ -56,7 +56,7 @@ static void redisLibevReadEvent(EV_P_ ev_io *watcher, int revents) {
 
 static void redisLibevWriteEvent(EV_P_ ev_io *watcher, int revents) {
 #if EV_MULTIPLICITY
-    ((void)EV_A);
+    ((void)loop);
 #endif
     ((void)revents);
 
@@ -154,7 +154,7 @@ static int redisLibevAttach(EV_P_ redisAsyncContext *ac) {
 
     e->context = ac;
 #if EV_MULTIPLICITY
-    e->loop = EV_A;
+    e->loop = loop;
 #else
     e->loop = NULL;
 #endif

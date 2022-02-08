@@ -3,7 +3,7 @@
 
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include "coord/http/http_util.h"
 #include "coord/http/http_base.h"
 #include "coord/net/tcp_agent.h"

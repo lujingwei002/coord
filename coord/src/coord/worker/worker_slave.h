@@ -5,7 +5,7 @@
 #include <iostream>
 #include <map>
 #include <deque>
-#include <libuv/uv.h>
+#include <uv.h>
 
 namespace coord {//tolua_export
     

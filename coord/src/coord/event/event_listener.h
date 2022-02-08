@@ -4,7 +4,7 @@
 #include "coord/builtin/slice.h"
 #include "coord/event/event.h"
 #include <functional>
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 
 namespace coord {//tolua_export

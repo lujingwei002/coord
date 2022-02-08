@@ -4,7 +4,7 @@
 #include "coord/builtin/destoryable.h"
 #include "coord/builtin/slice.h"
 #include "coord/cluster/cluster_message.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 #include <functional>
 #include <tuple>

@@ -2,7 +2,7 @@
 
 #include "coord/builtin/init.h"
 #include "coord/builtin/base_request.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 #include <tuple>
 #include "http-parser/http_parser.h"

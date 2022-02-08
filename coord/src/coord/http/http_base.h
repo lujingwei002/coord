@@ -2,7 +2,7 @@
 
 #include "coord/builtin/slice.h"
 #include <string>
-#include <libuv/uv.h>
+#include <uv.h>
 
 namespace coord {
 namespace http {

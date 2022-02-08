@@ -2,7 +2,7 @@
 
 #include "coord/builtin/type.h"
 #include "coord/cache/cache_config.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <vector>
 #include <iostream>
 #include <stdint.h>

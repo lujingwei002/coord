@@ -3,7 +3,7 @@
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/protobuf/init.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <vector>
 #include <iostream>
 #include <string>

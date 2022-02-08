@@ -39,7 +39,7 @@
 #include "coord/json/json_mgr.h"
 #include "util/os/os.h"
 #include "util/os/path.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <iostream>
 #include <fstream>
 #include <cstdlib>

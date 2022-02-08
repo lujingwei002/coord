@@ -2,7 +2,7 @@
 
 
 #include "coord/builtin/slice.h"
-#include <libuv/uv.h>
+#include <uv.h>
 
 namespace coord {//tolua_export
 namespace io {

@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/component/component.h"
-#include <libuv/uv.h>
+#include <uv.h>
 #include <map>
 #include <string>
 
