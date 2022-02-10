@@ -17,6 +17,9 @@ class SQLConfig;
 namespace redis {
 class RedisConfig;
 }
+namespace log4cc {
+class LoggerConfig;
+}
 class Coord;
 
 class BasicConfig {//tolua_export
@@ -60,6 +63,7 @@ public:
 public:
     int SQLConfig(const char* section, sql::SQLConfig* config);
     int RedisConfig(const char* section, redis::RedisConfig* config);
+    int LoggerConfig(const char* section, log4cc::LoggerConfig* config);
     bool SectionExist(const char* section);
     template <typename T>
     bool Get(const char* section, const char* key, T& dst) {

@@ -1,23 +1,15 @@
-_package_('test-http')
+_package_('main')
 
-print('aa', import('example/test-http/http'))
+local controller = import('test-http/controller')
 
-function main()
-    
-    --local httpServer = coorda:NewHttpServer()
-    --local config = httpServer:DefaultConfig()
-    --config.host = "0.0.0.0"
-    --config.port = 3333
-    --httpServer:Start()
-
-    --local route
-    --route:Get('xx', http.HttpHandler.xxx)
-    coorda:AddScript("http.HttpHandler")
-
-    --coorda:CloseAllLog()
-    --coorda:OpenLog(3)
+function onDestory()
+    package:Log('main.onDestory')
 end
 
-function exit()
-    static:LogMsg("exit")
-end 
+function onAwake()
+    package:Log('main.onAwake')
+    
+    coorda:AddScript(controller.TestController)
+
+end
+

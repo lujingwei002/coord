@@ -405,7 +405,6 @@ void ScriptComponent::recvGateNotify(gate::GateSession* session, gate::GateNotif
     lua_State* L = this->GetLuaState(); 
     static thread_local char funcname[128];
     sprintf(funcname, "%s.%s", this->scriptName, script);
-    //LOG_INFO("%s %s", __FUNCTION__, funcname);
     if(this->GetFunction(funcname)) {
         this->coord->coreLogError("[ScriptComponent] function not found, function=%s.%s", this->scriptName, script);
         lua_pop(L, lua_gettop(L));
@@ -429,7 +428,6 @@ void ScriptComponent::recvGateSessionClose(gate::GateSession* session, const cha
     lua_State* L = this->GetLuaState(); 
     static thread_local char funcname[128];
     sprintf(funcname, "%s.%s", this->scriptName, script);
-    //LOG_INFO("%s %s", __FUNCTION__, funcname);
     if(this->GetFunction(funcname)) {
         this->coord->coreLogError("[ScriptComponent] function not found, function=%s.%s", this->scriptName, script);
         lua_pop(L, lua_gettop(L));
@@ -453,7 +451,6 @@ void ScriptComponent::recvGateUserLogin(gate::GateSession* session, const char* 
     lua_State* L = this->GetLuaState(); 
     static thread_local char funcname[128];
     sprintf(funcname, "%s.%s", this->scriptName, script);
-    //LOG_INFO("%s %s", __FUNCTION__, funcname);
     if(this->GetFunction(funcname)) {
         this->coord->coreLogError("[ScriptComponent] function not found, function=%s.%s", this->scriptName, script);
         lua_pop(L, lua_gettop(L));
@@ -477,7 +474,6 @@ void ScriptComponent::recvGateUserLogout(gate::GateSession* session, const char*
     lua_State* L = this->GetLuaState(); 
     static thread_local char funcname[128];
     sprintf(funcname, "%s.%s", this->scriptName, script);
-    //LOG_INFO("%s %s", __FUNCTION__, funcname);
     if(this->GetFunction(funcname)) {
         this->coord->coreLogError("[ScriptComponent] function not found, function=%s.%s", this->scriptName, script);
         lua_pop(L, lua_gettop(L));
@@ -501,7 +497,6 @@ void ScriptComponent::recvGateUserInstead(gate::GateSession* session, const char
     lua_State* L = this->GetLuaState(); 
     static thread_local char funcname[128];
     sprintf(funcname, "%s.%s", this->scriptName, script);
-    //LOG_INFO("%s %s", __FUNCTION__, funcname);
     if(this->GetFunction(funcname)) {
         this->coord->coreLogError("[ScriptComponent] function not found, function=%s.%s", this->scriptName, script);
         lua_pop(L, lua_gettop(L));

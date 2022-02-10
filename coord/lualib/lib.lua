@@ -87,19 +87,19 @@ local function Log(self, str)
     coorda:Log(string.format('[%s] %s', self.__PACKAGE, str or ''))
 end
 local function LogFatal(self, str)
-    coorda:LogMsg(string.format('[%s] %s', self.__PACKAGE, str or ''))
+    coorda:LogFatal(string.format('[%s] %s', self.__PACKAGE, str or ''))
 end
 local function LogError(self, str)
-    coorda:LogMsg(string.format('[%s] %s', self.__PACKAGE, str or ''))
+    coorda:LogError(string.format('[%s] %s', self.__PACKAGE, str or ''))
 end
 local function LogWarn(self, str)
-    coorda:LogMsg(string.format('[%s] %s', self.__PACKAGE, str or ''))
+    coorda:LogWarn(string.format('[%s] %s', self.__PACKAGE, str or ''))
 end
 local function LogInfo(self, str)
-    coorda:LogMsg(string.format('[%s] %s', self.__PACKAGE, str or ''))
+    coorda:LogInfo(string.format('[%s] %s', self.__PACKAGE, str or ''))
 end
 local function LogDebug(self, str)
-    coorda:LogMsg(string.format('[%s] %s', self.__PACKAGE, str or ''))
+    coorda:LogDebug(string.format('[%s] %s', self.__PACKAGE, str or ''))
 end
 local function LogMsg(self, str)
     coorda:LogMsg(string.format('[%s] %s', self.__PACKAGE, str or ''))

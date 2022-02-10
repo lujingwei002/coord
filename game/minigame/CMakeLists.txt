@@ -7,7 +7,7 @@ set (LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 set (COORD_HOME "/root/coord/coord")
 
 #编译选项
-add_compile_options (-std=c++17 -Wall -O2) 
+add_compile_options (-std=c++17 -Wall -O2 -g) 
 
 #头文件
 include_directories (${COORD_HOME}/src)
@@ -26,6 +26,7 @@ find_library(UV_LIB uv HINTS ${COORD_HOME}/lib/)
 find_library(HIREDIS_LIB hiredis HINTS ${COORD_HOME}/lib/)
 find_library(MYSQLCLIENT_LIB mysqlclient HINTS ${COORD_HOME}/lib/)
 find_library(CCRONEXPR_LIB ccronexpr HINTS ${COORD_HOME}/lib/)
+find_library(CJSON_LIB cjson HINTS ${COORD_HOME}/lib/)
 
 add_subdirectory (src/loginsvr)
 add_subdirectory (src/gamesvr)

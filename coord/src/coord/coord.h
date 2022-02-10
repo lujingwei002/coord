@@ -99,7 +99,10 @@ class LoginSvr;
 namespace json {
 class JsonMgr;
 }
-
+namespace log4cc {
+class LoggerMgr;
+class Category;
+}
 enum worker_role {
     worker_role_master = 1,
     worker_role_slave = 2,
@@ -238,14 +241,15 @@ public:
     closure::ClosureMgr*    Closure;        //tolua_export
     login::LoginSvr*        Login;          //tolua_export
     json::JsonMgr*          Json;           
+    log4cc::LoggerMgr*      LoggerMgr;      //tolua_export
 public:
     uint64_t            frame;
     sql::sql_mgr*       sqlMgr;         
     timer::TimerMgr*    Timer;
     SceneMgr*           sceneMgr;
     uv_loop_t           loop;
-    log::file_logger*   logger;
-    log::core_logger*   coreLogger;
+    log4cc::Category*   logger;
+    log4cc::Category*   coreLogger;
     uv_signal_t         sigInt;
     uv_signal_t         sigUsr1;
     uv_signal_t         sigUsr2;

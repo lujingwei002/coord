@@ -47,7 +47,7 @@ Object* Scene::createObjectInternal(const char* name) {
 
 Object* Scene::Instantiate(const char* name, const char* filePath) {
     lua_State* L = this->coord->Script->L;
-    //LOG_DEBUG("scene[%d] create object local %s", this->id, filePath);
+    //this->coord->coreLogDebug("scene[%d] create object local %s", this->id, filePath);
     Object* object = NULL;
     if (filePath == NULL) {
         object = newObject(this->coord, name);
@@ -57,7 +57,7 @@ Object* Scene::Instantiate(const char* name, const char* filePath) {
         lua_getglobal(L, "instantiate");
         lua_getglobal(L, filePath);
         if (lua_pcall(L, 1, 1, 0) != 0) {
-            //LOG_DEBUG("node[%d] create object local error %s", this->id, lua_tostring(L, -1));
+            //this->coord->coreLogDebug("node[%d] create object local error %s", this->id, lua_tostring(L, -1));
             //this->TraceStack();
         }
         tolua_Error tolua_err;

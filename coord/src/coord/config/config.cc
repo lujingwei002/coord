@@ -3,9 +3,11 @@
 #include "coord/sql/sql_client.h"
 #include "coord/redis/redis_client.h"
 #include "coord/builtin/init.h"
+#include "coord/log4cc/log4cc.h"
 #include "inipp/inipp.h"
 #include <fstream>
 #include <iostream>
+#include <regex>
 
 namespace coord {
 
@@ -31,6 +33,7 @@ Config::Config(Coord* coord) {
     this->coord = coord;
 
     this->Basic.GC = 0;
+    this->Basic.Name = "coord";
     this->Basic.Update = 100;
     this->Basic.WorkerNum = 0;
     this->Basic.CoreLoggerMaxByte = 4*1024*1024;
@@ -73,12 +76,12 @@ Config::Config(Coord* coord) {
 int Config::parse(const char* filePath) {
     std::ifstream is(filePath);
     if(!is.is_open()){
-        printf("config file not found, %s\n", filePath);
+        fprintf(stderr, "config file not found, %s\n", filePath);
         return 1;
     }
     this->ini.parse(is);
     if(this->ini.errors.size() > 0){
-        printf("parse config file failed %s\n", filePath);
+        fprintf(stderr, "parse config file failed %s\n", filePath);
         for(auto const &error : this->ini.errors){
             std::cout << error << std::endl;
         }
@@ -246,5 +249,30 @@ int Config::RedisConfig(const char* section, redis::RedisConfig* config) {
     }
     return 0;
 }
+
+int Config::LoggerConfig(const char* section, log4cc::LoggerConfig* config) {
+    auto const it = this->ini.sections.find(section);
+    if (it == this->ini.sections.end()){
+        return ErrorConfigNotExist;
+    }
+    get_value(it->second, "file", config->File);
+    get_value(it->second, "layout", config->Layout);
+    get_value(it->second, "max-line", config->MaxLine);
+    if(get_value(it->second, "max-byte", config->MaxByte)) {
+    }
+
+    std::string console;
+    if(get_value(it->second, "console", console)) {
+        if(console == "true") {
+            config->Console = true;
+        }
+    }
+    std::string priority;
+    if(get_value(it->second, "priority", priority)) {
+        config->Priority = log4cc::IntPriority(priority.c_str());
+    }
+    return 0;
+}
+
 
 }

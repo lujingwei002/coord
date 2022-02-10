@@ -20,5 +20,5 @@ function Post.HandleLogin(self, request)
     response:Text("css/*")
 end
 
-function Update(self)
+function onUpdate(self)
 end

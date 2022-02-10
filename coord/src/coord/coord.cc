@@ -37,6 +37,7 @@
 #include "coord/closure/init.h"
 #include "coord/login/init.h"
 #include "coord/json/json_mgr.h"
+#include "coord/log4cc/log4cc.h"
 #include "util/os/os.h"
 #include "util/os/path.h"
 #include <uv.h>
@@ -112,7 +113,7 @@ namespace coord {
         if(pid){
             exit(0);
         }else if(pid < 0){
-            printf("fork error");
+            fprintf(stderr, "fork error");
             return -1;
         }
         setsid();
@@ -120,7 +121,7 @@ namespace coord {
         if(pid){
             exit(0);
         }else if(pid < 0){
-            printf("fork error");
+            fprintf(stderr, "fork error");
             return -1;
         }
         return 0;
@@ -131,7 +132,7 @@ namespace coord {
 
     int Main(int argc, const char** argv) {
         if (argc < 2){
-            printf("not config file input\n");
+            fprintf(stderr, "not config file input\n");
             return EXIT_FAILURE;
         }
         if (argc >= 4 && strcmp(argv[2], "-s") == 0){
@@ -174,21 +175,21 @@ namespace coord {
 
     //处理中断信号
     static void coord_sigint_handler(uv_signal_t *handle, int signum) {
-        printf("coord_sigint_handler: %d\n", signum);
+        fprintf(stderr, "coord_sigint_handler: %d\n", signum);
         uv_signal_stop(handle);
         Coord* coord = (Coord*)handle->data;
         coord->recvSigInt();
     }
 
     static void coord_sigusr1_handler(uv_signal_t *handle, int signum) {
-        printf("coord_sigusr1_handler: %d\n", signum);
+        fprintf(stderr, "coord_sigusr1_handler: %d\n", signum);
         //uv_signal_stop(handle);
         //Coord* coord = (Coord*)handle->data;
         //coord->recvSigInt();
     }
 
     static void coord_sigusr2_handler(uv_signal_t *handle, int signum) {
-        printf("coord_sigusr2_handler: %d\n", signum);
+        fprintf(stderr, "coord_sigusr2_handler: %d\n", signum);
         Coord* coord = (Coord*)handle->data;
         coord->Reload();
         //uv_signal_stop(handle);
@@ -221,6 +222,7 @@ namespace coord {
         this->Action = nullptr;
         this->Closure = nullptr;
         this->Json = nullptr;
+        this->LoggerMgr = nullptr;
         //this->requestPipelineTop = NULL;
         if(uv_loop_init(&this->loop)){
         }
@@ -299,10 +301,6 @@ namespace coord {
             delete this->Closure;
             this->Closure = nullptr;
         }    
-        if(this->logger) {
-            delete this->logger;
-            this->logger = nullptr;
-        }  
         if(this->Environment) {
             delete this->Environment;
             this->Environment = nullptr;
@@ -310,6 +308,10 @@ namespace coord {
         if(this->Json) {
             delete this->Json;
             this->Json = nullptr;
+        }       
+        if(this->LoggerMgr) {
+            delete this->LoggerMgr;
+            this->LoggerMgr = nullptr;
         }       
     }
 
@@ -429,19 +431,20 @@ namespace coord {
     
     int Coord::asCommand(const char *configFile, const char* command) {
         coorda = this;
-        this->logger = log::newFileLogger();
-        this->coreLogger = log::newCoreLogger();
+        this->LoggerMgr = log4cc::newLoggerMgr(this);
         this->config = newConfig(this); 
         this->ConfigFile = configFile;
         if (this->readConfig(configFile)) {
             return EXIT_FAILURE;
         }
+        this->logger = this->LoggerMgr->GetConfigCategory("logger");
+        this->coreLogger = this->LoggerMgr->GetConfigCategory("core-logger");
         if (strcmp(command, "stop") == 0) {
             std::string pidPath = this->config->Basic.Pid + this->config->Basic.Name + ".pid";
             std::ifstream ifile;
             ifile.open(pidPath.c_str(), std::ios::in);
             if(!ifile){
-                printf("pid file not found: %s\n", pidPath.c_str());
+                fprintf(stderr, "pid file not found: %s\n", pidPath.c_str());
                 return 1;
             }
             uv_pid_t pid;
@@ -454,7 +457,7 @@ namespace coord {
             std::ifstream ifile;
             ifile.open(pidPath.c_str(), std::ios::in);
             if(!ifile){
-                printf("pid file not found: %s\n", pidPath.c_str());
+                fprintf(stderr, "pid file not found: %s\n", pidPath.c_str());
                 return 1;
             }
             uv_pid_t pid;
@@ -466,8 +469,9 @@ namespace coord {
 
     int Coord::Main(const char *configFile) {
         coorda = this;
-        this->logger = log::newFileLogger();
-        this->coreLogger = log::newCoreLogger();
+        //this->coreLogger = log::newCoreLogger();
+        //this->logger = log::newFileLogger();
+        this->LoggerMgr = log4cc::newLoggerMgr(this);
         this->config = newConfig(this); 
         this->Environment = newEnvironment(this);
         this->sceneMgr = newSceneMgr(this);     
@@ -484,6 +488,8 @@ namespace coord {
         if (this->readConfig(configFile)) {
             return EXIT_FAILURE;
         }
+        this->logger = this->LoggerMgr->GetConfigCategory("logger");
+        this->coreLogger = this->LoggerMgr->GetConfigCategory("core-logger");
 
         //listen int signal
         uv_signal_init(&this->loop, &this->sigInt);
@@ -499,19 +505,19 @@ namespace coord {
         this->Name = this->config->Basic.Name;
         //logger
         {
-            auto config = this->logger->getConfig();
-            strcpy(config->Dir, this->config->Basic.Logger.c_str());
-            sprintf(config->Name, "%s", this->config->Basic.Name.c_str());
-            config->MaxByte = this->config->Basic.LoggerMaxByte;
-            this->logger->reload();
+            //auto config = this->logger->getConfig();
+            //strcpy(config->Dir, this->config->Basic.Logger.c_str());
+            //sprintf(config->Name, "%s", this->config->Basic.Name.c_str());
+            //config->MaxByte = this->config->Basic.LoggerMaxByte;
+            //this->logger->reload();
         }
         //core logger
         {
-            auto config = this->coreLogger->getConfig();
-            strcpy(config->Dir, this->config->Basic.CoreLogger.c_str());
-            sprintf(config->Name, "%s_core", this->config->Basic.Name.c_str());
-            config->MaxByte = this->config->Basic.CoreLoggerMaxByte;
-            this->coreLogger->reload();
+            //auto config = this->coreLogger->getConfig();
+            //strcpy(config->Dir, this->config->Basic.CoreLogger.c_str());
+            //sprintf(config->Name, "%s_core", this->config->Basic.Name.c_str());
+            //config->MaxByte = this->config->Basic.CoreLoggerMaxByte;
+            //this->coreLogger->reload();
         }
 
         this->coreLogDebug("[coord] running, cluster=%s", this->config->Basic.Registery.c_str());
@@ -735,8 +741,9 @@ namespace coord {
 
     int Coord::asWorker(worker::Worker* master, const char *configFile, int index) {
         coorda = this;
-        this->coreLogger = log::newCoreLogger();
-        this->logger = log::newFileLogger();
+        //this->coreLogger = log::newCoreLogger();
+        //this->logger = log::newFileLogger();
+        this->LoggerMgr = log4cc::newLoggerMgr(this);
         this->config = newConfig(this); 
         this->Environment = newEnvironment(this);
         this->sceneMgr = newSceneMgr(this);     
@@ -755,22 +762,24 @@ namespace coord {
         if (this->readConfig(configFile)) {
             return EXIT_FAILURE;
         }
+        this->logger = this->LoggerMgr->GetConfigCategory("logger");
+        this->coreLogger = this->LoggerMgr->GetConfigCategory("core-logger");
         this->Name = config->Basic.Name;
         //logger
         {
-            auto config = this->logger->getConfig();
-            strcpy(config->Dir, this->config->Basic.Logger.c_str());
-            sprintf(config->Name, "%s_worker%d", this->config->Basic.Name.c_str(), index);
-            config->MaxByte = this->config->Basic.LoggerMaxByte;
-            this->logger->reload();
+            //auto config = this->logger->getConfig();
+            //strcpy(config->Dir, this->config->Basic.Logger.c_str());
+            //sprintf(config->Name, "%s_worker%d", this->config->Basic.Name.c_str(), index);
+            //config->MaxByte = this->config->Basic.LoggerMaxByte;
+            //this->logger->reload();
         }
         //core logger
         {
-            auto config = this->coreLogger->getConfig();
-            strcpy(config->Dir, this->config->Basic.CoreLogger.c_str());
-            sprintf(config->Name, "%s_worker%d_core", this->config->Basic.Name.c_str(), index);
-            config->MaxByte = this->config->Basic.CoreLoggerMaxByte;
-            this->coreLogger->reload();
+            //auto config = this->coreLogger->getConfig();
+            //strcpy(config->Dir, this->config->Basic.CoreLogger.c_str());
+            //sprintf(config->Name, "%s_worker%d_core", this->config->Basic.Name.c_str(), index);
+            //config->MaxByte = this->config->Basic.CoreLoggerMaxByte;
+            //this->coreLogger->reload();
         }
         {
             int err = this->Environment->main();
@@ -827,9 +836,11 @@ namespace coord {
 
     int Coord::beforeTest(const char *configFile) {
         coorda = this;
-        this->coreLogger = log::newCoreLogger();
-        this->logger = log::newFileLogger();
+        //this->coreLogger = log::newCoreLogger();
+        //this->logger = log::newFileLogger();
+        this->LoggerMgr = log4cc::newLoggerMgr(this);
         this->config = newConfig(this); 
+        //this->coreLogError("hello");
         this->Environment = newEnvironment(this);
         this->sceneMgr = newSceneMgr(this);     
         this->Event = event::newEventMgr(this);        
@@ -845,6 +856,8 @@ namespace coord {
         if (this->readConfig(configFile)) {
             return EXIT_FAILURE;
         }
+        this->logger = this->LoggerMgr->GetConfigCategory("logger");
+        this->coreLogger = this->LoggerMgr->GetConfigCategory("core-logger");
         this->workerRole = worker_role_master;
         {
             int err = this->Environment->main();
@@ -950,253 +963,339 @@ namespace coord {
     }
 
     void Coord::Log(const char* fmt, ...){
-        if(!this->logger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->logger->LogInfo(fmt, args);
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->logger->Info(fmt, args);
+        }
         va_end(args);
     }
 
     void Coord::LogFatal(const char* fmt, ...){
-        if(!this->logger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->logger->LogFatal(fmt, args);
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->logger->Fatal(fmt, args);
+        }
         va_end(args);
     }
 
     void Coord::LogError(const char* fmt, ...){
-         if(!this->logger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->logger->LogError(fmt, args);
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->logger->Error(fmt, args);
+        }
         va_end(args);
     }
 
     void Coord::LogWarn(const char* fmt, ...){
-         if(!this->logger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->logger->LogWarn(fmt, args);
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->logger->Warn(fmt, args);
+        }
         va_end(args);
     }
 
     void Coord::LogInfo(const char* fmt, ...){
-         if(!this->logger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->logger->LogInfo(fmt, args);
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->logger->Info(fmt, args);
+        }
         va_end(args);
     }
 
     void Coord::LogDebug(const char* fmt, ...){
-         if(!this->logger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->logger->LogDebug(fmt, args);
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->logger->Debug(fmt, args);
+        }
         va_end(args);
     }
 
     void Coord::LogMsg(const char* fmt, ...){
-         if(!this->logger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->logger->LogMsg(fmt, args);
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->logger->Notice(fmt, args);
+        }
         va_end(args);
     }
 
     void Coord::Log(const char* str) const{;
-        this->logger->LogInfo(str);
+        if(this->logger == nullptr){
+            fprintf(stderr, str);
+        } else {
+            this->logger->Info(str);
+        }
     }
 
     void Coord::LogFatal(const char* str) const{;
-        this->logger->LogFatal(str);
+        if(this->logger == nullptr){
+            fprintf(stderr, str);
+        } else {
+            this->logger->Fatal(str);
+        }
     }
 
     void Coord::LogError(const char* str) const{
-        this->logger->LogError(str);
+        if(this->logger == nullptr){
+            fprintf(stderr, str);
+        } else {
+            this->logger->Error(str);
+        }
     }
 
     void Coord::LogWarn(const char* str) const{
-        this->logger->LogWarn(str);
+        if(this->logger == nullptr){
+            fprintf(stderr, str);
+        } else {
+            this->logger->Warn(str);
+        }
     }
 
     void Coord::LogInfo(const char* str) const{
-       this->logger->LogInfo(str);
+        if(this->logger == nullptr){
+            fprintf(stderr, str);
+        } else {
+            this->logger->Info(str);
+        }
     }
 
     void Coord::LogDebug(const char* str) const{
-        this->logger->LogDebug(str);
+        if(this->logger == nullptr){
+            fprintf(stderr, str);
+        } else {
+            this->logger->Debug(str);
+        }
     }
 
     void Coord::LogMsg(const char* str) const{
-       this->logger->LogMsg(str);
+        if(this->logger == nullptr){
+            fprintf(stderr, str);
+        } else {
+           this->logger->Notice(str);
+        }
     }
 
     void Coord::LogCloseLevel(int level) {
-        this->logger->CloseLevel(level);
+        //this->logger->CloseLevel(level);
     }
 
     void Coord::LogOpenLevel(int level) {
-        this->logger->OpenLevel(level);
+        //this->logger->OpenLevel(level);
     }
 
     void Coord::LogSetLevel(int level) {
-        this->logger->SetLevel(level);
+        //this->logger->SetLevel(level);
     }
 
     void Coord::coreLogFatal(const char* str) const{;
-        this->coreLogger->LogFatal(str);
-        this->logger->LogFatal(str);
+        if(this->coreLogger != nullptr) {
+            fprintf(stderr, str);
+        } else {
+            this->coreLogger->Fatal(str);
+        }
     }
 
     void Coord::coreLogError(const char* str) const{
-        this->coreLogger->LogError(str);
-        this->logger->LogError(str);
+        if(this->coreLogger != nullptr) {
+            fprintf(stderr, str);
+        } else {
+            this->coreLogger->Error(str);
+        }
     }
 
     void Coord::coreLogWarn(const char* str) const{
-        this->coreLogger->LogWarn(str);
+        if (this->coreLogger == nullptr) {
+            fprintf(stderr, str);
+        } else {
+            this->coreLogger->Warn(str);
+        }
     }
 
     void Coord::coreLogInfo(const char* str) const{
-       this->coreLogger->LogInfo(str);
+        if (this->coreLogger == nullptr) {
+            fprintf(stderr, str);
+        } else {
+            this->coreLogger->Info(str);
+        }
     }
 
     void Coord::coreLogDebug(const char* str) const{
-        this->coreLogger->LogDebug(str);
+        if (this->coreLogger == nullptr) {
+            fprintf(stderr, str);
+        } else {
+            this->coreLogger->Debug(str);
+        }
     }
 
     void Coord::coreLogMsg(const char* str) const{
-       this->coreLogger->LogMsg(str);
+        if (this->coreLogger == nullptr) {
+            fprintf(stderr, str);
+        } else {
+            this->coreLogger->Notice(str);
+        }
     }
 
     void Coord::coreLogFatal(const char* fmt, ...){
-        if(!this->coreLogger){
-            return;
+        va_list args;
+        va_start(args, fmt);
+
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Fatal(fmt, args);
         }
-        va_list args1;
-        va_list args2;
-        va_start(args1, fmt);
-        va_copy(args2, args1);
-        this->coreLogger->LogFatal(fmt, args1);
-        this->logger->LogFatal(fmt, args2);
-        va_end(args1);
+
+        va_end(args);
+
     }
 
     void Coord::coreLogError(const char* fmt, ...){
-         if(!this->coreLogger){
-            return;
+        va_list args;
+        va_start(args, fmt);
+
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Error(fmt, args);
         }
-        va_list args1;
-        va_list args2;
-        va_start(args1, fmt);
-        va_copy(args2, args1);
-        this->coreLogger->LogError(fmt, args1);
-        this->logger->LogError(fmt, args2);
-        va_end(args1);
-        va_end(args2);
+
+        va_end(args);
     }
 
     void Coord::coreLogWarn(const char* fmt, ...){
-         if(!this->coreLogger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->coreLogger->LogWarn(fmt, args);
+
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Warn(fmt, args);
+        }
+
         va_end(args);
     }
 
     void Coord::coreLogInfo(const char* fmt, ...){
-         if(!this->coreLogger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->coreLogger->LogInfo(fmt, args);
+
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Info(fmt, args);
+        }
+
         va_end(args);
     }
 
     void Coord::coreLogDebug(const char* fmt, ...){
-         if(!this->coreLogger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->coreLogger->LogDebug(fmt, args);
+
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Debug(fmt, args);
+        }
+
         va_end(args);
     }
 
     void Coord::coreLogMsg(const char* fmt, ...){
-         if(!this->coreLogger){
-            return;
-        }
         va_list args;
         va_start(args, fmt);
-        this->coreLogger->LogMsg(fmt, args);
+
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Notice(fmt, args);
+        }
+
         va_end(args);
+
     }
 
-    void Coord::coreLogFatal(const char* fmt, va_list args1){
-        va_list args2;
-        va_copy(args2, args1);
-        this->coreLogger->LogFatal(fmt, args1);
-        this->logger->LogFatal(fmt, args2);
-        va_end(args2);
+    void Coord::coreLogFatal(const char* fmt, va_list args){
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Fatal(fmt, args);
+        }
     }
     
-    void Coord::coreLogError(const char* fmt, va_list args1){
-        va_list args2;
-        va_copy(args2, args1);
-        this->coreLogger->LogError(fmt, args1);
-        this->logger->LogError(fmt, args2);
-        va_end(args2);
+    void Coord::coreLogError(const char* fmt, va_list args){
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Error(fmt, args);
+        }
     }
 
     void Coord::coreLogWarn(const char* fmt, va_list args){
-        this->coreLogger->LogWarn(fmt, args);
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Warn(fmt, args);
+        }
     }
 
     void Coord::coreLogInfo(const char* fmt, va_list args){
-        this->coreLogger->LogInfo(fmt, args);
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Info(fmt, args);
+        }
     }
 
     void Coord::coreLogMsg(const char* fmt, va_list args){
-        this->coreLogger->LogMsg(fmt, args);
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Notice(fmt, args);
+        }
     }
 
     void Coord::coreLogDebug(const char* fmt, va_list args){
-        this->coreLogger->LogDebug(fmt, args);
+        if (this->coreLogger == nullptr) {
+            vfprintf(stderr, fmt, args);
+        } else {
+            this->coreLogger->Debug(fmt, args);
+        }
     }
 
     void Coord::coreLogCloseLevel(int level) {
-        log::CloseLevel(level);
-        this->coreLogger->CloseLevel(level);
+        //log::CloseLevel(level);
+        //this->coreLogger->CloseLevel(level);
     }
 
     void Coord::coreLogOpenLevel(int level) {
-        log::OpenLevel(level);
-        this->coreLogger->OpenLevel(level);
+        //log::OpenLevel(level);
+        //this->coreLogger->OpenLevel(level);
     }
 
     void Coord::coreLogSetLevel(int level) {
-        log::SetLevel(level);
-        this->coreLogger->SetLevel(level);
+        //log::SetLevel(level);
+        //this->coreLogger->SetLevel(level);
     }
 
     uint64_t Coord::Now() {

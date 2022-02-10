@@ -308,14 +308,14 @@ void Object::Trace(int deep) {
     for (int i = 0; i < deep; i++){
         strcat(tab, "  ");
     }
-    //LOG_INFO("%s|-%s", tab, this->name);
+    //this->coord->coreLogDebug("%s|-%s", tab, this->name);
     for (uint32_t i = 0; i < this->componentArr.size(); i++){
         Component* component = componentArr[i];
         if (component->GetType() == ScriptComponent::_type){
-            //LOG_INFO("%s  <%s(%s)>", tab, component->TypeName(), ((ScriptComponent*)component)->scriptName);
+            //this->coord->coreLogDebug("%s  <%s(%s)>", tab, component->TypeName(), ((ScriptComponent*)component)->scriptName);
         }
         else {
-            //LOG_INFO("%s  <%s>", tab, component->TypeName());
+            //this->coord->coreLogDebug("%s  <%s>", tab, component->TypeName());
         }
     }
     for (uint32_t i = 0; i < this->children.size(); i++){
