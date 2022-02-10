@@ -1,4 +1,0 @@
-$cfile "consoled.h"
-$cfile "consoled/consoled_server.h"
-$cfile "consoled/consoled_agent.h"
-$cfile "consoled/consoled_request.h"
