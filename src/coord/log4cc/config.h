@@ -5,6 +5,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 namespace coord { //tolua_export
 namespace log4cc { //tolua_export

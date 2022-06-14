@@ -86,7 +86,7 @@ int Cluster::main() {
     this->coord->SetInterval(this->config.ReloadInterval * 1000, [this](){this->nodeConfig->reload();return 0;});
     this->coord->SetInterval(this->config.Heartbeat * 1000, [this](){this->server->heartbeat();return 0;});
     this->coord->SetInterval(this->config.ReconnectInterval * 1000, [this](){
-        for(auto const it : this->clientDict) {
+        for(auto const& it : this->clientDict) {
             it.second->tryReconnect();
         }
         return 0;

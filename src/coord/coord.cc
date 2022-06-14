@@ -1108,7 +1108,7 @@ namespace coord {
     }
 
     void Coord::coreLogFatal(const char* str) const{;
-        if(this->coreLogger != nullptr) {
+        if(this->coreLogger == nullptr) {
             fprintf(stderr, str);
         } else {
             this->coreLogger->Fatal(str);
@@ -1116,7 +1116,7 @@ namespace coord {
     }
 
     void Coord::coreLogError(const char* str) const{
-        if(this->coreLogger != nullptr) {
+        if(this->coreLogger == nullptr) {
             fprintf(stderr, str);
         } else {
             this->coreLogger->Error(str);

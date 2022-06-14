@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstring>
 #include <map>
+#include <string>
 
 namespace coord {
 namespace log4cc {

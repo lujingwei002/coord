@@ -38,7 +38,7 @@ namespace coord {
 
     void object_pool_mgr::destory(){
         std::vector<IObjectPool*> poolArr;
-        for(auto const it : this->poolDict) {
+        for(auto const& it : this->poolDict) {
             it.second->Trace();
             poolArr.push_back(it.second);
         }
