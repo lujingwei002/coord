@@ -46,6 +46,7 @@ bin
 lib
 include
 build
+dump.rdb
 src/json11
 src/lua-cjson
 
@@ -65,3 +66,16 @@ framework/hostd/log
 
 framework/test/bin
 framework/test/log
+
+dep/benchmark*
+dep/ccronexpr*
+dep/googletest*
+dep/hiredis*
+dep/http-parser*
+dep/inipp*
+dep/json*
+dep/libuv*
+dep/lua*
+dep/mysql*
+dep/protobuf*
+dep/tolua*

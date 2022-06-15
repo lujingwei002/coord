@@ -150,8 +150,8 @@ public:
     void gc();
     int onReload();
 public:
-    char            Path[PACKAGE_MAX];  //tolua_export
-    char            Main[PACKAGE_MAX];  //tolua_export
+    char            Path[PACKAGE_MAX+1];  //tolua_export
+    char            Main[PACKAGE_MAX+1];  //tolua_export
     lua_State*      L;
     Coord*          coord;
     std::string     lastError;

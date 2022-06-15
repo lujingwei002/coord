@@ -256,10 +256,10 @@ void Object::onDestory() {
     for (auto object : this->children){
         objectArr.push_back(object);
     } 
-    for (auto object : objectArr){
+    //for (auto object : objectArr){
        // this->coord
        // object->onDestory();
-    } 
+    //} 
     //处理组件
     std::vector<Component*> componentArr;
     for (auto component : this->componentArr) {

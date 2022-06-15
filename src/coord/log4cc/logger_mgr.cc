@@ -48,7 +48,7 @@ Category* LoggerMgr::GetConfigCategory(const char* name) {
     LoggerConfig config;
     int err = this->coord->config->LoggerConfig(name, &config);
     if (err != 0) {
-        this->coord->coreLogError("[coord::LoggerMgr] GetConfigCategory failed, error=%d", err);
+        this->coord->coreLogError("[coord::LoggerMgr] GetConfigCategory %s failed, error=%d", name, err);
         return nullptr; 
     }
     Category* category = newCategory(this, name);

@@ -121,7 +121,9 @@ public:
     //新建一个线程
     int asWorker(worker::Worker* master, const char *configFile, int index);
     int asCommand(const char *configFile, const char* command);
+    // 异步模式启动
     int Fork(const char *configFile);
+    // 同步模式启动
     int Main(const char *configFile);  
     int beforeTest(const char *configFile); 
     void loopTest();   
@@ -241,7 +243,7 @@ public:
     closure::ClosureMgr*    Closure;        //tolua_export
     login::LoginSvr*        Login;          //tolua_export
     json::JsonMgr*          Json;           
-    log4cc::LoggerMgr*      LoggerMgr;      //tolua_export
+    log4cc::LoggerMgr*      LoggerMgr;      
 public:
     uint64_t            frame;
     sql::sql_mgr*       sqlMgr;         

@@ -5,6 +5,7 @@
 #include "coord/protobuf/init.h"
 #include "coord/script/reflect.h"
 #include "coord/json/json_mgr.h"
+#include "coord/builtin/init.h"
 
 #include "lua-cjson/lua_cjson.h"
 
@@ -14,6 +15,8 @@ extern "C"
 {
     int luaopen_coord(lua_State* tolua_S);
 }
+
+const char* TAG = "Script";
 
 namespace coord {
 namespace script {
@@ -432,7 +435,7 @@ int Script::onAwake() {
 
 int Script::main()  {
     auto config = this->coord->config;
-    const char* packageDir = config->Basic.Package.c_str();
+    const char* packageDir = this->coord->Environment->Package.c_str();
     const char* mainPackage = config->Basic.Main.c_str();
     lua_State* L = this->L;
     this->registerLibs();
@@ -442,6 +445,9 @@ int Script::main()  {
     if(this->coord->Json) {
         this->coord->Json->registerMetatable();
     }
+    this->coord->LogInfo("[%s] Package: %s", TAG, packageDir);
+    this->coord->LogInfo("[%s] Main: %s", TAG, mainPackage);
+
     strncpy(this->Path, packageDir, PACKAGE_MAX);
     strncpy(this->Main, mainPackage, PACKAGE_MAX);
     tolua_pushusertype(L, (void*)this->coord, "coord::Coord");

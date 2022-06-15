@@ -466,7 +466,6 @@ namespace coord {
         }
         return 0;
     }
-
     int Coord::Main(const char *configFile) {
         coorda = this;
         //this->coreLogger = log::newCoreLogger();
@@ -485,6 +484,12 @@ namespace coord {
         this->Closure = closure::newClosureMgr(this);
         this->Json = json::newJsonMgr(this);
         this->ConfigFile = configFile;
+        {
+            int err = this->Environment->main(configFile);
+            if (err) {
+                return err;
+            }
+        }   
         if (this->readConfig(configFile)) {
             return EXIT_FAILURE;
         }
@@ -521,12 +526,6 @@ namespace coord {
         }
 
         this->coreLogDebug("[coord] running, cluster=%s", this->config->Basic.Registery.c_str());
-        {
-            int err = this->Environment->main();
-            if (err) {
-                return err;
-            }
-        }   
         {
             int err = this->Proto->main();
             if (err) {
@@ -757,6 +756,12 @@ namespace coord {
         this->Closure = closure::newClosureMgr(this);  
         this->Json = json::newJsonMgr(this);
         this->ConfigFile = configFile;
+        {
+            int err = this->Environment->main(configFile);
+            if (err) {
+                return err;
+            }
+        }   
         //继承配置
         this->config->Basic = master->coord->config->Basic;
         if (this->readConfig(configFile)) {
@@ -781,12 +786,6 @@ namespace coord {
             //config->MaxByte = this->config->Basic.CoreLoggerMaxByte;
             //this->coreLogger->reload();
         }
-        {
-            int err = this->Environment->main();
-            if (err) {
-                return err;
-            }
-        }   
         {
             int err = this->Proto->main();
             if (err) {
@@ -853,18 +852,18 @@ namespace coord {
         this->Closure = closure::newClosureMgr(this);
         this->Json = json::newJsonMgr(this);
         this->ConfigFile = configFile;
+        {
+            int err = this->Environment->main(configFile);
+            if (err) {
+                return err;
+            }
+        }  
         if (this->readConfig(configFile)) {
             return EXIT_FAILURE;
         }
         this->logger = this->LoggerMgr->GetConfigCategory("logger");
         this->coreLogger = this->LoggerMgr->GetConfigCategory("core-logger");
         this->workerRole = worker_role_master;
-        {
-            int err = this->Environment->main();
-            if (err) {
-                return err;
-            }
-        }  
         {
             int err = this->Proto->main();
             if (err) {
@@ -967,6 +966,7 @@ namespace coord {
         va_start(args, fmt);
         if(this->logger == nullptr){
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Info(fmt, args);
         }
@@ -978,6 +978,7 @@ namespace coord {
         va_start(args, fmt);
         if(this->logger == nullptr){
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Fatal(fmt, args);
         }
@@ -989,6 +990,7 @@ namespace coord {
         va_start(args, fmt);
         if(this->logger == nullptr){
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Error(fmt, args);
         }
@@ -1000,6 +1002,7 @@ namespace coord {
         va_start(args, fmt);
         if(this->logger == nullptr){
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Warn(fmt, args);
         }
@@ -1011,6 +1014,7 @@ namespace coord {
         va_start(args, fmt);
         if(this->logger == nullptr){
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Info(fmt, args);
         }
@@ -1022,6 +1026,7 @@ namespace coord {
         va_start(args, fmt);
         if(this->logger == nullptr){
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Debug(fmt, args);
         }
@@ -1033,6 +1038,7 @@ namespace coord {
         va_start(args, fmt);
         if(this->logger == nullptr){
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Notice(fmt, args);
         }
@@ -1042,6 +1048,7 @@ namespace coord {
     void Coord::Log(const char* str) const{;
         if(this->logger == nullptr){
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Info(str);
         }
@@ -1050,6 +1057,7 @@ namespace coord {
     void Coord::LogFatal(const char* str) const{;
         if(this->logger == nullptr){
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Fatal(str);
         }
@@ -1058,6 +1066,7 @@ namespace coord {
     void Coord::LogError(const char* str) const{
         if(this->logger == nullptr){
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Error(str);
         }
@@ -1066,6 +1075,7 @@ namespace coord {
     void Coord::LogWarn(const char* str) const{
         if(this->logger == nullptr){
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Warn(str);
         }
@@ -1074,6 +1084,7 @@ namespace coord {
     void Coord::LogInfo(const char* str) const{
         if(this->logger == nullptr){
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Info(str);
         }
@@ -1082,6 +1093,7 @@ namespace coord {
     void Coord::LogDebug(const char* str) const{
         if(this->logger == nullptr){
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->logger->Debug(str);
         }
@@ -1090,6 +1102,7 @@ namespace coord {
     void Coord::LogMsg(const char* str) const{
         if(this->logger == nullptr){
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
            this->logger->Notice(str);
         }
@@ -1110,6 +1123,7 @@ namespace coord {
     void Coord::coreLogFatal(const char* str) const{;
         if(this->coreLogger == nullptr) {
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Fatal(str);
         }
@@ -1118,6 +1132,7 @@ namespace coord {
     void Coord::coreLogError(const char* str) const{
         if(this->coreLogger == nullptr) {
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Error(str);
         }
@@ -1126,6 +1141,7 @@ namespace coord {
     void Coord::coreLogWarn(const char* str) const{
         if (this->coreLogger == nullptr) {
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Warn(str);
         }
@@ -1134,6 +1150,7 @@ namespace coord {
     void Coord::coreLogInfo(const char* str) const{
         if (this->coreLogger == nullptr) {
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Info(str);
         }
@@ -1142,6 +1159,7 @@ namespace coord {
     void Coord::coreLogDebug(const char* str) const{
         if (this->coreLogger == nullptr) {
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Debug(str);
         }
@@ -1150,6 +1168,7 @@ namespace coord {
     void Coord::coreLogMsg(const char* str) const{
         if (this->coreLogger == nullptr) {
             fprintf(stderr, str);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Notice(str);
         }
@@ -1161,6 +1180,7 @@ namespace coord {
 
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Fatal(fmt, args);
         }
@@ -1175,6 +1195,7 @@ namespace coord {
 
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Error(fmt, args);
         }
@@ -1188,6 +1209,7 @@ namespace coord {
 
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Warn(fmt, args);
         }
@@ -1201,6 +1223,7 @@ namespace coord {
 
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Info(fmt, args);
         }
@@ -1214,6 +1237,7 @@ namespace coord {
 
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Debug(fmt, args);
         }
@@ -1227,6 +1251,7 @@ namespace coord {
 
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Notice(fmt, args);
         }
@@ -1246,6 +1271,7 @@ namespace coord {
     void Coord::coreLogError(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Error(fmt, args);
         }
@@ -1254,6 +1280,7 @@ namespace coord {
     void Coord::coreLogWarn(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Warn(fmt, args);
         }
@@ -1262,6 +1289,7 @@ namespace coord {
     void Coord::coreLogInfo(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Info(fmt, args);
         }
@@ -1270,6 +1298,7 @@ namespace coord {
     void Coord::coreLogMsg(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Notice(fmt, args);
         }
@@ -1278,6 +1307,7 @@ namespace coord {
     void Coord::coreLogDebug(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
         } else {
             this->coreLogger->Debug(fmt, args);
         }

@@ -7,16 +7,33 @@
 #include <uv.h>
 
 namespace coord {
-
+const char* TAG = "Environment";
 Environment* newEnvironment(Coord* coord) {
     Environment* self = new Environment(coord);
     return self;
 }
 
-int Environment::main() {
+int Environment::main(const char* configFilePath) {
+
     char buffer[PATH_MAX];
     size_t len = sizeof(buffer);
     {
+        len = sizeof(buffer);
+        uv_fs_t req;
+        int err = uv_fs_realpath(&this->coord->loop, &req, configFilePath, nullptr);
+        if (err) {
+            return err;
+        }
+        this->ConfigFilePath = (char*)req.ptr;
+    }
+    {
+        auto pos = this->ConfigFilePath.rfind("/");
+        if (pos != std::string::npos) {
+            this->ConfigFileDir = this->ConfigFilePath.substr(0, pos);
+        }
+    }
+    {
+        len = sizeof(buffer);
         int err = uv_exepath(buffer, &len);
         if (err) {
             return err;
@@ -37,6 +54,7 @@ int Environment::main() {
 
     }
     {
+        len = sizeof(buffer);
         int err = uv_cwd(buffer, &len);
         if (err) {
             return err;
@@ -44,6 +62,7 @@ int Environment::main() {
         this->WorkingDir = buffer;
     }
     {
+        len = sizeof(buffer);
         int err = uv_os_homedir(buffer, &len);
         if (err) {
             return err;
@@ -51,16 +70,37 @@ int Environment::main() {
         this->HomeDir = buffer;
     }
     {
+        len = sizeof(buffer);
         int err = this->searchCoordDir(buffer, &len);
         if (err) {
             return err;
         }
         this->CoordDir = buffer;
     }
-    //printf("ExecPath: %s\n", this->ExecPath.c_str());
-    //printf("ExecDir: %s\n", this->ExecDir.c_str());
-    //printf("CoordDir: %s\n", this->CoordDir.c_str());
-    //printf("ProjectDir: %s\n", this->ProjectDir.c_str());
+
+    this->Package = this->CoordDir + "/package";                        // 引擎目录
+    this->Package = this->WorkingDir + "/package;" + this->Package;     // 工作目录
+    this->Package = this->ConfigFileDir + "/package;" + this->Package;  // 配置文件目录
+    this->Package = this->ConfigFileDir + ";" + this->Package;          // 配置文件目录
+
+    this->coord->LogInfo(R"(
+/---------------------------/
+/                           /       
+/                           /       
+/       coord               /       
+/                           /       
+/                           /       
+/-------------------------- /)");
+
+    this->coord->LogInfo("[%s] Version: %s", TAG, this->Version.c_str());
+    this->coord->LogInfo("[%s] Config File Dir: %s", TAG, this->ConfigFileDir.c_str());
+    this->coord->LogInfo("[%s] Config File Path: %s", TAG, this->ConfigFilePath.c_str());
+    this->coord->LogInfo("[%s] Working Dir: %s", TAG, this->WorkingDir.c_str());
+    this->coord->LogInfo("[%s] ExecPath: %s", TAG, this->ExecPath.c_str());
+    this->coord->LogInfo("[%s] ExecDir: %s", TAG, this->ExecDir.c_str());
+    this->coord->LogInfo("[%s] CoordDir: %s", TAG, this->CoordDir.c_str());
+    this->coord->LogInfo("[%s] ProjectDir: %s", TAG, this->ProjectDir.c_str());
+    this->coord->LogInfo("[%s] Package: %s", TAG, this->Package.c_str());
     return 0;
 }
 

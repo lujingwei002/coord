@@ -86,7 +86,7 @@ HttpRouteNode* HttpRouter::searchNode(const char* method, const char* url) {
     static thread_local int argc = 0;
     static thread_local const char* argv[16];
     static char buffer[1024];
-    strncpy(buffer, url, sizeof(buffer));
+    strncpy(buffer, url, sizeof(buffer) - 1);
     //非法的路径
     if (*buffer == 0 || buffer[0] != '/') {
         return NULL;
@@ -151,7 +151,7 @@ void HttpRouter::recvHttpRequest(HttpRequest* request) {
 }
 
 void HttpRouter::Trace() {
-    for(auto const it : this->trees){
+    for(auto const& it : this->trees){
         auto event = it.first;
         auto tree = it.second;
         for(auto const it1 : tree->root->nodeArr) {

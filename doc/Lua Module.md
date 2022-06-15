@@ -1,0 +1,7 @@
+
+
+OnAwake
+
+OnDestory
+
+OnUpdate

@@ -29,7 +29,7 @@ public:
     /// 脚本的主场景构造文件
     std::string         Scene;              //tolua_export
     std::string         Registery;          //tolua_export
-    /// 包查找路径,使用逗号分隔
+    /// 包查找路径,使用分号分隔
     std::string         Package;            //tolua_export
     uint16_t            GC;                 //tolua_export
     uint16_t            Update;             //tolua_export
@@ -41,14 +41,6 @@ public:
     std::string         Proto;              //tolua_export
     /// 节点名字
     std::string         Name;               //tolua_export
-    /// core log目录
-    std::string         CoreLogger;         //tolua_export
-    /// core log文件大小
-    uint32_t            CoreLoggerMaxByte;  //tolua_export
-    /// log目录
-    std::string         Logger;             //tolua_export
-    /// log文件大小
-    uint32_t            LoggerMaxByte;      //tolua_export
     /// 保存pid文件的目录
     std::string         Pid;                //tolua_export
     /// 版本

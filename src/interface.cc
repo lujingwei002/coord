@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Tue Feb  8 16:50:20 2022.
+** Generated automatically by tolua++-1.0.92 on Wed Jun 15 16:49:38 2022.
 */
 
 #ifndef __cplusplus
@@ -2332,126 +2332,6 @@ static int tolua_set_coord__BasicConfig_Name(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: CoreLogger of class  coord::BasicConfig */
-#ifndef TOLUA_DISABLE_tolua_get_coord__BasicConfig_CoreLogger
-static int tolua_get_coord__BasicConfig_CoreLogger(lua_State* tolua_S)
-{
-  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'CoreLogger'",NULL);
-#endif
-  tolua_pushcppstring(tolua_S,(const char*)self->CoreLogger);
- return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* set function: CoreLogger of class  coord::BasicConfig */
-#ifndef TOLUA_DISABLE_tolua_set_coord__BasicConfig_CoreLogger
-static int tolua_set_coord__BasicConfig_CoreLogger(lua_State* tolua_S)
-{
-  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'CoreLogger'",NULL);
-  if (!tolua_iscppstring(tolua_S,2,0,&tolua_err))
-   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->CoreLogger = ((std::string)  tolua_tocppstring(tolua_S,2,0))
-;
- return 0;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* get function: CoreLoggerMaxByte of class  coord::BasicConfig */
-#ifndef TOLUA_DISABLE_tolua_get_coord__BasicConfig_CoreLoggerMaxByte
-static int tolua_get_coord__BasicConfig_CoreLoggerMaxByte(lua_State* tolua_S)
-{
-  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'CoreLoggerMaxByte'",NULL);
-#endif
-  tolua_pushnumber(tolua_S,(lua_Number)self->CoreLoggerMaxByte);
- return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* set function: CoreLoggerMaxByte of class  coord::BasicConfig */
-#ifndef TOLUA_DISABLE_tolua_set_coord__BasicConfig_CoreLoggerMaxByte
-static int tolua_set_coord__BasicConfig_CoreLoggerMaxByte(lua_State* tolua_S)
-{
-  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'CoreLoggerMaxByte'",NULL);
-  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
-   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->CoreLoggerMaxByte = ((uint32_t)  tolua_tonumber(tolua_S,2,0))
-;
- return 0;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* get function: Logger of class  coord::BasicConfig */
-#ifndef TOLUA_DISABLE_tolua_get_coord__BasicConfig_Logger
-static int tolua_get_coord__BasicConfig_Logger(lua_State* tolua_S)
-{
-  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Logger'",NULL);
-#endif
-  tolua_pushcppstring(tolua_S,(const char*)self->Logger);
- return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* set function: Logger of class  coord::BasicConfig */
-#ifndef TOLUA_DISABLE_tolua_set_coord__BasicConfig_Logger
-static int tolua_set_coord__BasicConfig_Logger(lua_State* tolua_S)
-{
-  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Logger'",NULL);
-  if (!tolua_iscppstring(tolua_S,2,0,&tolua_err))
-   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->Logger = ((std::string)  tolua_tocppstring(tolua_S,2,0))
-;
- return 0;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* get function: LoggerMaxByte of class  coord::BasicConfig */
-#ifndef TOLUA_DISABLE_tolua_get_coord__BasicConfig_LoggerMaxByte
-static int tolua_get_coord__BasicConfig_LoggerMaxByte(lua_State* tolua_S)
-{
-  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'LoggerMaxByte'",NULL);
-#endif
-  tolua_pushnumber(tolua_S,(lua_Number)self->LoggerMaxByte);
- return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* set function: LoggerMaxByte of class  coord::BasicConfig */
-#ifndef TOLUA_DISABLE_tolua_set_coord__BasicConfig_LoggerMaxByte
-static int tolua_set_coord__BasicConfig_LoggerMaxByte(lua_State* tolua_S)
-{
-  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'LoggerMaxByte'",NULL);
-  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
-   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->LoggerMaxByte = ((uint32_t)  tolua_tonumber(tolua_S,2,0))
-;
- return 0;
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* get function: Pid of class  coord::BasicConfig */
 #ifndef TOLUA_DISABLE_tolua_get_coord__BasicConfig_Pid
 static int tolua_get_coord__BasicConfig_Pid(lua_State* tolua_S)
@@ -3028,7 +2908,7 @@ static int tolua_set_coord__script__Script_Path(lua_State* tolua_S)
   if (!tolua_isstring(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
- strncpy(self->Path,tolua_tostring(tolua_S,2,0),PACKAGE_MAX-1);
+ strncpy(self->Path,tolua_tostring(tolua_S,2,0),PACKAGE_MAX+1-1);
  return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -3057,7 +2937,7 @@ static int tolua_set_coord__script__Script_Main(lua_State* tolua_S)
   if (!tolua_isstring(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
- strncpy(self->Main,tolua_tostring(tolua_S,2,0),PACKAGE_MAX-1);
+ strncpy(self->Main,tolua_tostring(tolua_S,2,0),PACKAGE_MAX+1-1);
  return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -4216,6 +4096,96 @@ static int tolua_set_coord__Environment_CoordDir(lua_State* tolua_S)
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
   self->CoordDir = ((std::string)  tolua_tocppstring(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: ConfigFilePath of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_get_coord__Environment_ConfigFilePath
+static int tolua_get_coord__Environment_ConfigFilePath(lua_State* tolua_S)
+{
+  coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFilePath'",NULL);
+#endif
+  tolua_pushcppstring(tolua_S,(const char*)self->ConfigFilePath);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: ConfigFilePath of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_set_coord__Environment_ConfigFilePath
+static int tolua_set_coord__Environment_ConfigFilePath(lua_State* tolua_S)
+{
+  coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFilePath'",NULL);
+  if (!tolua_iscppstring(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->ConfigFilePath = ((std::string)  tolua_tocppstring(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: ConfigFileDir of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_get_coord__Environment_ConfigFileDir
+static int tolua_get_coord__Environment_ConfigFileDir(lua_State* tolua_S)
+{
+  coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFileDir'",NULL);
+#endif
+  tolua_pushcppstring(tolua_S,(const char*)self->ConfigFileDir);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: ConfigFileDir of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_set_coord__Environment_ConfigFileDir
+static int tolua_set_coord__Environment_ConfigFileDir(lua_State* tolua_S)
+{
+  coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFileDir'",NULL);
+  if (!tolua_iscppstring(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->ConfigFileDir = ((std::string)  tolua_tocppstring(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: Package of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_get_coord__Environment_Package
+static int tolua_get_coord__Environment_Package(lua_State* tolua_S)
+{
+  coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Package'",NULL);
+#endif
+  tolua_pushcppstring(tolua_S,(const char*)self->Package);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: Package of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_set_coord__Environment_Package
+static int tolua_set_coord__Environment_Package(lua_State* tolua_S)
+{
+  coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Package'",NULL);
+  if (!tolua_iscppstring(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->Package = ((std::string)  tolua_tocppstring(tolua_S,2,0))
 ;
  return 0;
 }
@@ -18262,10 +18232,6 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"WorkerNum",tolua_get_coord__BasicConfig_WorkerNum,tolua_set_coord__BasicConfig_WorkerNum);
     tolua_variable(tolua_S,"Proto",tolua_get_coord__BasicConfig_Proto,tolua_set_coord__BasicConfig_Proto);
     tolua_variable(tolua_S,"Name",tolua_get_coord__BasicConfig_Name,tolua_set_coord__BasicConfig_Name);
-    tolua_variable(tolua_S,"CoreLogger",tolua_get_coord__BasicConfig_CoreLogger,tolua_set_coord__BasicConfig_CoreLogger);
-    tolua_variable(tolua_S,"CoreLoggerMaxByte",tolua_get_coord__BasicConfig_CoreLoggerMaxByte,tolua_set_coord__BasicConfig_CoreLoggerMaxByte);
-    tolua_variable(tolua_S,"Logger",tolua_get_coord__BasicConfig_Logger,tolua_set_coord__BasicConfig_Logger);
-    tolua_variable(tolua_S,"LoggerMaxByte",tolua_get_coord__BasicConfig_LoggerMaxByte,tolua_set_coord__BasicConfig_LoggerMaxByte);
     tolua_variable(tolua_S,"Pid",tolua_get_coord__BasicConfig_Pid,tolua_set_coord__BasicConfig_Pid);
     tolua_variable(tolua_S,"Version",tolua_get_coord__BasicConfig_Version,tolua_set_coord__BasicConfig_Version);
     tolua_variable(tolua_S,"ShortVersion",tolua_get_coord__BasicConfig_ShortVersion,tolua_set_coord__BasicConfig_ShortVersion);
@@ -18364,6 +18330,9 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"WorkingDir",tolua_get_coord__Environment_WorkingDir,tolua_set_coord__Environment_WorkingDir);
     tolua_variable(tolua_S,"HomeDir",tolua_get_coord__Environment_HomeDir,tolua_set_coord__Environment_HomeDir);
     tolua_variable(tolua_S,"CoordDir",tolua_get_coord__Environment_CoordDir,tolua_set_coord__Environment_CoordDir);
+    tolua_variable(tolua_S,"ConfigFilePath",tolua_get_coord__Environment_ConfigFilePath,tolua_set_coord__Environment_ConfigFilePath);
+    tolua_variable(tolua_S,"ConfigFileDir",tolua_get_coord__Environment_ConfigFileDir,tolua_set_coord__Environment_ConfigFileDir);
+    tolua_variable(tolua_S,"Package",tolua_get_coord__Environment_Package,tolua_set_coord__Environment_Package);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"coord",0);
@@ -19661,53 +19630,61 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
      99,116,105,111,110, 32, 95,112, 97, 99,107, 97,103,101, 95,
      40,110, 97,109,101, 41, 10,101,110,100, 10,108,111, 99, 97,
     108, 32,102,117,110, 99,116,105,111,110, 32, 76,111,103, 40,
-    115,101,108,102, 44, 32,115,116,114, 41, 10, 99,111,111,114,
-    100, 97, 58, 76,111,103, 40,115,116,114,105,110,103, 46,102,
-    111,114,109, 97,116, 40, 39, 91, 37,115, 93, 32, 37,115, 39,
-     44, 32,115,101,108,102, 46, 95, 95, 80, 65, 67, 75, 65, 71,
-     69, 44, 32,115,116,114, 32,111,114, 32, 39, 39, 41, 41, 10,
-    101,110,100, 10,108,111, 99, 97,108, 32,102,117,110, 99,116,
-    105,111,110, 32, 76,111,103, 70, 97,116, 97,108, 40,115,101,
-    108,102, 44, 32,115,116,114, 41, 10, 99,111,111,114,100, 97,
-     58, 76,111,103, 70, 97,116, 97,108, 40,115,116,114,105,110,
+    115,116,114, 41, 10,108,111, 99, 97,108, 32,101,110,118, 32,
+     61, 32,103,101,116,102,101,110,118, 40, 50, 41, 10, 99,111,
+    111,114,100, 97, 58, 76,111,103, 40,115,116,114,105,110,103,
+     46,102,111,114,109, 97,116, 40, 39, 91, 37,115, 93, 32, 37,
+    115, 39, 44, 32,101,110,118, 46, 95, 95, 80, 65, 67, 75, 65,
+     71, 69, 32,111,114, 32, 39, 97, 97, 39, 44, 32,115,116,114,
+     32,111,114, 32, 39, 39, 41, 41, 10,101,110,100, 10,108,111,
+     99, 97,108, 32,102,117,110, 99,116,105,111,110, 32, 76,111,
+    103, 70, 97,116, 97,108, 40,115,116,114, 41, 10,108,111, 99,
+     97,108, 32,101,110,118, 32, 61, 32,103,101,116,102,101,110,
+    118, 40, 50, 41, 10, 99,111,111,114,100, 97, 58, 76,111,103,
+     70, 97,116, 97,108, 40,115,116,114,105,110,103, 46,102,111,
+    114,109, 97,116, 40, 39, 91, 37,115, 93, 32, 37,115, 39, 44,
+     32,101,110,118, 46, 95, 95, 80, 65, 67, 75, 65, 71, 69, 44,
+     32,115,116,114, 32,111,114, 32, 39, 39, 41, 41, 10,101,110,
+    100, 10,108,111, 99, 97,108, 32,102,117,110, 99,116,105,111,
+    110, 32, 76,111,103, 69,114,114,111,114, 40,115,116,114, 41,
+     10,108,111, 99, 97,108, 32,101,110,118, 32, 61, 32,103,101,
+    116,102,101,110,118, 40, 50, 41, 10, 99,111,111,114,100, 97,
+     58, 76,111,103, 69,114,114,111,114, 40,115,116,114,105,110,
     103, 46,102,111,114,109, 97,116, 40, 39, 91, 37,115, 93, 32,
-     37,115, 39, 44, 32,115,101,108,102, 46, 95, 95, 80, 65, 67,
-     75, 65, 71, 69, 44, 32,115,116,114, 32,111,114, 32, 39, 39,
-     41, 41, 10,101,110,100, 10,108,111, 99, 97,108, 32,102,117,
-    110, 99,116,105,111,110, 32, 76,111,103, 69,114,114,111,114,
-     40,115,101,108,102, 44, 32,115,116,114, 41, 10, 99,111,111,
-    114,100, 97, 58, 76,111,103, 69,114,114,111,114, 40,115,116,
-    114,105,110,103, 46,102,111,114,109, 97,116, 40, 39, 91, 37,
-    115, 93, 32, 37,115, 39, 44, 32,115,101,108,102, 46, 95, 95,
+     37,115, 39, 44, 32,101,110,118, 46, 95, 95, 80, 65, 67, 75,
+     65, 71, 69, 44, 32,115,116,114, 32,111,114, 32, 39, 39, 41,
+     41, 10,101,110,100, 10,108,111, 99, 97,108, 32,102,117,110,
+     99,116,105,111,110, 32, 76,111,103, 87, 97,114,110, 40,115,
+    116,114, 41, 10,108,111, 99, 97,108, 32,101,110,118, 32, 61,
+     32,103,101,116,102,101,110,118, 40, 50, 41, 10, 99,111,111,
+    114,100, 97, 58, 76,111,103, 87, 97,114,110, 40,115,116,114,
+    105,110,103, 46,102,111,114,109, 97,116, 40, 39, 91, 37,115,
+     93, 32, 37,115, 39, 44, 32,101,110,118, 46, 95, 95, 80, 65,
+     67, 75, 65, 71, 69, 44, 32,115,116,114, 32,111,114, 32, 39,
+     39, 41, 41, 10,101,110,100, 10,108,111, 99, 97,108, 32,102,
+    117,110, 99,116,105,111,110, 32, 76,111,103, 73,110,102,111,
+     40,115,116,114, 41, 10,108,111, 99, 97,108, 32,101,110,118,
+     32, 61, 32,103,101,116,102,101,110,118, 40, 50, 41, 10, 99,
+    111,111,114,100, 97, 58, 76,111,103, 73,110,102,111, 40,115,
+    116,114,105,110,103, 46,102,111,114,109, 97,116, 40, 39, 91,
+     37,115, 93, 32, 37,115, 39, 44, 32,101,110,118, 46, 95, 95,
      80, 65, 67, 75, 65, 71, 69, 44, 32,115,116,114, 32,111,114,
      32, 39, 39, 41, 41, 10,101,110,100, 10,108,111, 99, 97,108,
-     32,102,117,110, 99,116,105,111,110, 32, 76,111,103, 87, 97,
-    114,110, 40,115,101,108,102, 44, 32,115,116,114, 41, 10, 99,
-    111,111,114,100, 97, 58, 76,111,103, 87, 97,114,110, 40,115,
-    116,114,105,110,103, 46,102,111,114,109, 97,116, 40, 39, 91,
-     37,115, 93, 32, 37,115, 39, 44, 32,115,101,108,102, 46, 95,
-     95, 80, 65, 67, 75, 65, 71, 69, 44, 32,115,116,114, 32,111,
-    114, 32, 39, 39, 41, 41, 10,101,110,100, 10,108,111, 99, 97,
-    108, 32,102,117,110, 99,116,105,111,110, 32, 76,111,103, 73,
-    110,102,111, 40,115,101,108,102, 44, 32,115,116,114, 41, 10,
-     99,111,111,114,100, 97, 58, 76,111,103, 73,110,102,111, 40,
-    115,116,114,105,110,103, 46,102,111,114,109, 97,116, 40, 39,
-     91, 37,115, 93, 32, 37,115, 39, 44, 32,115,101,108,102, 46,
-     95, 95, 80, 65, 67, 75, 65, 71, 69, 44, 32,115,116,114, 32,
-    111,114, 32, 39, 39, 41, 41, 10,101,110,100, 10,108,111, 99,
-     97,108, 32,102,117,110, 99,116,105,111,110, 32, 76,111,103,
-     68,101, 98,117,103, 40,115,101,108,102, 44, 32,115,116,114,
+     32,102,117,110, 99,116,105,111,110, 32, 76,111,103, 68,101,
+     98,117,103, 40,115,116,114, 41, 10,108,111, 99, 97,108, 32,
+    101,110,118, 32, 61, 32,103,101,116,102,101,110,118, 40, 50,
      41, 10, 99,111,111,114,100, 97, 58, 76,111,103, 68,101, 98,
     117,103, 40,115,116,114,105,110,103, 46,102,111,114,109, 97,
-    116, 40, 39, 91, 37,115, 93, 32, 37,115, 39, 44, 32,115,101,
-    108,102, 46, 95, 95, 80, 65, 67, 75, 65, 71, 69, 44, 32,115,
-    116,114, 32,111,114, 32, 39, 39, 41, 41, 10,101,110,100, 10,
-    108,111, 99, 97,108, 32,102,117,110, 99,116,105,111,110, 32,
-     76,111,103, 77,115,103, 40,115,101,108,102, 44, 32,115,116,
-    114, 41, 10, 99,111,111,114,100, 97, 58, 76,111,103, 77,115,
-    103, 40,115,116,114,105,110,103, 46,102,111,114,109, 97,116,
-     40, 39, 91, 37,115, 93, 32, 37,115, 39, 44, 32,115,101,108,
-    102, 46, 95, 95, 80, 65, 67, 75, 65, 71, 69, 44, 32,115,116,
+    116, 40, 39, 91, 37,115, 93, 32, 37,115, 39, 44, 32,101,110,
+    118, 46, 95, 95, 80, 65, 67, 75, 65, 71, 69, 44, 32,115,116,
+    114, 32,111,114, 32, 39, 39, 41, 41, 10,101,110,100, 10,108,
+    111, 99, 97,108, 32,102,117,110, 99,116,105,111,110, 32, 76,
+    111,103, 77,115,103, 40,115,116,114, 41, 10,108,111, 99, 97,
+    108, 32,101,110,118, 32, 61, 32,103,101,116,102,101,110,118,
+     40, 50, 41, 10, 99,111,111,114,100, 97, 58, 76,111,103, 77,
+    115,103, 40,115,116,114,105,110,103, 46,102,111,114,109, 97,
+    116, 40, 39, 91, 37,115, 93, 32, 37,115, 39, 44, 32,101,110,
+    118, 46, 95, 95, 80, 65, 67, 75, 65, 71, 69, 44, 32,115,116,
     114, 32,111,114, 32, 39, 39, 41, 41, 10,101,110,100, 10,108,
     111, 99, 97,108, 32,115, 99,114,105,112,116, 32, 61, 32,123,
     125, 10,108,111, 99, 97,108, 32,102,117,110, 99,116,105,111,
@@ -19797,14 +19774,14 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     105,110,103, 32,116,104,101,110, 10,115, 99,114,105,112,116,
      46,114,101,108,111, 97,100, 91,112, 97, 99,107, 97,103,101,
      80, 97,116,104, 93, 32, 61, 32,101,110,118, 10,105,102, 32,
-    116,121,112,101, 40,101,110,118, 46,111,110, 82,101,108,111,
+    116,121,112,101, 40,101,110,118, 46, 79,110, 82,101,108,111,
      97,100, 41, 32, 61, 61, 32, 39,102,117,110, 99,116,105,111,
-    110, 39, 32,116,104,101,110, 10,101,110,118, 46,111,110, 82,
+    110, 39, 32,116,104,101,110, 10,101,110,118, 46, 79,110, 82,
     101,108,111, 97,100, 40, 41, 10,101,110,100, 10,101,108,115,
-    101, 10,105,102, 32,116,121,112,101, 40,101,110,118, 46,111,
+    101, 10,105,102, 32,116,121,112,101, 40,101,110,118, 46, 79,
     110, 65,119, 97,107,101, 41, 32, 61, 61, 32, 39,102,117,110,
      99,116,105,111,110, 39, 32,116,104,101,110, 10,101,110,118,
-     46,111,110, 65,119, 97,107,101, 40, 41, 10,101,110,100, 10,
+     46, 79,110, 65,119, 97,107,101, 40, 41, 10,101,110,100, 10,
     101,110,100, 10,114,101,116,117,114,110, 32,101,110,118, 10,
     101,110,100, 10,102,117,110, 99,116,105,111,110, 32,105,109,
     112,111,114,116, 40,112, 97, 99,107, 97,103,101, 80, 97,116,
@@ -19840,112 +19817,101 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     111,114, 32,115,101, 97,114, 99,104, 68,105,114, 44, 32, 95,
      32,105,110, 32,115,116,114,105,110,103, 46,103,109, 97,116,
      99,104, 40, 99,111,111,114,100, 97, 46, 83, 99,114,105,112,
-    116, 46, 80, 97,116,104, 44, 32, 34, 91, 37,119, 47, 92, 46,
-     92, 63, 93, 43, 34, 41, 32,100,111, 10,108,111, 99, 97,108,
-     32,112, 97, 99,107, 97,103,101, 32, 61, 32, 95,105,109,112,
-    111,114,116, 95, 40,115,101, 97,114, 99,104, 68,105,114, 44,
-     32,112, 97, 99,107, 97,103,101, 80, 97,116,104, 44, 32,101,
-    120,112,111,114,116, 78, 97,109,101, 41, 10,105,102, 32,112,
-     97, 99,107, 97,103,101, 32,116,104,101,110, 10,114,101,116,
-    117,114,110, 32,112, 97, 99,107, 97,103,101, 10,101,110,100,
-     10,101,110,100, 10,101,110,100, 10,102,117,110, 99,116,105,
-    111,110, 32, 99,111,109,112,111,110,101,110,116, 40,110, 97,
-    109,101, 41, 10,108,111, 99, 97,108, 32,112, 97, 99,107, 97,
-    103,101, 32, 61, 32,103,101,116,102,101,110,118, 40, 50, 41,
-     10,108,111, 99, 97,108, 32,101,110,118, 32, 61, 32,112, 97,
-     99,107, 97,103,101, 91,110, 97,109,101, 93, 10,105,102, 32,
-    110,111,116, 32,101,110,118, 32,116,104,101,110, 10,101,110,
-    118, 32, 61, 32,123, 95, 95, 67, 79, 77, 80, 79, 78, 69, 78,
-     84, 32, 61, 32,112, 97, 99,107, 97,103,101, 46, 95, 95, 80,
-     65, 67, 75, 65, 71, 69, 46, 46, 39, 46, 39, 46, 46,110, 97,
-    109,101, 44, 32,112, 97, 99,107, 97,103,101, 32, 61, 32,112,
-     97, 99,107, 97,103,101, 44, 32, 95, 95, 73, 78, 84, 69, 82,
-     70, 65, 67, 69, 32, 61, 32,123,125,125, 10,115,101,116,109,
-    101,116, 97,116, 97, 98,108,101, 40,101,110,118, 44, 32,123,
-     95, 95,105,110,100,101,120, 32, 61, 32, 95, 71,125, 41, 10,
-    112, 97, 99,107, 97,103,101, 91,110, 97,109,101, 93, 32, 61,
-     32,101,110,118, 10,101,110,100, 10,115,101,116,102,101,110,
-    118, 40, 50, 44, 32,101,110,118, 41, 10,101,110,100, 10,102,
-    117,110, 99,116,105,111,110, 32,105,109,112,108,101,109,101,
-    110,116, 40,110, 97,109,101, 41, 10,108,111, 99, 97,108, 32,
-    101,110,118, 32, 61, 32,103,101,116,102,101,110,118, 40, 50,
-     41, 10,116, 97, 98,108,101, 46,105,110,115,101,114,116, 40,
-    101,110,118, 46, 95, 95, 73, 78, 84, 69, 82, 70, 65, 67, 69,
-     44, 32,110, 97,109,101, 41, 10,101,110,100, 10,108,111, 99,
-     97,108, 32,102,117,110, 99,116,105,111,110, 32,116,114, 97,
-     99,101, 71, 40, 41, 10,102,111,114, 32,107, 44, 32,118, 32,
-    105,110, 32,112, 97,105,114,115, 40, 95, 71, 41, 32,100,111,
-     10,112,114,105,110,116, 40,107, 41, 10,101,110,100, 10,101,
-    110,100, 10,108,111, 99, 97,108, 32,108, 97,115,116, 80,114,
-    105,110,116, 32, 61, 32,112,114,105,110,116, 10,102,117,110,
-     99,116,105,111,110, 32,112,114,105,110,116, 40, 46, 46, 46,
-     41, 10, 99,111,111,114,100, 97, 58, 76,111,103, 40, 46, 46,
-     46, 41, 10,101,110,100, 10,102,117,110, 99,116,105,111,110,
-     32, 95,109, 97,105,110, 95, 40, 41, 10,108,111, 99, 97,108,
-     32,115,101, 97,114, 99,104, 68,105,114, 65,114,114, 32, 61,
-     32,111,115, 46, 71,101,116, 67,119,100, 40, 41, 10,102,111,
-    114, 32,107, 44, 32,118, 32,105,110, 32,115,116,114,105,110,
-    103, 46,103,109, 97,116, 99,104, 40, 99,111,111,114,100, 97,
-     46, 83, 99,114,105,112,116, 46, 80, 97,116,104, 44, 32, 34,
-     91, 37,119, 47, 92, 46, 92, 63, 93, 43, 34, 41, 32,100,111,
-     10,108,111, 99, 97,108, 32,114,101, 97,108, 80, 97,116,104,
-     32, 61, 32,111,115, 46, 82,101, 97,108, 80, 97,116,104, 40,
-    107, 41, 10,105,102, 32,114,101, 97,108, 80, 97,116,104, 32,
-     61, 61, 32,110,105,108, 32,116,104,101,110, 10, 99,111,111,
-    114,100, 97, 58, 76,111,103, 69,114,114,111,114, 40,115,116,
-    114,105,110,103, 46,102,111,114,109, 97,116, 40, 39,115, 99,
-    114,105,112,116, 32,112, 97,116,104, 32,110,111,116, 32,102,
-    111,117,110,100, 58, 32, 37,115, 39, 44, 32,107, 41, 41, 10,
-    111,115, 46,101,120,105,116, 40, 49, 41, 10,101,110,100, 10,
-    115,101, 97,114, 99,104, 68,105,114, 65,114,114, 32, 61, 32,
-    115,101, 97,114, 99,104, 68,105,114, 65,114,114, 46, 46, 39,
-     59, 39, 46, 46,114,101, 97,108, 80, 97,116,104, 10,101,110,
-    100, 10, 99,111,111,114,100, 97, 46, 83, 99,114,105,112,116,
-     46, 80, 97,116,104, 32, 61, 32,115,101, 97,114, 99,104, 68,
-    105,114, 65,114,114, 10, 99,111,111,114,100, 97, 58, 99,111,
-    114,101, 76,111,103, 68,101, 98,117,103, 40, 99,111,111,114,
-    100, 97, 46, 83, 99,114,105,112,116, 46, 80, 97,116,104, 41,
-     10,115, 99,114,105,112,116, 46,112, 97, 99,107, 97,103,101,
-     32, 61, 32,123,125, 10,115, 99,114,105,112,116, 46,101,120,
-    112,111,114,116, 32, 61, 32,123,125, 10,101,110,100, 10,102,
-    117,110, 99,116,105,111,110, 32, 95,111,110, 65,119, 97,107,
-    101, 95, 40, 41, 10,108,111, 99, 97,108, 32,112, 97, 99,107,
-     97,103,101, 32, 61, 32,105,109,112,111,114,116, 40, 99,111,
-    111,114,100, 97, 46, 83, 99,114,105,112,116, 46, 77, 97,105,
-    110, 44, 32, 39,109, 97,105,110, 39, 41, 10,105,102, 32,110,
-    111,116, 32,112, 97, 99,107, 97,103,101, 32,116,104,101,110,
-     10,101,114,114,111,114, 40, 34,105,109,112,111,114,116, 32,
-    109, 97,105,110, 32,112, 97, 99,107, 97,103,101, 32,102, 97,
-    105,108,101,100, 34, 41, 10,101,110,100, 10,101,110,100, 10,
-    102,117,110, 99,116,105,111,110, 32, 95,111,110, 68,101,115,
-    116,111,114,121, 95, 40, 41, 10,105,102, 32,110,111,116, 32,
-     99,111,111,114,100, 97, 32,116,104,101,110, 10,114,101,116,
-    117,114,110, 10,101,110,100, 10,105,102, 32,110,111,116, 32,
-    115, 99,114,105,112,116, 46,101,120,112,111,114,116, 46,109,
-     97,105,110, 32,116,104,101,110, 10,114,101,116,117,114,110,
-     10,101,110,100, 10,115, 99,114,105,112,116, 46,101,120,112,
-    111,114,116, 46,109, 97,105,110, 46,111,110, 68,101,115,116,
-    111,114,121, 40, 41, 10,101,110,100, 10,102,117,110, 99,116,
-    105,111,110, 32, 95,111,110, 82,101,108,111, 97,100, 95, 40,
-     41, 10,115, 99,114,105,112,116, 46,114,101,108,111, 97,100,
-    105,110,103, 32, 61, 32,116,114,117,101, 10,115, 99,114,105,
-    112,116, 46,114,101,108,111, 97,100, 32, 61, 32,123,125, 10,
-    108,111, 99, 97,108, 32,112, 97, 99,107, 97,103,101, 32, 61,
-     32,105,109,112,111,114,116, 40, 99,111,111,114,100, 97, 46,
-     83, 99,114,105,112,116, 46, 77, 97,105,110, 44, 32, 39,109,
-     97,105,110, 39, 41, 10,115, 99,114,105,112,116, 46,114,101,
-    108,111, 97,100,105,110,103, 32, 61, 32,102, 97,108,115,101,
-     10,115, 99,114,105,112,116, 46,114,101,108,111, 97,100, 32,
-     61, 32,123,125, 10,105,102, 32,110,111,116, 32,112, 97, 99,
-    107, 97,103,101, 32,116,104,101,110, 10,101,114,114,111,114,
-     40, 34,105,109,112,111,114,116, 32,109, 97,105,110, 32,112,
-     97, 99,107, 97,103,101, 32,102, 97,105,108,101,100, 34, 41,
-     10,101,110,100, 10,101,110,100, 10,102,117,110, 99,116,105,
-    111,110, 32, 95, 82, 69, 81, 85, 69, 83, 84, 40,115,101,108,
-    102, 44, 32, 97,114,103,115, 41, 10,112,114,105,110,116, 40,
-    115,101,108,102, 41, 10,112,114,105,110,116, 40, 34,103,103,
-    103,103,103,103, 34, 44, 32, 97,114,103,115, 41, 10,101,110,
-    100,32
+    116, 46, 80, 97,116,104, 44, 32, 34, 91, 94, 59, 93, 43, 34,
+     41, 32,100,111, 10,108,111, 99, 97,108, 32,112, 97, 99,107,
+     97,103,101, 32, 61, 32, 95,105,109,112,111,114,116, 95, 40,
+    115,101, 97,114, 99,104, 68,105,114, 44, 32,112, 97, 99,107,
+     97,103,101, 80, 97,116,104, 44, 32,101,120,112,111,114,116,
+     78, 97,109,101, 41, 10,105,102, 32,112, 97, 99,107, 97,103,
+    101, 32,116,104,101,110, 10,114,101,116,117,114,110, 32,112,
+     97, 99,107, 97,103,101, 10,101,110,100, 10,101,110,100, 10,
+    101,110,100, 10,102,117,110, 99,116,105,111,110, 32, 99,111,
+    109,112,111,110,101,110,116, 40,110, 97,109,101, 41, 10,108,
+    111, 99, 97,108, 32,112, 97, 99,107, 97,103,101, 32, 61, 32,
+    103,101,116,102,101,110,118, 40, 50, 41, 10,108,111, 99, 97,
+    108, 32,101,110,118, 32, 61, 32,112, 97, 99,107, 97,103,101,
+     91,110, 97,109,101, 93, 10,105,102, 32,110,111,116, 32,101,
+    110,118, 32,116,104,101,110, 10,101,110,118, 32, 61, 32,123,
+     95, 95, 67, 79, 77, 80, 79, 78, 69, 78, 84, 32, 61, 32,112,
+     97, 99,107, 97,103,101, 46, 95, 95, 80, 65, 67, 75, 65, 71,
+     69, 46, 46, 39, 46, 39, 46, 46,110, 97,109,101, 44, 32,112,
+     97, 99,107, 97,103,101, 32, 61, 32,112, 97, 99,107, 97,103,
+    101, 44, 32, 95, 95, 73, 78, 84, 69, 82, 70, 65, 67, 69, 32,
+     61, 32,123,125,125, 10,115,101,116,109,101,116, 97,116, 97,
+     98,108,101, 40,101,110,118, 44, 32,123, 95, 95,105,110,100,
+    101,120, 32, 61, 32, 95, 71,125, 41, 10,112, 97, 99,107, 97,
+    103,101, 91,110, 97,109,101, 93, 32, 61, 32,101,110,118, 10,
+    101,110,100, 10,115,101,116,102,101,110,118, 40, 50, 44, 32,
+    101,110,118, 41, 10,101,110,100, 10,102,117,110, 99,116,105,
+    111,110, 32,105,109,112,108,101,109,101,110,116, 40,110, 97,
+    109,101, 41, 10,108,111, 99, 97,108, 32,101,110,118, 32, 61,
+     32,103,101,116,102,101,110,118, 40, 50, 41, 10,116, 97, 98,
+    108,101, 46,105,110,115,101,114,116, 40,101,110,118, 46, 95,
+     95, 73, 78, 84, 69, 82, 70, 65, 67, 69, 44, 32,110, 97,109,
+    101, 41, 10,101,110,100, 10,108,111, 99, 97,108, 32,102,117,
+    110, 99,116,105,111,110, 32,116,114, 97, 99,101, 71, 40, 41,
+     10,102,111,114, 32,107, 44, 32,118, 32,105,110, 32,112, 97,
+    105,114,115, 40, 95, 71, 41, 32,100,111, 10,112,114,105,110,
+    116, 40,107, 41, 10,101,110,100, 10,101,110,100, 10,108,111,
+     99, 97,108, 32,108, 97,115,116, 80,114,105,110,116, 32, 61,
+     32,112,114,105,110,116, 10,102,117,110, 99,116,105,111,110,
+     32,112,114,105,110,116, 40, 46, 46, 46, 41, 10, 99,111,111,
+    114,100, 97, 58, 76,111,103, 40, 46, 46, 46, 41, 10,101,110,
+    100, 10,102,117,110, 99,116,105,111,110, 32, 95,109, 97,105,
+    110, 95, 40, 41, 10,115, 99,114,105,112,116, 46,112, 97, 99,
+    107, 97,103,101, 32, 61, 32,123,125, 10,115, 99,114,105,112,
+    116, 46,101,120,112,111,114,116, 32, 61, 32,123,125, 10,101,
+    110,100, 10,102,117,110, 99,116,105,111,110, 32, 95,111,110,
+     65,119, 97,107,101, 95, 40, 41, 10,108,111, 99, 97,108, 32,
+    112, 97, 99,107, 97,103,101, 32, 61, 32,105,109,112,111,114,
+    116, 40, 99,111,111,114,100, 97, 46, 83, 99,114,105,112,116,
+     46, 77, 97,105,110, 44, 32, 39,109, 97,105,110, 39, 41, 10,
+    105,102, 32,110,111,116, 32,112, 97, 99,107, 97,103,101, 32,
+    116,104,101,110, 10,101,114,114,111,114, 40, 34,105,109,112,
+    111,114,116, 32,109, 97,105,110, 32,112, 97, 99,107, 97,103,
+    101, 32,102, 97,105,108,101,100, 34, 41, 10,101,110,100, 10,
+    101,110,100, 10,102,117,110, 99,116,105,111,110, 32, 95,111,
+    110, 68,101,115,116,111,114,121, 95, 40, 41, 10,105,102, 32,
+    110,111,116, 32, 99,111,111,114,100, 97, 32,116,104,101,110,
+     10,114,101,116,117,114,110, 10,101,110,100, 10,105,102, 32,
+    110,111,116, 32,115, 99,114,105,112,116, 46,101,120,112,111,
+    114,116, 46,109, 97,105,110, 32,116,104,101,110, 10,114,101,
+    116,117,114,110, 10,101,110,100, 10,115, 99,114,105,112,116,
+     46,101,120,112,111,114,116, 46,109, 97,105,110, 46, 79,110,
+     68,101,115,116,111,114,121, 40, 41, 10,101,110,100, 10,102,
+    117,110, 99,116,105,111,110, 32, 95,111,110, 82,101,108,111,
+     97,100, 95, 40, 41, 10,115, 99,114,105,112,116, 46,114,101,
+    108,111, 97,100,105,110,103, 32, 61, 32,116,114,117,101, 10,
+    115, 99,114,105,112,116, 46,114,101,108,111, 97,100, 32, 61,
+     32,123,125, 10,108,111, 99, 97,108, 32,112, 97, 99,107, 97,
+    103,101, 32, 61, 32,105,109,112,111,114,116, 40, 99,111,111,
+    114,100, 97, 46, 83, 99,114,105,112,116, 46, 77, 97,105,110,
+     44, 32, 39,109, 97,105,110, 39, 41, 10,115, 99,114,105,112,
+    116, 46,114,101,108,111, 97,100,105,110,103, 32, 61, 32,102,
+     97,108,115,101, 10,115, 99,114,105,112,116, 46,114,101,108,
+    111, 97,100, 32, 61, 32,123,125, 10,105,102, 32,110,111,116,
+     32,112, 97, 99,107, 97,103,101, 32,116,104,101,110, 10,101,
+    114,114,111,114, 40, 34,105,109,112,111,114,116, 32,109, 97,
+    105,110, 32,112, 97, 99,107, 97,103,101, 32,102, 97,105,108,
+    101,100, 34, 41, 10,101,110,100, 10,101,110,100, 10,102,117,
+    110, 99,116,105,111,110, 32,114,101,108,111, 97,100, 40,112,
+     97, 99,107, 97,103,101, 80, 97,116,104, 44, 32,101,120,112,
+    111,114,116, 78, 97,109,101, 41, 10,115, 99,114,105,112,116,
+     46,114,101,108,111, 97,100,105,110,103, 32, 61, 32,116,114,
+    117,101, 10,115, 99,114,105,112,116, 46,114,101,108,111, 97,
+    100, 32, 61, 32,123,125, 10,108,111, 99, 97,108, 32,112, 97,
+     99,107, 97,103,101, 32, 61, 32,105,109,112,111,114,116, 40,
+    112, 97, 99,107, 97,103,101, 80, 97,116,104, 44, 32,101,120,
+    112,111,114,116, 78, 97,109,101, 41, 10,115, 99,114,105,112,
+    116, 46,114,101,108,111, 97,100,105,110,103, 32, 61, 32,102,
+     97,108,115,101, 10,115, 99,114,105,112,116, 46,114,101,108,
+    111, 97,100, 32, 61, 32,123,125, 10,114,101,116,117,114,110,
+     32,112, 97, 99,107, 97,103,101, 10,101,110,100, 10,102,117,
+    110, 99,116,105,111,110, 32, 95, 82, 69, 81, 85, 69, 83, 84,
+     40,115,101,108,102, 44, 32, 97,114,103,115, 41, 10,112,114,
+    105,110,116, 40,115,101,108,102, 41, 10,112,114,105,110,116,
+     40, 34,103,103,103,103,103,103, 34, 44, 32, 97,114,103,115,
+     41, 10,101,110,100,32
    };
    tolua_dobuffer(tolua_S,(char*)B,sizeof(B),"tolua embedded: ../lualib/lib.lua");
    lua_settop(tolua_S, top);

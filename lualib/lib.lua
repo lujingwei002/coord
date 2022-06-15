@@ -83,26 +83,33 @@ function _package_(name)
 
 end
 
-local function Log(self, str)
-    coorda:Log(string.format('[%s] %s', self.__PACKAGE, str or ''))
+local function Log(str)
+    local env = getfenv(2)
+    coorda:Log(string.format('[%s] %s', env.__PACKAGE or 'aa', str or ''))
 end
-local function LogFatal(self, str)
-    coorda:LogFatal(string.format('[%s] %s', self.__PACKAGE, str or ''))
+local function LogFatal(str)
+    local env = getfenv(2)
+    coorda:LogFatal(string.format('[%s] %s', env.__PACKAGE, str or ''))
 end
-local function LogError(self, str)
-    coorda:LogError(string.format('[%s] %s', self.__PACKAGE, str or ''))
+local function LogError(str)
+    local env = getfenv(2)
+    coorda:LogError(string.format('[%s] %s', env.__PACKAGE, str or ''))
 end
-local function LogWarn(self, str)
-    coorda:LogWarn(string.format('[%s] %s', self.__PACKAGE, str or ''))
+local function LogWarn(str)
+    local env = getfenv(2)
+    coorda:LogWarn(string.format('[%s] %s', env.__PACKAGE, str or ''))
 end
-local function LogInfo(self, str)
-    coorda:LogInfo(string.format('[%s] %s', self.__PACKAGE, str or ''))
+local function LogInfo(str)
+    local env = getfenv(2)
+    coorda:LogInfo(string.format('[%s] %s', env.__PACKAGE, str or ''))
 end
-local function LogDebug(self, str)
-    coorda:LogDebug(string.format('[%s] %s', self.__PACKAGE, str or ''))
+local function LogDebug(str)
+    local env = getfenv(2)
+    coorda:LogDebug(string.format('[%s] %s', env.__PACKAGE, str or ''))
 end
-local function LogMsg(self, str)
-    coorda:LogMsg(string.format('[%s] %s', self.__PACKAGE, str or ''))
+local function LogMsg(str)
+    local env = getfenv(2)
+    coorda:LogMsg(string.format('[%s] %s', env.__PACKAGE, str or ''))
 end
 
 local script = {}
@@ -151,12 +158,12 @@ local function _import_(searchDir, packagePath, exportName)
     script.export[exportName] = env
     if script.reloading then
         script.reload[packagePath] = env
-        if type(env.onReload) == 'function' then
-            env.onReload()
+        if type(env.OnReload) == 'function' then
+            env.OnReload()
         end
     else
-        if type(env.onAwake) == 'function' then
-            env.onAwake()
+        if type(env.OnAwake) == 'function' then
+            env.OnAwake()
         end
     end
     return env
@@ -186,7 +193,7 @@ function import(packagePath, exportName)
         end
     end
     --搜索导入
-    for searchDir, _ in string.gmatch(coorda.Script.Path, "[%w/\.\?]+") do
+    for searchDir, _ in string.gmatch(coorda.Script.Path, "[^;]+") do
         local package = _import_(searchDir, packagePath, exportName)
         if package then
             return package
@@ -222,18 +229,7 @@ function print(...)
 end
 
 function _main_()
-    --规范coorda.Script.Path
-    local searchDirArr = os.GetCwd()
-    for k, v in string.gmatch(coorda.Script.Path, "[%w/\.\?]+") do
-        local realPath = os.RealPath(k)
-        if realPath == nil then
-            coorda:LogError(string.format('script path not found: %s', k))
-            os.exit(1)
-        end
-        searchDirArr = searchDirArr..';'..realPath
-    end
-    coorda.Script.Path = searchDirArr
-    coorda:coreLogDebug(coorda.Script.Path)
+    --coorda:coreLogDebug(coorda.Script.Path)
     --环境初始化
     script.package = {}
     script.export = {}
@@ -256,7 +252,7 @@ function _onDestory_()
     if not script.export.main then
         return
     end
-    script.export.main.onDestory()
+    script.export.main.OnDestory()
 end
 
 function _onReload_()
@@ -268,6 +264,15 @@ function _onReload_()
     if not package then
         error("import main package failed")
     end
+end
+
+function reload(packagePath, exportName)
+    script.reloading = true
+    script.reload = {}
+    local package = import(packagePath, exportName)
+    script.reloading = false
+    script.reload = {}
+    return package
 end
 
 function _REQUEST(self, args)

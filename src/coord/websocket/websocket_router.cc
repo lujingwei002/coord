@@ -83,10 +83,10 @@ void Router::recvWebSocketClose(Agent* agent){
 }
 
 void Router::Trace() {
-    for(auto const it : this->trees){
+    for(auto const& it : this->trees){
         auto event = it.first;
         auto tree = it.second;
-        for(auto const it1 : tree->handlerDict) {
+        for(auto const& it1 : tree->handlerDict) {
             auto handler = it1.second;
             uint64_t averageTime = handler->times <= 0 ? 0 : (handler->consumeTime/handler->times);
             this->coord->coreLogDebug("[websocket::Router] %10s | %10d | %10s | %s", event.c_str(), handler->times, date::FormatNano(averageTime), it1.first.c_str());

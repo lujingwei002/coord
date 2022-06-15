@@ -4,6 +4,7 @@
 #include "coord/redis/redis_client.h"
 #include "coord/builtin/init.h"
 #include "coord/log4cc/log4cc.h"
+#include "coord/coord.h"
 #include "inipp/inipp.h"
 #include <fstream>
 #include <iostream>
@@ -36,10 +37,6 @@ Config::Config(Coord* coord) {
     this->Basic.Name = "coord";
     this->Basic.Update = 100;
     this->Basic.WorkerNum = 0;
-    this->Basic.CoreLoggerMaxByte = 4*1024*1024;
-    this->Basic.CoreLogger = "./";
-    this->Basic.LoggerMaxByte = 4*1024*1024;
-    this->Basic.Logger = "./";
     this->Basic.Pid = "./";
     this->Basic.Version = "0.0.0";
     
@@ -76,7 +73,7 @@ Config::Config(Coord* coord) {
 int Config::parse(const char* filePath) {
     std::ifstream is(filePath);
     if(!is.is_open()){
-        fprintf(stderr, "config file not found, %s\n", filePath);
+        this->coord->LogError("config file not found, %s", filePath);
         return 1;
     }
     this->ini.parse(is);
@@ -97,12 +94,30 @@ int Config::parse(const char* filePath) {
     get_value(this->ini.sections["DEFAULT"], "worker_num", this->Basic.WorkerNum);
     get_value(this->ini.sections["DEFAULT"], "proto", this->Basic.Proto);
     get_value(this->ini.sections["DEFAULT"], "name", this->Basic.Name);
-    get_value(this->ini.sections["DEFAULT"], "core_logger", this->Basic.CoreLogger);
-    get_value(this->ini.sections["DEFAULT"], "core_logger_maxbyte", this->Basic.CoreLoggerMaxByte);
-    get_value(this->ini.sections["DEFAULT"], "logger", this->Basic.Logger);
-    get_value(this->ini.sections["DEFAULT"], "logger_maxbyte", this->Basic.LoggerMaxByte);
     get_value(this->ini.sections["DEFAULT"], "pid", this->Basic.Pid);
     get_value(this->ini.sections["DEFAULT"], "version", this->Basic.Version);
+
+    {
+        size_t begin = 0;
+        while (this->Basic.Package.length() > 0) {
+            size_t pos = this->Basic.Package.find(";", begin);
+            if (pos == std::string::npos) {
+                std::string path = this->Basic.Package.substr(begin);
+                if (!IsAbsolutePath(path.c_str())) {
+                    path = PathJoin(this->coord->Environment->ConfigFileDir, path);
+                }
+                this->coord->Environment->Package = path + ";" + this->coord->Environment->Package;
+                break;
+            } else {
+                std::string path = this->Basic.Package.substr(begin, pos - begin);
+                if (!IsAbsolutePath(path.c_str())) {
+                    path = PathJoin(this->coord->Environment->ConfigFileDir, path);
+                }
+                this->coord->Environment->Package = path + ";" + this->coord->Environment->Package;
+                begin = pos + 1;
+            }
+        }
+    }
     int first = 0;
     auto it = std::find_if(this->Basic.Version.begin(), this->Basic.Version.end(), [&first](char c) {
         if (c == '.')first++;
