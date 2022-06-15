@@ -1,0 +1,18 @@
+[submodule "framework/hostd"]
+	path = framework/hostd
+	url = git@github.com:lujingwei002/coord-hostd.git
+[submodule "framework/hostd-client"]
+	path = framework/hostd-client
+	url = git@github.com:lujingwei002/coord-hostd-client.git
+[submodule "framework/consoled-client"]
+	path = framework/consoled-client
+	url = git@github.com:lujingwei002/coord-consoled-client.git
+[submodule "framework/consoled"]
+	path = framework/consoled
+	url = git@github.com:lujingwei002/coord-consoled.git
+[submodule "project-template/minigame"]
+	path = project-template/minigame
+	url = git@github.com:lujingwei002/coord-cproj-minigame
+[submodule "project-template/blank"]
+	path = project-template/blank
+	url = git@github.com:lujingwei002/coord-cproj-blank
