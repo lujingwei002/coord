@@ -6,15 +6,15 @@ local mutable = 0
 -- reload 后值也不会改变
 immutable = immutable or 0
 
-function OnReload()
-    Log("OnReload")
+function onReload()
+    Log("onReload")
 end
 
-function OnAwake()
+function onAwake()
     Log("OnAwake")
 end
 
-function OnDestory()
+function onDestory()
     Log("OnDestory")
 end
 

@@ -1,21 +1,21 @@
 _package_('main')
 
 local math = import('math')
-function OnAwake()
-    Log("OnAwake")
+function onAwake()
+    Log("onAwake")
 
     -- 测试reload
-    Log(math.Mutable() == 1 and 'true' or 'false')
-    Log(math.Mutable() == 2 and 'true' or 'false')
+    assert(math.Mutable() == 1)
+    assert(math.Mutable() == 2)
     math = reload('math')
-    Log(math.Mutable() == 1 and 'true' or 'false')
+    assert(math.Mutable() == 1)
 
-    Log(math.Immutable() == 1 and 'true' or 'false')
-    Log(math.Immutable() == 2 and 'true' or 'false')
+    assert(math.Immutable() == 1)
+    assert(math.Immutable() == 2)
     math = reload('math')
-    Log(math.Immutable() == 3 and 'true' or 'false')
+    assert(math.Immutable() == 3)
 end
 
-function OnDestory()
-    Log("OnDestory")
+function onDestory()
+    Log("onDestory")
 end

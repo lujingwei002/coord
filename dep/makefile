@@ -380,11 +380,29 @@ $(CJSON_DIR)/install:
 	rm -rf ../include/lua-cjson;mkdir -p ../include/lua-cjson
 	cp -rf lua-cjson/lua_cjson.h ../include/lua-cjson
 
-fetch: $(HIREDIS_DIR) $(HTTPPARSER_DIR) $(LUA_DIR) $(PROTOBUF_DIR) $(TOLUA_DIR) $(GTEST_DIR) $(LIBUV_DIR) $(CCRONEXPR_DIR) $(BENCHMARK_DIR) $(INIPP_DIR) $(JSON_DIR) $(MYSQL_DIR) $(INIPP_DIR) $(JSON11_DIR) $(CJSON_DIR)
+ARGPARSE_VERSION=2.5
+ARGPARSE_DIR=argparse-$(ARGPARSE_VERSION)
+ARGPARSE_LIB=$(ARGPARSE_DIR)/libargparse.a
+
+$(ARGPARSE_DIR):
+	@echo
+	@echo "=== Downloading mpx argparse $(ARGPARSE_VERSION) ==="
+	@echo
+	curl "https://github.com/p-ranav/argparse/archive/refs/tags/v$(ARGPARSE_VERSION).tar.gz" | tar xz
+
+$(ARGPARSE_DIR)/install:
+	@echo
+	@echo '=== install p-ranav/argparse ==='
+	@echo
+	@mkdir -p ../include
+	rm -rf ../include/argparse;mkdir -p ../include/argparse
+	cp -rf $(ARGPARSE_DIR)/include/argparse/argparse.hpp ../include/argparse/argparse.hpp
+
+fetch: $(HIREDIS_DIR) $(HTTPPARSER_DIR) $(LUA_DIR) $(PROTOBUF_DIR) $(TOLUA_DIR) $(GTEST_DIR) $(LIBUV_DIR) $(CCRONEXPR_DIR) $(BENCHMARK_DIR) $(INIPP_DIR) $(JSON_DIR) $(MYSQL_DIR) $(INIPP_DIR) $(JSON11_DIR) $(CJSON_DIR) $(ARGPARSE_DIR)
 
 default: $(HIREDIS_LIB) $(HTTPPARSER_LIB) $(LUA_LIB) $(PROTOBUF_LIB) $(TOLUA_LIB) $(GTEST_LIB) $(LIBUV_LIB) $(CCRONEXPR_LIB) $(BENCHMARK_LIB) $(CJSON_LIB)
 
-install: $(HIREDIS_DIR)/install $(HTTPPARSER_DIR)/install $(LUA_DIR)/install $(PROTOBUF_DIR)/install $(TOLUA_DIR)/install $(GTEST_DIR)/install $(LIBUV_DIR)/install $(CCRONEXPR_DIR)/install $(BENCHMARK_DIR)/install $(JSON_DIR)/install $(MYSQL_DIR)/install $(INIPP_DIR)/install $(JSON11_DIR)/install $(CJSON_DIR)/install
+install: $(HIREDIS_DIR)/install $(HTTPPARSER_DIR)/install $(LUA_DIR)/install $(PROTOBUF_DIR)/install $(TOLUA_DIR)/install $(GTEST_DIR)/install $(LIBUV_DIR)/install $(CCRONEXPR_DIR)/install $(BENCHMARK_DIR)/install $(JSON_DIR)/install $(MYSQL_DIR)/install $(INIPP_DIR)/install $(JSON11_DIR)/install $(CJSON_DIR)/install $(ARGPARSE_DIR)/install
 
 .PYHON: default 
 

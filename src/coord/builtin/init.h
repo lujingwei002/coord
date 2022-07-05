@@ -7,3 +7,4 @@
 #include "coord/builtin/slice.h"
 #include "coord/builtin/ref_manager.h"
 #include "coord/builtin/environment.h"
+#include "coord/builtin/string.h"

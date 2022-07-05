@@ -158,12 +158,12 @@ local function _import_(searchDir, packagePath, exportName)
     script.export[exportName] = env
     if script.reloading then
         script.reload[packagePath] = env
-        if type(env.OnReload) == 'function' then
-            env.OnReload()
+        if type(env.onReload) == 'function' then
+            env.onReload()
         end
     else
-        if type(env.OnAwake) == 'function' then
-            env.OnAwake()
+        if type(env.onAwake) == 'function' then
+            env.onAwake()
         end
     end
     return env
@@ -252,7 +252,7 @@ function _onDestory_()
     if not script.export.main then
         return
     end
-    script.export.main.OnDestory()
+    script.export.main.onDestory()
 end
 
 function _onReload_()

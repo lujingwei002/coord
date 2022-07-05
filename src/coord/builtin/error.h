@@ -8,3 +8,7 @@
 #define ErrorType               -5
 #define ErrorNull               -6
 #define ErrorInvalid            -7
+#define ErrorInvalidArg         -8
+#define ErrorBufferNotEnough    -9
+#define ErrorNoSuchFileOrDirectory -10
+#define ErrorInterpret          -11

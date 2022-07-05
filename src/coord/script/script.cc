@@ -445,8 +445,8 @@ int Script::main()  {
     if(this->coord->Json) {
         this->coord->Json->registerMetatable();
     }
-    this->coord->LogInfo("[%s] Package: %s", TAG, packageDir);
-    this->coord->LogInfo("[%s] Main: %s", TAG, mainPackage);
+    this->coord->coreLogInfo("[%s] Package: %s", TAG, packageDir);
+    this->coord->coreLogInfo("[%s] Main: %s", TAG, mainPackage);
 
     strncpy(this->Path, packageDir, PACKAGE_MAX);
     strncpy(this->Main, mainPackage, PACKAGE_MAX);

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Wed Jun 15 16:49:38 2022.
+** Generated automatically by tolua++-1.0.92 on Thu Jun 23 23:56:59 2022.
 */
 
 #ifndef __cplusplus
@@ -156,7 +156,6 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::cache::CacheConfig");
  tolua_usertype(tolua_S,"coord::worker::WorkerSlave");
  tolua_usertype(tolua_S,"coord::sql::sql_mgr");
- tolua_usertype(tolua_S,"inipp::Ini<char>");
  tolua_usertype(tolua_S,"coord::sql::SQLResult");
  tolua_usertype(tolua_S,"coord::managed::ManagedConfig");
  tolua_usertype(tolua_S,"coord::http::HttpAgent");
@@ -175,7 +174,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::Object");
  tolua_usertype(tolua_S,"coord::websocket::Frame");
  tolua_usertype(tolua_S,"coord::Config");
- tolua_usertype(tolua_S,"coord::ScriptComponent");
+ tolua_usertype(tolua_S,"coord::http::HttpRouter");
  tolua_usertype(tolua_S,"coord::Environment");
  tolua_usertype(tolua_S,"coord::websocket::IAgentHandler");
  tolua_usertype(tolua_S,"coord::websocket::Server");
@@ -200,7 +199,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::Vector3");
  tolua_usertype(tolua_S,"coord::redis::Promise");
  tolua_usertype(tolua_S,"coord::worker::WorkerConfig");
- tolua_usertype(tolua_S,"coord::websocket::Router");
+ tolua_usertype(tolua_S,"coord::gate::GateResponse");
  tolua_usertype(tolua_S,"lua_Number");
  tolua_usertype(tolua_S,"coord::cluster::Notify");
  tolua_usertype(tolua_S,"coord::net::TcpClient");
@@ -213,7 +212,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::cluster::Cluster");
  tolua_usertype(tolua_S,"coord::BaseResponse");
  tolua_usertype(tolua_S,"coord::cluster::Promise");
- tolua_usertype(tolua_S,"coord::http::HttpRouter");
+ tolua_usertype(tolua_S,"coord::gate::GateRequest");
  tolua_usertype(tolua_S,"coord::http::IHttpHandler");
  tolua_usertype(tolua_S,"coord::event::BaseEvent");
  tolua_usertype(tolua_S,"coord::gate::Gate");
@@ -226,15 +225,15 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::cache::AsyncClient");
  tolua_usertype(tolua_S,"coord::gate::GateConfig");
  tolua_usertype(tolua_S,"coord::redis::Client");
- tolua_usertype(tolua_S,"coord::gate::GatePromise");
+ tolua_usertype(tolua_S,"coord::ScriptComponent");
  tolua_usertype(tolua_S,"coord::event::Listener");
  tolua_usertype(tolua_S,"coord::redis::RedisMgr");
  tolua_usertype(tolua_S,"coord::sql::MySQLClient");
  tolua_usertype(tolua_S,"coord::sql::SQLRows");
  tolua_usertype(tolua_S,"coord::gate::GateNotify");
- tolua_usertype(tolua_S,"coord::timer::TimerMgr");
  tolua_usertype(tolua_S,"coord::Component");
- tolua_usertype(tolua_S,"coord::gate::GateResponse");
+ tolua_usertype(tolua_S,"coord::timer::TimerMgr");
+ tolua_usertype(tolua_S,"coord::script::Reflect");
  tolua_usertype(tolua_S,"coord::protobuf::Protobuf");
  tolua_usertype(tolua_S,"coord::Promise");
  tolua_usertype(tolua_S,"coord::Argument");
@@ -242,13 +241,13 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::Type");
  tolua_usertype(tolua_S,"coord::redis::RedisConfig");
  tolua_usertype(tolua_S,"coord::BaseResult");
+ tolua_usertype(tolua_S,"coord::gate::GatePromise");
  tolua_usertype(tolua_S,"coord::BasicConfig");
- tolua_usertype(tolua_S,"coord::script::Reflect");
  tolua_usertype(tolua_S,"coord::protobuf::Array");
  tolua_usertype(tolua_S,"coord::managed::ManagedRequest");
  tolua_usertype(tolua_S,"coord::gate::GateRouter");
  tolua_usertype(tolua_S,"coord::http::HttpServerConfig");
- tolua_usertype(tolua_S,"coord::gate::GateRequest");
+ tolua_usertype(tolua_S,"coord::websocket::Router");
  tolua_usertype(tolua_S,"coord::cluster::Request");
 }
 
@@ -2032,6 +2031,36 @@ static int tolua_set_coord__Coord_Login_ptr(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: Env of class  coord::BasicConfig */
+#ifndef TOLUA_DISABLE_tolua_get_coord__BasicConfig_Env
+static int tolua_get_coord__BasicConfig_Env(lua_State* tolua_S)
+{
+  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Env'",NULL);
+#endif
+  tolua_pushcppstring(tolua_S,(const char*)self->Env);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: Env of class  coord::BasicConfig */
+#ifndef TOLUA_DISABLE_tolua_set_coord__BasicConfig_Env
+static int tolua_set_coord__BasicConfig_Env(lua_State* tolua_S)
+{
+  coord::BasicConfig* self = (coord::BasicConfig*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Env'",NULL);
+  if (!tolua_iscppstring(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->Env = ((std::string)  tolua_tocppstring(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* get function: Main of class  coord::BasicConfig */
 #ifndef TOLUA_DISABLE_tolua_get_coord__BasicConfig_Main
 static int tolua_get_coord__BasicConfig_Main(lua_State* tolua_S)
@@ -2417,36 +2446,6 @@ static int tolua_set_coord__BasicConfig_ShortVersion(lua_State* tolua_S)
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
   self->ShortVersion = ((std::string)  tolua_tocppstring(tolua_S,2,0))
-;
- return 0;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* get function: ini of class  coord::Config */
-#ifndef TOLUA_DISABLE_tolua_get_coord__Config_ini
-static int tolua_get_coord__Config_ini(lua_State* tolua_S)
-{
-  coord::Config* self = (coord::Config*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ini'",NULL);
-#endif
-  tolua_pushusertype(tolua_S,(void*)&self->ini,"inipp::Ini<char>");
- return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* set function: ini of class  coord::Config */
-#ifndef TOLUA_DISABLE_tolua_set_coord__Config_ini
-static int tolua_set_coord__Config_ini(lua_State* tolua_S)
-{
-  coord::Config* self = (coord::Config*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ini'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"inipp::Ini<char>",0,&tolua_err))
-   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->ini = *((inipp::Ini<char>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
@@ -18222,6 +18221,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"coord");
    tolua_cclass(tolua_S,"BasicConfig","coord::BasicConfig","",NULL);
    tolua_beginmodule(tolua_S,"BasicConfig");
+    tolua_variable(tolua_S,"Env",tolua_get_coord__BasicConfig_Env,tolua_set_coord__BasicConfig_Env);
     tolua_variable(tolua_S,"Main",tolua_get_coord__BasicConfig_Main,tolua_set_coord__BasicConfig_Main);
     tolua_variable(tolua_S,"Scene",tolua_get_coord__BasicConfig_Scene,tolua_set_coord__BasicConfig_Scene);
     tolua_variable(tolua_S,"Registery",tolua_get_coord__BasicConfig_Registery,tolua_set_coord__BasicConfig_Registery);
@@ -18238,7 +18238,6 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Config","coord::Config","",NULL);
    tolua_beginmodule(tolua_S,"Config");
-    tolua_variable(tolua_S,"ini",tolua_get_coord__Config_ini,tolua_set_coord__Config_ini);
     tolua_variable(tolua_S,"coord",tolua_get_coord__Config_coord_ptr,tolua_set_coord__Config_coord_ptr);
     tolua_variable(tolua_S,"Basic",tolua_get_coord__Config_Basic,tolua_set_coord__Config_Basic);
     tolua_variable(tolua_S,"Web",tolua_get_coord__Config_Web,tolua_set_coord__Config_Web);
@@ -19774,14 +19773,14 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     105,110,103, 32,116,104,101,110, 10,115, 99,114,105,112,116,
      46,114,101,108,111, 97,100, 91,112, 97, 99,107, 97,103,101,
      80, 97,116,104, 93, 32, 61, 32,101,110,118, 10,105,102, 32,
-    116,121,112,101, 40,101,110,118, 46, 79,110, 82,101,108,111,
+    116,121,112,101, 40,101,110,118, 46,111,110, 82,101,108,111,
      97,100, 41, 32, 61, 61, 32, 39,102,117,110, 99,116,105,111,
-    110, 39, 32,116,104,101,110, 10,101,110,118, 46, 79,110, 82,
+    110, 39, 32,116,104,101,110, 10,101,110,118, 46,111,110, 82,
     101,108,111, 97,100, 40, 41, 10,101,110,100, 10,101,108,115,
-    101, 10,105,102, 32,116,121,112,101, 40,101,110,118, 46, 79,
+    101, 10,105,102, 32,116,121,112,101, 40,101,110,118, 46,111,
     110, 65,119, 97,107,101, 41, 32, 61, 61, 32, 39,102,117,110,
      99,116,105,111,110, 39, 32,116,104,101,110, 10,101,110,118,
-     46, 79,110, 65,119, 97,107,101, 40, 41, 10,101,110,100, 10,
+     46,111,110, 65,119, 97,107,101, 40, 41, 10,101,110,100, 10,
     101,110,100, 10,114,101,116,117,114,110, 32,101,110,118, 10,
     101,110,100, 10,102,117,110, 99,116,105,111,110, 32,105,109,
     112,111,114,116, 40,112, 97, 99,107, 97,103,101, 80, 97,116,
@@ -19877,7 +19876,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     110,111,116, 32,115, 99,114,105,112,116, 46,101,120,112,111,
     114,116, 46,109, 97,105,110, 32,116,104,101,110, 10,114,101,
     116,117,114,110, 10,101,110,100, 10,115, 99,114,105,112,116,
-     46,101,120,112,111,114,116, 46,109, 97,105,110, 46, 79,110,
+     46,101,120,112,111,114,116, 46,109, 97,105,110, 46,111,110,
      68,101,115,116,111,114,121, 40, 41, 10,101,110,100, 10,102,
     117,110, 99,116,105,111,110, 32, 95,111,110, 82,101,108,111,
      97,100, 95, 40, 41, 10,115, 99,114,105,112,116, 46,114,101,

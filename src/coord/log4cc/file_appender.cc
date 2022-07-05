@@ -1,4 +1,5 @@
 #include "coord/log4cc/file_appender.h"
+#include "coord/builtin/init.h"
 
 #include <cstdio>
 #include <cstring>
@@ -8,18 +9,16 @@
 namespace coord {
 namespace log4cc {
 
-FileAppender* newFileAppender(const char* filePath) {
-    FileAppender* appender = new FileAppender(filePath);
+FileAppender* newFileAppender() {
+    FileAppender* appender = new FileAppender();
     return appender;
 }
 
-FileAppender::FileAppender(const char* filePath) {
+FileAppender::FileAppender() {
     this->file = nullptr;
-    this->filePath = filePath;
     this->lineNum = 0;
     this->maxByte = 0;
     this->maxLine = 0;
-    this->file = fopen(this->filePath.c_str(), "a+");
 }
 
 FileAppender::~FileAppender() {
@@ -27,6 +26,19 @@ FileAppender::~FileAppender() {
         fclose(this->file);
         this->file = nullptr;
     }
+}
+
+int FileAppender::openFile(const std::string& filePath) {
+    if(nullptr != this->file){
+        fclose(this->file);
+        this->file = nullptr;
+    }
+    this->file = fopen(this->filePath.c_str(), "a+");
+    if (this->file == nullptr) {
+        return ErrorNoSuchFileOrDirectory;
+    }
+    this->filePath = filePath;
+    return 0;
 }
 
 void FileAppender::SetMaxByte(int maxByte) {

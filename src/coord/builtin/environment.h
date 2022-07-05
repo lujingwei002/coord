@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include <optional>
 
 namespace coord {//tolua_export
 
@@ -15,7 +16,9 @@ public:
     }
     ~Environment() {
     }
+    void DebugString();
 public:
+    std::optional<std::string> GetString(const char* name);
     int main(const char* configFilePath);
     int searchCoordDir(char* buffer, size_t* len);
 public:
@@ -38,6 +41,18 @@ public:
     std::string ConfigFileDir;//tolua_export
     // 包查找路径, 以分号分隔
     std::string Package;//tolua_export
+    std::map<std::string, std::string> Variables;
+private:
+    int scanEnvFile(const std::string& envFilePath);
+    int scanEnvMultiLine(const std::string& envFilePath, char* data, size_t size);
+    int scanEnvLine(const std::string& envFilePath, char* data, size_t size);
+    int scanEnvDirectiveLine(const std::string& envFilePath, char* data, size_t size);
+    int scanEnvKey(char* lines, size_t size);
+    int scanEnvValue(char* lines, size_t size);
+    int scanEnvQuoteValue(char* lines, size_t size);
+    int gotEnvKey(char* data, size_t size);
+    int gotEnvValue(char* data, size_t size);
+    int gotEnvLineError(const std::string& envFilePath, int lineNum, char* data, size_t size);
 private:
     Coord* coord;
 };//tolua_export

@@ -6,15 +6,16 @@
 #include <cstdlib>
 
 int onAwake(coord::Coord* coord) {
-    printf("onAwake\n");
+    //printf("onAwake\n");
     return 0;
 }
 
 void onDestory(coord::Coord* coord) {
-    printf("onDestory\n");
+    //printf("onDestory\n");
 }
 
 int main(int argc, const char **argv) {
+    return coord::Main(argc, argv);
     if (argc < 2){
         std::cout << "not config file input" << std::endl;
         return EXIT_FAILURE;

@@ -121,6 +121,11 @@ public:
     //新建一个线程
     int asWorker(worker::Worker* master, const char *configFile, int index);
     int asCommand(const char *configFile, const char* command);
+    int actionEnv(const char *configFile);
+    int actionStart(const char *configFile);
+    int actionStop(const char *configFile);
+    int actionStatus(const char *configFile);
+    int actionRestart(const char *configFile);
     // 异步模式启动
     int Fork(const char *configFile);
     // 同步模式启动
@@ -260,9 +265,9 @@ public:
     bool                isAwake;
     uint64_t            time;
     uint64_t            nowRecord;
+    int                 ExitCode;
 private:
     
-    int                 exitCode;
 public:
     static std::map<uv_thread_t*, Coord*> coordDict; 
 }; //tolua_export

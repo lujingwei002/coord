@@ -24,6 +24,7 @@ class Coord;
 
 class BasicConfig {//tolua_export
 public:
+    std::string         Env;                //tolua_export
     /// 脚本的主模块, 必须声明为_package_('main')
     std::string         Main;               //tolua_export
     /// 脚本的主场景构造文件
@@ -59,14 +60,47 @@ public:
     bool SectionExist(const char* section);
     template <typename T>
     bool Get(const char* section, const char* key, T& dst) {
-        return inipp::extract(this->ini.sections[section][key], dst);
+        return this->extract(this->Sections[section][key], dst);
     }
-
+    void DebugString();
 private:
+    template <typename CharT, typename T>
+    bool extract(const std::basic_string<CharT> & value, T & dst) {
+        CharT c;
+        std::basic_istringstream<CharT> is{ value };
+        T result;
+        if ((is >> std::boolalpha >> result) && !(is >> c)) {
+            dst = result;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    template <typename CharT>
+    bool extract(const std::basic_string<CharT> & value, std::basic_string<CharT> & dst) {
+        dst = value;
+        return true;
+    }
+private:
+    int scanConfigFile(const std::string& configFilePath);
+    int scanConfigMultiLine(const std::string& configFilePath, char* lines, size_t size);
+    int scanConfigLine(const std::string& configFilePath, char* data, size_t size);
+    int scanConfigDirectiveLine(const std::string& configFilePath, char* data, size_t size);
+    int scanConfigSectionLine(char* data, size_t size);
+    int scanConfigKey(char* lines, size_t size);
+    int scanConfigValue(char* lines, size_t size);
+    int scanConfigQuoteValue(char* lines, size_t size);
+    int gotConfigKey(char* data, size_t size);
+    int gotConfigValue(char* data, size_t size);
+    int gotConfigQuoteValue(char* data, size_t size);
+    int gotConfigSection(char* data, size_t size);
+    int gotConfigLineError(const std::string& configFilePath, int lineNum, char* data, size_t size);
 public:
     int parse(const char* filePath);
 public:
-    inipp::Ini<char>        ini;        //tolua_export
+    std::map<std::string, std::map<std::string, std::string>> Sections;
+    //inipp::Ini<char>        ini;        //tolua_export
     Coord*                  coord;      //tolua_export
     BasicConfig             Basic;      //tolua_export
     web::WebConfig          Web;        //tolua_export

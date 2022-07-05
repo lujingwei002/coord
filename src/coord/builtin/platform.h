@@ -1,5 +1,6 @@
 #pragma once 
 
+#include <optional>
 
 #if defined(__linux__)
 // Linux系统
@@ -12,6 +13,10 @@
 
 #include <string>
 namespace coord {
+    namespace path {
     bool IsAbsolutePath(const char* path);
-    std::string PathJoin(std::string p1, std::string p2);
+    std::string PathJoin(const std::string& p1, const std::string& p2);
+    std::string DirName(const std::string& path);
+    int RealPath(const std::string& path, std::string& realPath);
+    }
 }

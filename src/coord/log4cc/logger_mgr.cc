@@ -5,6 +5,7 @@
 #include "coord/log4cc/console_appender.h"
 #include "coord/log4cc/file_appender.h"
 #include "coord/config/config.h"
+#include "coord/builtin/init.h"
 #include "coord/coord.h"
 
 namespace coord {
@@ -27,7 +28,32 @@ LoggerMgr::~LoggerMgr() {
     this->categoryDict.clear();
 }
 
-Category* LoggerMgr::getCategory(const char* name) {
+int LoggerMgr::ConfigCategory(Category* category, LoggerConfig* config) {
+    // 日志级别
+    category->SetPriority(config->Priority);
+    // 输出目标
+    if (config->Console) {
+        category->AddAppender(newConsoleAppender());
+    }
+    if (config->File.size() > 0){
+        FileAppender* appender = newFileAppender();
+        int err = appender->openFile(config->File);
+        if(err) {
+            delete appender;
+            return err;
+        }
+        appender->SetMaxLine(config->MaxLine);
+        appender->SetMaxByte(config->MaxByte);
+        category->AddAppender(appender);
+    }
+    if (config->Layout == "basic") {
+        Layout* layout = new BasicLayout();
+        category->SetLayout(layout);
+    }
+    return 0;
+}
+
+Category* LoggerMgr::GetCategory(const char* name) {
     auto it = this->categoryDict.find(name);
     if (it != this->categoryDict.end()) {
         return it->second; 
@@ -40,40 +66,68 @@ Category* LoggerMgr::getCategory(const char* name) {
     return category;
 }
 
-Category* LoggerMgr::GetConfigCategory(const char* name) {
+Category* LoggerMgr::GetCoreLogger() {
+    static const char* name = "core-logger";
     auto it = this->categoryDict.find(name);
     if (it != this->categoryDict.end()) {
         return it->second; 
-    }
-    LoggerConfig config;
-    int err = this->coord->config->LoggerConfig(name, &config);
-    if (err != 0) {
-        this->coord->coreLogError("[coord::LoggerMgr] GetConfigCategory %s failed, error=%d", name, err);
-        return nullptr; 
     }
     Category* category = newCategory(this, name);
     if (category == nullptr) {
         return nullptr;
     }
-    // 日志级别
-    category->SetPriority(config.Priority);
-    // 输出目标
-    if (config.Console) {
-        category->AddAppender(newConsoleAppender());
-    }
-    if (config.File.size() > 0){
-        FileAppender* appender = newFileAppender(config.File.c_str());
-        appender->SetMaxLine(config.MaxLine);
-        appender->SetMaxByte(config.MaxByte);
-        category->AddAppender(appender);
-    }
+    this->categoryDict[name] = category;
+    return category;
+}
 
-    if (config.Layout == "basic") {
-        Layout* layout = new BasicLayout();
-        category->SetLayout(layout);
+Category* LoggerMgr::GetDefaultLogger() {
+    static const char* name = "logger";
+    auto it = this->categoryDict.find(name);
+    if (it != this->categoryDict.end()) {
+        return it->second; 
+    }
+    Category* category = newCategory(this, name);
+    if (category == nullptr) {
+        return nullptr;
     }
     this->categoryDict[name] = category;
     return category;
+}
+
+int LoggerMgr::configDefaultLogger(Category* category) {
+    static const char* name = "logger";
+    LoggerConfig config;
+    int err = this->coord->config->LoggerConfig(name, &config);
+    if (err != 0) {
+        std::string path = coord::path::PathJoin("log", this->coord->config->Basic.Name + ".log");
+        config.File = coord::path::PathJoin(this->coord->Environment->WorkingDir, path);
+    }
+    config.Name = name;
+    return this->ConfigCategory(category, &config);
+}
+
+int LoggerMgr::configCoreLogger(Category* category) {
+    static const char* name = "core-logger";
+    LoggerConfig config;
+    int err = this->coord->config->LoggerConfig(name, &config);
+    if (err != 0) {
+        std::string path = coord::path::PathJoin("log", this->coord->config->Basic.Name + "-core.log");
+        config.File = coord::path::PathJoin(this->coord->Environment->CoordDir, path);
+    }
+    config.Name = name;
+    return this->ConfigCategory(category, &config);
+}
+
+
+int LoggerMgr::ConfigCategory(Category* category, const char* name) {
+    LoggerConfig config;
+    int err = this->coord->config->LoggerConfig(name, &config);
+    if (err != 0) {
+        this->coord->coreLogError("[coord::LoggerMgr] GetConfigCategory %s failed, error=%d", name, err);
+        return err;
+    }
+    config.Name = name;
+    return this->ConfigCategory(category, &config);
 }
 
 

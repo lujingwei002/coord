@@ -13,12 +13,13 @@ namespace log4cc {
 
 class FileAppender : public Appender {
 public:
-    FileAppender(const char* filePath);
+    FileAppender();
     virtual ~FileAppender();
 public:
     void SetMaxByte(int maxByte);
     void SetMaxLine(int maxLine);
     virtual void Log(const char* str);
+    int openFile(const std::string& filePath);
 private:
     void rotateFile(bool force);
 private:
@@ -29,7 +30,7 @@ private:
     FILE*           file;
 };
 
-FileAppender* newFileAppender(const char* filePath);
+FileAppender* newFileAppender();
 
 }
 }
