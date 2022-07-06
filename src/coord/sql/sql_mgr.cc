@@ -35,7 +35,7 @@ SQLClient* sql_mgr::getClient(const char* name) {
         return it->second;
     }
     SQLConfig config;
-    int err = this->coord->config->SQLConfig(name, &config);
+    int err = this->coord->Config->SQLConfig(name, &config);
     if (err != 0) {
         this->coord->coreLogError("[sql_mgr] getClient failed, function='SQLConfig', error=%d", err);
         return nullptr;

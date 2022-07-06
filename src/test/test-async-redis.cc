@@ -35,7 +35,7 @@ public:
 TEST_F(TestAsyncRedis, DbError) {
     auto client = coord::redis::newAsyncClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     client->DefaultConfig()->DB = "aa";
@@ -53,7 +53,7 @@ TEST_F(TestAsyncRedis, DbError) {
 TEST_F(TestAsyncRedis, hostError) {
     auto client = coord::redis::newAsyncClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     client->DefaultConfig()->Host = "127.0.0.11";
@@ -71,7 +71,7 @@ TEST_F(TestAsyncRedis, hostError) {
 TEST_F(TestAsyncRedis, passwordError) {
     auto client = coord::redis::newAsyncClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     client->DefaultConfig()->Password = "11";
@@ -90,7 +90,7 @@ TEST_F(TestAsyncRedis, passwordError) {
 TEST_F(TestAsyncRedis, Action) {
     auto client = coord::redis::newAsyncClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
 
@@ -168,7 +168,7 @@ TEST_F(TestAsyncRedis, Action) {
 TEST_F(TestAsyncRedis, setGet) {
     auto client = coord::redis::newAsyncClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     auto promise = client->Connect();

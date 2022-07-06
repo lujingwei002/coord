@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Thu Jun 23 23:56:59 2022.
+** Generated automatically by tolua++-1.0.92 on Wed Jul  6 09:50:20 2022.
 */
 
 #ifndef __cplusplus
@@ -1521,31 +1521,31 @@ static int tolua_coord_coord_Coord_coreLogSetLevel00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: config of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_get_coord__Coord_config_ptr
-static int tolua_get_coord__Coord_config_ptr(lua_State* tolua_S)
+/* get function: Config of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_get_coord__Coord_Config_ptr
+static int tolua_get_coord__Coord_Config_ptr(lua_State* tolua_S)
 {
   coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'config'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Config'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)self->config,"coord::Config");
+  tolua_pushusertype(tolua_S,(void*)self->Config,"coord::Config");
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* set function: config of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_set_coord__Coord_config_ptr
-static int tolua_set_coord__Coord_config_ptr(lua_State* tolua_S)
+/* set function: Config of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_set_coord__Coord_Config_ptr
+static int tolua_set_coord__Coord_Config_ptr(lua_State* tolua_S)
 {
   coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'config'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Config'",NULL);
   if (!tolua_isusertype(tolua_S,2,"coord::Config",0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->config = ((coord::Config*)  tolua_tousertype(tolua_S,2,0))
+  self->Config = ((coord::Config*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
@@ -1761,31 +1761,31 @@ static int tolua_set_coord__Coord_Cluster_ptr(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: ConfigFile of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_get_coord__Coord_ConfigFile
-static int tolua_get_coord__Coord_ConfigFile(lua_State* tolua_S)
+/* get function: ConfigPath of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_get_coord__Coord_ConfigPath
+static int tolua_get_coord__Coord_ConfigPath(lua_State* tolua_S)
 {
   coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFile'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigPath'",NULL);
 #endif
-  tolua_pushcppstring(tolua_S,(const char*)self->ConfigFile);
+  tolua_pushcppstring(tolua_S,(const char*)self->ConfigPath);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* set function: ConfigFile of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_set_coord__Coord_ConfigFile
-static int tolua_set_coord__Coord_ConfigFile(lua_State* tolua_S)
+/* set function: ConfigPath of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_set_coord__Coord_ConfigPath
+static int tolua_set_coord__Coord_ConfigPath(lua_State* tolua_S)
 {
   coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFile'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigPath'",NULL);
   if (!tolua_iscppstring(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->ConfigFile = ((std::string)  tolua_tocppstring(tolua_S,2,0))
+  self->ConfigPath = ((std::string)  tolua_tocppstring(tolua_S,2,0))
 ;
  return 0;
 }
@@ -2446,36 +2446,6 @@ static int tolua_set_coord__BasicConfig_ShortVersion(lua_State* tolua_S)
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
   self->ShortVersion = ((std::string)  tolua_tocppstring(tolua_S,2,0))
-;
- return 0;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* get function: coord of class  coord::Config */
-#ifndef TOLUA_DISABLE_tolua_get_coord__Config_coord_ptr
-static int tolua_get_coord__Config_coord_ptr(lua_State* tolua_S)
-{
-  coord::Config* self = (coord::Config*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'coord'",NULL);
-#endif
-  tolua_pushusertype(tolua_S,(void*)self->coord,"coord::Coord");
- return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* set function: coord of class  coord::Config */
-#ifndef TOLUA_DISABLE_tolua_set_coord__Config_coord_ptr
-static int tolua_set_coord__Config_coord_ptr(lua_State* tolua_S)
-{
-  coord::Config* self = (coord::Config*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'coord'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"coord::Coord",0,&tolua_err))
-   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->coord = ((coord::Coord*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
@@ -3890,6 +3860,38 @@ return self->Unpack(L);
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: Get of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_Environment_Get00
+static int tolua_coord_coord_Environment_Get00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::Environment",0,&tolua_err) ||
+     false
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
+  lua_State* L =  tolua_S;
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Get'",NULL);
+#endif
+  {
+return self->Get(L);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Get'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* get function: Version of class  coord::Environment */
 #ifndef TOLUA_DISABLE_tolua_get_coord__Environment_Version
 static int tolua_get_coord__Environment_Version(lua_State* tolua_S)
@@ -4100,61 +4102,61 @@ static int tolua_set_coord__Environment_CoordDir(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: ConfigFilePath of class  coord::Environment */
-#ifndef TOLUA_DISABLE_tolua_get_coord__Environment_ConfigFilePath
-static int tolua_get_coord__Environment_ConfigFilePath(lua_State* tolua_S)
+/* get function: ConfigPath of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_get_coord__Environment_ConfigPath
+static int tolua_get_coord__Environment_ConfigPath(lua_State* tolua_S)
 {
   coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFilePath'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigPath'",NULL);
 #endif
-  tolua_pushcppstring(tolua_S,(const char*)self->ConfigFilePath);
+  tolua_pushcppstring(tolua_S,(const char*)self->ConfigPath);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* set function: ConfigFilePath of class  coord::Environment */
-#ifndef TOLUA_DISABLE_tolua_set_coord__Environment_ConfigFilePath
-static int tolua_set_coord__Environment_ConfigFilePath(lua_State* tolua_S)
+/* set function: ConfigPath of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_set_coord__Environment_ConfigPath
+static int tolua_set_coord__Environment_ConfigPath(lua_State* tolua_S)
 {
   coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFilePath'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigPath'",NULL);
   if (!tolua_iscppstring(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->ConfigFilePath = ((std::string)  tolua_tocppstring(tolua_S,2,0))
+  self->ConfigPath = ((std::string)  tolua_tocppstring(tolua_S,2,0))
 ;
  return 0;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: ConfigFileDir of class  coord::Environment */
-#ifndef TOLUA_DISABLE_tolua_get_coord__Environment_ConfigFileDir
-static int tolua_get_coord__Environment_ConfigFileDir(lua_State* tolua_S)
+/* get function: ConfigDir of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_get_coord__Environment_ConfigDir
+static int tolua_get_coord__Environment_ConfigDir(lua_State* tolua_S)
 {
   coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFileDir'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigDir'",NULL);
 #endif
-  tolua_pushcppstring(tolua_S,(const char*)self->ConfigFileDir);
+  tolua_pushcppstring(tolua_S,(const char*)self->ConfigDir);
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* set function: ConfigFileDir of class  coord::Environment */
-#ifndef TOLUA_DISABLE_tolua_set_coord__Environment_ConfigFileDir
-static int tolua_set_coord__Environment_ConfigFileDir(lua_State* tolua_S)
+/* set function: ConfigDir of class  coord::Environment */
+#ifndef TOLUA_DISABLE_tolua_set_coord__Environment_ConfigDir
+static int tolua_set_coord__Environment_ConfigDir(lua_State* tolua_S)
 {
   coord::Environment* self = (coord::Environment*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigFileDir'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'ConfigDir'",NULL);
   if (!tolua_iscppstring(tolua_S,2,0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->ConfigFileDir = ((std::string)  tolua_tocppstring(tolua_S,2,0))
+  self->ConfigDir = ((std::string)  tolua_tocppstring(tolua_S,2,0))
 ;
  return 0;
 }
@@ -18198,7 +18200,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_function(tolua_S,"coreLogCloseLevel",tolua_coord_coord_Coord_coreLogCloseLevel00);
     tolua_function(tolua_S,"coreLogOpenLevel",tolua_coord_coord_Coord_coreLogOpenLevel00);
     tolua_function(tolua_S,"coreLogSetLevel",tolua_coord_coord_Coord_coreLogSetLevel00);
-    tolua_variable(tolua_S,"config",tolua_get_coord__Coord_config_ptr,tolua_set_coord__Coord_config_ptr);
+    tolua_variable(tolua_S,"Config",tolua_get_coord__Coord_Config_ptr,tolua_set_coord__Coord_Config_ptr);
     tolua_variable(tolua_S,"Script",tolua_get_coord__Coord_Script_ptr,tolua_set_coord__Coord_Script_ptr);
     tolua_variable(tolua_S,"Gate",tolua_get_coord__Coord_Gate_ptr,tolua_set_coord__Coord_Gate_ptr);
     tolua_variable(tolua_S,"HttpServer",tolua_get_coord__Coord_HttpServer_ptr,tolua_set_coord__Coord_HttpServer_ptr);
@@ -18206,7 +18208,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"RedisMgr",tolua_get_coord__Coord_RedisMgr_ptr,tolua_set_coord__Coord_RedisMgr_ptr);
     tolua_variable(tolua_S,"Cache",tolua_get_coord__Coord_Cache_ptr,tolua_set_coord__Coord_Cache_ptr);
     tolua_variable(tolua_S,"Cluster",tolua_get_coord__Coord_Cluster_ptr,tolua_set_coord__Coord_Cluster_ptr);
-    tolua_variable(tolua_S,"ConfigFile",tolua_get_coord__Coord_ConfigFile,tolua_set_coord__Coord_ConfigFile);
+    tolua_variable(tolua_S,"ConfigPath",tolua_get_coord__Coord_ConfigPath,tolua_set_coord__Coord_ConfigPath);
     tolua_variable(tolua_S,"Managed",tolua_get_coord__Coord_Managed_ptr,tolua_set_coord__Coord_Managed_ptr);
     tolua_variable(tolua_S,"WorkerSlave",tolua_get_coord__Coord_WorkerSlave_ptr,tolua_set_coord__Coord_WorkerSlave_ptr);
     tolua_variable(tolua_S,"Worker",tolua_get_coord__Coord_Worker_ptr,tolua_set_coord__Coord_Worker_ptr);
@@ -18238,7 +18240,6 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Config","coord::Config","",NULL);
    tolua_beginmodule(tolua_S,"Config");
-    tolua_variable(tolua_S,"coord",tolua_get_coord__Config_coord_ptr,tolua_set_coord__Config_coord_ptr);
     tolua_variable(tolua_S,"Basic",tolua_get_coord__Config_Basic,tolua_set_coord__Config_Basic);
     tolua_variable(tolua_S,"Web",tolua_get_coord__Config_Web,tolua_set_coord__Config_Web);
     tolua_variable(tolua_S,"Gate",tolua_get_coord__Config_Gate,tolua_set_coord__Config_Gate);
@@ -18322,6 +18323,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"coord");
    tolua_cclass(tolua_S,"Environment","coord::Environment","",NULL);
    tolua_beginmodule(tolua_S,"Environment");
+    tolua_function(tolua_S,"Get",tolua_coord_coord_Environment_Get00);
     tolua_variable(tolua_S,"Version",tolua_get_coord__Environment_Version,tolua_set_coord__Environment_Version);
     tolua_variable(tolua_S,"ExecPath",tolua_get_coord__Environment_ExecPath,tolua_set_coord__Environment_ExecPath);
     tolua_variable(tolua_S,"ExecDir",tolua_get_coord__Environment_ExecDir,tolua_set_coord__Environment_ExecDir);
@@ -18329,8 +18331,8 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"WorkingDir",tolua_get_coord__Environment_WorkingDir,tolua_set_coord__Environment_WorkingDir);
     tolua_variable(tolua_S,"HomeDir",tolua_get_coord__Environment_HomeDir,tolua_set_coord__Environment_HomeDir);
     tolua_variable(tolua_S,"CoordDir",tolua_get_coord__Environment_CoordDir,tolua_set_coord__Environment_CoordDir);
-    tolua_variable(tolua_S,"ConfigFilePath",tolua_get_coord__Environment_ConfigFilePath,tolua_set_coord__Environment_ConfigFilePath);
-    tolua_variable(tolua_S,"ConfigFileDir",tolua_get_coord__Environment_ConfigFileDir,tolua_set_coord__Environment_ConfigFileDir);
+    tolua_variable(tolua_S,"ConfigPath",tolua_get_coord__Environment_ConfigPath,tolua_set_coord__Environment_ConfigPath);
+    tolua_variable(tolua_S,"ConfigDir",tolua_get_coord__Environment_ConfigDir,tolua_set_coord__Environment_ConfigDir);
     tolua_variable(tolua_S,"Package",tolua_get_coord__Environment_Package,tolua_set_coord__Environment_Package);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

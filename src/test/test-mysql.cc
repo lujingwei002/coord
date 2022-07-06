@@ -64,7 +64,7 @@ TEST_F(TestMySQL, TestSetGet) {
         printf("ffffffffffffffffffffffffffffffffff2\n");
     }
 
-    int err = this->coord->Proto->ImportDir(this->coord->config->Basic.Proto.c_str());
+    int err = this->coord->Proto->ImportDir(this->coord->Config->Basic.Proto.c_str());
     ASSERT_EQ(err, 0);
 
     auto client = this->sqlMgr->getClient("DB");

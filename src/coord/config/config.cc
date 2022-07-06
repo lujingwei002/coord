@@ -12,42 +12,17 @@
 
 namespace coord {
 static const char* TAG = "Config";
+static std::string DEFAULT_SECTION_NAME = "DEFAULT";
+static std::string WEB_SECTION_NAME = "WEB";
+static std::string LOGIN_SECTION_NAME = "Login";
+static std::string GATE_SECTION_NAME = "GATE";
+static std::string CACHE_SECTION_NAME = "CACHE";
+static std::string CLUSTER_SECTION_NAME = "CLUSTER";
+static std::string MANAGED_SECTION_NAME = "MANAGED";
 
 #define UTF8_CODE_POINT_LENGTH(byte) ((( 0xE5000000 >> (( byte >> 3 ) & 0x1e )) & 3 ) + 1)
 #define TEST_ASCII(check, byte, length) (length == 1 && check(byte))
 #define IS_ASCII(v, byte, length) (length == 1 && byte == v)
-
-template <typename CharT, typename T>
-static inline bool extract(const std::basic_string<CharT> & value, T & dst) {
-	CharT c;
-	std::basic_istringstream<CharT> is{ value };
-	T result;
-	if ((is >> std::boolalpha >> result) && !(is >> c)) {
-		dst = result;
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-template <typename CharT>
-static inline bool extract(const std::basic_string<CharT> & value, std::basic_string<CharT> & dst) {
-	dst = value;
-	return true;
-}
-
-template <typename CharT, typename T>
-static inline bool get_value(const std::map<std::basic_string<CharT>, std::basic_string<CharT>>& sec, const std::basic_string<CharT>& key, T& dst) {
-    const auto it = sec.find(key);
-    if (it == sec.end()) return false;
-    return extract(it->second, dst);
-}
-
-template <typename CharT, typename T>
-static inline bool get_value(const std::map<std::basic_string<CharT>, std::basic_string<CharT>>& sec, const char* key, T& dst) {
-    return get_value(sec, std::string(key), dst);
-}
 
 static int stringEscape(const char* src, size_t srcSize, char* dest, size_t* destSize) {
     size_t j = 0;
@@ -87,10 +62,12 @@ static int stringEscape(const char* src, size_t srcSize, char* dest, size_t* des
     return 0;
 }
 
+// Config *newConfig(Coord* coord) {
+//     Config *config = new Config(coord);
+//     return config;
+// }
 
-Config *newConfig(Coord* coord) {
-    Config *config = new Config(coord);
-    return config;
+Config::~Config() {
 }
 
 Config::Config(Coord* coord) {
@@ -125,17 +102,53 @@ Config::Config(Coord* coord) {
     this->Gate.RegisterExpire = 60;
     this->Gate.RegisterInterval = 30;
 
+    this->Cache.Port = 0;
+
+    this->Cluster.Port = 0;
     this->Cluster.Heartbeat = 30;
     this->Cluster.Expire = 60;
     this->Cluster.RegisterInterval = 60;
     this->Cluster.ReloadInterval = 60;
     this->Cluster.ReconnectInterval = 30;
     this->Cluster.RecvBuffer = 4096;
+
+    this->Managed.Port = 0;
 }
 
-int Config::gotConfigLineError(const std::string& configFilePath, int lineNum, char* data, size_t size) {
+int Config::urlParse(const char* path, std::string& section, std::string& key) {
+    return this->urlParse(path, strlen(path), section, key);
+}
+
+int Config::urlParse(const char* data, size_t size, std::string& section, std::string& key) {
+    size_t i = 0;
+    int codePointLength = 1;
+    int phase = 0;
+    char* sectionStart = (char*)data;
+    char* keyStart = nullptr;
+    
+    for (; i < size;  i += codePointLength) {
+        char c = data[i];
+        codePointLength = UTF8_CODE_POINT_LENGTH(c);
+        if (phase == 0) {
+            if (IS_ASCII('.', c, codePointLength)) {
+                section.assign(sectionStart, data + i - sectionStart);
+                phase = 1;
+                keyStart = (char*)data + i + codePointLength;
+            }
+        }
+    }
+    if (phase == 1) {
+        key.assign(keyStart, data + i - keyStart);
+    } else {
+        section = DEFAULT_SECTION_NAME;
+        key.assign(sectionStart, data + i - sectionStart);
+    }
+    return 0;
+}
+
+int Config::gotConfigLineError(const std::string& configPath, int lineNum, char* data, size_t size) {
     std::string line(data, size);
-    this->coord->coreLogError("parse error %s(%d): %s", configFilePath.c_str(), lineNum, line.c_str());
+    this->coord->coreLogError("parse error %s(%d): %s", configPath.c_str(), lineNum, line.c_str());
     return 0;
 }
 
@@ -163,7 +176,20 @@ int Config::gotConfigSection(char* data, size_t size) {
     }
     return 0;
 }
+
 int Config::gotConfigQuoteValue(char* data, size_t size) {
+    if (temp_session == nullptr) {
+        auto it = this->Sections.find(DEFAULT_SECTION_NAME);
+        if (it == this->Sections.end()) {
+            this->Sections[DEFAULT_SECTION_NAME] = std::map<std::string, std::string>{};
+            auto it1 = this->Sections.find(DEFAULT_SECTION_NAME);
+            if (it1 != this->Sections.end()) {
+                temp_session = &it1->second;
+            }
+        } else {
+            temp_session = &it->second;
+        }
+    }
     if (temp_session == nullptr) {
         return ErrorInvalidArg;
     }
@@ -206,20 +232,35 @@ int Config::gotConfigQuoteValue(char* data, size_t size) {
             if (IS_ASCII('}', c, codePointLength)) {
                 nameEnd = data + i;
                 if (nameEnd - nameStart <= 0) return ErrorInterpret;
+                // 先在 env里搜索
                 std::string name = std::string(nameStart, nameEnd - nameStart);
-                auto opt = this->coord->Environment->GetString(name.c_str());
-                if (opt.has_value()) {
-                    size_t length = opt.value().length();
+                std::string realValue;
+                //this->coord->Environment->
+                if (this->coord->Environment->Get(name, realValue)) {
+                    size_t length = realValue.length();
                     if (j + length > bufferLen) return ErrorBufferNotEnough;
-                    memcpy(buffer + j, opt.value().c_str(), length);
+                    memcpy(buffer + j, realValue.c_str(), length);
                     j = j + length;
                 } else {
-                    return ErrorInterpret;
+                    auto const it = this->Sections.find(DEFAULT_SECTION_NAME);
+                    if (it == this->Sections.end()){
+                        return ErrorInterpret;
+                    }
+                    if(!this->Get(name, realValue)) {
+                        return ErrorInterpret;
+                    }
+                    size_t length = realValue.length();
+                    if (j + length > bufferLen) return ErrorBufferNotEnough;
+                    memcpy(buffer + j, realValue.c_str(), length);
+                    j = j + length;
                 }
+                // 再在config里搜索
                 braceStart = nullptr;
                 nameStart = nullptr;
                 nameEnd = nullptr;
                 phase = 0;
+            } else if (IS_ASCII('.', c, codePointLength)) {
+            } else if (IS_ASCII('-', c, codePointLength)) {
             } else if (!TEST_ASCII(isalpha, c, codePointLength)) {
                 return ErrorInterpret;
             }
@@ -307,7 +348,7 @@ int Config::scanConfigSectionLine(char* data, size_t size) {
     return 0;
 }
 
-int Config::scanConfigDirectiveLine(const std::string& configFilePath, char* data, size_t size) {
+int Config::scanConfigDirectiveLine(const std::string& configPath, char* data, size_t size) {
     int maxArgCount = 5;
     char* argv[maxArgCount];
     size_t argLen[maxArgCount];
@@ -346,7 +387,7 @@ int Config::scanConfigDirectiveLine(const std::string& configFilePath, char* dat
         if (argc != 2) {
             return ErrorInvalidArg;
         }
-        std::string currentDir = coord::path::DirName(configFilePath);
+        std::string currentDir = coord::path::DirName(configPath);
         std::string fileName = std::string(argv[1], argLen[1]);
         std::string realPath = coord::path::PathJoin(currentDir, fileName);
         return this->scanConfigFile(realPath);
@@ -354,7 +395,7 @@ int Config::scanConfigDirectiveLine(const std::string& configFilePath, char* dat
     return ErrorInvalidArg;
 }
 
-int Config::scanConfigLine(const std::string& configFilePath, char* data, size_t size) {
+int Config::scanConfigLine(const std::string& configPath, char* data, size_t size) {
     size_t i = 0;
     int codePointLength = 1;
     for (; i < size; i += codePointLength) {
@@ -370,7 +411,7 @@ int Config::scanConfigLine(const std::string& configFilePath, char* data, size_t
             return this->scanConfigValue(data + i + 1, size - i - 1);
         }
     }
-    return this->scanConfigDirectiveLine(configFilePath, data, size);
+    return this->scanConfigDirectiveLine(configPath, data, size);
 }
 
 int Config::scanConfigKey(char* data, size_t size) {
@@ -475,7 +516,7 @@ int Config::scanConfigValue(char* data, size_t size) {
 }
 
 
-int Config::scanConfigMultiLine(const std::string& configFilePath, char* data, size_t size) {
+int Config::scanConfigMultiLine(const std::string& configPath, char* data, size_t size) {
     size_t i = 0;
     int codePointLength = 1;
     int lineNum = 1;
@@ -492,9 +533,9 @@ int Config::scanConfigMultiLine(const std::string& configFilePath, char* data, s
         } else if(phase == 1) {
             if (IS_ASCII('\r', c, codePointLength) || IS_ASCII('\n', c, codePointLength)) {
                 data[i] = 0;
-                int err = this->scanConfigLine(configFilePath, lineStart, data + i - lineStart);
+                int err = this->scanConfigLine(configPath, lineStart, data + i - lineStart);
                 if (err) {
-                    this->gotConfigLineError(configFilePath, lineNum, lineStart, data + i - lineStart);
+                    this->gotConfigLineError(configPath, lineNum, lineStart, data + i - lineStart);
                     return err;
                 }
                 lineNum = lineNum + 1;
@@ -504,9 +545,9 @@ int Config::scanConfigMultiLine(const std::string& configFilePath, char* data, s
         }
     }
     if (lineStart) {
-        int err = this->scanConfigLine(configFilePath, lineStart, data + i - lineStart);
+        int err = this->scanConfigLine(configPath, lineStart, data + i - lineStart);
         if (err) {
-            this->gotConfigLineError(configFilePath, lineNum, lineStart, data + i - lineStart);
+            this->gotConfigLineError(configPath, lineNum, lineStart, data + i - lineStart);
             return err;
         }
         return 0;
@@ -514,10 +555,10 @@ int Config::scanConfigMultiLine(const std::string& configFilePath, char* data, s
     return 0;
 }
 
-int Config::scanConfigFile(const std::string& configFilePath) {
-    FILE* f = fopen(configFilePath.c_str(), "r");
+int Config::scanConfigFile(const std::string& configPath) {
+    FILE* f = fopen(configPath.c_str(), "r");
     if (nullptr == f) {
-        this->coord->coreLogError("no such file or directory: %s", configFilePath.c_str());
+        this->coord->coreLogError("no such file or directory: %s", configPath.c_str());
         return ErrorNoSuchFileOrDirectory;
     }
     fseek(f, 0, SEEK_END);
@@ -530,78 +571,150 @@ int Config::scanConfigFile(const std::string& configFilePath) {
         return ErrorBufferNotEnough;
     }
     lines[read] = 0;
-    return this->scanConfigMultiLine(configFilePath, lines, read);
+    return this->scanConfigMultiLine(configPath, lines, read);
 }
 
 void Config::DebugString(){
+    this->coord->LogInfo("========================= Config =========================");
     for (auto const & it : this->Sections) {
         this->coord->LogInfo("[%s] [%s]", TAG, it.first.c_str());
         for (auto const & it1 : it.second) {
             this->coord->LogInfo("[%s] %-18s = %s", TAG, it1.first.c_str(), it1.second.c_str());
         }
     }
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Env", this->Basic.Env.c_str());
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Name", this->Basic.Name.c_str());
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Main", this->Basic.Main.c_str());
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Scene", this->Basic.Scene.c_str());
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Registery", this->Basic.Registery.c_str());
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Package", this->Basic.Package.c_str());
-    this->coord->LogInfo("[%s] %-15s: %ld", TAG, "GC", this->Basic.GC);
-    this->coord->LogInfo("[%s] %-15s: %ld", TAG, "Update", this->Basic.Update);
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Worker", this->Basic.Worker.c_str());
-    this->coord->LogInfo("[%s] %-15s: %ld", TAG, "WorkerNum", this->Basic.WorkerNum);
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Proto", this->Basic.Proto.c_str());
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Pid", this->Basic.Pid.c_str());
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "Version", this->Basic.Version.c_str());
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "ShortVersion", this->Basic.ShortVersion.c_str());
+    this->coord->LogInfo("========================= [%s] =========================", DEFAULT_SECTION_NAME.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "env", this->Basic.Env.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "name", this->Basic.Name.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "main", this->Basic.Main.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "scene", this->Basic.Scene.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "registery", this->Basic.Registery.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "package", this->Basic.Package.c_str());
+    this->coord->LogInfo("[%s] %-15s: %ld", TAG, "gc", this->Basic.GC);
+    this->coord->LogInfo("[%s] %-15s: %ld", TAG, "update", this->Basic.Update);
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "worker", this->Basic.Worker.c_str());
+    this->coord->LogInfo("[%s] %-15s: %ld", TAG, "worker-num", this->Basic.WorkerNum);
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "proto", this->Basic.Proto.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "pid", this->Basic.Pid.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "version", this->Basic.Version.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "short-version", this->Basic.ShortVersion.c_str());
+
+    this->coord->LogInfo("========================= [%s] =========================", WEB_SECTION_NAME.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "host", this->Web.Host.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "port", this->Web.Port);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "backlog", this->Web.Backlog);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "recv-buffer", this->Web.RecvBuffer);
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "ssl-encrypt", this->Web.SSLEncrypt ? "true" : "false");
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "ssl-pem", this->Web.SSLPemFile.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "ssl-key", this->Web.SSLKeyFile.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "asset-dir", this->Web.AssetDir.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "use-etag", this->Web.UseEtag? "true" : "false");
+
+    this->coord->LogInfo("========================= [%s] =========================", GATE_SECTION_NAME.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "sever-name", this->Gate.ServerName.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "port", this->Gate.Port);
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "host", this->Gate.Host.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "network", this->Gate.Network.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "rsa-encrypt", this->Gate.RsaEncrypt? "true" : "false");
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "rsa-keyfile", this->Gate.RsaKeyFile.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "heartbeat", this->Gate.Heartbeat);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "backlog", this->Gate.Backlog);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "recv-buffer", this->Gate.RecvBuffer);
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "ssl-encrypt", this->Gate.SSLEncrypt ? "true" : "false");
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "ssl-pem", this->Gate.SSLPemFile.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "ssl-key", this->Gate.SSLKeyFile.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "max-user", this->Gate.MaxUser);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "max-connection", this->Gate.MaxConnection);
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "cluster", this->Gate.Cluster.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "register-expire", this->Gate.RegisterExpire);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "register-interval", this->Gate.RegisterInterval);
+
+    this->coord->LogInfo("========================= [%s] =========================", CACHE_SECTION_NAME.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "password", this->Cache.Password.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "db", this->Cache.DB.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "host", this->Cache.Host.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "port", this->Cache.Port);
+
+    this->coord->LogInfo("========================= [%s] =========================", CLUSTER_SECTION_NAME.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "port", this->Cluster.Port);
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "host", this->Cluster.Host.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "driver", this->Cluster.Driver.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "heartbeat", this->Cluster.Heartbeat);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "expire", this->Cluster.Expire);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "reload-interval", this->Cluster.ReloadInterval);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "reconnect-interval", this->Cluster.ReconnectInterval);
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "register-interval", this->Cluster.RegisterInterval);
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "name", this->Cluster.Name.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "recv-buffer", this->Cluster.RecvBuffer);
+
+    this->coord->LogInfo("========================= [%s] =========================", MANAGED_SECTION_NAME.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "host", this->Managed.Host.c_str());
+    this->coord->LogInfo("[%s] %-15s: %d", TAG, "port", this->Managed.Port);
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "user", this->Managed.User.c_str());
+    this->coord->LogInfo("[%s] %-15s: %s", TAG, "password", this->Managed.Password.c_str());
+
 }
 
-int Config::parse(const char* configFilePath) {
+int Config::parse(const char* configPath) {
     std::string realPath;
-    int err = coord::path::RealPath(configFilePath, realPath);
+    int err = coord::path::RealPath(configPath, realPath);
     if (err) {
-        this->coord->coreLogError("%s: %s", uv_strerror(err), configFilePath);
+        this->coord->coreLogError("%s: %s", uv_strerror(err), configPath);
         return err;
     }
     err = this->scanConfigFile(realPath);
     if (err) {
         return err;
     }
-    get_value(this->Sections["DEFAULT"], "env", this->Basic.Env);
-    get_value(this->Sections["DEFAULT"], "registery", this->Basic.Registery);
-    get_value(this->Sections["DEFAULT"], "main", this->Basic.Main);
-    get_value(this->Sections["DEFAULT"], "scene", this->Basic.Scene);
-    get_value(this->Sections["DEFAULT"], "package", this->Basic.Package);
-    get_value(this->Sections["DEFAULT"], "gc", this->Basic.GC);
-    get_value(this->Sections["DEFAULT"], "update", this->Basic.Update);
-    get_value(this->Sections["DEFAULT"], "worker", this->Basic.Worker);
-    get_value(this->Sections["DEFAULT"], "worker_num", this->Basic.WorkerNum);
-    get_value(this->Sections["DEFAULT"], "proto", this->Basic.Proto);
-    get_value(this->Sections["DEFAULT"], "name", this->Basic.Name);
-    get_value(this->Sections["DEFAULT"], "pid", this->Basic.Pid);
-    get_value(this->Sections["DEFAULT"], "version", this->Basic.Version);
+    if(this->Sections.find(DEFAULT_SECTION_NAME) != this->Sections.end()) {
+        auto const it = this->Sections.find(DEFAULT_SECTION_NAME);
+        this->get(it->second, "env", this->Basic.Env);
+        this->get(it->second, "registery", this->Basic.Registery);
+        this->get(it->second, "main", this->Basic.Main);
+        this->get(it->second, "scene", this->Basic.Scene);
+        this->get(it->second, "package", this->Basic.Package);
+        this->get(it->second, "gc", this->Basic.GC);
+        this->get(it->second, "update", this->Basic.Update);
+        this->get(it->second, "worker", this->Basic.Worker);
+        this->get(it->second, "worker_num", this->Basic.WorkerNum);
+        this->get(it->second, "proto", this->Basic.Proto);
+        this->get(it->second, "name", this->Basic.Name);
+        this->get(it->second, "pid", this->Basic.Pid);
+        this->get(it->second, "version", this->Basic.Version);
+    }
 
+    // 处理package, 转换成绝对路径
     {
+        std::string package;
         size_t begin = 0;
         while (this->Basic.Package.length() > 0) {
             size_t pos = this->Basic.Package.find(";", begin);
             if (pos == std::string::npos) {
                 std::string path = this->Basic.Package.substr(begin);
                 if (!coord::path::IsAbsolutePath(path.c_str())) {
-                    path = coord::path::PathJoin(this->coord->Environment->ConfigFileDir, path);
+                    path = coord::path::PathJoin(this->coord->Environment->ConfigDir, path);
                 }
-                this->coord->Environment->Package = path + ";" + this->coord->Environment->Package;
+                if (package.length() == 0) {
+                    package = path;
+                } else {
+                    package = path + ";" + package;
+                }
                 break;
             } else {
                 std::string path = this->Basic.Package.substr(begin, pos - begin);
                 if (!coord::path::IsAbsolutePath(path.c_str())) {
-                    path = coord::path::PathJoin(this->coord->Environment->ConfigFileDir, path);
+                    path = coord::path::PathJoin(this->coord->Environment->ConfigDir, path);
                 }
-                this->coord->Environment->Package = path + ";" + this->coord->Environment->Package;
+                if (package.length() == 0) {
+                    package = path;
+                } else {
+                    package = path + ";" + package;
+                }
                 begin = pos + 1;
             }
         }
+        this->Basic.Package = package;
     }
+    // 处理version
     int first = 0;
     auto it = std::find_if(this->Basic.Version.begin(), this->Basic.Version.end(), [&first](char c) {
         if (c == '.')first++;
@@ -612,88 +725,86 @@ int Config::parse(const char* configFilePath) {
     }
     this->Basic.ShortVersion = this->Basic.Version.substr(0, it - this->Basic.Version.begin());
 
-
-    if(this->Sections.find("WEB") != this->Sections.end()) {
+    // 读取各个模块配置
+    if(this->Sections.find(WEB_SECTION_NAME) != this->Sections.end()) {
         auto const it = this->Sections.find("WEB");
-        get_value(it->second, "port", this->Web.Port);
-        get_value(it->second, "host", this->Web.Host);
-        get_value(it->second, "backlog", this->Web.Backlog);
-        get_value(it->second, "recv_buffer", this->Web.RecvBuffer);
-        get_value(it->second, "ssl_encrypt", this->Web.SSLEncrypt);
-        get_value(it->second, "ssl_pem", this->Web.SSLPemFile);
-        get_value(it->second, "ssl_key", this->Web.SSLKeyFile);
-        get_value(it->second, "asset_dir", this->Web.AssetDir);
-        get_value(it->second, "use_etag", this->Web.UseEtag);
+        this->get(it->second, "port", this->Web.Port);
+        this->get(it->second, "host", this->Web.Host);
+        this->get(it->second, "backlog", this->Web.Backlog);
+        this->get(it->second, "recv_buffer", this->Web.RecvBuffer);
+        this->get(it->second, "ssl-encrypt", this->Web.SSLEncrypt);
+        this->get(it->second, "ssl-pem", this->Web.SSLPemFile);
+        this->get(it->second, "ssl-key", this->Web.SSLKeyFile);
+        this->get(it->second, "asset-dir", this->Web.AssetDir);
+        this->get(it->second, "use-etag", this->Web.UseEtag);
     }
 
-    if(this->Sections.find("Login") != this->Sections.end()) {
-        auto const it = this->Sections.find("Login");
-        get_value(it->second, "port", this->Login.Port);
-        get_value(it->second, "host", this->Login.Host);
-        get_value(it->second, "backlog", this->Login.Backlog);
-        get_value(it->second, "recv_buffer", this->Login.RecvBufferSize);
-        get_value(it->second, "ssl_encrypt", this->Login.SSLEncrypt);
-        get_value(it->second, "ssl_pem", this->Login.SSLPemFile);
-        get_value(it->second, "ssl_key", this->Login.SSLKeyFile);
-        get_value(it->second, "cluster", this->Login.Cluster);
+    if(this->Sections.find(LOGIN_SECTION_NAME) != this->Sections.end()) {
+        auto const it = this->Sections.find(LOGIN_SECTION_NAME);
+        this->get(it->second, "port", this->Login.Port);
+        this->get(it->second, "host", this->Login.Host);
+        this->get(it->second, "backlog", this->Login.Backlog);
+        this->get(it->second, "recv-buffer", this->Login.RecvBufferSize);
+        this->get(it->second, "ssl-encrypt", this->Login.SSLEncrypt);
+        this->get(it->second, "ssl-pem", this->Login.SSLPemFile);
+        this->get(it->second, "ssl-key", this->Login.SSLKeyFile);
+        this->get(it->second, "cluster", this->Login.Cluster);
     } 
 
     if(this->Sections.find("GATE") != this->Sections.end()) {
         auto const it = this->Sections.find("GATE");
-        get_value(it->second, "server_name", this->Gate.ServerName);
-        get_value(it->second, "port", this->Gate.Port);
-        get_value(it->second, "host", this->Gate.Host);
-        get_value(it->second, "network", this->Gate.Network);
-        get_value(it->second, "rsa_encrypt", this->Gate.RsaEncrypt);
-        get_value(it->second, "rsa_keyfile", this->Gate.RsaKeyFile);
-        get_value(it->second, "heartbeat", this->Gate.Heartbeat);
-        get_value(it->second, "backlog", this->Gate.Backlog);
-        get_value(it->second, "recv_buffer", this->Gate.RecvBuffer);
-        get_value(it->second, "ssl_encrypt", this->Gate.SSLEncrypt);
-        get_value(it->second, "ssl_pem", this->Gate.SSLPemFile);
-        get_value(it->second, "ssl_key", this->Gate.SSLKeyFile);
-        get_value(it->second, "max_user", this->Gate.MaxUser);
-        get_value(it->second, "max_connection", this->Gate.MaxConnection);
-        get_value(it->second, "cluster", this->Gate.Cluster);
-        get_value(it->second, "register_expire", this->Gate.RegisterExpire);
-        get_value(it->second, "register_interval", this->Gate.RegisterInterval);
+        this->get(it->second, "server_name", this->Gate.ServerName);
+        this->get(it->second, "port", this->Gate.Port);
+        this->get(it->second, "host", this->Gate.Host);
+        this->get(it->second, "network", this->Gate.Network);
+        this->get(it->second, "rsa-encrypt", this->Gate.RsaEncrypt);
+        this->get(it->second, "rsa-keyfile", this->Gate.RsaKeyFile);
+        this->get(it->second, "heartbeat", this->Gate.Heartbeat);
+        this->get(it->second, "backlog", this->Gate.Backlog);
+        this->get(it->second, "recv-buffer", this->Gate.RecvBuffer);
+        this->get(it->second, "ssl-encrypt", this->Gate.SSLEncrypt);
+        this->get(it->second, "ssl-pem", this->Gate.SSLPemFile);
+        this->get(it->second, "ssl-key", this->Gate.SSLKeyFile);
+        this->get(it->second, "max-user", this->Gate.MaxUser);
+        this->get(it->second, "max-connection", this->Gate.MaxConnection);
+        this->get(it->second, "cluster", this->Gate.Cluster);
+        this->get(it->second, "register-expire", this->Gate.RegisterExpire);
+        this->get(it->second, "register-interval", this->Gate.RegisterInterval);
     }
-    if(this->Sections.find("CACHE") != this->Sections.end()) {
-        auto const it = this->Sections.find("CACHE");
-        get_value(it->second, "password", this->Cache.Password);
-        get_value(it->second, "db", this->Cache.DB);
-        get_value(it->second, "port", this->Cache.Port);
-        get_value(it->second, "host", this->Cache.Host);
-        get_value(it->second, "expire", this->Cache.ExpireTime);
-    }
-
-    if(this->Sections.find("CLUSTER") != this->Sections.end()) {
-        auto const it = this->Sections.find("CLUSTER");
-        get_value(it->second, "port", this->Cluster.Port);
-        get_value(it->second, "host", this->Cluster.Host);
-        get_value(it->second, "driver", this->Cluster.Driver);
-        get_value(it->second, "heartbeat", this->Cluster.Heartbeat);
-        get_value(it->second, "expire", this->Cluster.Expire);
-        get_value(it->second, "reload_interval", this->Cluster.ReloadInterval);
-        get_value(it->second, "reconnect_interval", this->Cluster.ReconnectInterval);
-        get_value(it->second, "register_interval", this->Cluster.RegisterInterval);
-        get_value(it->second, "name", this->Cluster.Name);
-        get_value(it->second, "recv_buffer", this->Cluster.RecvBuffer);
+    if(this->Sections.find(CACHE_SECTION_NAME) != this->Sections.end()) {
+        auto const it = this->Sections.find(CACHE_SECTION_NAME);
+        this->get(it->second, "password", this->Cache.Password);
+        this->get(it->second, "db", this->Cache.DB);
+        this->get(it->second, "port", this->Cache.Port);
+        this->get(it->second, "host", this->Cache.Host);
+        this->get(it->second, "expire", this->Cache.ExpireTime);
     }
 
-    if(this->Sections.find("MANAGED") != this->Sections.end()) {
-        auto const it = this->Sections.find("MANAGED");
-        get_value(it->second, "port", this->Managed.Port);
-        get_value(it->second, "port", this->Managed.Port);
-        get_value(it->second, "user", this->Managed.User);
-        get_value(it->second, "password", this->Managed.Password);
+    if(this->Sections.find(CLUSTER_SECTION_NAME) != this->Sections.end()) {
+        auto const it = this->Sections.find(CLUSTER_SECTION_NAME);
+        this->get(it->second, "port", this->Cluster.Port);
+        this->get(it->second, "host", this->Cluster.Host);
+        this->get(it->second, "driver", this->Cluster.Driver);
+        this->get(it->second, "heartbeat", this->Cluster.Heartbeat);
+        this->get(it->second, "expire", this->Cluster.Expire);
+        this->get(it->second, "reload-interval", this->Cluster.ReloadInterval);
+        this->get(it->second, "reconnect-interval", this->Cluster.ReconnectInterval);
+        this->get(it->second, "register-interval", this->Cluster.RegisterInterval);
+        this->get(it->second, "name", this->Cluster.Name);
+        this->get(it->second, "recv-buffer", this->Cluster.RecvBuffer);
     }
-    
-    //std::cout << "bitbucket.org compression level: " << this->Role << std::endl;
+
+    if(this->Sections.find(MANAGED_SECTION_NAME) != this->Sections.end()) {
+        auto const it = this->Sections.find(MANAGED_SECTION_NAME);
+        this->get(it->second, "host", this->Managed.Host);
+        this->get(it->second, "port", this->Managed.Port);
+        this->get(it->second, "user", this->Managed.User);
+        this->get(it->second, "password", this->Managed.Password);
+    }
     return 0;
 }
 
-bool Config::SectionExist(const char* section) {
+bool Config::SectionExist(const std::string& section) {
     auto it = this->Sections.find(section);
     if (it == this->Sections.end()){
         return false;
@@ -701,74 +812,76 @@ bool Config::SectionExist(const char* section) {
     return true;
 }
 
-int Config::SQLConfig(const char* section, sql::SQLConfig* config) {
+int Config::SQLConfig(const std::string& section, sql::SQLConfig* config) {
+    if (nullptr == config) {
+        return ErrorNull;
+    }
     auto const it = this->Sections.find(section);
     if (it == this->Sections.end()){
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "user", config->User)) {
+    if(!this->get(it->second, "user", config->User)) {
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "password", config->Password)) {
+    if(!this->get(it->second, "password", config->Password)) {
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "host", config->Host)) {
+    if(!this->get(it->second, "host", config->Host)) {
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "port", config->Port)) {
+    if(!this->get(it->second, "port", config->Port)) {
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "character_set", config->CharacterSet)) {
+    if(!this->get(it->second, "character-set", config->CharacterSet)) {
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "db", config->DB)) {
+    if(!this->get(it->second, "db", config->DB)) {
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "driver", config->Driver)) {
+    if(!this->get(it->second, "driver", config->Driver)) {
         return ErrorConfigNotExist;
     }
     return 0;
 }
 
-int Config::RedisConfig(const char* section, redis::RedisConfig* config) {
+int Config::RedisConfig(const std::string& section, redis::RedisConfig* config) {
+    if (nullptr == config) {
+        return ErrorNull;
+    }
     auto const it = this->Sections.find(section);
     if (it == this->Sections.end()){
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "password", config->Password)) {
+    if(!this->get(it->second, "password", config->Password)) {
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "host", config->Host)) {
+    if(!this->get(it->second, "host", config->Host)) {
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "port", config->Port)) {
+    if(!this->get(it->second, "port", config->Port)) {
         return ErrorConfigNotExist;
     }
-    if(!get_value(it->second, "db", config->DB)) {
+    if(!this->get(it->second, "db", config->DB)) {
         return ErrorConfigNotExist;
     }
     return 0;
 }
 
-int Config::LoggerConfig(const char* section, log4cc::LoggerConfig* config) {
+int Config::LoggerConfig(const std::string& section, log4cc::LoggerConfig* config) {
+    if (nullptr == config) {
+        return ErrorNull;
+    }
     auto const it = this->Sections.find(section);
     if (it == this->Sections.end()){
         return ErrorConfigNotExist;
     }
-    get_value(it->second, "file", config->File);
-    get_value(it->second, "layout", config->Layout);
-    get_value(it->second, "max-line", config->MaxLine);
-    if(get_value(it->second, "max-byte", config->MaxByte)) {
-    }
-
-    std::string console;
-    if(get_value(it->second, "console", console)) {
-        if(console == "true") {
-            config->Console = true;
-        }
-    }
+    this->get(it->second, "file", config->File);
+    this->get(it->second, "layout", config->Layout, "basic");
+    this->get(it->second, "max-line", config->MaxLine, 0);
+    this->get(it->second, "max-byte", config->MaxByte, 0); 
+    this->get(it->second, "console", config->Console, true);
     std::string priority;
-    if(get_value(it->second, "priority", priority)) {
+    if(this->get(it->second, "priority", priority)) {
         config->Priority = log4cc::IntPriority(priority.c_str());
     }
     return 0;

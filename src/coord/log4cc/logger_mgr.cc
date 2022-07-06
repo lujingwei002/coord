@@ -16,7 +16,6 @@ LoggerMgr* newLoggerMgr(Coord* coord) {
     return self;
 }
 
-
 LoggerMgr:: LoggerMgr(Coord* coord) {
     this->coord = coord;
 }
@@ -68,60 +67,51 @@ Category* LoggerMgr::GetCategory(const char* name) {
 
 Category* LoggerMgr::GetCoreLogger() {
     static const char* name = "core-logger";
-    auto it = this->categoryDict.find(name);
-    if (it != this->categoryDict.end()) {
-        return it->second; 
-    }
-    Category* category = newCategory(this, name);
-    if (category == nullptr) {
-        return nullptr;
-    }
-    this->categoryDict[name] = category;
-    return category;
+    return this->GetCategory(name);
 }
 
 Category* LoggerMgr::GetDefaultLogger() {
     static const char* name = "logger";
-    auto it = this->categoryDict.find(name);
-    if (it != this->categoryDict.end()) {
-        return it->second; 
-    }
-    Category* category = newCategory(this, name);
-    if (category == nullptr) {
-        return nullptr;
-    }
-    this->categoryDict[name] = category;
-    return category;
+    return this->GetCategory(name);
 }
 
 int LoggerMgr::configDefaultLogger(Category* category) {
     static const char* name = "logger";
     LoggerConfig config;
-    int err = this->coord->config->LoggerConfig(name, &config);
+    int err = this->coord->Config->LoggerConfig(name, &config);
     if (err != 0) {
-        std::string path = coord::path::PathJoin("log", this->coord->config->Basic.Name + ".log");
-        config.File = coord::path::PathJoin(this->coord->Environment->WorkingDir, path);
+        //std::string path = coord::path::PathJoin("log", this->coord->Config->Basic.Name + ".log");
+        //config.File = coord::path::PathJoin(this->coord->Environment->WorkingDir, path);
+        config.Console = true;
     }
     config.Name = name;
-    return this->ConfigCategory(category, &config);
+    err = this->ConfigCategory(category, &config);
+    if (err) {
+        fprintf(stderr, "config default logger failed\n");
+    }
+    return err;
 }
 
 int LoggerMgr::configCoreLogger(Category* category) {
     static const char* name = "core-logger";
     LoggerConfig config;
-    int err = this->coord->config->LoggerConfig(name, &config);
+    int err = this->coord->Config->LoggerConfig(name, &config);
     if (err != 0) {
-        std::string path = coord::path::PathJoin("log", this->coord->config->Basic.Name + "-core.log");
+        std::string path = coord::path::PathJoin("log", this->coord->Config->Basic.Name + "-core.log");
         config.File = coord::path::PathJoin(this->coord->Environment->CoordDir, path);
     }
     config.Name = name;
-    return this->ConfigCategory(category, &config);
+    err = this->ConfigCategory(category, &config);
+    if (err) {
+        fprintf(stderr, "config core logger failed\n");
+    }
+    return err;
 }
 
 
 int LoggerMgr::ConfigCategory(Category* category, const char* name) {
     LoggerConfig config;
-    int err = this->coord->config->LoggerConfig(name, &config);
+    int err = this->coord->Config->LoggerConfig(name, &config);
     if (err != 0) {
         this->coord->coreLogError("[coord::LoggerMgr] GetConfigCategory %s failed, error=%d", name, err);
         return err;

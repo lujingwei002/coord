@@ -33,7 +33,7 @@ int FileAppender::openFile(const std::string& filePath) {
         fclose(this->file);
         this->file = nullptr;
     }
-    this->file = fopen(this->filePath.c_str(), "a+");
+    this->file = fopen(filePath.c_str(), "a+");
     if (this->file == nullptr) {
         return ErrorNoSuchFileOrDirectory;
     }

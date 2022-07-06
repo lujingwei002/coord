@@ -3,46 +3,86 @@
 #include <map>
 #include <string>
 #include <optional>
-
+#include <algorithm>
+#include <cctype>
+#include <functional>
+#include <cstring>
+#include <iostream>
+#include <list>
+#include <locale>
+#include <sstream>
+extern "C" {
+#include <lua/lua.h>
+#include <lua/lualib.h>
+#include <lua/lauxlib.h>
+#include <tolua++/tolua++.h>
+}
 namespace coord {//tolua_export
 
 class Coord;
 
 class Environment {//tolua_export
-public:
+friend class Coord;
+private:
     Environment(Coord* coord) {
         this->coord = coord;
         this->Version = "0.0.1";
     }
     ~Environment() {
     }
+public:
+    /// 打印调试信息
     void DebugString();
+
+    /// 获取变量
+    /// @param name 变量名
+    /// @param value 返回的变量值
+    /// @param defaultValue 如果变量不存在,就取默认值
+    /// @return 值存在返回true, 不存在则返回false
+    template <typename T>
+    bool Get(const std::string& name, T& dst);
+
+    /// 获取变量
+    /// @param name 变量名
+    /// @param value 返回的变量值
+    /// @param defaultValue 如果变量不存在,就取默认值
+    /// @return 值存在返回true, 不存在则返回false
+    template <typename T, typename T2>
+    bool Get(const std::string& name, T& value, T2 defaultValue);
+
+    int Get(lua_State* L); //tolua_export
 public:
-    std::optional<std::string> GetString(const char* name);
-    int main(const char* configFilePath);
-    int searchCoordDir(char* buffer, size_t* len);
-public:
+    /// coord版本号
     std::string Version;//tolua_export
-    // 执行文件路径
+    /// 执行文件路径
     std::string ExecPath;//tolua_export
-    // 执行文件目录
+    /// 执行文件目录
     std::string ExecDir;//tolua_export
-    // 项目目录
+    /// 项目目录
     std::string ProjectDir;//tolua_export
-    // 工作目录
+    /// 工作目录
     std::string WorkingDir;//tolua_export
-    // 用户目录
+    /// 用户目录
     std::string HomeDir;//tolua_export
-    //
+    /// coord所有目录
     std::string CoordDir;//tolua_export
-    // 配置文件路径
-    std::string ConfigFilePath;//tolua_export
-    // 配置文件目录
-    std::string ConfigFileDir;//tolua_export
-    // 包查找路径, 以分号分隔
+    /// 配置文件路径
+    std::string ConfigPath;//tolua_export
+    /// 配置文件目录
+    std::string ConfigDir;//tolua_export
+    /// 包查找路径, 以分号分隔
     std::string Package;//tolua_export
+    /// 环境变量字典
     std::map<std::string, std::string> Variables;
 private:
+    int main(const char* configPath);
+    int searchCoordDir(char* buffer, size_t* len);
+    template <typename T>
+    bool extract(const std::string & value, T & dst);
+    bool extract(const std::string & value, std::string & dst) {
+        dst = value;
+        return true;
+    }
     int scanEnvFile(const std::string& envFilePath);
     int scanEnvMultiLine(const std::string& envFilePath, char* data, size_t size);
     int scanEnvLine(const std::string& envFilePath, char* data, size_t size);
@@ -57,6 +97,39 @@ private:
     Coord* coord;
 };//tolua_export
 
-Environment* newEnvironment(Coord* coord);
+//Environment* newEnvironment(Coord* coord);
+
+template <typename T>
+bool Environment::Get(const std::string& name, T& dst) {
+    auto it = this->Variables.find(name);
+    if (it == this->Variables.end()) {
+        return false;
+    }
+    return this->extract(it->second, dst);
+}
+template <typename T, typename T2>
+bool Environment::Get(const std::string& name, T& dst, T2 defaultValue) {
+    auto it = this->Variables.find(name);
+    if (it == this->Variables.end()) {
+        dst = defaultValue;
+        return true;
+    }
+    return this->extract(it->second, dst);
+
+}
+template <typename T>
+bool Environment::extract(const std::string& value, T & dst) {
+    char c;
+    std::istringstream is{ value };
+    T result;
+    if ((is >> std::boolalpha >> result) && !(is >> c)) {
+        dst = result;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 
 }//tolua_export

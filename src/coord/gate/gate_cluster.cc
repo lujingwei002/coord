@@ -60,7 +60,7 @@ void gate_cluster::onDestory() {
 int gate_cluster::registerSelf() {
     this->coord->coreLogDebug("[gate_cluster] registerSelf");
     {
-        auto reply = this->syncClient->HMSET(this->selfKey.c_str(), "version", this->coord->config->Basic.ShortVersion.c_str());
+        auto reply = this->syncClient->HMSET(this->selfKey.c_str(), "version", this->coord->Config->Basic.ShortVersion.c_str());
         if (reply.Error()){
             this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
@@ -70,12 +70,12 @@ int gate_cluster::registerSelf() {
             this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
-        reply = this->syncClient->HMSET(this->selfKey.c_str(), "host", this->coord->config->Gate.Host.c_str());
+        reply = this->syncClient->HMSET(this->selfKey.c_str(), "host", this->coord->Config->Gate.Host.c_str());
         if (reply.Error()){
             this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
-        reply = this->syncClient->HMSET(this->selfKey.c_str(), "port", std::to_string(this->coord->config->Gate.Port).c_str());
+        reply = this->syncClient->HMSET(this->selfKey.c_str(), "port", std::to_string(this->coord->Config->Gate.Port).c_str());
         if (reply.Error()){
             this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
@@ -85,21 +85,21 @@ int gate_cluster::registerSelf() {
             this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
-        int err = this->syncClient->EXPIRE(this->selfKey.c_str(), this->coord->config->Gate.RegisterExpire);
+        int err = this->syncClient->EXPIRE(this->selfKey.c_str(), this->coord->Config->Gate.RegisterExpire);
         if (err) {
             this->coord->coreLogError("[gate_cluster] registerSelf failed, error='EXPIRE err'");
             return -1;
         }
     }
     {
-        auto reply = this->syncClient->SADD(this->gateSetKey.c_str(), this->coord->config->Basic.Name.c_str());
+        auto reply = this->syncClient->SADD(this->gateSetKey.c_str(), this->coord->Config->Basic.Name.c_str());
         if (reply.Error()){
             this->coord->coreLogError("[gate_cluster] registerSelf failed, error='SADD err'");
             return -1;
         }
     }
     {
-        auto reply = this->syncClient->SADD(this->gateSetVersionKey.c_str(), this->coord->config->Basic.Name.c_str());
+        auto reply = this->syncClient->SADD(this->gateSetVersionKey.c_str(), this->coord->Config->Basic.Name.c_str());
         if (reply.Error()){
             this->coord->coreLogError("[gate_cluster] registerSelf failed, error='SADD err'");
             return -1;
@@ -118,14 +118,14 @@ int gate_cluster::clearSelf() {
         }
     }
     {
-        auto reply = this->syncClient->SREM(this->gateSetKey.c_str(), this->coord->config->Basic.Name.c_str());
+        auto reply = this->syncClient->SREM(this->gateSetKey.c_str(), this->coord->Config->Basic.Name.c_str());
         if (reply.Error()){
             this->coord->coreLogError("[gate_cluster] clearSelf failed, error='SREM err'");
             return -1;
         }
     }
     {
-        auto reply = this->syncClient->SREM(this->gateSetVersionKey.c_str(), this->coord->config->Basic.Name.c_str());
+        auto reply = this->syncClient->SREM(this->gateSetVersionKey.c_str(), this->coord->Config->Basic.Name.c_str());
         if (reply.Error()){
             this->coord->coreLogError("[gate_cluster] clearSelf failed, error='SREM err'");
             return -1;
@@ -154,8 +154,8 @@ int gate_cluster::clearUser() {
             this->coord->coreLogError("[gate_cluster] clearUser failed, user key=%s, error='GET empty'", userKey.c_str());
             continue;
         }
-        if (strcmp(reply1.String(), this->coord->config->Basic.Name.c_str()) != 0) {
-           this->coord->coreLogError("[gate_cluster] clear failed, local='%s', other='%s'", this->coord->config->Basic.Name.c_str(), reply1.String());
+        if (strcmp(reply1.String(), this->coord->Config->Basic.Name.c_str()) != 0) {
+           this->coord->coreLogError("[gate_cluster] clear failed, local='%s', other='%s'", this->coord->Config->Basic.Name.c_str(), reply1.String());
             continue;
         }
         this->coord->coreLogDebug("[gate_cluster] clearUser, user key=%s, gate=%s\n", userKey.c_str(), reply1.String());
@@ -228,10 +228,10 @@ int gate_cluster::main() {
         promise->Else(std::bind(&gate_cluster::recvConnectCacheErr, this, std::placeholders::_1, std::placeholders::_2));
         this->asyncClient = client;
     }
-    this->selfKey = this->group + ":" + this->coord->config->Basic.Name;
-    this->userHashKey = this->group + ":" + this->coord->config->Basic.Name + ":user";
+    this->selfKey = this->group + ":" + this->coord->Config->Basic.Name;
+    this->userHashKey = this->group + ":" + this->coord->Config->Basic.Name + ":user";
     this->gateSetKey = this->group;
-    this->gateSetVersionKey = this->group + ":version:" + this->coord->config->Basic.ShortVersion;
+    this->gateSetVersionKey = this->group + ":version:" + this->coord->Config->Basic.ShortVersion;
     //清除数据
     int err = this->clearUser();
     if (err) {
@@ -652,7 +652,7 @@ void gate_cluster::persistAgent(uint64_t userId){
 
 void gate_cluster::persistSelf(){
     this->coord->coreLogDebug("[gate_cluster] persistSelf");
-    auto promise = this->asyncClient->EXPIRE(this->selfKey.c_str(), this->coord->config->Gate.RegisterExpire);
+    auto promise = this->asyncClient->EXPIRE(this->selfKey.c_str(), this->coord->Config->Gate.RegisterExpire);
     if (promise == nullptr) {
         this->coord->coreLogDebug("[gate_cluster] persistSelf failed, function='EVALSHA'");
         return;
@@ -680,7 +680,7 @@ void gate_cluster::checkExpireGate() {
     auto promise = this->asyncClient->EVALSHA(sha1.c_str(), "1 %s %s %s",  
         this->gateSetKey.c_str(),
         this->group.c_str(),
-        this->coord->config->Basic.Name.c_str());
+        this->coord->Config->Basic.Name.c_str());
     if (promise == nullptr) {
         this->coord->coreLogDebug("[gate_cluster] checkExpireGate failed, function='EVALSHA'");
         return;

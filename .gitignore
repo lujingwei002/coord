@@ -79,3 +79,4 @@ dep/lua*
 dep/mysql*
 dep/protobuf*
 dep/tolua*
+dep/argparse-2.5

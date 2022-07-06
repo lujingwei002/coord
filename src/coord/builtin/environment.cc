@@ -11,6 +11,7 @@
 
 namespace coord {
 static const char* TAG = "Environment";
+static const char* env_file_name = ".env";
 
 #define UTF8_CODE_POINT_LENGTH(byte) ((( 0xE5000000 >> (( byte >> 3 ) & 0x1e )) & 3 ) + 1)
 #define TEST_ASCII(check, byte, length) (length == 1 && check(byte))
@@ -54,10 +55,12 @@ static int stringEscape(const char* src, size_t srcSize, char* dest, size_t* des
     return 0;
 }
 
+/*
 Environment* newEnvironment(Coord* coord) {
     Environment* self = new Environment(coord);
     return self;
 }
+*/
 
 int Environment::scanEnvDirectiveLine(const std::string& envFilePath, char* data, size_t size) {
     int maxArgCount = 5;
@@ -302,7 +305,7 @@ int Environment::scanEnvFile(const std::string& envFilePath) {
     return this->scanEnvMultiLine(envFilePath, lines, read);
 }
 
-int Environment::main(const char* configFilePath) {
+int Environment::main(const char* configPath) {
     char buffer[PATH_MAX];
     size_t len = sizeof(buffer);
 
@@ -310,12 +313,12 @@ int Environment::main(const char* configFilePath) {
     
     // 配置文件绝对路径
     uv_fs_t req;
-    int err = uv_fs_realpath(&this->coord->loop, &req, configFilePath, nullptr);
+    int err = uv_fs_realpath(&this->coord->loop, &req, configPath, nullptr);
     if (err) {
-        this->coord->coreLogError("%s %s", uv_strerror(err), configFilePath);
+        this->coord->coreLogError("%s %s", uv_strerror(err), configPath);
         return err;
     }
-    this->ConfigFilePath = (char*)req.ptr;
+    this->ConfigPath = (char*)req.ptr;
 
     // 执行文件所在目录
     len = sizeof(buffer);
@@ -350,9 +353,9 @@ int Environment::main(const char* configFilePath) {
     this->CoordDir = buffer;
 
     // 配置文件所在的目录
-    this->ConfigFileDir = coord::path::DirName(this->ConfigFilePath);
+    this->ConfigDir = coord::path::DirName(this->ConfigPath);
     // 工作目录
-    this->WorkingDir = this->ConfigFileDir;
+    this->WorkingDir = this->ConfigDir;
 
     // 执行文件所在的目录
     this->ExecDir = coord::path::DirName(this->ExecPath);
@@ -361,14 +364,27 @@ int Environment::main(const char* configFilePath) {
     
     this->Package = this->CoordDir + "/package";                        // 引擎目录
     this->Package = this->WorkingDir + "/package;" + this->Package;     // 工作目录
-    this->Package = this->ConfigFileDir + "/package;" + this->Package;  // 配置文件目录
-    this->Package = this->ConfigFileDir + ";" + this->Package;          // 配置文件目录
+    this->Package = this->ConfigDir + "/package;" + this->Package;  // 配置文件目录
+    this->Package = this->ConfigDir + ";" + this->Package;          // 配置文件目录
 
-    std::string envFilePath = coord::path::PathJoin(this->ConfigFileDir, ".env");
+
+    this->Variables["version"] = this->Version;
+    this->Variables["config-dir"] = this->ConfigDir;
+    this->Variables["config-path"] = this->ConfigPath;
+    this->Variables["working-dir"] = this->WorkingDir;
+    this->Variables["exec-path"] = this->ExecPath;
+    this->Variables["exec-dir"] = this->ExecDir;
+    this->Variables["coord-dir"] = this->CoordDir;
+    this->Variables["project-dir"] = this->ProjectDir;
+    this->Variables["home-dir"] = this->HomeDir;
+    this->Variables["package"] = this->Package;
+
+    std::string envFilePath = coord::path::PathJoin(this->ConfigDir, env_file_name);
     err = this->scanEnvFile(envFilePath);
     if (err) {
         return err;
     }
+    /* 
     this->coord->LogInfo(R"(
 /---------------------------/
 /                           /       
@@ -377,20 +393,13 @@ int Environment::main(const char* configFilePath) {
 /                           /       
 /                           /       
 /-------------------------- /)");
+*/
 
     return 0;
 }
 
 void Environment::DebugString() {
-    this->coord->LogInfo("[%s] %-18s: %s", TAG, "Version", this->Version.c_str());
-    this->coord->LogInfo("[%s] %-18s: %s", TAG, "Config File Dir", this->ConfigFileDir.c_str());
-    this->coord->LogInfo("[%s] %-18s: %s", TAG, "Config File Path", this->ConfigFilePath.c_str());
-    this->coord->LogInfo("[%s] %-18s: %s", TAG, "Working Dir", this->WorkingDir.c_str());
-    this->coord->LogInfo("[%s] %-18s: %s", TAG, "ExecPath", this->ExecPath.c_str());
-    this->coord->LogInfo("[%s] %-18s: %s", TAG, "ExecDir", this->ExecDir.c_str());
-    this->coord->LogInfo("[%s] %-18s: %s", TAG, "CoordDir", this->CoordDir.c_str());
-    this->coord->LogInfo("[%s] %-18s: %s", TAG, "ProjectDir", this->ProjectDir.c_str());
-    this->coord->LogInfo("[%s] %-18s: %s", TAG, "Package", this->Package.c_str());
+    this->coord->LogInfo("========================= Environment =========================");
     for (auto const & it : this->Variables) {
         this->coord->LogInfo("[%s] %-18s = %s", TAG, it.first.c_str(), it.second.c_str());
     }
@@ -416,13 +425,14 @@ int Environment::searchCoordDir(char* buffer, size_t* len) {
     return -1;
 }
 
-std::optional<std::string> Environment::GetString(const char* name) {
+int Environment::Get(lua_State* L) {
+    const char* name = lua_tostring(L, 2);
     auto it = this->Variables.find(name);
     if (it == this->Variables.end()) {
-        return std::nullopt;
+        return 0;
     }
-    return it->second;
-
+    lua_pushlstring(L, it->second.c_str(), it->second.length());
+    return 1;
 }
 
 }

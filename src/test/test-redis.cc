@@ -34,7 +34,7 @@ public:
 TEST_F(TestRedis, hostError) {
     auto client = coord::redis::newClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     client->DefaultConfig()->Host = "127.0.0.11";
@@ -44,7 +44,7 @@ TEST_F(TestRedis, hostError) {
 TEST_F(TestRedis, passwordError) {
     auto client = coord::redis::newClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     client->DefaultConfig()->Password = "11";
@@ -54,7 +54,7 @@ TEST_F(TestRedis, passwordError) {
 TEST_F(TestRedis, DbError) {
     auto client = coord::redis::newClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     client->DefaultConfig()->DB = "aa";
@@ -64,7 +64,7 @@ TEST_F(TestRedis, DbError) {
 TEST_F(TestRedis, TestReplyNull) {
     auto client = coord::redis::newClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     client->DefaultConfig()->DB = "aa";
@@ -77,7 +77,7 @@ TEST_F(TestRedis, TestReplyNull) {
 TEST_F(TestRedis, TestSetGet) {
     auto client = coord::redis::newClient(coord);
     coord::redis::RedisConfig config;
-    int err = this->coord->config->RedisConfig("REDIS", &config);
+    int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     err = client->Connect();

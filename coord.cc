@@ -15,21 +15,8 @@ void onDestory(coord::Coord* coord) {
 }
 
 int main(int argc, const char **argv) {
-    return coord::Main(argc, argv);
-    if (argc < 2){
-        std::cout << "not config file input" << std::endl;
-        return EXIT_FAILURE;
-    }
-    coord::Init();
-    for(int i = 1; i < argc; i++){
-        coord::Coord* coorda = coord::NewCoord();
-        int err = coorda->Fork(argv[i]);
-        if(err){
-            return err;
-        }
-    }
-    int err = coord::Wait();
-    coord::Destory(); 
+    int err = coord::Main(argc, argv);
+    if (err) fprintf(stderr, "error: %d\n", err);
     return err;
 }
 

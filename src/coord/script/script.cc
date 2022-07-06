@@ -434,9 +434,14 @@ int Script::onAwake() {
 }
 
 int Script::main()  {
-    auto config = this->coord->config;
-    const char* packageDir = this->coord->Environment->Package.c_str();
-    const char* mainPackage = config->Basic.Main.c_str();
+    std::string package;
+    if (this->coord->Environment->Package.length() > 0) {
+        package = this->coord->Environment->Package;
+    }
+    if (this->coord->Config->Basic.Package.length() > 0) {
+        package = this->coord->Config->Basic.Package + ";" + package;
+    }
+    const char* mainPackage = this->coord->Config->Basic.Main.c_str();
     lua_State* L = this->L;
     this->registerLibs();
     if(this->coord->Proto) {
@@ -445,10 +450,10 @@ int Script::main()  {
     if(this->coord->Json) {
         this->coord->Json->registerMetatable();
     }
-    this->coord->coreLogInfo("[%s] Package: %s", TAG, packageDir);
+    this->coord->coreLogInfo("[%s] Package: %s", TAG, package.c_str());
     this->coord->coreLogInfo("[%s] Main: %s", TAG, mainPackage);
 
-    strncpy(this->Path, packageDir, PACKAGE_MAX);
+    strncpy(this->Path, package.c_str(), PACKAGE_MAX);
     strncpy(this->Main, mainPackage, PACKAGE_MAX);
     tolua_pushusertype(L, (void*)this->coord, "coord::Coord");
     lua_setglobal(L, "coorda");
@@ -458,7 +463,7 @@ int Script::main()  {
         return 1;
     }
     if (lua_pcall(L, 0, 0, 0) != 0){
-        this->coord->coreLogError("[script] _main_ failed, error='%s'", lua_tostring(L, -1));
+        this->coord->LogError("[script] _main_ failed, error='%s'", lua_tostring(L, -1));
         this->TraceStack();
         return 1;
     }

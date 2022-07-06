@@ -158,8 +158,8 @@ static int __newindex(lua_State* L) {
 }
 
 int Protobuf::main() {
-    if(this->coord->config->Basic.Proto.length() > 0) {
-        int err = this->ImportDir(this->coord->config->Basic.Proto.c_str());
+    if(this->coord->Config->Basic.Proto.length() > 0) {
+        int err = this->ImportDir(this->coord->Config->Basic.Proto.c_str());
         if (err) {
             this->coord->coreLogError("[Proto] main failed, error='import proto err'");
             return err;

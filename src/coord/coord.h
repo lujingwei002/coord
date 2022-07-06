@@ -119,18 +119,18 @@ public:
     int Local();
     int Client();
     //新建一个线程
-    int asWorker(worker::Worker* master, const char *configFile, int index);
-    int asCommand(const char *configFile, const char* command);
-    int actionEnv(const char *configFile);
-    int actionStart(const char *configFile);
-    int actionStop(const char *configFile);
-    int actionStatus(const char *configFile);
-    int actionRestart(const char *configFile);
+    int asWorker(worker::Worker* master, const char *configPath, int index);
+    int asCommand(const char *configPath, const char* command);
+    int actionEnv(const char *configPath);
+    int actionStart(const char *configPath);
+    int actionStop(const char *configPath);
+    int actionStatus(const char *configPath);
+    int actionRestart(const char *configPath);
     // 异步模式启动
-    int Fork(const char *configFile);
+    int Fork(const char *configPath);
     // 同步模式启动
-    int Main(const char *configFile);  
-    int beforeTest(const char *configFile); 
+    int Main(const char *configPath);  
+    int beforeTest(const char *configPath); 
     void loopTest();   
     int afterTest();  
     int Reload();
@@ -227,7 +227,7 @@ public:
     void coreLogSetLevel(int level);                    //tolua_export
     //@xx core日志接口
 public:
-    Config*                 config;         //tolua_export
+    coord::Config*          Config;         //tolua_export
     script::Script*         Script;         //tolua_export   
     gate::Gate*             Gate;           //tolua_export
     http::HttpServer*       HttpServer;     //tolua_export 
@@ -237,7 +237,7 @@ public:
     cache::Client*          Cache;          //tolua_export
     cache::AsyncClient*     AsyncCache;
     cluster::Cluster*       Cluster;        //tolua_export
-    std::string             ConfigFile;     //tolua_export
+    std::string             ConfigPath;     //tolua_export
     managed::Managed*       Managed;        //tolua_export
     worker::WorkerSlave*    WorkerSlave;    //tolua_export
     worker::Worker*         Worker;         //tolua_export
@@ -277,6 +277,7 @@ int Wait();
 int Init();
 void Destory();
 int Main(int argc, const char** argv);
+int Fork(const char *configPath);
 
 } //tolua_export
 

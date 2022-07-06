@@ -8,6 +8,8 @@
 #include "coord/login/login_config.h"
 #include "coord/managed/managed_config.h"
 #include <string>
+#include <iostream>
+#include <sstream>
 
 namespace coord {//tolua_export
 
@@ -51,42 +53,66 @@ public:
 };//tolua_export
 
 class Config {//tolua_export
-public:
-    Config(Coord* coord);
-public:
-    int SQLConfig(const char* section, sql::SQLConfig* config);
-    int RedisConfig(const char* section, redis::RedisConfig* config);
-    int LoggerConfig(const char* section, log4cc::LoggerConfig* config);
-    bool SectionExist(const char* section);
-    template <typename T>
-    bool Get(const char* section, const char* key, T& dst) {
-        return this->extract(this->Sections[section][key], dst);
-    }
-    void DebugString();
+    friend class Coord;
 private:
-    template <typename CharT, typename T>
-    bool extract(const std::basic_string<CharT> & value, T & dst) {
-        CharT c;
-        std::basic_istringstream<CharT> is{ value };
-        T result;
-        if ((is >> std::boolalpha >> result) && !(is >> c)) {
-            dst = result;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-    template <typename CharT>
-    bool extract(const std::basic_string<CharT> & value, std::basic_string<CharT> & dst) {
+    Config(Coord* coord);
+    ~Config();
+public:
+    /// 获取SQL配置
+    int SQLConfig(const std::string& section, sql::SQLConfig* config);
+
+    /// 获取Redis配置
+    int RedisConfig(const std::string& section, redis::RedisConfig* config);
+
+    /// 获取Logger配置
+    int LoggerConfig(const std::string& section, log4cc::LoggerConfig* config);
+
+    /// 配置分组是否存在
+    bool SectionExist(const std::string& section);
+
+    /// 获取配置值
+    template <typename T>
+    bool Get(const std::string& section, const std::string& key, T& dst); 
+
+    /// 获取配置值
+    template <typename T, typename T2>
+    bool Get(const std::string& section, const std::string& key, T& dst, T2 defaultValue);
+
+    /// 获取配置值
+    template <typename T>
+    bool Get(const std::string& path, T& dst); 
+
+    /// 输出调试信息
+    void DebugString();
+public:
+    BasicConfig             Basic;      //tolua_export
+    web::WebConfig          Web;        //tolua_export
+    gate::GateConfig        Gate;       //tolua_export
+    cache::CacheConfig      Cache;      //tolua_export
+    cluster::ClusterConfig  Cluster;    //tolua_export
+    managed::ManagedConfig  Managed;    //tolua_export
+    login::LoginConfig      Login;      //tolua_export
+    std::map<std::string, std::map<std::string, std::string>> Sections;
+
+private:
+/// 获取配置值
+    template <typename T, typename T2>
+    bool get(std::map<std::string, std::string> section, const std::string& key, T& dst, T2 defaultValue);
+
+    /// 获取配置值
+    template <typename T>
+    bool get(std::map<std::string, std::string> section, const std::string& key, T& dst);
+
+    template <typename T>
+    bool extract(const std::string & value, T & dst);
+    bool extract(const std::string & value, std::string & dst) {
         dst = value;
         return true;
     }
-private:
-    int scanConfigFile(const std::string& configFilePath);
-    int scanConfigMultiLine(const std::string& configFilePath, char* lines, size_t size);
-    int scanConfigLine(const std::string& configFilePath, char* data, size_t size);
-    int scanConfigDirectiveLine(const std::string& configFilePath, char* data, size_t size);
+    int scanConfigFile(const std::string& configPath);
+    int scanConfigMultiLine(const std::string& configPath, char* lines, size_t size);
+    int scanConfigLine(const std::string& configPath, char* data, size_t size);
+    int scanConfigDirectiveLine(const std::string& configPath, char* data, size_t size);
     int scanConfigSectionLine(char* data, size_t size);
     int scanConfigKey(char* lines, size_t size);
     int scanConfigValue(char* lines, size_t size);
@@ -95,22 +121,86 @@ private:
     int gotConfigValue(char* data, size_t size);
     int gotConfigQuoteValue(char* data, size_t size);
     int gotConfigSection(char* data, size_t size);
-    int gotConfigLineError(const std::string& configFilePath, int lineNum, char* data, size_t size);
-public:
+    int gotConfigLineError(const std::string& configPath, int lineNum, char* data, size_t size);
+    int urlParse(const char* path, std::string& section, std::string& key);
+    int urlParse(const char* data, size_t size, std::string& section, std::string& key);
     int parse(const char* filePath);
-public:
-    std::map<std::string, std::map<std::string, std::string>> Sections;
-    //inipp::Ini<char>        ini;        //tolua_export
-    Coord*                  coord;      //tolua_export
-    BasicConfig             Basic;      //tolua_export
-    web::WebConfig          Web;        //tolua_export
-    gate::GateConfig        Gate;       //tolua_export
-    cache::CacheConfig      Cache;      //tolua_export
-    cluster::ClusterConfig  Cluster;    //tolua_export
-    managed::ManagedConfig  Managed;    //tolua_export
-    login::LoginConfig      Login;      //tolua_export
+private:
+    Coord*                  coord;      
 };//tolua_export
 
-Config *newConfig(Coord* coord);
+//Config *newConfig(Coord* coord);
+
+template <typename T>
+bool Config::Get(const std::string& path, T& dst) {
+    std::string section;
+    std::string key;
+    int err = this->urlParse(path.c_str(), path.length(), section, key);
+    if (err) {
+        return false;
+    }
+    return this->Get(section.c_str(), key, dst);
+} 
+
+template <typename T>
+bool Config::Get(const std::string& section, const std::string& key, T& dst) {
+    auto it = this->Sections.find(section);
+    if (it == this->Sections.end()) {
+        return false;
+    }
+    auto kv = it->second;
+    auto it2 = kv.find(key);
+    if (it2 == kv.end()) {
+        return false;
+    }
+    return this->extract(it2->second, dst);
+}
+template <typename T, typename T2>
+bool Config::Get(const std::string& section, const std::string& key, T& dst, T2 defaultValue) {
+    auto it = this->Sections.find(section);
+    if (it == this->Sections.end()) {
+        return false;
+    }
+    auto kv = it->second;
+    auto it2 = kv.find(key);
+    if (it2 == kv.end()) {
+        dst = defaultValue;
+        return true;
+    }
+    return this->extract(it2->second, dst);
+}
+template <typename T, typename T2>
+bool Config::get(std::map<std::string, std::string> section, const std::string& key, T& dst, T2 defaultValue) {
+    auto it = section.find(key);
+    if (it == section.end()) {
+        dst = defaultValue;
+        return true;
+    }
+    return this->extract(it->second, dst);
+}
+
+template <typename T>
+bool Config::get(std::map<std::string, std::string> section, const std::string& key, T& dst) {
+    auto it = section.find(key);
+    if (it == section.end()) {
+        return false;
+    }
+    return this->extract(it->second, dst);
+}
+
+template <typename T>
+bool Config::extract(const std::string & value, T & dst) {
+    char c;
+    std::istringstream is{ value };
+    T result;
+    if ((is >> std::boolalpha >> result) && !(is >> c)) {
+        dst = result;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 
 }//tolua_export
