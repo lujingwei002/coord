@@ -17,7 +17,7 @@ HTTPPARSER_VERSION=2.9.4
 ARGPARSE_VERSION=2.6
 LUA_VERSION=5.1
 
-
+# ============================================= libuv ===================================================
 LIBUV_DIR=libuv-$(LIBUV_VERSION)
 LIBUV_LIB=$(LIBUV_DIR)/libuv/lib/libuv.a
 
@@ -56,8 +56,10 @@ $(LIBUV_DIR)/install:
 	cp $(LIBUV_LIB) ../lib 
 	rm -rf ../include/uv
 	cp -rf $(LIBUV_DIR)/libuv/include/* ../include/
+# ============================================= libuv ===================================================
 
 
+# ============================================= hiredis ===================================================
 HIREDIS_DIR=hiredis-$(HIREDIS_VERSION)
 HIREDIS_LIB=$(HIREDIS_DIR)/libhiredis.a
 
@@ -93,7 +95,10 @@ $(HIREDIS_DIR)/install:
 	rm -rf ../include/hiredis;mkdir ../include/hiredis
 	cp -rf $(HIREDIS_DIR)/*.h ../include/hiredis/
 	cp -rf $(HIREDIS_DIR)/adapters ../include/hiredis/
+# ============================================= hiredis ===================================================
 
+
+# ============================================= http-parser ===================================================
 HTTPPARSER_DIR=http-parser-$(HTTPPARSER_VERSION)
 HTTPPARSER_LIB=$(HTTPPARSER_DIR)/libhttp_parser.a
 
@@ -127,9 +132,11 @@ $(HTTPPARSER_DIR)/install:
 	cp $(HTTPPARSER_LIB) ../lib 
 	rm -rf ../include/http-parser;mkdir ../include/http-parser
 	cp -rf $(HTTPPARSER_DIR)/*.h ../include/http-parser
+# ============================================= http-parser ===================================================
 
 
 
+# ============================================= lua ===================================================
 
 LUA_DIR=lua-$(LUA_VERSION)
 LUA_LIB=$(LUA_DIR)/src/liblua.a
@@ -166,8 +173,10 @@ $(LUA_DIR)/install:
 	rm -rf ../include/lua;mkdir ../include/lua
 	cp -rf $(LUA_DIR)/src/*.h ../include/lua
 
+# ============================================= lua ===================================================
 
 
+# ============================================= tolua++ ===================================================
 TOLUA_DIR=tolua++-$(TOLUA_VERSION)
 TOLUA_LIB=$(TOLUA_DIR)/tolua++.a
 
@@ -200,8 +209,10 @@ $(TOLUA_DIR)/install:
 	cp -rf $(TOLUA_DIR)/testfile ../bin/tolua++
 	cp -rf $(TOLUA_DIR)/tests ../bin/tolua++
 	cp -rf $(TOLUA_DIR)/lua ../bin/tolua++
+# ============================================= tolua++ ===================================================
 
 
+# ============================================= protobuf ===================================================
 
 PROTOBUF_DIR=protobuf-$(PROTOBUF_VERSION)
 PROTOBUF_LIB=$(PROTOBUF_DIR)/libprotobuf/lib/libprotobuf.a
@@ -243,8 +254,10 @@ $(PROTOBUF_DIR)/install:
 	cp $(PROTOBUF_DIR)/libprotobuf/bin/protoc ../bin/protoc
 	rm -rf ../include/google/protobuf
 	cp -rf $(PROTOBUF_DIR)/libprotobuf/include/google/protobuf ../include/google
+# ============================================= protobuf ===================================================
 
 
+# ============================================= googletest ===================================================
 GTEST_DIR=googletest-release-$(GTEST_VERSION)
 GTEST_LIB=$(GTEST_DIR)/build/lib/libgtest.a
 
@@ -285,8 +298,10 @@ $(GTEST_DIR)/install:
 	rm -rf ../include/gtest
 	cp -rf $(GTEST_DIR)/googletest/include/gtest ../include/
 	cp -rf $(GTEST_DIR)/googlemock/include/gmock ../include/
+# ============================================= googletest ===================================================
 
 
+# ============================================= benchmark ===================================================
 BENCHMARK_DIR=benchmark-$(BENCHMARK_VERSION)
 BENCHMARK_LIB=$(BENCHMARK_DIR)/build/src/libbenchmark.a
 
@@ -324,9 +339,11 @@ $(BENCHMARK_DIR)/install:
 	cp $(BENCHMARK_LIB) ../lib 
 	rm -rf ../include/benchmark
 	cp -rf $(BENCHMARK_DIR)/include/benchmark ../include/
+# ============================================= benchmark ===================================================
 
 
 
+# ============================================= ccronexpr ===================================================
 CCRONEXPR_DIR=ccronexpr-$(CCRONEXPR_VERSION)
 CCRONEXPR_LIB=$(CCRONEXPR_DIR)/libccronexpr.a
 
@@ -362,7 +379,9 @@ $(CCRONEXPR_DIR)/install:
 	cp $(CCRONEXPR_DIR)/libccronexpr.a ../lib 
 	rm -rf ../include/ccronexpr;mkdir -p ../include/ccronexpr
 	cp -rf $(CCRONEXPR_DIR)/*.h ../include/ccronexpr
+# ============================================= ccronexpr ===================================================
 
+# ============================================= nlohmann/json ===================================================
 JSON_DIR=json-$(JSON_VERSION)
 
 $(JSON_DIR): archive/json-$(JSON_VERSION).tar.gz
@@ -388,7 +407,9 @@ $(JSON_DIR)/install:
 	@mkdir -p ../include
 	rm -rf ../include/json;mkdir -p ../include/json
 	cp -rf $(JSON_DIR)/single_include/nlohmann/*.hpp ../include/json
+# ============================================= nlohmann/json ===================================================
 
+# ============================================= mysql connector ===================================================
 MYSQL_DIR=mysql-connector-$(MYSQL_VERSION)
 MYSQL_LIB=$(MYSQL_DIR)/lib/libmysqlclient.a
 
@@ -411,7 +432,9 @@ $(MYSQL_DIR)/install:
 	cp $(MYSQL_LIB) ../lib 
 	rm -rf ../include/mysql
 	cp -rf $(MYSQL_DIR)/include/ ../include/mysql
+# ============================================= mysql connector ===================================================
 
+# ============================================= inipp ===================================================
 INIPP_DIR=inipp-$(INIPP_VERSION)
 
 $(INIPP_DIR): archive/inipp-$(INIPP_VERSION).tar.gz
@@ -437,7 +460,9 @@ $(INIPP_DIR)/install:
 	@mkdir -p ../include
 	rm -rf ../include/inipp;mkdir -p ../include/inipp
 	cp -rf $(INIPP_DIR)/inipp/*.h ../include/inipp
+# ============================================= inipp ===================================================
 
+# ============================================= dropbox/json11 ===================================================
 JSON11_DIR=json11-$(JSON11_VERSION)
 
 $(JSON11_DIR): archive/json11-$(JSON11_VERSION).tar.gz
@@ -464,8 +489,10 @@ $(JSON11_DIR)/install:
 	rm -rf ../src/json11;mkdir -p ../src/json11
 	cp -rf $(JSON11_DIR)/*.hpp ../src/json11
 	cp -rf $(JSON11_DIR)/*.cpp ../src/json11
+# ============================================= dropbox/json11 ===================================================
 
 
+# ============================================= mpx/lua-cjson ===================================================
 CJSON_DIR=lua-cjson-$(CJSON_VERSION)
 CJSON_LIB=$(CJSON_DIR)/libcjson.a
 
@@ -501,7 +528,9 @@ $(CJSON_DIR)/install:
 	cp $(CJSON_LIB) ../lib 
 	rm -rf ../include/lua-cjson;mkdir -p ../include/lua-cjson
 	cp -rf archive/lua-cjson/lua_cjson.h ../include/lua-cjson
+# ============================================= mpx/lua-cjson ===================================================
 
+# ============================================= p-ranav/argparse ===================================================
 ARGPARSE_DIR=argparse-$(ARGPARSE_VERSION)
 ARGPARSE_LIB=$(ARGPARSE_DIR)/libargparse.a
 
@@ -527,18 +556,22 @@ $(ARGPARSE_DIR)/install:
 	@mkdir -p ../include
 	rm -rf ../include/argparse;mkdir -p ../include/argparse
 	cp -rf $(ARGPARSE_DIR)/include/argparse/argparse.hpp ../include/argparse/argparse.hpp
+# ============================================= p-ranav/argparse ===================================================
 
+# 下载
 download: $(HIREDIS_DIR)/download $(HTTPPARSER_DIR)/download $(LUA_DIR)/download $(PROTOBUF_DIR)/download $(GTEST_DIR)/download $(LIBUV_DIR)/download $(CCRONEXPR_DIR)/download $(BENCHMARK_DIR)/download $(INIPP_DIR)/download $(JSON_DIR)/download $(JSON11_DIR)/download $(CJSON_DIR)/download $(ARGPARSE_DIR)/download
 
-fetch: $(HIREDIS_DIR) $(HTTPPARSER_DIR) $(LUA_DIR) $(PROTOBUF_DIR) $(TOLUA_DIR) $(GTEST_DIR) $(LIBUV_DIR) $(CCRONEXPR_DIR) $(BENCHMARK_DIR) $(INIPP_DIR) $(JSON_DIR) $(MYSQL_DIR) $(JSON11_DIR) $(CJSON_DIR) $(ARGPARSE_DIR)
-
+# 编译
 default: $(HIREDIS_LIB) $(HTTPPARSER_LIB) $(LUA_LIB) $(PROTOBUF_LIB) $(TOLUA_LIB) $(GTEST_LIB) $(LIBUV_LIB) $(CCRONEXPR_LIB) $(BENCHMARK_LIB) $(CJSON_LIB) $(JSON11_DIR) $(JSON_DIR) $(INIPP_DIR) $(MYSQL_LIB) $(ARGPARSE_DIR)
 
+# 安装
 install: $(HIREDIS_DIR)/install $(HTTPPARSER_DIR)/install $(LUA_DIR)/install $(PROTOBUF_DIR)/install $(TOLUA_DIR)/install $(GTEST_DIR)/install $(LIBUV_DIR)/install $(CCRONEXPR_DIR)/install $(BENCHMARK_DIR)/install $(JSON_DIR)/install $(MYSQL_DIR)/install $(INIPP_DIR)/install $(JSON11_DIR)/install $(CJSON_DIR)/install $(ARGPARSE_DIR)/install 
 
+# 清理
 clean: $(HIREDIS_DIR)/clean $(HTTPPARSER_DIR)/clean $(LUA_DIR)/clean $(PROTOBUF_DIR)/clean $(TOLUA_DIR)/clean $(GTEST_DIR)/clean $(LIBUV_DIR)/clean $(CCRONEXPR_DIR)/clean $(BENCHMARK_DIR)/clean $(CJSON_DIR)/clean 
 
+# 删除
 remove: $(HIREDIS_DIR)/remove $(HTTPPARSER_DIR)/remove $(LUA_DIR)/remove $(PROTOBUF_DIR)/remove $(TOLUA_DIR)/remove $(GTEST_DIR)/remove $(LIBUV_DIR)/remove $(CCRONEXPR_DIR)/remove $(BENCHMARK_DIR)/remove $(CJSON_DIR)/remove $(ARGPARSE_DIR)/remove $(INIPP_DIR)/remove $(JSON_DIR)/remove $(JSON11_DIR)/remove $(MYSQL_DIR)/remove
 
-.PYHON: default 
+.PYHON: default download clean remove install
 
