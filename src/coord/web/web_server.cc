@@ -29,7 +29,7 @@ WebConfig* WebServer::DefaultConfig() {
 }
 
 bool WebServer::Start() {
-    this->coord->coreLogDebug("[WebServer] Listen, host=%s, port=%d", this->config.Host.c_str(), this->config.Port);
+    this->coord->CoreLogDebug("[WebServer] Listen, host=%s, port=%d", this->config.Host.c_str(), this->config.Port);
     this->listener->SetHandler(this);
     this->listener->Listen(this->config.Host.c_str(), this->config.Port);
     return true;

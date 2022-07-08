@@ -11,5 +11,7 @@ namespace io {
 int ReadFile(const char* path, byte_slice& buffer);
 
 uv_stat_t* FileStat(const char* path);
+
+int FileLock(const char* path);
 }
 }

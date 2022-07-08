@@ -148,7 +148,7 @@ int Config::urlParse(const char* data, size_t size, std::string& section, std::s
 
 int Config::gotConfigLineError(const std::string& configPath, int lineNum, char* data, size_t size) {
     std::string line(data, size);
-    this->coord->coreLogError("parse error %s(%d): %s", configPath.c_str(), lineNum, line.c_str());
+    this->coord->CoreLogError("parse error %s(%d): %s", configPath.c_str(), lineNum, line.c_str());
     return 0;
 }
 
@@ -558,7 +558,7 @@ int Config::scanConfigMultiLine(const std::string& configPath, char* data, size_
 int Config::scanConfigFile(const std::string& configPath) {
     FILE* f = fopen(configPath.c_str(), "r");
     if (nullptr == f) {
-        this->coord->coreLogError("no such file or directory: %s", configPath.c_str());
+        this->coord->CoreLogError("no such file or directory: %s", configPath.c_str());
         return ErrorNoSuchFileOrDirectory;
     }
     fseek(f, 0, SEEK_END);
@@ -658,7 +658,7 @@ int Config::parse(const char* configPath) {
     std::string realPath;
     int err = coord::path::RealPath(configPath, realPath);
     if (err) {
-        this->coord->coreLogError("%s: %s", uv_strerror(err), configPath);
+        this->coord->CoreLogError("%s: %s", uv_strerror(err), configPath);
         return err;
     }
     err = this->scanConfigFile(realPath);
@@ -678,10 +678,14 @@ int Config::parse(const char* configPath) {
         this->get(it->second, "worker_num", this->Basic.WorkerNum);
         this->get(it->second, "proto", this->Basic.Proto);
         this->get(it->second, "name", this->Basic.Name);
-        this->get(it->second, "pid", this->Basic.Pid);
+        if(!this->get(it->second, "pid", this->Basic.Pid)) {
+            std::string pidFile = this->Basic.Name + ".pid";
+            this->Basic.Pid = coord::path::PathJoin(this->coord->Environment->WorkingDir, pidFile);
+        }
         this->get(it->second, "version", this->Basic.Version);
     }
-
+    this->Basic.ProcDir = coord::path::PathJoin(this->coord->Environment->ProcDir, this->Basic.Name);
+    this->Basic.Pid = coord::path::PathJoin(this->Basic.ProcDir, "pid");
     // 处理package, 转换成绝对路径
     {
         std::string package;

@@ -56,22 +56,22 @@ HttpServerConfig* HttpServer::DefaultConfig() {
 }
 
 int HttpServer::Start() {
-    //this->coord->coreLogDebug("[HttpServer] Listen, host=%s, port=%d, backlog=%d", host, port, backlog);
+    //this->coord->CoreLogDebug("[HttpServer] Listen, host=%s, port=%d, backlog=%d", host, port, backlog);
     this->listener->SetHandler(this);
     if (this->config.SSLEncrypt) {
         SSL_CTX* sslCtx = SSL_CTX_new(SSLv23_server_method());
         if (!SSL_CTX_use_certificate_file(sslCtx, this->config.SSLPemFile.c_str(), SSL_FILETYPE_PEM)) {
-            this->coord->coreLogError("[HttpServer] Listen failed, cert=%s, error='SSL_CTX_use_certificate_file'", this->config.SSLPemFile.c_str());
+            this->coord->CoreLogError("[HttpServer] Listen failed, cert=%s, error='SSL_CTX_use_certificate_file'", this->config.SSLPemFile.c_str());
             ERR_print_errors_fp(stderr);
             return -1;
         }
         if (!SSL_CTX_use_PrivateKey_file(sslCtx, this->config.SSLKeyFile.c_str(), SSL_FILETYPE_PEM )) {
-            this->coord->coreLogError("[HttpServer] Listen failed, key=%s, error='SSL_CTX_use_PrivateKey_file'", this->config.SSLKeyFile.c_str());
+            this->coord->CoreLogError("[HttpServer] Listen failed, key=%s, error='SSL_CTX_use_PrivateKey_file'", this->config.SSLKeyFile.c_str());
             ERR_print_errors_fp(stderr);
             return -1;
         }
         if (!SSL_CTX_check_private_key(sslCtx)) {
-            this->coord->coreLogError("[HttpServer] Listen failed, error='SSL_CTX_check_private_key'");
+            this->coord->CoreLogError("[HttpServer] Listen failed, error='SSL_CTX_check_private_key'");
             ERR_print_errors_fp(stderr);
             return -1;
         }
@@ -88,7 +88,7 @@ void HttpServer::SetHandler(IHttpHandler* handler) {
 void HttpServer::recvHttpRequest(HttpRequest* request){
     HttpAgent* agent = request->agent;
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[HttpServer] recvHttpRequest, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[HttpServer] recvHttpRequest, sessionId=%d", sessionId);
     if(this->handler) {
         this->handler->recvHttpRequest(request);
     } else {
@@ -98,7 +98,7 @@ void HttpServer::recvHttpRequest(HttpRequest* request){
 
 void HttpServer::recvHttpUpgrade(HttpAgent* agent, HttpRequest* request){
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[HttpServer] recvHttpUpgrade, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[HttpServer] recvHttpUpgrade, sessionId=%d", sessionId);
     if(this->handler) {
         this->handler->recvHttpUpgrade(agent, request);
     } else {
@@ -108,7 +108,7 @@ void HttpServer::recvHttpUpgrade(HttpAgent* agent, HttpRequest* request){
 
 void HttpServer::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAgent){
     int sessionId = tcpAgent->sessionId;
-    this->coord->coreLogDebug("[HttpServer] recvTcpNew sessionId=%d, remoteAddr=%s", sessionId, tcpAgent->remoteAddr.c_str());
+    this->coord->CoreLogDebug("[HttpServer] recvTcpNew sessionId=%d, remoteAddr=%s", sessionId, tcpAgent->remoteAddr.c_str());
     tcpAgent->SetRecvBuffer(this->config.RecvBufferSize);
     HttpAgent *agent = HttpAgent::New(this->coord, this, tcpAgent);
     agent->sessionId = sessionId;
@@ -118,10 +118,10 @@ void HttpServer::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAgent)
 
 void HttpServer::recvAgentClose(HttpAgent* agent){
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[HttpServer] recvAgentClose sessionId=%d, ref=%d", sessionId, agent->_ref);
+    this->coord->CoreLogDebug("[HttpServer] recvAgentClose sessionId=%d, ref=%d", sessionId, agent->_ref);
     auto it = this->agentDict.find(sessionId);
     if(it == this->agentDict.end()){
-        this->coord->coreLogDebug("[HttpServer] recvAgentClose failed, error='agent not found', sessionId=%d", sessionId);
+        this->coord->CoreLogDebug("[HttpServer] recvAgentClose failed, error='agent not found', sessionId=%d", sessionId);
         return;
     }
     this->agentDict.erase(it);

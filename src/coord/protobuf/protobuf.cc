@@ -12,7 +12,7 @@ CC_IMPLEMENT(share_ptr, "coord::protobuf::share_ptr")
 
 void my_multi_file_error_collector::AddError(const std::string& fileName, int line, int column, const std::string & message) {
     // std::cout << line << ":" << column << " " << message << std::endl;
-    coorda->coreLogError("[Proto] my_multi_file_error_collector, file='%s', line=%d, column=%d, error='%s'\n", fileName.c_str(), line, column, message.c_str());
+    coorda->CoreLogError("[Proto] my_multi_file_error_collector, file='%s', line=%d, column=%d, error='%s'\n", fileName.c_str(), line, column, message.c_str());
 }
 
 int Serialize(byte_slice& buffer, google::protobuf::Message* message) {
@@ -96,17 +96,17 @@ int Protobuf::MapPath(const char *name, const char *dir) {
 }
 
 int Protobuf::Import(const char *fileName) {
-    this->coord->coreLogDebug("[Proto] Import, file=%s", fileName);
+    this->coord->CoreLogDebug("[Proto] Import, file=%s", fileName);
     const google::protobuf::FileDescriptor* file = importer->Import(fileName);
     if(file == nullptr) {
-        this->coord->coreLogError("[Proto] Import failed, file=%s", fileName);
+        this->coord->CoreLogError("[Proto] Import failed, file=%s", fileName);
         return ErrorInvalid;
     }
     return 0;
 }
 
 int Protobuf::ImportDir(const char *dir) {
-    this->coord->coreLogDebug("[Proto] ImportDir, file=%s", dir);
+    this->coord->CoreLogDebug("[Proto] ImportDir, file=%s", dir);
     uv_fs_t req;
     uv_dirent_t ent;
     uv_fs_scandir(&this->coord->loop, &req, dir, 0, NULL);
@@ -161,7 +161,7 @@ int Protobuf::main() {
     if(this->coord->Config->Basic.Proto.length() > 0) {
         int err = this->ImportDir(this->coord->Config->Basic.Proto.c_str());
         if (err) {
-            this->coord->coreLogError("[Proto] main failed, error='import proto err'");
+            this->coord->CoreLogError("[Proto] main failed, error='import proto err'");
             return err;
         }
     }
@@ -172,7 +172,7 @@ int Protobuf::registerMetatable() {
     lua_State* L = this->coord->Script->L;
     luaL_getmetatable (L, "coord::protobuf::Reflect");
     if(lua_isnil(L, -1)) {
-        this->coord->coreLogError("[Proto] registerMetatable failed, error='metatable not found'");
+        this->coord->CoreLogError("[Proto] registerMetatable failed, error='metatable not found'");
         return 1;
     }
     lua_pushstring(L, "__index");
@@ -192,17 +192,17 @@ google::protobuf::Message* Protobuf::NewMessage(const char* name) {
     google::protobuf::Message* message = NULL;
     const google::protobuf::Descriptor* descriptor = pool->FindMessageTypeByName(name);
     if(descriptor == NULL) {
-        this->coord->coreLogError("[Proto] NewMessage failed, name=%s, error='descriptor not found'", name);
+        this->coord->CoreLogError("[Proto] NewMessage failed, name=%s, error='descriptor not found'", name);
         return NULL;
     }
     const google::protobuf::Message* prototype = factory->GetPrototype(descriptor);
     if(prototype == NULL) {
-        this->coord->coreLogError("[Proto] NewMessage failed, name=%s, error='prototype not found'", name);
+        this->coord->CoreLogError("[Proto] NewMessage failed, name=%s, error='prototype not found'", name);
         return NULL;
     }
     message = prototype->New();
     if(message == NULL) {
-        this->coord->coreLogError("[Proto] NewMessage failed, name=%s, error='message not found'", name);
+        this->coord->CoreLogError("[Proto] NewMessage failed, name=%s, error='message not found'", name);
         return NULL;
     }
     return message;

@@ -27,7 +27,7 @@ Managed::~Managed() {
 }
 
 int Managed::start() {
-    this->coord->coreLogDebug("[Managed] Start");
+    this->coord->CoreLogDebug("[Managed] Start");
     int err = 0; 
     //启动server
     this->server = newManagedServer(this->coord, this);

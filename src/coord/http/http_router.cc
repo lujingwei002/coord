@@ -353,7 +353,7 @@ void HttpRouter::recvStaticFileRequest(HttpRequest* request, const char* dir) {
 
 bool HttpRouter::addRoute(const char* method, const char* path, http_router_handler* handler) {
     RouterMethodTree* methodTree = this->getMethodTree(method);
-    this->coord->coreLogDebug("[HttpRouter] addRoute, method=%s, path=%s", method, path);
+    this->coord->CoreLogDebug("[HttpRouter] addRoute, method=%s, path=%s", method, path);
     HttpRouteNode* node = methodTree->root;
     int pathLen = strlen(path);
 
@@ -406,7 +406,7 @@ bool HttpRouter::addRoute(const char* method, const char* path, http_router_hand
     } else {
         node->handler = NULL;
     }
-    //this->coord->coreLogDebug("bbb %s %s", node->path.c_str(), node->fullPath.c_str());
+    //this->coord->CoreLogDebug("bbb %s %s", node->path.c_str(), node->fullPath.c_str());
     return true;
 } 
 

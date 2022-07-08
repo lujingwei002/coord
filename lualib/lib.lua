@@ -142,7 +142,7 @@ local function _import_(searchDir, packagePath, exportName)
                 end
             end
             if packageNameReal == packageName or packageNameReal == 'main' then             
-                coorda:coreLogDebug(string.format('require %s', fullPath))
+                --coorda:CoreLogDebug(string.format('require %s', fullPath))
                 local f, err = loadfile(fullPath)
                 if not f then
                     error(err)
@@ -229,7 +229,7 @@ function print(...)
 end
 
 function _main_()
-    --coorda:coreLogDebug(coorda.Script.Path)
+    --coorda:CoreLogDebug(coorda.Script.Path)
     --环境初始化
     script.package = {}
     script.export = {}

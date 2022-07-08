@@ -30,24 +30,24 @@ MySQLClient::~MySQLClient() {
 int MySQLClient::Connect() {
     MYSQL* conn = mysql_init(NULL);
     if(conn == nullptr) {
-        this->coord->coreLogError("[MySQLClient] Connect failed, host=%s, port=%d, error='%s'", config.Host.c_str(), config.Port, mysql_error(conn));
+        this->coord->CoreLogError("[MySQLClient] Connect failed, host=%s, port=%d, error='%s'", config.Host.c_str(), config.Port, mysql_error(conn));
         return ErrorUnknown;
     }
     my_bool b = true;
     int err = mysql_options(conn, MYSQL_OPT_RECONNECT, &b);
     if (err != 0){
-        this->coord->coreLogError("[MySQLClient] Connect failed, host=%s, port=%d, error='%s'", config.Host.c_str(), config.Port, mysql_error(conn));
+        this->coord->CoreLogError("[MySQLClient] Connect failed, host=%s, port=%d, error='%s'", config.Host.c_str(), config.Port, mysql_error(conn));
         return ErrorUnknown;
     }
     auto config = this->config;
     conn = mysql_real_connect(conn, config.Host.c_str(), config.User.c_str(), config.Password.c_str(), config.DB.c_str(), config.Port, NULL, MYSQL_OPT_RECONNECT);    
     if(conn == nullptr){
-        this->coord->coreLogError("[MySQLClient] Connect failed, host=%s, port=%d, error='%s'", config.Host.c_str(), config.Port, mysql_error(conn));
+        this->coord->CoreLogError("[MySQLClient] Connect failed, host=%s, port=%d, error='%s'", config.Host.c_str(), config.Port, mysql_error(conn));
         return ErrorUnknown;
     }
     err = mysql_set_character_set(conn, config.CharacterSet.c_str()); 
     if (err != 0){
-        this->coord->coreLogError("[MySQLClient] Connect failed, host=%s, port=%d, error='%s'", config.Host.c_str(), config.Port, mysql_error(conn));
+        this->coord->CoreLogError("[MySQLClient] Connect failed, host=%s, port=%d, error='%s'", config.Host.c_str(), config.Port, mysql_error(conn));
         return ErrorUnknown;
     }
     this->conn = conn;
@@ -69,10 +69,10 @@ SQLRows MySQLClient::query(const char* statement) {
     if(this->conn == nullptr){
         return SQLRows(this->coord);
     }
-    this->coord->coreLogDebug("[MySQLClient] query, %s", statement);
+    this->coord->CoreLogDebug("[MySQLClient] query, %s", statement);
     int err = mysql_query(this->conn, statement);
     if (err != 0){
-        this->coord->coreLogError("[MySQLClient] query failed, statement=`%s`, error=`%s`", statement, mysql_error(conn));
+        this->coord->CoreLogError("[MySQLClient] query failed, statement=`%s`, error=`%s`", statement, mysql_error(conn));
         return SQLRows(this->coord);
     }
     return SQLRows(this->coord, newMySQLRows(this->coord, this->conn));
@@ -83,13 +83,13 @@ SQLRows MySQLClient::get(const char* statement) {
     if(this->conn == nullptr){
         return SQLRows(this->coord);
     }
-    this->coord->coreLogDebug("[MySQLClient] get, %s", statement);
+    this->coord->CoreLogDebug("[MySQLClient] get, %s", statement);
     uint64_t t1 = uv_hrtime();
     int err = mysql_query(this->conn, statement);
     uint64_t duration = uv_hrtime() - t1;
-    this->coord->coreLogDebug("[MySQLClient] get, %s %s", date::FormatNano(duration), statement);
+    this->coord->CoreLogDebug("[MySQLClient] get, %s %s", date::FormatNano(duration), statement);
     if (err != 0){
-        this->coord->coreLogError("[MySQLClient] get failed, statement=`%s`, error=`%s`", statement, mysql_error(conn));
+        this->coord->CoreLogError("[MySQLClient] get failed, statement=`%s`, error=`%s`", statement, mysql_error(conn));
         return SQLRows(this->coord);
     }
     return SQLRows(this->coord, newMySQLRows(this->coord, this->conn));
@@ -101,7 +101,7 @@ SQLResult MySQLClient::execute(const char* statement) {
     }
     int err = mysql_query(this->conn, statement);
     if (err != 0){
-        this->coord->coreLogError("[MySQLClient] execute failed, statement=`%s`, error=`%s`", statement, mysql_error(conn));
+        this->coord->CoreLogError("[MySQLClient] execute failed, statement=`%s`, error=`%s`", statement, mysql_error(conn));
         return SQLResult(this->coord);
     }
     return SQLResult(this->coord, newMySQLResult(this->coord, this->conn));
@@ -113,7 +113,7 @@ int MySQLClient::Ping() {
     }
     int err = mysql_ping(this->conn);
     if (err != 0){
-        this->coord->coreLogError("[MySQLClient] Ping failed, error='%s'", mysql_error(conn));
+        this->coord->CoreLogError("[MySQLClient] Ping failed, error='%s'", mysql_error(conn));
         return ErrorUnknown;
     }
     return 0;

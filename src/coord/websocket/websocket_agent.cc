@@ -23,7 +23,7 @@ Agent::Agent(Coord* coord, Server* server, http::HttpAgent* httpAgent) {
 }
 
 Agent::~Agent() {
-    this->coord->coreLogDebug("[websocket::Agent] ~");
+    this->coord->CoreLogDebug("[websocket::Agent] ~");
     //释放末完成的frame
     if(this->frame != nullptr){
         delete this->frame;
@@ -37,7 +37,7 @@ Agent::~Agent() {
 }    
 
 void Agent::recvHttpClose(http::HttpAgent* agent){
-    this->coord->coreLogDebug("[websocket::Agent] recvHttpClose sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[websocket::Agent] recvHttpClose sessionId=%d", this->sessionId);
     if(this->handler != nullptr) {
         this->handler->recvWebSocketClose(this);
     } else {
@@ -76,13 +76,13 @@ void Agent::recvWebSocketFrame(Frame* frame) {
             this->recvWebSocketPingFrame(frame);
         }
     } catch(http::HttpException& e){
-        this->coord->coreLogError("[Agent] recvWebSocketFrame failed, error=%s", e.What());
+        this->coord->CoreLogError("[Agent] recvWebSocketFrame failed, error=%s", e.What());
     }
 }
 
 void Agent::recvWebSocketDataFrame(Frame* frame){
     int sessionId = this->sessionId;
-    this->coord->coreLogDebug("[websocket::Agent] recvWebSocketDataFrame, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[websocket::Agent] recvWebSocketDataFrame, sessionId=%d", sessionId);
     if(this->handler != nullptr) {
         this->handler->recvWebSocketFrame(this, frame);
     } else {
@@ -92,13 +92,13 @@ void Agent::recvWebSocketDataFrame(Frame* frame){
 
 void Agent::recvWebSocketCloseFrame(Frame* frame){
     int sessionId = this->sessionId;
-    this->coord->coreLogDebug("[websocket::Agent] recvWebSocketCloseFrame, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[websocket::Agent] recvWebSocketCloseFrame, sessionId=%d", sessionId);
     this->Close();
 } 
 
 void Agent::recvWebSocketPingFrame(Frame* frame){
     int sessionId = this->sessionId;
-    this->coord->coreLogDebug("[websocket::Agent] recvWebSocketPingFrame, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[websocket::Agent] recvWebSocketPingFrame, sessionId=%d", sessionId);
     this->sendPongFrame();
 }
 
@@ -133,7 +133,7 @@ int Agent::SendBinaryFrame(byte_slice& data) {
 
 //发送帧
 int Agent::sendFrame(int opcode, const char* data, size_t len) {
-   this->coord->coreLogDebug("[websocket::Agent] sendFrame sessionId=%d, opcode=%d, len=%d", this->sessionId, opcode, len);
+   this->coord->CoreLogDebug("[websocket::Agent] sendFrame sessionId=%d, opcode=%d, len=%d", this->sessionId, opcode, len);
     websocket_frame_header header;
     header.fin = 1;//结束帧
     header.rsv = 0;
@@ -141,7 +141,7 @@ int Agent::sendFrame(int opcode, const char* data, size_t len) {
     header.mask = 0;//没有掩码
     byte_slice frame;
     if (len > 0xFFFF){
-        this->coord->coreLogError("[websocket::Agent] sendFrame failed, data too large");
+        this->coord->CoreLogError("[websocket::Agent] sendFrame failed, data too large");
     } else if(len >= 126) {
         header.payloadLen = 126;
         frame.Reserve(sizeof(header) + sizeof(uint16_t) + len);
@@ -164,7 +164,7 @@ int Agent::sendFrame(int opcode, const char* data, size_t len) {
 
 //发送帧
 int Agent::sendFrame(int opcode, byte_slice& data) {
-   this->coord->coreLogDebug("[websocket::Agent] sendFrame sessionId=%d, opcode=%d, len=%d", this->sessionId, opcode, data.Len());
+   this->coord->CoreLogDebug("[websocket::Agent] sendFrame sessionId=%d, opcode=%d, len=%d", this->sessionId, opcode, data.Len());
     websocket_frame_header header;
     header.fin = 1;//结束帧
     header.rsv = 0;
@@ -173,7 +173,7 @@ int Agent::sendFrame(int opcode, byte_slice& data) {
     size_t len = data.Len();
     byte_slice frame;
     if (len > 0xFFFF){
-        this->coord->coreLogError("[websocket::Agent] sendFrame failed, data too large");
+        this->coord->CoreLogError("[websocket::Agent] sendFrame failed, data too large");
     } else if(len >= 126) {
         header.payloadLen = 126;
         frame.Reserve(sizeof(header) + sizeof(uint16_t) + len);

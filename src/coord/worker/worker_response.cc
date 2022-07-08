@@ -19,7 +19,7 @@ Response::Response(Coord* coord, Request* request) : BaseResponse(coord) {
 }
 
 Response::~Response() {
-    this->coord->coreLogDebug("[worker::Response] ~");
+    this->coord->CoreLogDebug("[worker::Response] ~");
 }
 
 

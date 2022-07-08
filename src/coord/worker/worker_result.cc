@@ -20,7 +20,7 @@ Result::Result(Coord* coord) : BaseResult(coord) {
 }
 
 Result::~Result() {
-    this->coord->coreLogDebug("[worker::Result] ~");
+    this->coord->CoreLogDebug("[worker::Result] ~");
 }
 
 }

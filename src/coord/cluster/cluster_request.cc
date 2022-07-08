@@ -22,7 +22,7 @@ Request::Request(Coord* coord, cluster_agent* agent) : BaseRequest(coord) {
 }
 
 Request::~Request() {
-    this->coord->coreLogDebug("[cluster::Request] ~Request");
+    this->coord->CoreLogDebug("[cluster::Request] ~Request");
     if(this->response != NULL){
         delete this->response;
         this->response = NULL;

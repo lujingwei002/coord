@@ -90,24 +90,93 @@ namespace coord {
         fprintf(stderr, "coord_sigint_handler: %d\n", signum);
         uv_signal_stop(handle);
         Coord* coord = (Coord*)handle->data;
-        coord->recvSigInt();
+        coord->Destory(0);
     }
 
     static void coord_sigusr1_handler(uv_signal_t *handle, int signum) {
         fprintf(stderr, "coord_sigusr1_handler: %d\n", signum);
-        //uv_signal_stop(handle);
-        //Coord* coord = (Coord*)handle->data;
-        //coord->recvSigInt();
     }
 
     static void coord_sigusr2_handler(uv_signal_t *handle, int signum) {
         fprintf(stderr, "coord_sigusr2_handler: %d\n", signum);
         Coord* coord = (Coord*)handle->data;
         coord->Reload();
-        //uv_signal_stop(handle);
-        //Coord* coord = (Coord*)handle->data;
-        //coord->recvSigInt();
     }
+
+    static int daemon() {
+    #if defined(__linux__)
+        int pid;
+        pid = fork();
+        if(pid){
+            exit(0);
+        }else if(pid < 0){
+            fprintf(stderr, "fork error");
+            return -1;
+        }
+        setsid();
+        pid = fork();
+        if(pid){
+            exit(0);
+        }else if(pid < 0){
+            fprintf(stderr, "fork error");
+            return -1;
+        }
+        return 0;
+    #elif defined(_WIN32)
+        return 0;
+    #endif
+    }
+
+    static int action_start(argparse::ArgumentParser& parser) {
+        int err;
+        if (parser.get<bool>("-d")) {
+            err = daemon();
+            if (err) {
+                return err;
+            }
+        }
+        err = coord::Init();
+        if (err) {
+            return err;
+        }
+        auto configureFile = parser.get<std::string>("--configure");
+        Coord* coord = NewCoord();
+        err = coord->Main(configureFile.c_str());
+        coord::Destory(); 
+        return err;
+    }
+
+    static int action_fork(argparse::ArgumentParser& parser) {
+        int err;
+        if (parser.get<bool>("-d")) {
+            err = daemon();
+            if (err) {
+                return err;
+            }
+        }
+        err = coord::Init();
+        if (err) {
+            return err;
+        }
+        auto configures = parser.get<std::vector<std::string>>("--configure");
+        for (auto c : configures) {
+            err = coord::Fork(c.c_str());
+            if(err){
+                fprintf(stderr, "error: %d\n", err);
+                return err;
+            }
+        }
+        err = coord::Wait();
+        coord::Destory(); 
+        return err;
+    }
+
+    static int action_help(argparse::ArgumentParser& parser) {
+        printf("help.......\n");
+        return 0;
+    }
+    typedef std::function<int (argparse::ArgumentParser& parser)> argparser_action_func; 
+    
 
     // 运行在主线程中
     int Fork(const char *configPath) {
@@ -162,36 +231,12 @@ namespace coord {
     void Destory() {
     }
 
-    int daemon() {
-    #if defined(__linux__)
-        int pid;
-        pid = fork();
-        if(pid){
-            exit(0);
-        }else if(pid < 0){
-            fprintf(stderr, "fork error");
-            return -1;
-        }
-        setsid();
-        pid = fork();
-        if(pid){
-            exit(0);
-        }else if(pid < 0){
-            fprintf(stderr, "fork error");
-            return -1;
-        }
-        return 0;
-    #elif defined(_WIN32)
-        return 0;
-    #endif
-    }
-
-    int action_env(argparse::ArgumentParser& parser) {
+    static int action_env(argparse::ArgumentParser& parser) {
         coord::Init();
         auto configures = parser.get<std::vector<std::string>>("--configure");
         for (auto c : configures) {
             coord::Coord* coorda = coord::NewCoord();
-            int err = coorda->actionEnv(c.c_str());
+            int err = coorda->ActionEnv(c.c_str());
             if(err){
                 fprintf(stderr, "error: %d\n", err);
                 return err;
@@ -202,44 +247,14 @@ namespace coord {
         return 0;
     }
 
-    int action_start(argparse::ArgumentParser& parser) {
-        int err;
-        if (parser.get<bool>("-d")) {
-            err = daemon();
-            if (err) {
-                return err;
-            }
-        }
-        err = coord::Init();
-        if (err) {
-            return err;
-        }
-        auto configures = parser.get<std::vector<std::string>>("--configure");
-        for (auto c : configures) {
-            err = coord::Fork(c.c_str());
-            if(err){
-                fprintf(stderr, "error: %d\n", err);
-                return err;
-            }
-        }
-        err = coord::Wait();
-        coord::Destory(); 
-        return err;
-    }
-
-    int action_help(argparse::ArgumentParser& parser) {
-        printf("help.......\n");
-        return 0;
-    }
-    typedef std::function<int (argparse::ArgumentParser& parser)> argparser_action_func; 
     int Main(int argc, const char** argv) {
         argparse::ArgumentParser program("coord", "0.0.1");
         program.add_description("aaaaa");
         program.add_epilog("bbbbb");
         
         program.add_argument("--configure", "-c")
-            .default_value(std::vector<std::string>{})
-            .append()
+            // .default_value(std::vector<std::string>{})
+            // .append()
             .help("configure file");
         program.add_argument("--verbose", "-v")
             .default_value(false)
@@ -388,7 +403,7 @@ namespace coord {
     }
 
     Coord::~Coord() {
-        this->coreLogDebug("[Coord] ~Coord");
+        this->CoreLogDebug("[Coord] ~Coord");
         if(this->sceneMgr) {
             delete this->sceneMgr;
             this->sceneMgr = nullptr;
@@ -489,7 +504,7 @@ namespace coord {
     }
 
     uint64_t Coord::onUpdate(){
-        //this->coreLogDebug("[coord] onUpdate");
+        //this->CoreLogDebug("[coord] onUpdate");
         this->frame++;
         uint64_t now = this->Now();
         this->sceneMgr->onUpdate(now);
@@ -497,7 +512,7 @@ namespace coord {
     }
 
     void Coord::Destory(int code) {
-        this->coreLogDebug("[coord] Destory, code=%d", code);
+        this->CoreLogDebug("[coord] Destory, code=%d", code);
         this->ExitCode = code;
         uv_stop(&this->loop);        
     }
@@ -509,16 +524,20 @@ namespace coord {
     
     int Coord::onAwake(){   
         if (this->workerRole == worker_role_master) {   
-            this->coreLogMsg("[coord] onAwake at %ld", this->Time()/1000);
+            this->CoreLogMsg("[coord] onAwake at %ld", this->Time()/1000);
         }
         this->pid = uv_os_getpid();
-        this->PidPath = this->Config->Basic.Pid + this->Config->Basic.Name + ".pid";
         if (this->sceneMgr) {
             this->sceneMgr->onAwake();
         }
-        if (this->workerRole == worker_role_master) {     
+        if (this->workerRole == worker_role_master) {   
+            int err = coord::io::FileLock(this->Config->Basic.Pid.c_str());
+            if (err) {
+                fprintf(stderr, "lock failed: %s\n", this->Config->Basic.Pid.c_str());
+                return err;
+            }  
             //记录Pid
-            std::ofstream outfile(this->PidPath, std::ios::trunc);
+            std::ofstream outfile(this->Config->Basic.Pid, std::ios::trunc);
             outfile << this->pid << std::endl;
         }
         if (this->workerRole == worker_role_master) {     
@@ -544,7 +563,7 @@ namespace coord {
     }
 
     void Coord::onDestory(int code) {
-        this->coreLogDebug("[coord] onDestory, code=%d", code);
+        this->CoreLogDebug("[coord] onDestory, code=%d", code);
         if(this->Gate) {
             this->Gate->onDestory();
         }
@@ -559,33 +578,18 @@ namespace coord {
         }
         if (this->workerRole == worker_role_master) { 
             std::ifstream pidFile;
-            pidFile.open(this->PidPath.c_str(), std::ios::in);
+            pidFile.open(this->Config->Basic.Pid.c_str(), std::ios::in);
             if(pidFile){
                 uv_pid_t pid;
                 pidFile >> pid;
                 if(this->pid == pid) {
-                    ::remove(this->PidPath.c_str());
+                    ::remove(this->Config->Basic.Pid.c_str());
                 }
             }
             ::onDestory(this);
         }
     }
 
-    int Coord::Fork(const char *configPath) {
-        uv_thread_t* thread = (uv_thread_t*)malloc(sizeof(uv_thread_t));
-        fork_data* forkData = (fork_data*)malloc(sizeof(fork_data));
-        memset(forkData, 0, sizeof(fork_data));
-        strcpy(forkData->configPath, configPath);
-        forkData->coord = this;
-        Coord::coordDict[thread] = this;
-        int err = uv_thread_create(thread, coord_main_thread, forkData);
-        Coord::coordDict.erase(thread);
-        if (err) {
-            return err;
-        }
-        return 0;
-    }
-    
     int Coord::asCommand(const char *configPath, const char* command) {
         coorda = this;
         this->LoggerMgr = log4cc::newLoggerMgr(this);
@@ -594,24 +598,27 @@ namespace coord {
         if (this->readConfig(configPath)) {
             return EXIT_FAILURE;
         }
-        int err;
+        {
+            auto logger = this->LoggerMgr->GetDefaultLogger();
+            if (nullptr == logger) return ErrorOutOfMemory;
+            int err = this->LoggerMgr->configDefaultLogger(logger);
+            if (err)return err;
+            this->logger = logger;
+        }
 
-        this->logger = this->LoggerMgr->GetDefaultLogger();
-        if (nullptr == this->logger) return ErrorOutOfMemory;
-        err = this->LoggerMgr->configDefaultLogger(this->logger);
-        if (err)return err;
-
-        this->coreLogger = this->LoggerMgr->GetCoreLogger();
-        if (nullptr == this->coreLogger) return ErrorOutOfMemory;
-        err = this->LoggerMgr->configCoreLogger(this->coreLogger);
-        if (err)return err;
+        {
+            auto logger = this->LoggerMgr->GetCoreLogger();
+            if (nullptr == logger) return ErrorOutOfMemory;
+            int err = this->LoggerMgr->configCoreLogger(logger);
+            if (err)return err;
+            this->coreLogger = logger;
+        }
 
         if (strcmp(command, "stop") == 0) {
-            std::string pidPath = this->Config->Basic.Pid + this->Config->Basic.Name + ".pid";
             std::ifstream ifile;
-            ifile.open(pidPath.c_str(), std::ios::in);
+            ifile.open(this->Config->Basic.Pid.c_str(), std::ios::in);
             if(!ifile){
-                fprintf(stderr, "pid file not found: %s\n", pidPath.c_str());
+                fprintf(stderr, "pid file not found: %s\n", this->Config->Basic.Pid.c_str());
                 return 1;
             }
             uv_pid_t pid;
@@ -620,11 +627,10 @@ namespace coord {
         } else if (strcmp(command, "status") == 0) {
 
         } else if (strcmp(command, "reload") == 0) {
-            std::string pidPath = this->Config->Basic.Pid + this->Config->Basic.Name + ".pid";
             std::ifstream ifile;
-            ifile.open(pidPath.c_str(), std::ios::in);
+            ifile.open(this->Config->Basic.Pid.c_str(), std::ios::in);
             if(!ifile){
-                fprintf(stderr, "pid file not found: %s\n", pidPath.c_str());
+                fprintf(stderr, "pid file not found: %s\n", this->Config->Basic.Pid.c_str());
                 return 1;
             }
             uv_pid_t pid;
@@ -633,19 +639,19 @@ namespace coord {
         }
         return 0;
     }
-    int Coord::actionStart(const char *configPath) {
+    int Coord::ActionStart(const char *configPath) {
         return 0;
     }
-    int Coord::actionStop(const char *configPath) {
+    int Coord::ActionStop(const char *configPath) {
         return 0;
     }
-    int Coord::actionRestart(const char *configPath) {
+    int Coord::ActionRestart(const char *configPath) {
         return 0;
     }
-    int Coord::actionStatus(const char *configPath) {
+    int Coord::ActionStatus(const char *configPath) {
         return 0;
     }
-    int Coord::actionEnv(const char *configPath) {
+    int Coord::ActionEnv(const char *configPath) {
         coorda = this;
         this->Config = new coord::Config(this); 
         this->Environment = new coord::Environment(this);
@@ -689,15 +695,21 @@ namespace coord {
         if (err) {
             return err;
         }
-        this->logger = this->LoggerMgr->GetDefaultLogger();
-        if (nullptr == this->logger) return ErrorOutOfMemory;
-        err = this->LoggerMgr->configDefaultLogger(this->logger);
-        if (err)return err;
+        {
+            auto logger = this->LoggerMgr->GetDefaultLogger();
+            if (nullptr == logger) return ErrorOutOfMemory;
+            int err = this->LoggerMgr->configDefaultLogger(logger);
+            if (err)return err;
+            this->logger = logger;
+        }
 
-        this->coreLogger = this->LoggerMgr->GetCoreLogger();
-        if (nullptr == this->coreLogger) return ErrorOutOfMemory;
-        err = this->LoggerMgr->configCoreLogger(this->coreLogger);
-        if (err)return err;
+        {
+            auto logger = this->LoggerMgr->GetCoreLogger();
+            if (nullptr == logger) return ErrorOutOfMemory;
+            int err = this->LoggerMgr->configCoreLogger(logger);
+            if (err)return err;
+            this->coreLogger = logger;
+        }
 
         //listen int signal
         uv_signal_init(&this->loop, &this->sigInt);
@@ -711,7 +723,7 @@ namespace coord {
         uv_signal_start(&this->sigUsr2, coord_sigusr2_handler, SIGUSR2);
 
         this->Name = this->Config->Basic.Name;
-        this->coreLogDebug("[coord] running, cluster=%s", this->Config->Basic.Registery.c_str());
+        this->CoreLogDebug("[coord] running, cluster=%s", this->Config->Basic.Registery.c_str());
         err = this->Proto->main();
         if (err) {
             return err;
@@ -795,7 +807,7 @@ namespace coord {
             this->Worker = worker::newWorker(this);
             int err = this->Worker->start(workerConfigPath.c_str(), this->Config->Basic.WorkerNum);
             if (err) {
-                this->coreLogError("[Coord] worker start failed, error=%d", err);
+                this->CoreLogError("[Coord] worker start failed, error=%d", err);
                 return err;
             }
         }
@@ -899,15 +911,21 @@ namespace coord {
         if (this->readConfig(configPath)) {
             return EXIT_FAILURE;
         }
-        this->logger = this->LoggerMgr->GetDefaultLogger();
-        if (nullptr == this->logger) return ErrorOutOfMemory;
-        err = this->LoggerMgr->configDefaultLogger(this->logger);
-        if (err)return err;
+        {
+            auto logger = this->LoggerMgr->GetDefaultLogger();
+            if (nullptr == logger) return ErrorOutOfMemory;
+            int err = this->LoggerMgr->configDefaultLogger(logger);
+            if (err)return err;
+            this->logger = logger;
+        }
 
-        this->coreLogger = this->LoggerMgr->GetCoreLogger();
-        if (nullptr == this->coreLogger) return ErrorOutOfMemory;
-        err = this->LoggerMgr->configCoreLogger(this->coreLogger);
-        if (err)return err;
+        {
+            auto logger = this->LoggerMgr->GetCoreLogger();
+            if (nullptr == logger) return ErrorOutOfMemory;
+            int err = this->LoggerMgr->configCoreLogger(logger);
+            if (err)return err;
+            this->coreLogger = logger;
+        }
 
         this->Name = this->Config->Basic.Name;
         err = this->Proto->main();
@@ -978,15 +996,21 @@ namespace coord {
         if (this->readConfig(configPath)) {
             return EXIT_FAILURE;
         }
-        this->logger = this->LoggerMgr->GetDefaultLogger();
-        if (nullptr == this->logger) return ErrorOutOfMemory;
-        err = this->LoggerMgr->configDefaultLogger(this->logger);
-        if (err)return err;
+        {
+            auto logger = this->LoggerMgr->GetDefaultLogger();
+            if (nullptr == logger) return ErrorOutOfMemory;
+            int err = this->LoggerMgr->configDefaultLogger(logger);
+            if (err)return err;
+            this->logger = logger;
+        }
 
-        this->coreLogger = this->LoggerMgr->GetCoreLogger();
-        if (nullptr == this->coreLogger) return ErrorOutOfMemory;
-        err = this->LoggerMgr->configCoreLogger(this->coreLogger);
-        if (err)return err;
+        {
+            auto logger = this->LoggerMgr->GetCoreLogger();
+            if (nullptr == logger) return ErrorOutOfMemory;
+            int err = this->LoggerMgr->configCoreLogger(logger);
+            if (err)return err;
+            this->coreLogger = logger;
+        }
 
         this->workerRole = worker_role_master;
         err = this->Proto->main();
@@ -1034,10 +1058,6 @@ namespace coord {
             this->sceneMgr->onReload();
         }
         return 0;
-    }
-
-    void Coord::recvSigInt() {
-        this->Destory(0);
     }
 
     int Coord::readConfig(const char *filePath) {
@@ -1242,7 +1262,7 @@ namespace coord {
         //this->logger->SetLevel(level);
     }
 
-    void Coord::coreLogFatal(const char* str) const{;
+    void Coord::CoreLogFatal(const char* str) const{;
         if(this->coreLogger == nullptr) {
             fprintf(stderr, str);
             fprintf(stderr, "\n");
@@ -1251,7 +1271,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogError(const char* str) const{
+    void Coord::CoreLogError(const char* str) const{
         if(this->coreLogger == nullptr) {
             fprintf(stderr, str);
             fprintf(stderr, "\n");
@@ -1260,7 +1280,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogWarn(const char* str) const{
+    void Coord::CoreLogWarn(const char* str) const{
         if (this->coreLogger == nullptr) {
             fprintf(stderr, str);
             fprintf(stderr, "\n");
@@ -1269,7 +1289,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogInfo(const char* str) const{
+    void Coord::CoreLogInfo(const char* str) const{
         if (this->coreLogger == nullptr) {
             fprintf(stderr, str);
             fprintf(stderr, "\n");
@@ -1278,7 +1298,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogDebug(const char* str) const{
+    void Coord::CoreLogDebug(const char* str) const{
         if (this->coreLogger == nullptr) {
             fprintf(stderr, str);
             fprintf(stderr, "\n");
@@ -1287,7 +1307,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogMsg(const char* str) const{
+    void Coord::CoreLogMsg(const char* str) const{
         if (this->coreLogger == nullptr) {
             fprintf(stderr, str);
             fprintf(stderr, "\n");
@@ -1296,7 +1316,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogFatal(const char* fmt, ...){
+    void Coord::CoreLogFatal(const char* fmt, ...){
         va_list args;
         va_start(args, fmt);
 
@@ -1311,7 +1331,7 @@ namespace coord {
 
     }
 
-    void Coord::coreLogError(const char* fmt, ...){
+    void Coord::CoreLogError(const char* fmt, ...){
         va_list args;
         va_start(args, fmt);
 
@@ -1325,7 +1345,7 @@ namespace coord {
         va_end(args);
     }
 
-    void Coord::coreLogWarn(const char* fmt, ...){
+    void Coord::CoreLogWarn(const char* fmt, ...){
         va_list args;
         va_start(args, fmt);
 
@@ -1339,7 +1359,7 @@ namespace coord {
         va_end(args);
     }
 
-    void Coord::coreLogInfo(const char* fmt, ...){
+    void Coord::CoreLogInfo(const char* fmt, ...){
         va_list args;
         va_start(args, fmt);
 
@@ -1353,7 +1373,7 @@ namespace coord {
         va_end(args);
     }
 
-    void Coord::coreLogDebug(const char* fmt, ...){
+    void Coord::CoreLogDebug(const char* fmt, ...){
         va_list args;
         va_start(args, fmt);
 
@@ -1367,7 +1387,7 @@ namespace coord {
         va_end(args);
     }
 
-    void Coord::coreLogMsg(const char* fmt, ...){
+    void Coord::CoreLogMsg(const char* fmt, ...){
         va_list args;
         va_start(args, fmt);
         if (this->coreLogger == nullptr) {
@@ -1381,7 +1401,7 @@ namespace coord {
 
     }
 
-    void Coord::coreLogFatal(const char* fmt, va_list args){
+    void Coord::CoreLogFatal(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
         } else {
@@ -1389,7 +1409,7 @@ namespace coord {
         }
     }
     
-    void Coord::coreLogError(const char* fmt, va_list args){
+    void Coord::CoreLogError(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
             fprintf(stderr, "\n");
@@ -1398,7 +1418,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogWarn(const char* fmt, va_list args){
+    void Coord::CoreLogWarn(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
             fprintf(stderr, "\n");
@@ -1407,7 +1427,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogInfo(const char* fmt, va_list args){
+    void Coord::CoreLogInfo(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
             fprintf(stderr, "\n");
@@ -1416,7 +1436,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogMsg(const char* fmt, va_list args){
+    void Coord::CoreLogMsg(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
             fprintf(stderr, "\n");
@@ -1425,7 +1445,7 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogDebug(const char* fmt, va_list args){
+    void Coord::CoreLogDebug(const char* fmt, va_list args){
         if (this->coreLogger == nullptr) {
             vfprintf(stderr, fmt, args);
             fprintf(stderr, "\n");

@@ -37,7 +37,7 @@ SQLClient* sql_mgr::getClient(const char* name) {
     SQLConfig config;
     int err = this->coord->Config->SQLConfig(name, &config);
     if (err != 0) {
-        this->coord->coreLogError("[sql_mgr] getClient failed, function='SQLConfig', error=%d", err);
+        this->coord->CoreLogError("[sql_mgr] getClient failed, function='SQLConfig', error=%d", err);
         return nullptr;
     }
     if (config.Driver == "mysql") {
@@ -52,7 +52,7 @@ SQLClient* sql_mgr::getClient(const char* name) {
         this->clientDict[name] = client;
         return client;
     } else {
-        this->coord->coreLogError("[sql_mgr] getClient failed, error='driver not implement'");
+        this->coord->CoreLogError("[sql_mgr] getClient failed, error='driver not implement'");
         return nullptr;
     }
 }

@@ -26,7 +26,7 @@ Promise::Promise(Coord* coord) {
 }
 
 Promise::~Promise() {
-    this->coord->coreLogDebug("[worker::Promise] ~");
+    this->coord->CoreLogDebug("[worker::Promise] ~");
     if(this->resolveRef) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->resolveRef);
     }
@@ -82,9 +82,9 @@ Promise* Promise::Else(ScriptComponent* object, int ref) {
 }
 
 void Promise::resolve(Result* result) {
-    //this->coord->coreLogDebug("[worker::Promise] resolve");
+    //this->coord->CoreLogDebug("[worker::Promise] resolve");
     if(this->resolveFunc == NULL) {
-        this->coord->coreLogDebug("[worker::Promise] resolve failed, error='func not found'");
+        this->coord->CoreLogDebug("[worker::Promise] resolve failed, error='func not found'");
         return;
     }
     try{
@@ -98,9 +98,9 @@ void Promise::resolve(Result* result) {
 }
 
 void Promise::reject(Result* result){
-    //this->coord->coreLogDebug("[worker::Promise] reject");
+    //this->coord->CoreLogDebug("[worker::Promise] reject");
     if(this->rejectFunc == NULL) {
-        this->coord->coreLogDebug("[worker::Promise] reject failed, error='func not found'");
+        this->coord->CoreLogDebug("[worker::Promise] reject failed, error='func not found'");
         return;
     }
     try{

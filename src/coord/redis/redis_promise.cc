@@ -115,7 +115,7 @@ int Promise::Else(lua_State* L) {
 }
 
 void Promise::resolve(AsyncClient* client, Reply& reply) {
-    //this->coord->coreLogDebug("[RedisPromise] resolve");
+    //this->coord->CoreLogDebug("[RedisPromise] resolve");
     if(this->resolveFunc == nullptr) {
         return;
     }
@@ -127,7 +127,7 @@ void Promise::resolve(AsyncClient* client, Reply& reply) {
 }
 
 void Promise::reject(AsyncClient* client, Reply& reply){
-    //this->coord->coreLogDebug("[RedisPromise] reject");
+    //this->coord->CoreLogDebug("[RedisPromise] reject");
     if(this->rejectFunc == nullptr) {
         return;
     }

@@ -86,7 +86,7 @@ bool mysql_rows::Next() {
 const char* mysql_rows::String(const char* field) {
     auto it = this->columnDict.find(field);
     if (it == this->columnDict.end()) {
-        this->coord->coreLogError("[mysql_rows] Number failed, field='%s', error='field not found'", field);
+        this->coord->CoreLogError("[mysql_rows] Number failed, field='%s', error='field not found'", field);
         return nullptr;
     }
     return this->String(it->second);
@@ -123,7 +123,7 @@ const char* mysql_rows::String(int index) {
 double mysql_rows::Number(const char* field) {
     auto it = this->columnDict.find(field);
     if (it == this->columnDict.end()) {
-        this->coord->coreLogError("[mysql_rows] Number failed, field='%s', error='field not found'", field);
+        this->coord->CoreLogError("[mysql_rows] Number failed, field='%s', error='field not found'", field);
         return 0;
     }
     return this->Number(it->second);
@@ -247,7 +247,7 @@ int mysql_rows::Proto(protobuf::Reflect& proto) {
                 columnArr[i].type == FIELD_TYPE_BLOB ||
                 columnArr[i].type == FIELD_TYPE_CHAR) {
                 if (!proto.SetString(columnArr[i].name, row[i], fieldLength[i])){
-                    this->coord->coreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
+                    this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_FLOAT ||  
                       columnArr[i].type == FIELD_TYPE_DECIMAL || 
@@ -260,7 +260,7 @@ int mysql_rows::Proto(protobuf::Reflect& proto) {
                       columnArr[i].type == FIELD_TYPE_DOUBLE ||
                       columnArr[i].type == FIELD_TYPE_TIMESTAMP) {
                 if(!proto.SetNumber(columnArr[i].name, atof(row[i]))){
-                    this->coord->coreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetNumber err'", columnArr[i].name, columnArr[i].type);
+                    this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetNumber err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_DATE || 
                      columnArr[i].type == FIELD_TYPE_TIME || 
@@ -268,26 +268,26 @@ int mysql_rows::Proto(protobuf::Reflect& proto) {
                      columnArr[i].type == FIELD_TYPE_YEAR || 
                      columnArr[i].type == FIELD_TYPE_NEWDATE) {
                 if (!proto.SetString(columnArr[i].name, row[i], fieldLength[i])){
-                    this->coord->coreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
+                    this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_ENUM || 
                      columnArr[i].type == FIELD_TYPE_SET || 
                      columnArr[i].type == FIELD_TYPE_INTERVAL) {
                 if (!proto.SetString(columnArr[i].name, row[i], fieldLength[i])){
-                    this->coord->coreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
+                    this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_GEOMETRY) {
                 if (!proto.SetString(columnArr[i].name, row[i], fieldLength[i])){
-                    this->coord->coreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
+                    this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_BIT) {
                 if(!proto.SetNumber(columnArr[i].name, atof(row[i]))){
-                    this->coord->coreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetNumber err'", columnArr[i].name, columnArr[i].type);
+                    this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetNumber err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_NULL) {
                 
             } else {
-                this->coord->coreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='Set err'", columnArr[i].name, columnArr[i].type);
+                this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='Set err'", columnArr[i].name, columnArr[i].type);
             }
         }
     }

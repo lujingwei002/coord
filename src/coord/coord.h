@@ -3,6 +3,7 @@
 #include "coord/timer/timer.h"
 #include "coord/script/script.h"
 #include "coord/closure/closure_mgr.h"
+#include "coord/io/io.h"
 #include <uv.h>
 #include <vector>
 #include <map>
@@ -25,7 +26,9 @@ class ScriptComponent;
 class EventArgs;
 class Destoryable;
 class BaseRequest;
+class BaseResponse;
 class RequestPipeline;
+
 namespace http {
 class HttpServer;
 class HttpRequest;
@@ -66,22 +69,43 @@ class CacheReader;
 }
 namespace cluster {
 class Cluster;
+class cluster_redis_config;
+class cluster_client;
+class cluster_agent;
+class Promise;
+class ClusterRouter;
+class cluster_server;
+class Result;
 }
 namespace net {
 class TcpClient;
 }
 namespace managed {
 class Managed;
+class ManagedServer;
+class ManagedAgent;
+class ManagedRequest;
 }
 namespace worker {
 class Worker;
 class WorkerSlave;
+class Request;
+class WorkerSlave;
+class WorkerRouter;
+class Promise;
+class worker_packet;
+class Notify;
+class Response;
+class Result;
+class Worker;
 }
 namespace timer {
 class TimerMgr;
 }
 namespace action {
 class ActionMgr;
+class Animation;
+class parallel_action;
 }
 namespace closure {
 class ClosureMgr;
@@ -95,6 +119,8 @@ class Listener;
 }
 namespace login {
 class LoginSvr;
+class account_controller;
+class login_cluster;
 }
 namespace json {
 class JsonMgr;
@@ -107,36 +133,116 @@ enum worker_role {
     worker_role_master = 1,
     worker_role_slave = 2,
 };
+namespace sql {
+class MySQLClient;
+class mysql_rows;
+class SQLClient;
+class sql_mgr;
+}
 
+namespace io {
 
+}
 class Coord { //tolua_export
+friend class worker::Worker;
+friend class Argument;
+friend class coord::Config;
+friend class coord::Environment;
+friend class coord::BaseRequest;
+friend class coord::BaseResponse;
+friend class coord::Promise;
+friend class coord::ref_manager;
+friend class coord::log4cc::LoggerMgr;
+friend class coord::SceneMgr;
+friend class coord::Scene;
+friend class coord::Component;
+friend class coord::Object;
+friend class coord::ScriptComponent;
+friend class coord::script::Script;
+friend class coord::net::TcpAgent;
+friend class coord::net::TcpClient;
+friend class coord::net::TcpListener;
+friend class coord::http::HttpAgent;
+friend class coord::http::HttpServer;
+friend class coord::http::HttpRequest;
+friend class coord::http::HttpResponse;
+friend class coord::websocket::Agent;
+friend class coord::websocket::Server;
+friend class coord::websocket::Frame;
+friend class coord::websocket::Router;
+friend class coord::http::HttpRouter;
+friend class coord::gate::Gate;
+friend class coord::gate::GateAgent;
+friend class coord::gate::GateRequest;
+friend class coord::gate::gate_cluster;
+friend class coord::gate::GateRouter;
+friend class coord::gate::GatePromise;
+friend class coord::protobuf::Protobuf;
+friend class coord::protobuf::Array;
+friend class coord::protobuf::Reflect;
+friend class coord::timer::timer;
+friend class coord::timer::cron;
+friend class coord::timer::TimerMgr;
+friend class coord::sql::MySQLClient;
+friend class coord::sql::mysql_rows;
+friend class coord::sql::SQLClient;
+friend class coord::sql::sql_mgr;
+friend class coord::redis::AsyncClient;
+friend class coord::redis::Client;
+friend class coord::redis::RedisMgr;
+friend class coord::cluster::Cluster;
+friend class coord::cluster::cluster_agent;
+friend class coord::cluster::cluster_client;
+friend class coord::cluster::cluster_redis_config;
+friend class coord::cluster::Request;
+friend class coord::cluster::Promise;
+friend class coord::cluster::ClusterRouter;
+friend class coord::cluster::cluster_server;
+friend class coord::cluster::Result;
+friend class coord::managed::ManagedAgent;
+friend class coord::managed::ManagedServer;
+friend class coord::managed::Managed;
+friend class coord::managed::ManagedRequest;
+friend class coord::worker::Request;
+friend class coord::worker::WorkerSlave;
+friend class coord::worker::WorkerRouter;
+friend class coord::worker::Promise;
+friend class coord::worker::worker_packet;
+friend class coord::worker::Notify;
+friend class coord::worker::Response;
+friend class coord::worker::Result;
+friend class coord::worker::Worker;
+friend class coord::action::Animation;
+friend class coord::action::parallel_action;
+friend class coord::login::LoginSvr;
+friend class coord::login::account_controller;
+friend class coord::login::login_cluster;
+friend class coord::json::JsonMgr;
+friend class coord::protobuf::my_multi_file_error_collector;
+friend int coord::path::RealPath(const std::string& path, std::string& realPath);
+friend int coord::path::MakeDir(const std::string& path, int mode);
+friend int coord::path::Exists(const std::string& path);
+friend void coord::log::LogFatal(const char *fmt, ...);
+friend void coord::log::LogError(const char *fmt, ...);
+friend void coord::log::LogWarn(const char *fmt, ...);
+friend void coord::log::LogInfo(const char *fmt, ...);
+friend void coord::log::LogMsg(const char *fmt, ...);
+friend void coord::log::LogDebug(const char *fmt, ...);
+friend void coord::log::OpenLevel(int level);
+friend void coord::log::CloseLevel(int level);
+friend void coord::log::SetLevel(int level);
+friend uv_stat_t* coord::io::FileStat(const char* path);
 public:
     Coord();
     ~Coord();
 public:
-    int master();
-    int slave();
-    int Local();
-    int Client();
-    //新建一个线程
-    int asWorker(worker::Worker* master, const char *configPath, int index);
-    int asCommand(const char *configPath, const char* command);
-    int actionEnv(const char *configPath);
-    int actionStart(const char *configPath);
-    int actionStop(const char *configPath);
-    int actionStatus(const char *configPath);
-    int actionRestart(const char *configPath);
-    // 异步模式启动
-    int Fork(const char *configPath);
-    // 同步模式启动
-    int Main(const char *configPath);  
-    int beforeTest(const char *configPath); 
-    void loopTest();   
-    int afterTest();  
+    
     int Reload();
     void Destory(int code);//tolua_export
     Scene* CreateScene(const char* sceneName);//tolua_expor
     void Sleep(uint64_t msec);//tolua_export
+
+
     //@xx 日志接口
     void Log(const char* fmt, ...);
     void LogFatal(const char* fmt, ...);
@@ -145,6 +251,7 @@ public:
     void LogInfo(const char* fmt, ...);
     void LogDebug(const char* fmt, ...);
     void LogMsg(const char* fmt, ...);
+    /// Info级别日志，类似lua的print, 支持可变参数
     int Log(lua_State* L);//tolua_export
     void Log(const char* str) const;//tolua_export
     void LogFatal(const char* str) const;//tolua_export
@@ -157,41 +264,108 @@ public:
     void LogOpenLevel(int level);//tolua_export
     void LogSetLevel(int level);//tolua_export
     //@xx 日志接口
+    /// @core日志接口
+    void CoreLogFatal(const char* fmt, ...);
+    void CoreLogError(const char* fmt, ...);
+    void CoreLogWarn(const char* fmt, ...);
+    void CoreLogInfo(const char* fmt, ...);
+    void CoreLogDebug(const char* fmt, ...);
+    void CoreLogMsg(const char* fmt, ...);
+    void CoreLogFatal(const char* str) const;   //tolua_export        
+    void CoreLogError(const char* str) const;   //tolua_export      
+    void CoreLogWarn(const char* str) const;    //tolua_export       
+    void CoreLogInfo(const char* str) const;    //tolua_export         
+    void CoreLogDebug(const char* str) const;   //tolua_export       
+    void CoreLogMsg(const char* str) const;     //tolua_export        
+    void CoreLogFatal(const char* fmt, va_list args); 
+    void CoreLogError(const char* fmt, va_list args);
+    void CoreLogWarn(const char* fmt, va_list args);
+    void CoreLogInfo(const char* fmt, va_list args);
+    void CoreLogDebug(const char* fmt, va_list args);
+    void CoreLogMsg(const char* fmt, va_list args);
+    void coreLogCloseLevel(int level);                  
+    void coreLogOpenLevel(int level);                   
+    void coreLogSetLevel(int level);                    
+    /// @core日志接口
+
     //@xx 组件接口
     //ScriptComponent* AddScript(const char* scriptName);//tolua_export
     int AddScript(lua_State* L);//tolua_export
     int AddComponent(Component* component);//tolua_export
     //@xx 组件接口
-    //@xx 定时器接口
+
+
+    /// @定时器接口
+    /// 设置超时回调
     int SetTimeout(uint64_t timeout, timer::TimeoutFunc func);
-    int SetInterval(uint64_t repeat, timer::TimeoutFunc func);
     int SetTimeout(lua_State* L);//tolua_export
+    void ClearTimeout(int id);
+    /// 设置定时间隔回调
+    int SetInterval(uint64_t repeat, timer::TimeoutFunc func);
     int SetInterval(lua_State* L);//tolua_export
+    void ClearInterval(int id);
+    /// 设置计划任务
     int SetCron(const char* expression, timer::CronFunc func);
     int SetCron(lua_State* L);//tolua_export
-    void ClearInterval(int id);
-    void ClearTimeout(int id);
     void ClearCron(int id);
     uint64_t StopTimer();
-    //@xx 定时器接口
+    /// @定时器接口
+
+    /// @事件接口
     void Emit(const char* name, event::BaseEvent* args);//tolua_export
+    /// @事件接口
+
     void Destory(Destoryable* object);//tolua_export
     void Destory(net::TcpClient* object);//tolua_export
     void DontDestory(Destoryable* object);//tolua_export
+
+    /// 创建httpserver
     http::HttpServer* NewHttpServer();//tolua_export
+
+    /// 当前时间
     uint64_t Now();//tolua_export
+
+    /// 当前时间
     uint64_t Time();//tolua_export
+
+    /// 当前时间
     uint64_t NanoTime();//tolua_export
+
+    /// 根据配置创建 sql client
     sql::SQLClient* SQLConfig(const char* name = "DB");//tolua_export
+
+    /// 根据配置创建 redis client
     redis::Client* RedisConfig(const char* name = "REDIS");//tolua_export
+
+    /// 根据配置创建 async redis client
     redis::AsyncClient* RedisAsyncConfig(const char* name = "REDIS");//tolua_export
+
     //int Cache(const char* name, const char* data, size_t expiret);//tolua_export
     //cache::CacheReader Cache(const char* name);//tolua_export
     template<class... T>
     closure::Closure* Function(T... args) {
         return this->Closure->Function(args...);
     }
-public:
+
+    /// @入口函数
+    /// worker启动入口
+    int Main(const char *configPath);  
+    int asWorker(worker::Worker* master, const char *configPath, int index);
+    int asCommand(const char *configPath, const char* command);
+    int ActionEnv(const char *configPath);
+    int ActionStart(const char *configPath);
+    int ActionStop(const char *configPath);
+    int ActionStatus(const char *configPath);
+    int ActionRestart(const char *configPath);
+    int beforeTest(const char *configPath); 
+    void loopTest();   
+    int afterTest();  
+    /// @入口函数
+private:
+    int master();
+    int slave();
+    int Local();
+    int Client();
     //void pushRequestPipeline(BaseRequest* request);
     //void recoverRequestPipeline(RequestPipeline* request);
     //void popRequestPipeline();
@@ -202,30 +376,7 @@ public:
     int onAwake(); 
     uint64_t onUpdate(); 
     int readConfig(const char *filePath);
-    void recvSigInt();
-    //@xx core日志接口
-    void coreLogFatal(const char* fmt, ...);
-    void coreLogError(const char* fmt, ...);
-    void coreLogWarn(const char* fmt, ...);
-    void coreLogInfo(const char* fmt, ...);
-    void coreLogDebug(const char* fmt, ...);
-    void coreLogMsg(const char* fmt, ...);
-    void coreLogFatal(const char* str) const;           //tolua_export
-    void coreLogError(const char* str) const;           //tolua_export
-    void coreLogWarn(const char* str) const;            //tolua_export
-    void coreLogInfo(const char* str) const;            //tolua_export
-    void coreLogDebug(const char* str) const;           //tolua_export
-    void coreLogMsg(const char* str) const;             //tolua_export
-    void coreLogFatal(const char* fmt, va_list args); 
-    void coreLogError(const char* fmt, va_list args);
-    void coreLogWarn(const char* fmt, va_list args);
-    void coreLogInfo(const char* fmt, va_list args);
-    void coreLogDebug(const char* fmt, va_list args);
-    void coreLogMsg(const char* fmt, va_list args);
-    void coreLogCloseLevel(int level);                  //tolua_export
-    void coreLogOpenLevel(int level);                   //tolua_export
-    void coreLogSetLevel(int level);                    //tolua_export
-    //@xx core日志接口
+ 
 public:
     coord::Config*          Config;         //tolua_export
     script::Script*         Script;         //tolua_export   
@@ -242,14 +393,15 @@ public:
     worker::WorkerSlave*    WorkerSlave;    //tolua_export
     worker::Worker*         Worker;         //tolua_export
     std::string             Name;           //tolua_export
-    std::string             PidPath;        //tolua_export
     coord::Environment*     Environment;    //tolua_export
     action::ActionMgr*      Action;         
     closure::ClosureMgr*    Closure;        //tolua_export
     login::LoginSvr*        Login;          //tolua_export
     json::JsonMgr*          Json;           
-    log4cc::LoggerMgr*      LoggerMgr;      
-public:
+    log4cc::LoggerMgr*      LoggerMgr;   
+    int                     ExitCode;   
+    std::string             ProcDir;        
+private:
     uint64_t            frame;
     sql::sql_mgr*       sqlMgr;         
     timer::TimerMgr*    Timer;
@@ -265,7 +417,7 @@ public:
     bool                isAwake;
     uint64_t            time;
     uint64_t            nowRecord;
-    int                 ExitCode;
+    
 private:
     
 public:

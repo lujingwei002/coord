@@ -47,7 +47,7 @@ int BaseResponse::Json(){
 int BaseResponse::Proto(google::protobuf::Message& message) {
     int err = protobuf::Serialize(this->payload, &message);
     if (err) {
-        this->coord->coreLogError("[BaseResponse] Proto failed, error='Serialize err'");
+        this->coord->CoreLogError("[BaseResponse] Proto failed, error='Serialize err'");
         return -1;
     }
     this->type = response_type_proto;
@@ -78,7 +78,7 @@ protobuf::Reflect& BaseResponse::Proto(const char* name){
     } else {
         auto proto = this->coord->Proto->NewReflect(name);
         if (proto == nullptr) {
-            this->coord->coreLogError("[BaseResponse] Proto failed, name=%s, error='NewReflect err'", name);
+            this->coord->CoreLogError("[BaseResponse] Proto failed, name=%s, error='NewReflect err'", name);
             return nullPtr;
         }
         this->proto = proto;
@@ -117,7 +117,7 @@ int BaseResponse::Table(lua_State* L) {
     int type = lua_type(L, -1);
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);
     if (ref == LUA_NOREF) {
-        this->coord->coreLogError("[BaseResponse] Table failed, error='luaL_ref err'");
+        this->coord->CoreLogError("[BaseResponse] Table failed, error='luaL_ref err'");
         lua_pushinteger(L, -1);
         return 1;
     }
@@ -132,7 +132,7 @@ int BaseResponse::flush() {
         this->payload.Resize(0);
         int err = this->proto.Serialize(this->payload);
         if(err){
-            this->coord->coreLogError("[BaseResponse] write failed");
+            this->coord->CoreLogError("[BaseResponse] write failed");
             return -1;
         }
         return 0;
@@ -140,7 +140,7 @@ int BaseResponse::flush() {
         this->payload.Resize(0);
         int err = this->argv->Serialize(this->payload);
         if(err){
-            this->coord->coreLogError("[BaseResponse] write failed");
+            this->coord->CoreLogError("[BaseResponse] write failed");
             return -1;
         }
         return 0;
@@ -148,7 +148,7 @@ int BaseResponse::flush() {
         this->payload.Resize(0);
         int err = this->table.Encode(this->payload);
         if(err){
-            this->coord->coreLogError("[BaseResponse] write failed");
+            this->coord->CoreLogError("[BaseResponse] write failed");
             return -1;
         }
         return 0;

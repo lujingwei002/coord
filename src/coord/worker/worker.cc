@@ -35,7 +35,7 @@ static void coord_worker_thread(void* arg) {
     uv_mutex_unlock(&master->slaveMutex);
     int err = coordb->asWorker(master, workerData->configFile, workerData->index);
     if(err){
-        master->coord->coreLogError("coord_worker_thread failed, error=%d", err);
+        //master->coord->CoreLogError("coord_worker_thread failed, error=%d", err);
         master->recvSlaveError(coordb);
     }
     free(workerData->thread);
@@ -62,7 +62,7 @@ Worker::Worker(Coord *coord) {
 }
 
 Worker::~Worker() {
-    this->coord->coreLogDebug("[Worker] ~Worker");
+    this->coord->CoreLogDebug("[Worker] ~Worker");
     uv_mutex_destroy(&this->slaveMutex);
     uv_mutex_destroy(&this->mutex);
     if (this->sem) {
@@ -73,7 +73,7 @@ Worker::~Worker() {
 }
 
 void Worker::onDestory() {
-    this->coord->coreLogDebug("[Worker] onDestory, slave=%d", this->slaveDict.size());
+    this->coord->CoreLogDebug("[Worker] onDestory, slave=%d", this->slaveDict.size());
     //等级slave结束
     for(auto const it : this->slaveDict){
         
@@ -86,7 +86,7 @@ void Worker::onDestory() {
 
 //启动工作线程失败
 void Worker::recvSlaveError(Coord* slave) {
-    this->coord->coreLogDebug("[Worker] recvSlaveError");
+    this->coord->CoreLogDebug("[Worker] recvSlaveError");
     uv_mutex_lock(&this->slaveMutex);
     for(auto it = this->slaveArr.begin(); it != this->slaveArr.end(); ++it) {
         if (*it == slave) {
@@ -112,15 +112,15 @@ void Worker::recvSlaveError(Coord* slave) {
 
 //收到slave启动完成通知
 void Worker::recvSlaveAwake() {
-    this->coord->coreLogDebug("[Worker] recvSlaveAwake");
+    this->coord->CoreLogDebug("[Worker] recvSlaveAwake");
     uv_sem_post(this->sem);
 }
 
 int Worker::start(const char* configFile, uint16_t workerNum) {
-    this->coord->coreLogDebug("[Worker] Start, config=%s, worker_num=%d", configFile, workerNum);
+    this->coord->CoreLogDebug("[Worker] Start, config=%s, worker_num=%d", configFile, workerNum);
     int err = uv_async_init(&this->coord->loop, &this->async, uv_async_cb);
     if (err) {
-        this->coord->coreLogError("[Worker] start failed, error=%d", err);
+        this->coord->CoreLogError("[Worker] start failed, error=%d", err);
         return err;
     }
     this->async.data = this;
@@ -137,7 +137,7 @@ int Worker::start(const char* configFile, uint16_t workerNum) {
         workerData->index = i + 1;
         int err = uv_thread_create(thread, coord_worker_thread, workerData);
         if (err) {
-            this->coord->coreLogError("[Worker] start failed, error=%d", err);
+            this->coord->CoreLogError("[Worker] start failed, error=%d", err);
             free(workerData);
             return err;
         }
@@ -151,9 +151,9 @@ int Worker::start(const char* configFile, uint16_t workerNum) {
     uv_sem_destroy(this->sem);
     free(this->sem);
     this->sem = NULL;
-    this->coord->coreLogDebug("[Worker] start, slave=%d", this->slaveArr.size());
+    this->coord->CoreLogDebug("[Worker] start, slave=%d", this->slaveArr.size());
     if (this->slaveArr.size() != workerNum) {
-        this->coord->coreLogError("[Worker] start failed, succ=%d, err=%d", this->slaveArr.size(), workerNum - this->slaveArr.size());
+        this->coord->CoreLogError("[Worker] start failed, succ=%d, err=%d", this->slaveArr.size(), workerNum - this->slaveArr.size());
         return -1;
     }
     return 0;
@@ -322,7 +322,7 @@ int Worker::Broadcast(const char* route, Argument& argv) {
 
 //运行在主线程中
 void Worker::checkWorkerRequest() {
-    //this->coord->coreLogDebug("[WorkerSlave] checkWorkerRequest");
+    //this->coord->CoreLogDebug("[WorkerSlave] checkWorkerRequest");
     //处理result
     while(true) {
         uv_mutex_lock(&this->mutex);
@@ -350,7 +350,7 @@ void Worker::checkWorkerRequest() {
 
 //slave发送回复给主线程， 运行在工作线程中
 void Worker::sendWorkerPacket(worker_packet* packet, worker::Request* request) {
-    //this->coord->coreLogDebug("[Worker] sendWorkerRequest");
+    //this->coord->CoreLogDebug("[Worker] sendWorkerRequest");
     //拷贝结果到packet中
     auto response = request->GetResponse();
     response->flush();
@@ -363,25 +363,25 @@ void Worker::sendWorkerPacket(worker_packet* packet, worker::Request* request) {
     uv_mutex_unlock(&this->mutex);
     int err = uv_async_send(&this->async);
     if (err) {
-        this->coord->coreLogError("[Worker] sendWorkerRequest failed, error=%d", err);
+        this->coord->CoreLogError("[Worker] sendWorkerRequest failed, error=%d", err);
     }
 }
 
 //slave发送回复给主线程， 运行在工作线程中
 void Worker::sendWorkerPacket(worker_packet* packet) {
-    //this->coord->coreLogDebug("[Worker] sendWorkerRequest");
+    //this->coord->CoreLogDebug("[Worker] sendWorkerRequest");
     uv_mutex_lock(&this->mutex);
     this->resultArr.push_front(packet);
     uv_mutex_unlock(&this->mutex);
     int err = uv_async_send(&this->async);
     if (err) {
-        this->coord->coreLogError("[Worker] sendWorkerRequest failed, error=%d", err);
+        this->coord->CoreLogError("[Worker] sendWorkerRequest failed, error=%d", err);
     }
 }
 
 //收到slave的回复， 运行在主线程中
 void Worker::recvWorkerPacket(worker_packet* packet) {
-    //this->coord->coreLogDebug("[Worker] recvWorkerPacket");
+    //this->coord->CoreLogDebug("[Worker] recvWorkerPacket");
     if (packet->type == worker_packet_notify) {
         
     } else if (packet->type == worker_packet_response)  {
@@ -392,7 +392,7 @@ void Worker::recvWorkerPacket(worker_packet* packet) {
         this->recvWorkerResult(result);
         this->coord->Destory(result);
     } else {
-        this->coord->coreLogError("[Worker] recvWorkerPacket, type=%d, error='type err'", packet->type);
+        this->coord->CoreLogError("[Worker] recvWorkerPacket, type=%d, error='type err'", packet->type);
     }
     //释放slave
     //this->slaveDeque.push_front(packet->slave);
@@ -402,10 +402,10 @@ void Worker::recvWorkerPacket(worker_packet* packet) {
 
 //收到slave的回复， 运行在主线程中
 void Worker::recvWorkerResult(Result* result) {
-    //this->coord->coreLogError("[Worker] recvWorkerResult");
+    //this->coord->CoreLogError("[Worker] recvWorkerResult");
     auto it = this->promiseDict.find(result->id);
     if (it == this->promiseDict.end()) {
-        this->coord->coreLogError("[Worker] recvWorkerResult failed, requestId=%d, error='request not found'", result->id);
+        this->coord->CoreLogError("[Worker] recvWorkerResult failed, requestId=%d, error='request not found'", result->id);
         return ;
     }
     Promise* promise = it->second;
@@ -420,7 +420,7 @@ void Worker::recvWorkerResult(Result* result) {
 }
 
 void Worker::onReload() {
-    this->coord->coreLogDebug("[Worker] onReload");
+    this->coord->CoreLogDebug("[Worker] onReload");
     Argument argv(this->coord);
     this->Broadcast("reload", argv);
 }

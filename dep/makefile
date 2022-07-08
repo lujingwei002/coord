@@ -173,6 +173,7 @@ $(PROTOBUF_LIB): $(PROTOBUF_DIR)
 
 $(PROTOBUF_DIR)/clean:
 	$(MAKE) -C $(PROTOBUF_DIR) clean
+	rm -rf $(PROTOBUF_DIR)/libprotobuf
 
 $(PROTOBUF_DIR)/install:
 	@echo
@@ -204,7 +205,8 @@ $(GTEST_LIB): $(GTEST_DIR)
 	$(MAKE) -C $(GTEST_DIR)/build 
 
 $(GTEST_DIR)/clean:
-	$(MAKE) -C $(GTEST_DIR) clean
+	$(MAKE) -C $(GTEST_DIR)/build clean
+	rm -rf $(GTEST_DIR)/build
 
 $(GTEST_DIR)/install:
 	@echo
@@ -232,13 +234,14 @@ $(BENCHMARK_DIR):
 	curl "https://codeload.github.com/google/benchmark/tar.gz/refs/tags/v$(BENCHMARK_VERSION)" | tar xz
 
 $(BENCHMARK_LIB): $(BENCHMARK_DIR)
-	cd $(BENCHMARK_DIR);cmake3 -E make_directory "build"
-	cd $(BENCHMARK_DIR);cmake3 -E chdir "build" cmake3 -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_GTEST_TESTS=OFF ../
-	cd $(BENCHMARK_DIR);cmake3 -DCMAKE_BUILD_TYPE=Release -S . -B "build"
-	cd $(BENCHMARK_DIR);cmake3 --build "build" --config Release 
+	cd $(BENCHMARK_DIR);cmake -E make_directory "build"
+	cd $(BENCHMARK_DIR);cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_GTEST_TESTS=OFF ../
+	cd $(BENCHMARK_DIR);cmake -DCMAKE_BUILD_TYPE=Release -S . -B "build"
+	cd $(BENCHMARK_DIR);cmake --build "build" --config Release 
 
 $(BENCHMARK_DIR)/clean:
-	$(MAKE) -C $(BENCHMARK_DIR) clean
+	$(MAKE) -C $(BENCHMARK_DIR)/build clean
+	rm -rf $(BENCHMARK_DIR)/build 
 
 $(BENCHMARK_DIR)/install:
 	@echo
@@ -370,6 +373,9 @@ $(CJSON_LIB): $(CJSON_DIR)
 	cp -rf lua-cjson/lua_cjson.c $(CJSON_DIR)
 	$(MAKE) -C $(CJSON_DIR)
 
+$(CJSON_DIR)/clean:
+	$(MAKE) -C $(CJSON_DIR) clean
+
 $(CJSON_DIR)/install:
 	@echo
 	@echo '=== install mpx cjson ==='
@@ -400,9 +406,12 @@ $(ARGPARSE_DIR)/install:
 
 fetch: $(HIREDIS_DIR) $(HTTPPARSER_DIR) $(LUA_DIR) $(PROTOBUF_DIR) $(TOLUA_DIR) $(GTEST_DIR) $(LIBUV_DIR) $(CCRONEXPR_DIR) $(BENCHMARK_DIR) $(INIPP_DIR) $(JSON_DIR) $(MYSQL_DIR) $(INIPP_DIR) $(JSON11_DIR) $(CJSON_DIR) $(ARGPARSE_DIR)
 
-default: $(HIREDIS_LIB) $(HTTPPARSER_LIB) $(LUA_LIB) $(PROTOBUF_LIB) $(TOLUA_LIB) $(GTEST_LIB) $(LIBUV_LIB) $(CCRONEXPR_LIB) $(BENCHMARK_LIB) $(CJSON_LIB)
+default: $(HIREDIS_LIB) $(HTTPPARSER_LIB) $(LUA_LIB) $(PROTOBUF_LIB) $(TOLUA_LIB) $(GTEST_LIB) $(LIBUV_LIB) $(CCRONEXPR_LIB) $(BENCHMARK_LIB) $(CJSON_LIB) $(BENCHMARK_LIB)
 
-install: $(HIREDIS_DIR)/install $(HTTPPARSER_DIR)/install $(LUA_DIR)/install $(PROTOBUF_DIR)/install $(TOLUA_DIR)/install $(GTEST_DIR)/install $(LIBUV_DIR)/install $(CCRONEXPR_DIR)/install $(BENCHMARK_DIR)/install $(JSON_DIR)/install $(MYSQL_DIR)/install $(INIPP_DIR)/install $(JSON11_DIR)/install $(CJSON_DIR)/install $(ARGPARSE_DIR)/install
+install: $(HIREDIS_DIR)/install $(HTTPPARSER_DIR)/install $(LUA_DIR)/install $(PROTOBUF_DIR)/install $(TOLUA_DIR)/install $(GTEST_DIR)/install $(LIBUV_DIR)/install $(CCRONEXPR_DIR)/install $(BENCHMARK_DIR)/install $(JSON_DIR)/install $(MYSQL_DIR)/install $(INIPP_DIR)/install $(JSON11_DIR)/install $(CJSON_DIR)/install $(ARGPARSE_DIR)/install 
+
+
+clean: $(HIREDIS_DIR)/clean $(HTTPPARSER_DIR)/clean $(LUA_DIR)/clean $(PROTOBUF_DIR)/clean $(TOLUA_DIR)/clean $(GTEST_DIR)/clean $(LIBUV_DIR)/clean $(CCRONEXPR_DIR)/clean $(BENCHMARK_DIR)/clean $(CJSON_DIR)/clean 
 
 .PYHON: default 
 

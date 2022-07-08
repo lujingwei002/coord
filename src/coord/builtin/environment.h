@@ -72,6 +72,9 @@ public:
     std::string ConfigDir;//tolua_export
     /// 包查找路径, 以分号分隔
     std::string Package;//tolua_export
+    /// 
+    std::string ProcDir;//tolua_export
+    std::string PidPath;//tolua_export
     /// 环境变量字典
     std::map<std::string, std::string> Variables;
 private:

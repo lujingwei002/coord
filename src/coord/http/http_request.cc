@@ -128,7 +128,7 @@ HttpRequest::HttpRequest(Coord* coord, HttpAgent* agent) : BaseRequest(coord) {
 }
 
 HttpRequest::~HttpRequest() {
-    this->coord->coreLogDebug("[HttpRequest] ~HttpRequest");
+    this->coord->CoreLogDebug("[HttpRequest] ~HttpRequest");
     if(this->response){
         delete this->response;
         this->response = NULL;

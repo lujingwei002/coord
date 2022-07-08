@@ -76,7 +76,7 @@ Action* Animation::Wait(uint64_t msec) {
 
 void Animation::onComplete(Action* action) {
     if (this->action != action) {
-        this->coord->coreLogError("[action::Animation] onComplete failed, action=%p, error='action already onCompleteed'", action);
+        this->coord->CoreLogError("[action::Animation] onComplete failed, action=%p, error='action already onCompleteed'", action);
         return;
     }
     this->coord->Destory(this);

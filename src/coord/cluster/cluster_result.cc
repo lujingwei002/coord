@@ -22,7 +22,7 @@ Result::Result(Coord* coord, cluster_client* client) : BaseResult(coord) {
 }
 
 Result::~Result() {
-    this->coord->coreLogDebug("[cluster::Result] ~Result");
+    this->coord->CoreLogDebug("[cluster::Result] ~Result");
     this->coord->Destory(this->client);
 }
 

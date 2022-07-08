@@ -45,7 +45,7 @@ int Script::DoFile(const char* filePath) {
     lua_State* L = this->L;
     if(luaL_dofile(L, filePath)) {
         if (lua_isstring(L, -1)) {
-            this->coord->coreLogError("[Script] DoFile failed, error='%s'", lua_tostring(L, -1));
+            this->coord->CoreLogError("[Script] DoFile failed, error='%s'", lua_tostring(L, -1));
             this->lastError = lua_tostring(L, -1);
             lua_pop(L, 1);
             return -1;
@@ -58,7 +58,7 @@ int Script::DoString(const char* filePath) {
     lua_State* L = this->L;
     if(luaL_dostring(L, filePath)) {
         if (lua_isstring(L, -1)) {
-            this->coord->coreLogError("[Script] DoString failed, error='%s'", lua_tostring(L, -1));
+            this->coord->CoreLogError("[Script] DoString failed, error='%s'", lua_tostring(L, -1));
             this->lastError = lua_tostring(L, -1);
             lua_pop(L, 1);
             return -1;
@@ -414,18 +414,18 @@ int Script::TraceStack()  {
     lua_getfield(L, -1, "traceback");  
     lua_pcall(L, 0, 1, 0);   
     const char* sz = lua_tostring(L, -1);  
-    this->coord->coreLogError("%s", sz);
+    this->coord->CoreLogError("%s", sz);
     return 0;
 }
 
 int Script::onAwake() {
     if(this->GetFunction("_onAwake_")){
-        this->coord->coreLogError("[script] onAwake not found");
+        this->coord->CoreLogError("[script] onAwake not found");
         lua_pop(L, lua_gettop(L));
         return 1;
     }
     if (lua_pcall(L, 0, 0, 0) != 0){
-        this->coord->coreLogError("[script] onAwake failed, error='%s'", lua_tostring(L, -1));
+        this->coord->CoreLogError("[script] onAwake failed, error='%s'", lua_tostring(L, -1));
         this->TraceStack();
         return 1;
     }
@@ -450,15 +450,15 @@ int Script::main()  {
     if(this->coord->Json) {
         this->coord->Json->registerMetatable();
     }
-    this->coord->coreLogInfo("[%s] Package: %s", TAG, package.c_str());
-    this->coord->coreLogInfo("[%s] Main: %s", TAG, mainPackage);
+    this->coord->CoreLogInfo("[%s] Package: %s", TAG, package.c_str());
+    this->coord->CoreLogInfo("[%s] Main: %s", TAG, mainPackage);
 
     strncpy(this->Path, package.c_str(), PACKAGE_MAX);
     strncpy(this->Main, mainPackage, PACKAGE_MAX);
     tolua_pushusertype(L, (void*)this->coord, "coord::Coord");
     lua_setglobal(L, "coorda");
     if(this->GetFunction("_main_")){
-        this->coord->coreLogError("[script] _main_ not found");
+        this->coord->CoreLogError("[script] _main_ not found");
         lua_pop(L, lua_gettop(L));
         return 1;
     }
@@ -474,7 +474,7 @@ int Script::main()  {
 int Script::Import(ScriptOpenFunc func) {
     int err = func(this->L);
     if (err != 1) {
-        this->coord->coreLogError("[Script] Import failed, error=%d\n", err);
+        this->coord->CoreLogError("[Script] Import failed, error=%d\n", err);
         return -1;
     }
     return 0;
@@ -483,12 +483,12 @@ int Script::Import(ScriptOpenFunc func) {
 void Script::onDestory()  {
     lua_State* L = this->L;
     if(this->GetFunction("_onDestory_")){
-        this->coord->coreLogError("[script] onDestory not found");
+        this->coord->CoreLogError("[script] onDestory not found");
         lua_pop(L, lua_gettop(L));
         return;
     }
     if (lua_pcall(L, 0, 0, 0) != 0){
-        this->coord->coreLogError("[script] onDestory failed, error='%s'", lua_tostring(L, -1));
+        this->coord->CoreLogError("[script] onDestory failed, error='%s'", lua_tostring(L, -1));
         this->TraceStack();
         return;
     }
@@ -502,12 +502,12 @@ void Script::gc() {
 
 int Script::onReload() {
     if(this->GetFunction("_onReload_")){
-        this->coord->coreLogError("[script] onReload not found");
+        this->coord->CoreLogError("[script] onReload not found");
         lua_pop(L, lua_gettop(L));
         return 1;
     }
     if (lua_pcall(L, 0, 0, 0) != 0){
-        this->coord->coreLogError("[script] onReload failed, error='%s'", lua_tostring(L, -1));
+        this->coord->CoreLogError("[script] onReload failed, error='%s'", lua_tostring(L, -1));
         this->TraceStack();
         return 1;
     }
@@ -802,7 +802,7 @@ int Script::encode(byte_slice& buffer, lua_State* L, int index, std::map<const v
             //消息内容
             buffer.Reserve(buffer.Len() + msgLen);
             if(buffer.Capacity() < msgLen){
-                this->coord->coreLogError("[Proto] Encode failed, capacity=%ld, msgLen=%ld, error='buffer reserve err'", buffer.Capacity(), msgLen);
+                this->coord->CoreLogError("[Proto] Encode failed, capacity=%ld, msgLen=%ld, error='buffer reserve err'", buffer.Capacity(), msgLen);
                 return -1;
             } 
             char* end = (char *)message->SerializeWithCachedSizesToArray((google::protobuf::uint8 *)(buffer.Data() + buffer.Len()));
@@ -1117,7 +1117,7 @@ int Script::FromJson(lua_State* L) {
     const char* data = lua_tolstring(L, -1, &len);
     int err = cjson_decode(this->L, this->jsonParser, data, len);
     if (err) {
-        this->coord->coreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
+        this->coord->CoreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
         return 0;
     }
     return 1;
@@ -1126,7 +1126,7 @@ int Script::FromJson(lua_State* L) {
 int Script::FromJson(byte_slice& buffer) {
     int err = cjson_decode(this->L, this->jsonParser, buffer.Data(), buffer.Len());
     if (err) {
-        this->coord->coreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
+        this->coord->CoreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
         return err;
     }
     return 0;
@@ -1135,7 +1135,7 @@ int Script::FromJson(byte_slice& buffer) {
 int Script::FromJson(const char* data, size_t len) {
     int err = cjson_decode(this->L, this->jsonParser, data, len);
     if (err) {
-        this->coord->coreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
+        this->coord->CoreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
         return err;
     }
     return 0;
@@ -1144,7 +1144,7 @@ int Script::FromJson(const char* data, size_t len) {
 int Script::FromJson(const char* str) {
     int err = cjson_decode(this->L, this->jsonParser, str, strlen(str));
     if (err) {
-        this->coord->coreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
+        this->coord->CoreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
         return err;
     }
     return 0;
@@ -1153,7 +1153,7 @@ int Script::FromJson(const char* str) {
 int Script::FromJson(const char* path, byte_slice& buffer) {
     int err = cjson_decode(this->L, this->jsonParser, buffer.Data(), buffer.Len());
     if (err) {
-        this->coord->coreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
+        this->coord->CoreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
         return err;
     }
     err = this->Set(path, -1);
@@ -1164,7 +1164,7 @@ int Script::FromJson(const char* path, byte_slice& buffer) {
 int Script::FromJson(const char* path, const char* data, size_t len) {
     int err = cjson_decode(this->L, this->jsonParser, data, len);
     if (err) {
-        this->coord->coreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
+        this->coord->CoreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
         return err;
     }
     err = this->Set(path, -1);
@@ -1175,7 +1175,7 @@ int Script::FromJson(const char* path, const char* data, size_t len) {
 int Script::FromJson(const char* path, const char* str) {
     int err = cjson_decode(this->L, this->jsonParser, str, strlen(str));
     if (err) {
-        this->coord->coreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
+        this->coord->CoreLogError("[Script] FromJson failed, error='%s'", cjson_error(this->L, this->jsonParser));
         return err;
     }
     err = this->Set(path, -1);

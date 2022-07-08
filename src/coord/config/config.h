@@ -50,6 +50,7 @@ public:
     std::string         Version;            //tolua_export
     /// 短版本
     std::string         ShortVersion;       //tolua_export
+    std::string         ProcDir;
 };//tolua_export
 
 class Config {//tolua_export

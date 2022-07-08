@@ -301,7 +301,7 @@ int Argument::Serialize(byte_slice& buffer) {
                 //消息内容
                 buffer.Reserve(buffer.Len() + msgLen);
                 if(buffer.Capacity() < msgLen){
-                    this->coord->coreLogError("[Proto] Encode failed, capacity=%ld, msgLen=%ld, error='buffer reserve err'", buffer.Capacity(), msgLen);
+                    this->coord->CoreLogError("[Proto] Encode failed, capacity=%ld, msgLen=%ld, error='buffer reserve err'", buffer.Capacity(), msgLen);
                     return -1;
                 } 
                 char* end = (char *)message->SerializeWithCachedSizesToArray((google::protobuf::uint8 *)(buffer.Data() + buffer.Len()));
@@ -368,7 +368,7 @@ int Argument::Pack(lua_State* L) {
 
 int Argument::pack(lua_State* L, int i) {
     if (this->coord->Script->L != L) {
-        this->coord->coreLogError("[Argument] Unpack failed, error='lua_State err'");
+        this->coord->CoreLogError("[Argument] Unpack failed, error='lua_State err'");
     }
     tolua_Error tolua_err;
     while (true) {
@@ -403,7 +403,7 @@ int Argument::pack(lua_State* L, int i) {
 
 int Argument::Unpack(lua_State* L) {
     if (this->coord->Script->L != L) {
-        this->coord->coreLogError("[Argument] Unpack failed, error='lua_State err'");
+        this->coord->CoreLogError("[Argument] Unpack failed, error='lua_State err'");
     }
     for (int i = 0; i < this->Count(); i++) {
         if (this->IsNumber(i)) {

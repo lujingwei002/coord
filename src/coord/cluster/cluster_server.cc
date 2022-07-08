@@ -33,7 +33,7 @@ cluster_server::~cluster_server() {
 }
 
 int cluster_server::main() {
-    this->coord->coreLogDebug("[cluster_server] main, host=%s, port=%d", this->cluster->config.Host.c_str(), this->cluster->config.Port);
+    this->coord->CoreLogDebug("[cluster_server] main, host=%s, port=%d", this->cluster->config.Host.c_str(), this->cluster->config.Port);
     net::TcpListener *listener = net::NewTcpListener(this->coord);
     listener->SetHandler(this);
     int err = listener->Listen(this->cluster->config.Host.c_str(), this->cluster->config.Port);
@@ -47,7 +47,7 @@ int cluster_server::main() {
 
 void cluster_server::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAgent){
     int sessionId = tcpAgent->sessionId;
-    this->coord->coreLogDebug("[cluster_server] recvTcpNew sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[cluster_server] recvTcpNew sessionId=%d", sessionId);
     tcpAgent->SetRecvBuffer(this->cluster->config.RecvBuffer);
     cluster_agent *agent = newClusterAgent(this->coord, this->cluster, this, tcpAgent);
     agent->sessionId = sessionId;
@@ -57,10 +57,10 @@ void cluster_server::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAg
 
 void cluster_server::recvTcpClose(cluster_agent* agent){
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[cluster_server] recvTcpClose sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[cluster_server] recvTcpClose sessionId=%d", sessionId);
     auto it = this->agentDict.find(sessionId);
     if(it == this->agentDict.end()){
-        this->coord->coreLogDebug("[cluster_server] recvTcpClose failed, sessionId=%d, error='agent not found'", sessionId);
+        this->coord->CoreLogDebug("[cluster_server] recvTcpClose failed, sessionId=%d, error='agent not found'", sessionId);
         return;
     }
     this->agentDict.erase(it);

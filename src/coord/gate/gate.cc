@@ -35,7 +35,7 @@ Gate::Gate(Coord* coord) : coord(coord) {
 }
 
 Gate::~Gate(){
-    this->coord->coreLogDebug("[Gate] ~Gate");
+    this->coord->CoreLogDebug("[Gate] ~Gate");
     delete this->Router;
     this->Router = NULL;
     if(this->webSocketServer) {
@@ -86,7 +86,7 @@ uint64_t Gate::agentRegisterInterval() {
 
 int Gate::main() {
     if (this->status != GateStatus_NIL) {
-        this->coord->coreLogError("[Gate] Start failed, error='gate already running'");
+        this->coord->CoreLogError("[Gate] Start failed, error='gate already running'");
         return -1;
     }
     if (this->config.Network == "tcp") {
@@ -96,7 +96,7 @@ int Gate::main() {
     } else if (this->config.Network == "ws") {
         this->address = "ws://"+this->config.ServerName;
     }
-    this->coord->coreLogError("[Gate] Listen, address='%s', host='%s', port=%d", this->address.c_str(), this->config.Host.c_str(), this->config.Port);
+    this->coord->CoreLogError("[Gate] Listen, address='%s', host='%s', port=%d", this->address.c_str(), this->config.Host.c_str(), this->config.Port);
     //启动cluster
     if (this->coord->Cluster && this->config.Cluster.length() > 0) {
         this->cluster = newgate_cluster(this->coord, this);
@@ -109,7 +109,7 @@ int Gate::main() {
     if (this->config.RsaEncrypt){
         std::ifstream rsaFile(this->config.RsaKeyFile);
         if(!rsaFile.is_open()){
-            this->coord->coreLogError("[Gate] Start failed, file=%s, error='open rsa file failed'", this->config.RsaKeyFile.c_str());
+            this->coord->CoreLogError("[Gate] Start failed, file=%s, error='open rsa file failed'", this->config.RsaKeyFile.c_str());
             return -1;
         }
         this->rsaPrivateKey = std::string((std::istreambuf_iterator<char>(rsaFile)), std::istreambuf_iterator<char>());
@@ -164,7 +164,7 @@ int Gate::main() {
 
 void Gate::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAgent) {
     uint64_t sessionId = tcpAgent->sessionId;
-    this->coord->coreLogDebug("[Gate] recvTcpNew, sessionId=%ld, remoteAddr=%s", sessionId, tcpAgent->remoteAddr.c_str());
+    this->coord->CoreLogDebug("[Gate] recvTcpNew, sessionId=%ld, remoteAddr=%s", sessionId, tcpAgent->remoteAddr.c_str());
     tcpAgent->SetRecvBuffer(this->config.RecvBuffer);
     GateAgent *agent = newGateAgent(this->coord, this, tcpAgent);
     agent->sessionId = sessionId;
@@ -173,10 +173,10 @@ void Gate::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAgent) {
 }
 
 void Gate::recvAgentClose(GateAgent* agent){
-    this->coord->coreLogDebug("[Gate] recvAgentClose, sessionId=%ld, ref=%d", agent->sessionId, agent->_ref);
+    this->coord->CoreLogDebug("[Gate] recvAgentClose, sessionId=%ld, ref=%d", agent->sessionId, agent->_ref);
     auto it = this->agentDict.find(agent->sessionId);
     if(it == this->agentDict.end()){
-        this->coord->coreLogDebug("[Gate] recvAgentClose failed, error='agent not found', sessionId=%ld", agent->sessionId);
+        this->coord->CoreLogDebug("[Gate] recvAgentClose failed, error='agent not found', sessionId=%ld", agent->sessionId);
         return;
     }
     uint64_t userId = agent->session->UserId;
@@ -191,7 +191,7 @@ void Gate::recvAgentClose(GateAgent* agent){
 
 void Gate::recvWebSocketNew(websocket::Agent* webSocketAgent){
     uint64_t sessionId = webSocketAgent->sessionId;
-    this->coord->coreLogDebug("[Gate] recvWebSocketNew, sessionId=%ld, remoteAddr=%s", sessionId, webSocketAgent->remoteAddr.c_str());
+    this->coord->CoreLogDebug("[Gate] recvWebSocketNew, sessionId=%ld, remoteAddr=%s", sessionId, webSocketAgent->remoteAddr.c_str());
     GateAgent *agent = newGateAgent(this->coord, this, webSocketAgent);
     agent->sessionId = sessionId;
     agent->remoteAddr = webSocketAgent->remoteAddr;
@@ -199,7 +199,7 @@ void Gate::recvWebSocketNew(websocket::Agent* webSocketAgent){
 }
 
 void Gate::recvGateRequest(GateSession* session, GateRequest* request) {
-    this->coord->coreLogDebug("[Gate] recvGateRequest");
+    this->coord->CoreLogDebug("[Gate] recvGateRequest");
     try{ 
         //传递到逻辑层
         this->Router->recvGateRequest(session, request);
@@ -208,7 +208,7 @@ void Gate::recvGateRequest(GateSession* session, GateRequest* request) {
 }
 
 void Gate::recvGateNotify(GateSession* session, GateNotify* notify) {
-    this->coord->coreLogDebug("[Gate] recvGateNotify");
+    this->coord->CoreLogDebug("[Gate] recvGateNotify");
     try{
         //传递到逻辑层
         this->Router->recvGateNotify(session, notify);
@@ -217,7 +217,7 @@ void Gate::recvGateNotify(GateSession* session, GateNotify* notify) {
 } 
 
 void Gate::recvGateSessionNew(GateSession* session) {
-    this->coord->coreLogDebug("[Gate] recvGateSessionNew");
+    this->coord->CoreLogDebug("[Gate] recvGateSessionNew");
     try{ 
         //传递到逻辑层
         this->Router->recvGateSessionNew(session);
@@ -226,7 +226,7 @@ void Gate::recvGateSessionNew(GateSession* session) {
 }
 
 void Gate::recvGateSessionClose(GateSession* session) {
-    this->coord->coreLogDebug("[Gate] recvGateSessionClose");
+    this->coord->CoreLogDebug("[Gate] recvGateSessionClose");
     try{ 
         //传递到逻辑层
         this->Router->recvGateSessionClose(session);
@@ -237,7 +237,7 @@ void Gate::recvGateSessionClose(GateSession* session) {
 void Gate::Kick(uint64_t sessionId, const char* reason) {
     auto it = this->agentDict.find(sessionId);
     if(it == this->agentDict.end()){
-        this->coord->coreLogDebug("[Gate] Kick failed, error=agent not found, sessionId=%ld", sessionId);
+        this->coord->CoreLogDebug("[Gate] Kick failed, error=agent not found, sessionId=%ld", sessionId);
         return;
     }
     GateAgent* agent = it->second;
@@ -285,18 +285,18 @@ int Gate::Logout(uint64_t userId) {
 }
 
 void Gate::recvUserLogoutSucc(uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[Gate] recvUserLogoutSucc, sessionId=%ld, userId=%ld", sessionId, userId);
+    this->coord->CoreLogDebug("[Gate] recvUserLogoutSucc, sessionId=%ld, userId=%ld", sessionId, userId);
     GateAgent* agent = NULL;
     auto it1 = this->agentDict.find(sessionId);
     if (it1 == this->agentDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserLogoutSucc failed, sessionId=%ld, uuserId=%ld, error='agent not found'", sessionId, userId);
+        this->coord->CoreLogError("[Gate] recvUserLogoutSucc failed, sessionId=%ld, uuserId=%ld, error='agent not found'", sessionId, userId);
     } else {
         agent = it1->second;
         this->agentDict.erase(it1);
     }
     auto it2 = this->userDict.find(userId);
     if (it2 == this->userDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserLogoutSucc failed, sessionId=%ld, uuserId=%ld, error='user not found'", sessionId, userId);
+        this->coord->CoreLogError("[Gate] recvUserLogoutSucc failed, sessionId=%ld, uuserId=%ld, error='user not found'", sessionId, userId);
     } else {
         agent = it1->second;
         this->userDict.erase(it2);
@@ -312,18 +312,18 @@ void Gate::recvUserLogoutSucc(uint64_t sessionId, uint64_t userId) {
 }
 
 void Gate::recvUserLogoutErr(uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[Gate] recvUserLogoutSucc, sessionId=%ld, userId=%ld", sessionId, userId);
+    this->coord->CoreLogDebug("[Gate] recvUserLogoutSucc, sessionId=%ld, userId=%ld", sessionId, userId);
     GateAgent* agent = NULL;
     auto it1 = this->agentDict.find(sessionId);
     if (it1 == this->agentDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserLogoutSucc failed, sessionId=%ld, uuserId=%ld, error='agent not found'", sessionId, userId);
+        this->coord->CoreLogError("[Gate] recvUserLogoutSucc failed, sessionId=%ld, uuserId=%ld, error='agent not found'", sessionId, userId);
     } else {
         agent = it1->second;
         this->agentDict.erase(it1);
     }
     auto it2 = this->userDict.find(userId);
     if (it2 == this->userDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserLogoutSucc failed, sessionId=%ld, uuserId=%ld, error='user not found'", sessionId, userId);
+        this->coord->CoreLogError("[Gate] recvUserLogoutSucc failed, sessionId=%ld, uuserId=%ld, error='user not found'", sessionId, userId);
     } else {
         agent = it2->second;
         this->userDict.erase(it2);
@@ -334,16 +334,16 @@ void Gate::recvUserLogoutErr(uint64_t sessionId, uint64_t userId) {
 }
 
 void Gate::recvUserLoginSucc(uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[Gate] recvUserLoginSucc, sessionId=%ld, userId=%ld", sessionId, userId);
+    this->coord->CoreLogDebug("[Gate] recvUserLoginSucc, sessionId=%ld, userId=%ld", sessionId, userId);
     auto it1 = this->loginingPromiseDict.find(sessionId);
     if (it1 == this->loginingPromiseDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserLoginSucc failed, sessionId=%ld, userId=%ld, error='login promise not found'", sessionId, userId);
+        this->coord->CoreLogError("[Gate] recvUserLoginSucc failed, sessionId=%ld, userId=%ld, error='login promise not found'", sessionId, userId);
         return;
     }
     GatePromise* promise = it1->second;
     auto it2 = this->agentDict.find(sessionId);
     if (it2 == this->agentDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserLoginSucc failed, sessionId=%ld, userId=%ld, error='agent not found'", sessionId, userId);
+        this->coord->CoreLogError("[Gate] recvUserLoginSucc failed, sessionId=%ld, userId=%ld, error='agent not found'", sessionId, userId);
         this->loginingPromiseDict.erase(it1);
         this->coord->Destory(promise);
         return;
@@ -352,7 +352,7 @@ void Gate::recvUserLoginSucc(uint64_t sessionId, uint64_t userId) {
 
     auto it3 = this->userDict.find(userId);
     if (it3 != this->userDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserLoginSucc failed, sessionId=%ld, userId=%ld, error='other user found'", sessionId, userId);
+        this->coord->CoreLogError("[Gate] recvUserLoginSucc failed, sessionId=%ld, userId=%ld, error='other user found'", sessionId, userId);
         this->loginingPromiseDict.erase(it1);   
         promise->reject(agent->session);
         this->coord->Destory(promise);
@@ -372,16 +372,16 @@ void Gate::recvUserLoginSucc(uint64_t sessionId, uint64_t userId) {
 }
 
 void Gate::recvUserLoginErr(uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[Gate] recvUserLoginErr, sessionId=%ld, userId=%ld", sessionId, userId);
+    this->coord->CoreLogDebug("[Gate] recvUserLoginErr, sessionId=%ld, userId=%ld", sessionId, userId);
     auto it1 = this->loginingPromiseDict.find(sessionId);
     if (it1 == this->loginingPromiseDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserLoginErr failed, sessionId=%ld, userId=%ld, error='login promise not found'", sessionId, userId);
+        this->coord->CoreLogError("[Gate] recvUserLoginErr failed, sessionId=%ld, userId=%ld, error='login promise not found'", sessionId, userId);
         return;
     }
     GatePromise* promise = it1->second;
     auto it2 = this->agentDict.find(sessionId);
     if (it2 == this->agentDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserLoginErr failed, sessionId=%ld, userId=%ld, error='agent not found'", sessionId, userId);
+        this->coord->CoreLogError("[Gate] recvUserLoginErr failed, sessionId=%ld, userId=%ld, error='agent not found'", sessionId, userId);
         this->loginingPromiseDict.erase(it1);
         this->coord->Destory(promise);
         return;
@@ -394,10 +394,10 @@ void Gate::recvUserLoginErr(uint64_t sessionId, uint64_t userId) {
 }
 
 void Gate::recvUserInstead(uint64_t userId) {
-    this->coord->coreLogDebug("[Gate] recvUserInstead, userId=%ld", userId);
+    this->coord->CoreLogDebug("[Gate] recvUserInstead, userId=%ld", userId);
     auto it = this->userDict.find(userId);
     if (it == this->userDict.end()) {
-        this->coord->coreLogError("[Gate] recvUserInstead failed, userId=%ld, error='agent not found'", userId);
+        this->coord->CoreLogError("[Gate] recvUserInstead failed, userId=%ld, error='agent not found'", userId);
         return;
     }
     GateAgent* agent = it->second;

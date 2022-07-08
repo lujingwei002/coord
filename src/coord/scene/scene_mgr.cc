@@ -22,7 +22,7 @@ SceneMgr::SceneMgr(Coord *coord) {
 }
 
 SceneMgr::~SceneMgr() {
-    this->coord->coreLogDebug("[SceneMgr] ~SceneMgr");
+    this->coord->CoreLogDebug("[SceneMgr] ~SceneMgr");
     while(this->sceneArr.size() > 0){
         Scene* scene = this->sceneArr.back();
         this->sceneArr.pop_back();
@@ -39,7 +39,7 @@ Scene* SceneMgr::CreateScene(const char* sceneName) {
 }
 
 void SceneMgr::onUpdate(uint64_t cur_tick) {
-    //this->coord->coreLogError("[SceneMgr] onUpdate, from=%ld", this->coord->frame);
+    //this->coord->CoreLogError("[SceneMgr] onUpdate, from=%ld", this->coord->frame);
     std::vector<Scene*> sceneArr;
     for (auto scene : this->sceneArr) {
         sceneArr.push_back(scene);
@@ -66,7 +66,7 @@ Scene* SceneMgr::loadSceneInternal(const char* filePath) {
     std::ifstream ifile;
     ifile.open(filePath, std::ios::in);
     if(!ifile){
-        this->coord->coreLogError("[SceneMgr] loadSceneInternal failed, error='file not found', file='%s'", filePath);
+        this->coord->CoreLogError("[SceneMgr] loadSceneInternal failed, error='file not found', file='%s'", filePath);
         return nullptr;
     }
     std::string str((std::istreambuf_iterator<char>(ifile)),  
@@ -101,11 +101,11 @@ void SceneMgr::onAwake() {
     std::string filePath = this->coord->Environment->CoordDir + "/data/Main Scene.sc";
     Scene* scene = this->loadSceneInternal(filePath.c_str());
     if (nullptr == scene) {
-        this->coord->coreLogError("[SceneMgr] onAwake failed, function='this->LoadScene'");
+        this->coord->CoreLogError("[SceneMgr] onAwake failed, function='this->LoadScene'");
         return;
     }
     if (scene->objectArr.size() < 0) {
-        this->coord->coreLogError("[SceneMgr] onAwake failed, error='empty scene'");
+        this->coord->CoreLogError("[SceneMgr] onAwake failed, error='empty scene'");
         return;
     }
     this->mainScene = scene;

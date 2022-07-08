@@ -22,7 +22,7 @@ Scene::Scene(Coord* coord, SceneMgr *sceneMgr) {
 }
 
 Scene::~Scene() {
-    this->coord->coreLogDebug("[Scene] ~Scene, name=%s", this->name);
+    this->coord->CoreLogDebug("[Scene] ~Scene, name=%s", this->name);
     while(this->objectArr.size() > 0){
         Object* object = this->objectArr.back();
         this->objectArr.pop_back();
@@ -47,7 +47,7 @@ Object* Scene::createObjectInternal(const char* name) {
 
 Object* Scene::Instantiate(const char* name, const char* filePath) {
     lua_State* L = this->coord->Script->L;
-    //this->coord->coreLogDebug("scene[%d] create object local %s", this->id, filePath);
+    //this->coord->CoreLogDebug("scene[%d] create object local %s", this->id, filePath);
     Object* object = NULL;
     if (filePath == NULL) {
         object = newObject(this->coord, name);
@@ -57,12 +57,12 @@ Object* Scene::Instantiate(const char* name, const char* filePath) {
         lua_getglobal(L, "instantiate");
         lua_getglobal(L, filePath);
         if (lua_pcall(L, 1, 1, 0) != 0) {
-            //this->coord->coreLogDebug("node[%d] create object local error %s", this->id, lua_tostring(L, -1));
+            //this->coord->CoreLogDebug("node[%d] create object local error %s", this->id, lua_tostring(L, -1));
             //this->TraceStack();
         }
         tolua_Error tolua_err;
         if(!tolua_isusertype(L, -1, "GameObject", 0, &tolua_err)) {
-            this->coord->coreLogError("object is nil");
+            this->coord->CoreLogError("object is nil");
             lua_pop(L, lua_gettop(L));
             return NULL;
         }
@@ -70,7 +70,7 @@ Object* Scene::Instantiate(const char* name, const char* filePath) {
         lua_pop(L, lua_gettop(L));
     }
     if (object == NULL) {
-        this->coord->coreLogError("Scene.CreateObject failed");
+        this->coord->CoreLogError("Scene.CreateObject failed");
         return NULL;
     }
     this->addObject(object);
@@ -92,7 +92,7 @@ int Scene::addObject(Object* object) {
 }
 
 void Scene::onUpdate(uint64_t cur_tick) {
-    //this->coord->coreLogError("[Scene<%s>] onUpdate", this->name);
+    //this->coord->CoreLogError("[Scene<%s>] onUpdate", this->name);
     std::vector<Object*> objectArr;
     for (auto object : this->objectArr) {
         objectArr.push_back(object);
@@ -113,7 +113,7 @@ void Scene::onReload() {
 } 
 
 void Scene::onAwake() {
-    this->coord->coreLogDebug("[Scene<%s>] onAwake", this->name);
+    this->coord->CoreLogDebug("[Scene<%s>] onAwake", this->name);
     std::vector<Object*> objectArr;
     for (auto object : this->objectArr) {
         objectArr.push_back(object);

@@ -9,6 +9,7 @@
     exec-dir        : 执行文件目录
     coord-dir       : Coord目录
     home-dir        : Home目录
+    proc-dir        : proc目录
                 ${COORD_ROOT}
         搜索顺序 /usr/coord
                  /usr/local/coord

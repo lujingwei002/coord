@@ -38,6 +38,7 @@ int LoggerMgr::ConfigCategory(Category* category, LoggerConfig* config) {
         FileAppender* appender = newFileAppender();
         int err = appender->openFile(config->File);
         if(err) {
+            this->coord->CoreLogError("no such file or directory: %s", config->File.c_str());
             delete appender;
             return err;
         }
@@ -113,7 +114,7 @@ int LoggerMgr::ConfigCategory(Category* category, const char* name) {
     LoggerConfig config;
     int err = this->coord->Config->LoggerConfig(name, &config);
     if (err != 0) {
-        this->coord->coreLogError("[coord::LoggerMgr] GetConfigCategory %s failed, error=%d", name, err);
+        this->coord->CoreLogError("[coord::LoggerMgr] GetConfigCategory %s failed, error=%d", name, err);
         return err;
     }
     config.Name = name;

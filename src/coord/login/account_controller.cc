@@ -68,10 +68,10 @@ void account_controller::reqLogin(http::HttpRequest* request) {
         data.SetString("version", reply.String(4));
         response->Json(result);
         this->coord->Destory(request);
-        this->coord->coreLogError("[login_cluster] test succ %s", reply.String());
+        this->coord->CoreLogError("[login_cluster] test succ %s", reply.String());
     });
     promise->Else([this, request, response](auto client, auto& reply){
-        this->coord->coreLogError("[login_cluster] test error");
+        this->coord->CoreLogError("[login_cluster] test error");
         auto result = this->coord->Json->NewObject();
         result.SetInteger("code", 4);
         response->Json(result);
@@ -117,10 +117,10 @@ void account_controller::reqList(http::HttpRequest* request) {
         }
         response->Json(result);
         this->coord->Destory(request);
-        this->coord->coreLogError("[login_cluster] test succ %s", reply.String());
+        this->coord->CoreLogError("[login_cluster] test succ %s", reply.String());
     });
     promise->Else([this, request, response](auto client, auto& reply){
-        this->coord->coreLogError("[login_cluster] test error");
+        this->coord->CoreLogError("[login_cluster] test error");
         auto result = this->coord->Json->NewObject();
         result.SetInteger("code", 4);
         response->Json(result);

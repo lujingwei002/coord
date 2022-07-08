@@ -54,10 +54,10 @@ cluster_router_handler* ClusterRouter::searchHandler(const char* event, const ch
 }
 
 void ClusterRouter::recvClusterNotify(cluster::Notify* notify) {
-    this->coord->coreLogDebug("[ClusterRouter] recvClusterNotify");
+    this->coord->CoreLogDebug("[ClusterRouter] recvClusterNotify");
     cluster_router_handler* handler = this->searchHandler("NOTIFY", notify->route.c_str());
     if(handler == NULL){
-        this->coord->coreLogDebug("[ClusterRouter] recvClusterNotify failed, error='router not found', path=%s", notify->route.c_str());
+        this->coord->CoreLogDebug("[ClusterRouter] recvClusterNotify failed, error='router not found', path=%s", notify->route.c_str());
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -67,10 +67,10 @@ void ClusterRouter::recvClusterNotify(cluster::Notify* notify) {
 } 
 
 void ClusterRouter::recvClusterRequest(cluster::Request* request) {
-    this->coord->coreLogDebug("[ClusterRouter] recvClusterRequest");
+    this->coord->CoreLogDebug("[ClusterRouter] recvClusterRequest");
     cluster_router_handler* handler = this->searchHandler("REQUEST", request->route.c_str());
     if(handler == NULL){
-        this->coord->coreLogDebug("[ClusterRouter] recvClusterRequest failed, error='router not found', path=%s", request->route.c_str());
+        this->coord->CoreLogDebug("[ClusterRouter] recvClusterRequest failed, error='router not found', path=%s", request->route.c_str());
         Response* response = request->GetResponse();
         response->String("Not Found");
         response->Reject(404);
@@ -89,7 +89,7 @@ void ClusterRouter::Trace() {
         for(auto const& it1 : tree->handlerDict) {
             auto handler = it1.second;
             uint64_t averageTime = handler->times <= 0 ? 0 : (handler->consumeTime/handler->times);
-            this->coord->coreLogDebug("[ClusterRouter] %10s | %10d | %10s | %s", event.c_str(), handler->times, date::FormatNano(averageTime), it1.first.c_str());
+            this->coord->CoreLogDebug("[ClusterRouter] %10s | %10d | %10s | %s", event.c_str(), handler->times, date::FormatNano(averageTime), it1.first.c_str());
         }
     }
 }
@@ -204,7 +204,7 @@ int ClusterRouter::Notify(lua_State* L) {
 
 bool ClusterRouter::addRoute(const char* event, const char* route, cluster_router_handler* handler) {
     cluster_router_tree* tree = this->getTree(event);
-    //this->coord->coreLogDebug("[ClusterRouter] addRoute, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
+    //this->coord->CoreLogDebug("[ClusterRouter] addRoute, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
     auto it = tree->handlerDict.find(route);
     if (it != tree->handlerDict.end()) {
         delete it->second;

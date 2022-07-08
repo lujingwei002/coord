@@ -128,7 +128,7 @@ int Environment::scanEnvLine(const std::string& envFilePath, char* data, size_t 
 
 int Environment::gotEnvLineError(const std::string& envFilePath, int lineNum, char* data, size_t size) {
     std::string line(data, size);
-    this->coord->coreLogError("parse error %s(%d): %s", envFilePath.c_str(), lineNum, line);
+    this->coord->CoreLogError("parse error %s(%d): %s", envFilePath.c_str(), lineNum, line);
     return 0;
 }
 
@@ -289,7 +289,7 @@ int Environment::scanEnvMultiLine(const std::string& envFilePath, char* data, si
 int Environment::scanEnvFile(const std::string& envFilePath) {
     FILE* f = fopen(envFilePath.c_str(), "r");
     if (nullptr == f) {
-        this->coord->coreLogError("No such file or directory: %s", envFilePath.c_str());
+        this->coord->CoreLogError("No such file or directory: %s", envFilePath.c_str());
         return ErrorNoSuchFileOrDirectory;
     }
     fseek(f, 0, SEEK_END);
@@ -315,7 +315,7 @@ int Environment::main(const char* configPath) {
     uv_fs_t req;
     int err = uv_fs_realpath(&this->coord->loop, &req, configPath, nullptr);
     if (err) {
-        this->coord->coreLogError("%s %s", uv_strerror(err), configPath);
+        this->coord->CoreLogError("%s %s", uv_strerror(err), configPath);
         return err;
     }
     this->ConfigPath = (char*)req.ptr;
@@ -362,6 +362,7 @@ int Environment::main(const char* configPath) {
     // 工程目录
     this->ProjectDir = coord::path::DirName(this->ExecDir);
     
+    this->ProcDir = coord::path::PathJoin(this->CoordDir, "proc");
     this->Package = this->CoordDir + "/package";                        // 引擎目录
     this->Package = this->WorkingDir + "/package;" + this->Package;     // 工作目录
     this->Package = this->ConfigDir + "/package;" + this->Package;  // 配置文件目录
@@ -377,6 +378,7 @@ int Environment::main(const char* configPath) {
     this->Variables["coord-dir"] = this->CoordDir;
     this->Variables["project-dir"] = this->ProjectDir;
     this->Variables["home-dir"] = this->HomeDir;
+    this->Variables["proc-dir"] = this->ProcDir;
     this->Variables["package"] = this->Package;
 
     std::string envFilePath = coord::path::PathJoin(this->ConfigDir, env_file_name);

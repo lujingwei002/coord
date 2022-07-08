@@ -20,7 +20,7 @@ Notify::Notify(Coord* coord) : BaseRequest(coord) {
 }
 
 Notify::~Notify() {
-    this->coord->coreLogDebug("[worker::Notify] ~");
+    this->coord->CoreLogDebug("[worker::Notify] ~");
 }
 
 void Notify::onDestory() {

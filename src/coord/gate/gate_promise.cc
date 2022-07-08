@@ -27,7 +27,7 @@ GatePromise::GatePromise(Coord* coord) {
 }
 
 GatePromise::~GatePromise() {
-    this->coord->coreLogDebug("[GatePromise] ~GatePromise");
+    this->coord->CoreLogDebug("[GatePromise] ~GatePromise");
     if(this->resolveRef) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->resolveRef);
     }
@@ -83,9 +83,9 @@ GatePromise* GatePromise::Else(ScriptComponent* object, int ref) {
 }
 
 void GatePromise::resolve(GateSession* session) {
-    //this->coord->coreLogDebug("[GatePromise] resolve");
+    //this->coord->CoreLogDebug("[GatePromise] resolve");
     if(this->resolveFunc == NULL) {
-        this->coord->coreLogDebug("[GatePromise] resolve failed, error='func not found'");
+        this->coord->CoreLogDebug("[GatePromise] resolve failed, error='func not found'");
         return;
     }
     try{
@@ -98,9 +98,9 @@ void GatePromise::resolve(GateSession* session) {
 }
 
 void GatePromise::reject(GateSession* session){
-    //this->coord->coreLogDebug("[GatePromise] reject");
+    //this->coord->CoreLogDebug("[GatePromise] reject");
     if(this->rejectFunc == NULL) {
-        this->coord->coreLogDebug("[GatePromise] reject failed, error='func not found'");
+        this->coord->CoreLogDebug("[GatePromise] reject failed, error='func not found'");
         return;
     }
     try{

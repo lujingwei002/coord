@@ -36,12 +36,12 @@ void HttpResponse::SetStatusCode(int code) {
 
 int HttpResponse::Text(lua_State* L){
     if (!lua_isstring(L, 2)){
-        this->coord->coreLogError("arg error");
+        this->coord->CoreLogError("arg error");
         return 0;
     }
     size_t len = 0;
     const char* data = (const char*)lua_tolstring(L, 2, &len);
-    this->coord->coreLogDebug("HttpResponse::Text data=%s, len=%d", data, len);
+    this->coord->CoreLogDebug("HttpResponse::Text data=%s, len=%d", data, len);
     this->body.Resize(0);
     coord::Append(this->body, data, len);
     this->contentType = "text/html";
@@ -61,14 +61,14 @@ void HttpResponse::Exception(const char* msg) {
 }
 
 bool HttpResponse::Text(const char* content) {
-    this->coord->coreLogDebug("[HttpResponse] Text, content=%s", content);
+    this->coord->CoreLogDebug("[HttpResponse] Text, content=%s", content);
     coord::Appendf(this->body, content);
     this->contentType = "text/plain";
     return true;
 }
 
 bool HttpResponse::Json(json::Reflect& json) {
-    this->coord->coreLogDebug("[HttpResponse] JSON, content=%s", json.ToString());
+    this->coord->CoreLogDebug("[HttpResponse] JSON, content=%s", json.ToString());
     if(json.Encode(this->body)){
         return false;
     }
@@ -83,7 +83,7 @@ bool HttpResponse::Allow() {
 }
 
 bool HttpResponse::File(const char* path) {
-    this->coord->coreLogDebug("[HttpResponse] File, path=%s", path);
+    this->coord->CoreLogDebug("[HttpResponse] File, path=%s", path);
     int err = io::ReadFile(path, this->body);
     if (err) {
         this->PageNotFound();
@@ -181,7 +181,7 @@ void HttpResponse::flush() {
     }
     coord::Appendf(this->response, "\r\n");
     coord::Append(this->response, this->body.Data(), this->body.Len());
-    //this->coord->coreLogDebug("HttpResponse::Flush data=\n%s, len=%d", this->response.Data(), this->response.Len());
+    //this->coord->CoreLogDebug("HttpResponse::Flush data=\n%s, len=%d", this->response.Data(), this->response.Len());
     this->request->send(this->response);
     return;
 }

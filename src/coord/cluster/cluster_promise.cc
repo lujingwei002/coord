@@ -26,7 +26,7 @@ Promise::Promise(Coord* coord) {
 }
 
 Promise::~Promise() {
-   this->coord->coreLogDebug("[cluster::Promise] ~");
+   this->coord->CoreLogDebug("[cluster::Promise] ~");
    if(this->resolveRef) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->resolveRef);
     }
@@ -66,7 +66,7 @@ Promise* Promise::Else(Promise_Reject func){
 } 
 
 void Promise::resolve(Result* result) {
-    this->coord->coreLogDebug("[cluster::Promise] resolve");
+    this->coord->CoreLogDebug("[cluster::Promise] resolve");
     if(this->resolveFunc == NULL) {
         return;
     }
@@ -78,7 +78,7 @@ void Promise::resolve(Result* result) {
 }
 
 void Promise::reject(Result* result){
-    this->coord->coreLogDebug("[cluster::Promise] reject");
+    this->coord->CoreLogDebug("[cluster::Promise] reject");
     if(this->rejectFunc == NULL) {
         return;
         

@@ -48,7 +48,7 @@ int JsonMgr::registerMetatable() {
     lua_State* L = this->coord->Script->L;
     luaL_getmetatable (L, "coord::json::Reflect");
     if(lua_isnil(L, -1)) {
-        this->coord->coreLogError("[coord::JsonMgr] registerMetatable failed, error='metatable not found'");
+        this->coord->CoreLogError("[coord::JsonMgr] registerMetatable failed, error='metatable not found'");
         return 1;
     }
     lua_pushstring(L, "__index");
@@ -89,7 +89,7 @@ Reflect JsonMgr::Decode(const char* data){
     std::string err;
     json11::Json json = json11::Json::parse(data, err);
     if (err.length() > 0) {
-        this->coord->coreLogError("[JsonMgr] Decode failed, error=%s", err.c_str());
+        this->coord->CoreLogError("[JsonMgr] Decode failed, error=%s", err.c_str());
         return nullptr;
     }
     return Reflect(this->coord, json);
@@ -99,7 +99,7 @@ Reflect JsonMgr::Decode(std::string& data){
     std::string err;
     json11::Json json = json11::Json::parse(data, err);
     if (err.length() > 0) {
-        this->coord->coreLogError("[JsonMgr] Decode failed, error=%s", err.c_str());
+        this->coord->CoreLogError("[JsonMgr] Decode failed, error=%s", err.c_str());
         return nullptr;
     }
     return Reflect(this->coord, json);

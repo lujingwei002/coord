@@ -28,7 +28,7 @@ Frame::~Frame() {
 }
 
 size_t Frame::parse(char* data, size_t len) {
-    this->coord->coreLogDebug("[Frame] parse, recv a frame");
+    this->coord->CoreLogDebug("[Frame] parse, recv a frame");
     this->headerLen = 0;
     this->payloadLen = 0;
     this->frameLen = 0;
@@ -36,7 +36,7 @@ size_t Frame::parse(char* data, size_t len) {
         return 0;
     }
     websocket_frame_header* header = (websocket_frame_header*)data;
-    this->coord->coreLogDebug("[Frame] parse, fin(%d) rsv(%d) mask(%d) opcode(%d) payload_len(%d)", header->fin, header->rsv, header->mask, header->opcode, header->payloadLen);
+    this->coord->CoreLogDebug("[Frame] parse, fin(%d) rsv(%d) mask(%d) opcode(%d) payload_len(%d)", header->fin, header->rsv, header->mask, header->opcode, header->payloadLen);
     uint64_t realHeaderLen = sizeof(this->header);
     uint64_t realPayloadLen = header->payloadLen;
     uint64_t realFrameLen = 0;
@@ -73,7 +73,7 @@ size_t Frame::parse(char* data, size_t len) {
     if (len < realFrameLen){
         return 0;
     }
-    this->coord->coreLogDebug("[Frame] parse, realPayloadLen(%ld)", realPayloadLen);
+    this->coord->CoreLogDebug("[Frame] parse, realPayloadLen(%ld)", realPayloadLen);
     //用掩码修改数据
     if (header->mask == 1){
         for (uint64_t i = 0; i < realPayloadLen; i++) {

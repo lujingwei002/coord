@@ -16,7 +16,7 @@ worker_packet::worker_packet(Coord* coord)  {
 }
 
 worker_packet::~worker_packet() {
-    this->coord->coreLogDebug("[worker_packet] ~worker_packet");
+    this->coord->CoreLogDebug("[worker_packet] ~worker_packet");
     
 }
 

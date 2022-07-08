@@ -34,7 +34,7 @@ gate_cluster::gate_cluster(Coord* coord, Gate* gate) {
 }
 
 gate_cluster::~gate_cluster() {
-    this->coord->coreLogDebug("[gate_cluster] ~gate_cluster");
+    this->coord->CoreLogDebug("[gate_cluster] ~gate_cluster");
     if(this->asyncClient != NULL) {
         delete this->asyncClient;
         this->asyncClient = NULL;
@@ -46,62 +46,62 @@ gate_cluster::~gate_cluster() {
 }
 
 void gate_cluster::onDestory() {
-    this->coord->coreLogDebug("[gate_cluster] onDestory");
+    this->coord->CoreLogDebug("[gate_cluster] onDestory");
     int err = this->clearSelf();
     if (err) {
-        this->coord->coreLogError("[gate_cluster] clearSelf failed, error=%d", err);
+        this->coord->CoreLogError("[gate_cluster] clearSelf failed, error=%d", err);
     }
     err = this->clearUser();
     if (err) {
-        this->coord->coreLogError("[gate_cluster] clearUser failed, error=%d", err);
+        this->coord->CoreLogError("[gate_cluster] clearUser failed, error=%d", err);
     }
 }
 
 int gate_cluster::registerSelf() {
-    this->coord->coreLogDebug("[gate_cluster] registerSelf");
+    this->coord->CoreLogDebug("[gate_cluster] registerSelf");
     {
         auto reply = this->syncClient->HMSET(this->selfKey.c_str(), "version", this->coord->Config->Basic.ShortVersion.c_str());
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
+            this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
         reply = this->syncClient->HMSET(this->selfKey.c_str(), "address", this->gate->address.c_str());
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
+            this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
         reply = this->syncClient->HMSET(this->selfKey.c_str(), "host", this->coord->Config->Gate.Host.c_str());
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
+            this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
         reply = this->syncClient->HMSET(this->selfKey.c_str(), "port", std::to_string(this->coord->Config->Gate.Port).c_str());
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
+            this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
         reply = this->syncClient->HMSET(this->selfKey.c_str(), "online", "0");
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
+            this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
         int err = this->syncClient->EXPIRE(this->selfKey.c_str(), this->coord->Config->Gate.RegisterExpire);
         if (err) {
-            this->coord->coreLogError("[gate_cluster] registerSelf failed, error='EXPIRE err'");
+            this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='EXPIRE err'");
             return -1;
         }
     }
     {
         auto reply = this->syncClient->SADD(this->gateSetKey.c_str(), this->coord->Config->Basic.Name.c_str());
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] registerSelf failed, error='SADD err'");
+            this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='SADD err'");
             return -1;
         }
     }
     {
         auto reply = this->syncClient->SADD(this->gateSetVersionKey.c_str(), this->coord->Config->Basic.Name.c_str());
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] registerSelf failed, error='SADD err'");
+            this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='SADD err'");
             return -1;
         }
     }
@@ -109,25 +109,25 @@ int gate_cluster::registerSelf() {
 }
 
 int gate_cluster::clearSelf() {
-    this->coord->coreLogError("[gate_cluster] clearSelf");
+    this->coord->CoreLogError("[gate_cluster] clearSelf");
     {
         auto reply = this->syncClient->DEL(this->selfKey.c_str());
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] clearSelf failed, error='DEL err'");
+            this->coord->CoreLogError("[gate_cluster] clearSelf failed, error='DEL err'");
             return -1;
         }
     }
     {
         auto reply = this->syncClient->SREM(this->gateSetKey.c_str(), this->coord->Config->Basic.Name.c_str());
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] clearSelf failed, error='SREM err'");
+            this->coord->CoreLogError("[gate_cluster] clearSelf failed, error='SREM err'");
             return -1;
         }
     }
     {
         auto reply = this->syncClient->SREM(this->gateSetVersionKey.c_str(), this->coord->Config->Basic.Name.c_str());
         if (reply.Error()){
-            this->coord->coreLogError("[gate_cluster] clearSelf failed, error='SREM err'");
+            this->coord->CoreLogError("[gate_cluster] clearSelf failed, error='SREM err'");
             return -1;
         }
     }
@@ -135,10 +135,10 @@ int gate_cluster::clearSelf() {
 }
 
 int gate_cluster::clearUser() {
-    this->coord->coreLogError("[gate_cluster] clearUser");
+    this->coord->CoreLogError("[gate_cluster] clearUser");
     auto reply = this->syncClient->HGETALL(this->userHashKey.c_str());
     if (reply.Error()){
-        this->coord->coreLogError("[gate_cluster] clearUser failed, error='HGETALL err'");
+        this->coord->CoreLogError("[gate_cluster] clearUser failed, error='HGETALL err'");
         return -1;
     }
     std::map<std::string, bool> lastNodeDict;
@@ -147,27 +147,27 @@ int gate_cluster::clearUser() {
         std::string userKey = this->group + ":" + userId;
         auto reply1 = this->syncClient->GET(userKey.c_str());
         if (reply1.Error()) {
-            this->coord->coreLogError("[gate_cluster] clearUser failed, user key=%s, error='GET err'", userKey.c_str());
+            this->coord->CoreLogError("[gate_cluster] clearUser failed, user key=%s, error='GET err'", userKey.c_str());
             continue;
         }
         if (reply1.Empty()) {
-            this->coord->coreLogError("[gate_cluster] clearUser failed, user key=%s, error='GET empty'", userKey.c_str());
+            this->coord->CoreLogError("[gate_cluster] clearUser failed, user key=%s, error='GET empty'", userKey.c_str());
             continue;
         }
         if (strcmp(reply1.String(), this->coord->Config->Basic.Name.c_str()) != 0) {
-           this->coord->coreLogError("[gate_cluster] clear failed, local='%s', other='%s'", this->coord->Config->Basic.Name.c_str(), reply1.String());
+           this->coord->CoreLogError("[gate_cluster] clear failed, local='%s', other='%s'", this->coord->Config->Basic.Name.c_str(), reply1.String());
             continue;
         }
-        this->coord->coreLogDebug("[gate_cluster] clearUser, user key=%s, gate=%s\n", userKey.c_str(), reply1.String());
+        this->coord->CoreLogDebug("[gate_cluster] clearUser, user key=%s, gate=%s\n", userKey.c_str(), reply1.String());
         auto reply2 = this->syncClient->DEL(userKey.c_str());
         if (reply2.Error()) {
-            this->coord->coreLogError("[gate_cluster] clearUser failed, error='DEL err'");
+            this->coord->CoreLogError("[gate_cluster] clearUser failed, error='DEL err'");
             continue;
         }
     }
     reply = this->syncClient->DEL(this->userHashKey.c_str());
     if (reply.Error()){
-        this->coord->coreLogError("[gate_cluster] clearUser failed, error='DEL err'");
+        this->coord->CoreLogError("[gate_cluster] clearUser failed, error='DEL err'");
         return -1;
     }
     return 0;
@@ -183,7 +183,7 @@ int gate_cluster::main() {
         net::Url url;
         int err = url.Parse(gateConfig->Cluster.c_str(), gateConfig->Cluster.length());
         if (err < 0){
-            this->coord->coreLogError("[gate_cluster] main.http_parser_parse_url failed, error=%d", err);
+            this->coord->CoreLogError("[gate_cluster] main.http_parser_parse_url failed, error=%d", err);
             return err;
         }
         redis::Client* client = redis::newClient(this->coord);
@@ -193,13 +193,13 @@ int gate_cluster::main() {
         config->Password = url.Password;
         size_t dbIndex = url.Path.find("/");
         if (dbIndex == std::string::npos) {
-            this->coord->coreLogError("[gate_cluster] main failed, func='http_parser_parse_url', url=%s, error='url format err'", gateConfig->Cluster.c_str());
+            this->coord->CoreLogError("[gate_cluster] main failed, func='http_parser_parse_url', url=%s, error='url format err'", gateConfig->Cluster.c_str());
             delete client;
             return -1;
         }
         size_t keyIndex = url.Path.find("/", dbIndex + 1);
         if (keyIndex == std::string::npos) {
-            this->coord->coreLogError("[gate_cluster] main failed, func='http_parser_parse_url', url=%s, error='url format err'", gateConfig->Cluster.c_str());
+            this->coord->CoreLogError("[gate_cluster] main failed, func='http_parser_parse_url', url=%s, error='url format err'", gateConfig->Cluster.c_str());
             delete client;
             return -1;
         }
@@ -208,11 +208,11 @@ int gate_cluster::main() {
         err = client->Connect();
         if (err < 0){
             delete client;
-            this->coord->coreLogError("[gate_cluster] main failed, func='client->Connect' failed, error='%d'", err);
+            this->coord->CoreLogError("[gate_cluster] main failed, func='client->Connect' failed, error='%d'", err);
             return err;
         }
         this->syncClient = client;
-        this->coord->coreLogDebug("[gate_cluster] main, host=%s, port=%d, db=%s, group=%s", config->Host.c_str(), config->Port, config->DB.c_str(), this->group.c_str());
+        this->coord->CoreLogDebug("[gate_cluster] main, host=%s, port=%d, db=%s, group=%s", config->Host.c_str(), config->Port, config->DB.c_str(), this->group.c_str());
     }
     //异步链接
     {
@@ -221,7 +221,7 @@ int gate_cluster::main() {
         auto promise = client->Connect();
         if (promise == NULL) {
             delete client;
-            this->coord->coreLogError("[gate_cluster] main failed, func='client->Connect'");
+            this->coord->CoreLogError("[gate_cluster] main failed, func='client->Connect'");
             return -1;
         }
         promise->Then(std::bind(&gate_cluster::recvConnectCacheSucc, this, std::placeholders::_1, std::placeholders::_2));
@@ -235,12 +235,12 @@ int gate_cluster::main() {
     //清除数据
     int err = this->clearUser();
     if (err) {
-        this->coord->coreLogError("[gate_cluster] main filed, func='clearUser', error=%d", err);
+        this->coord->CoreLogError("[gate_cluster] main filed, func='clearUser', error=%d", err);
         return err;
     }
     err = this->registerSelf();
     if (err) {
-        this->coord->coreLogError("[gate_cluster] main filed, func='registerSelf', error=%d", err);
+        this->coord->CoreLogError("[gate_cluster] main filed, func='registerSelf', error=%d", err);
         return err;
     }
     //注册cluster路由
@@ -268,7 +268,7 @@ void gate_cluster::recvClusterUserInstead(cluster::Request* request) {
 }
 
 void gate_cluster::recvConnectCacheSucc(redis::AsyncClient* client, redis::Reply& reply) {
-    this->coord->coreLogDebug("[gate_cluster] recvConnectCacheSucc %s", reply.String());
+    this->coord->CoreLogDebug("[gate_cluster] recvConnectCacheSucc %s", reply.String());
     //心跳的sha1
     auto promise = this->asyncClient->SCRIPT_LOAD(R"(
         local v = redis.call('get', KEYS[1]) 
@@ -349,20 +349,20 @@ void gate_cluster::recvConnectCacheSucc(redis::AsyncClient* client, redis::Reply
 }
 
 void gate_cluster::recvConnectCacheErr(redis::AsyncClient* client, redis::Reply& reply) {
-    this->coord->coreLogDebug("[gate_cluster] recvConnectCacheErr, reply='%s'", reply.String());
+    this->coord->CoreLogDebug("[gate_cluster] recvConnectCacheErr, reply='%s'", reply.String());
 }
 
 void gate_cluster::recvCacheScriptLoadSucc(redis::AsyncClient* client, redis::Reply& reply, const char* name) {
-    this->coord->coreLogError("[gate_cluster] recvCacheScriptLoadSucc, name=%s, reply='%s'", name, reply.String());
+    this->coord->CoreLogError("[gate_cluster] recvCacheScriptLoadSucc, name=%s, reply='%s'", name, reply.String());
     this->scriptShaDict[name] = reply.String();
 }
 
 void gate_cluster::recvCacheScriptLoadError(redis::AsyncClient* client, redis::Reply& reply) {
-    this->coord->coreLogDebug("[gate_cluster] recvCacheScriptLoadError, reply='%s'", reply.String());
+    this->coord->CoreLogDebug("[gate_cluster] recvCacheScriptLoadError, reply='%s'", reply.String());
 }
 
 void gate_cluster::recvRegisterSucc(redis::AsyncClient* client, redis::Reply& reply, uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] recvRegisterSucc, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
+    this->coord->CoreLogDebug("[gate_cluster] recvRegisterSucc, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
     auto it = this->registeringUserDict.find(userId);
     if (it == this->registeringUserDict.end()) {
         return;
@@ -397,7 +397,7 @@ void gate_cluster::recvRegisterSucc(redis::AsyncClient* client, redis::Reply& re
 }
 
 void gate_cluster::recvClusterUserInsteadSucc(cluster::Result* result, uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] recvClusterUserInsteadSucc, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId);
+    this->coord->CoreLogDebug("[gate_cluster] recvClusterUserInsteadSucc, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId);
     auto it = this->registeringUserDict.find(userId);
     if (it == this->registeringUserDict.end()) {
         return;
@@ -413,7 +413,7 @@ void gate_cluster::recvClusterUserInsteadSucc(cluster::Result* result, uint64_t 
 }
 
 void gate_cluster::recvClusterUserInsteadErr(cluster::Result* result, uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] recvClusterUserInsteadErr, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId);
+    this->coord->CoreLogDebug("[gate_cluster] recvClusterUserInsteadErr, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId);
     auto it = this->registeringUserDict.find(userId);
     if (it == this->registeringUserDict.end()) {
         return;
@@ -426,7 +426,7 @@ void gate_cluster::recvClusterUserInsteadErr(cluster::Result* result, uint64_t s
 }
 
 void gate_cluster::recvRegisterError(redis::AsyncClient* client, redis::Reply& reply, uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] recvRegisterError, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
+    this->coord->CoreLogDebug("[gate_cluster] recvRegisterError, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
     auto it = this->registeringUserDict.find(userId);
     if (it == this->registeringUserDict.end()) {
         return;
@@ -443,7 +443,7 @@ void gate_cluster::abortRegisterOrInsteadRequest(uint64_t userId) {
     {
         auto it = this->registeringUserDict.find(userId);
         if (it != this->registeringUserDict.end()) {
-            this->coord->coreLogDebug("[gate_cluster] abortRegisterOrInsteadRequest, userId=%ld", userId);
+            this->coord->CoreLogDebug("[gate_cluster] abortRegisterOrInsteadRequest, userId=%ld", userId);
             this->gate->recvUserLoginErr(it->second, userId);
             this->registeringUserDict.erase(it);
         }
@@ -451,7 +451,7 @@ void gate_cluster::abortRegisterOrInsteadRequest(uint64_t userId) {
     {
         auto it = this->insteadRequestDict.find(userId);
         if (it != this->insteadRequestDict.end()) {
-            this->coord->coreLogDebug("[gate_cluster] abortRegisterOrInsteadRequest, userId=%ld", userId);
+            this->coord->CoreLogDebug("[gate_cluster] abortRegisterOrInsteadRequest, userId=%ld", userId);
             auto request = it->second;
             gate_cluster_instead_response response;
             response.set_userid(userId);
@@ -464,7 +464,7 @@ void gate_cluster::abortRegisterOrInsteadRequest(uint64_t userId) {
 }
 
 int gate_cluster::registerAgent(uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] registerAgent, sessionId=%ld, userId=%ld", sessionId, userId);
+    this->coord->CoreLogDebug("[gate_cluster] registerAgent, sessionId=%ld, userId=%ld", sessionId, userId);
     auto it = this->scriptShaDict.find("register");
     if (it == this->scriptShaDict.end()) {
         return -1;
@@ -487,7 +487,7 @@ int gate_cluster::registerAgent(uint64_t sessionId, uint64_t userId) {
 }
 
 void gate_cluster::recvTryRegisterSucc(redis::AsyncClient* client, redis::Reply& reply, uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] recvTryRegisterSucc, sessionId=%ld, userId=%ld, reply=%s", sessionId, userId, reply.String());
+    this->coord->CoreLogDebug("[gate_cluster] recvTryRegisterSucc, sessionId=%ld, userId=%ld, reply=%s", sessionId, userId, reply.String());
     auto it = this->registeringUserDict.find(userId);
     if (it == this->registeringUserDict.end()) {
         return;
@@ -506,7 +506,7 @@ void gate_cluster::recvTryRegisterSucc(redis::AsyncClient* client, redis::Reply&
 }
 
 void gate_cluster::recvTryRegisterError(redis::AsyncClient* client, redis::Reply& reply, uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] recvTryRegisterError, sessionId=%ld, userId=%ld, reply=%s", sessionId, userId, reply.String());
+    this->coord->CoreLogDebug("[gate_cluster] recvTryRegisterError, sessionId=%ld, userId=%ld, reply=%s", sessionId, userId, reply.String());
     auto it = this->registeringUserDict.find(userId);
     if (it == this->registeringUserDict.end()) {
         return;
@@ -520,10 +520,10 @@ void gate_cluster::recvTryRegisterError(redis::AsyncClient* client, redis::Reply
 }
 
 int gate_cluster::tryRegisterAgent(uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] tryRegisterAgent, sessionId=%ld, userId=%ld", sessionId, userId);
+    this->coord->CoreLogDebug("[gate_cluster] tryRegisterAgent, sessionId=%ld, userId=%ld", sessionId, userId);
     auto it = this->scriptShaDict.find("register");
     if (it == this->scriptShaDict.end()) {
-        this->coord->coreLogDebug("[gate_cluster] tryRegisterAgent failed, sessionId=%ld, userId=%ld, error='sha1 not found'", sessionId, userId);
+        this->coord->CoreLogDebug("[gate_cluster] tryRegisterAgent failed, sessionId=%ld, userId=%ld, error='sha1 not found'", sessionId, userId);
         return -1;
     }
     auto sha1 = it->second;
@@ -540,12 +540,12 @@ int gate_cluster::tryRegisterAgent(uint64_t sessionId, uint64_t userId) {
 }
 
 void gate_cluster::recvUnregisterSucc(redis::AsyncClient* client, redis::Reply& reply, uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] recvUnregisterSucc, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
+    this->coord->CoreLogDebug("[gate_cluster] recvUnregisterSucc, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
     this->gate->recvUserLogoutSucc(sessionId, userId);
     auto it1 = this->registeringUserDict.find(userId);
     auto it2 = this->insteadRequestDict.find(userId);
     if (it1 != this->registeringUserDict.end() && it2 != this->insteadRequestDict.end()) {
-        this->coord->coreLogError("[gate_cluster] recvUnregisterSucc, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
+        this->coord->CoreLogError("[gate_cluster] recvUnregisterSucc, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
         //通知本地的
         int err = this->tryRegisterAgent(it1->second, userId);
         if (err) {
@@ -578,7 +578,7 @@ void gate_cluster::recvUnregisterSucc(redis::AsyncClient* client, redis::Reply& 
 }
 
 void gate_cluster::recvUnregisterError(redis::AsyncClient* client, redis::Reply& reply, uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] recvRegisterError, sessionId=%ld, userId=%ld, reply=%s", sessionId, userId, reply.String());
+    this->coord->CoreLogDebug("[gate_cluster] recvRegisterError, sessionId=%ld, userId=%ld, reply=%s", sessionId, userId, reply.String());
     this->gate->recvUserLogoutErr(sessionId, userId);
 
     int succ = 0;
@@ -604,15 +604,15 @@ void gate_cluster::recvUnregisterError(redis::AsyncClient* client, redis::Reply&
         }
     }
     if (succ == 0) {
-        this->coord->coreLogError("[gate_cluster] recvUnregisterError, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
+        this->coord->CoreLogError("[gate_cluster] recvUnregisterError, sessionId=%ld, userId=%ld, reply='%s'", sessionId, userId, reply.String());
     }
 }
 
 void gate_cluster::unregisterAgent(uint64_t sessionId, uint64_t userId) {
-    this->coord->coreLogDebug("[gate_cluster] unregisterAgent, sessionId=%ld, userId=%ld", sessionId, userId);
+    this->coord->CoreLogDebug("[gate_cluster] unregisterAgent, sessionId=%ld, userId=%ld", sessionId, userId);
     auto it = this->scriptShaDict.find("unregister");
     if (it == this->scriptShaDict.end()) {
-        this->coord->coreLogDebug("[gate_cluster] unregisterAgent failed, sessionId=%ld, userId=%ld, error='sha1 not found'", sessionId, userId);
+        this->coord->CoreLogDebug("[gate_cluster] unregisterAgent failed, sessionId=%ld, userId=%ld, error='sha1 not found'", sessionId, userId);
         return;
     }
     auto sha1 = it->second;
@@ -627,7 +627,7 @@ void gate_cluster::unregisterAgent(uint64_t sessionId, uint64_t userId) {
 }
 
 void gate_cluster::persistAgent(uint64_t userId){
-    this->coord->coreLogDebug("[gate_cluster] persistAgent, userId=%ld", userId);
+    this->coord->CoreLogDebug("[gate_cluster] persistAgent, userId=%ld", userId);
     auto it = this->scriptShaDict.find("heartbeat");
     if (it == this->scriptShaDict.end()) {
         return;
@@ -639,34 +639,34 @@ void gate_cluster::persistAgent(uint64_t userId){
         localNodeName,
         this->gate->config.UserRegisterExpire);
     if (promise == nullptr) {
-        this->coord->coreLogDebug("[gate_cluster] persistAgent failed, userId=%ld, error='EVALSHA'", userId);
+        this->coord->CoreLogDebug("[gate_cluster] persistAgent failed, userId=%ld, error='EVALSHA'", userId);
         return;
     }
     promise->Then([this, userId](redis::AsyncClient* client, redis::Reply& reply){
-        this->coord->coreLogDebug("[gate_cluster] persistAgent succ, userId=%ld, reply='%s'", userId, reply.String());
+        this->coord->CoreLogDebug("[gate_cluster] persistAgent succ, userId=%ld, reply='%s'", userId, reply.String());
     });
     promise->Else([this, userId](redis::AsyncClient* client, redis::Reply& reply){
-        this->coord->coreLogDebug("[gate_cluster] persistAgent error, userId=%ld, reply='%s'", userId, reply.String());
+        this->coord->CoreLogDebug("[gate_cluster] persistAgent error, userId=%ld, reply='%s'", userId, reply.String());
     });
 }
 
 void gate_cluster::persistSelf(){
-    this->coord->coreLogDebug("[gate_cluster] persistSelf");
+    this->coord->CoreLogDebug("[gate_cluster] persistSelf");
     auto promise = this->asyncClient->EXPIRE(this->selfKey.c_str(), this->coord->Config->Gate.RegisterExpire);
     if (promise == nullptr) {
-        this->coord->coreLogDebug("[gate_cluster] persistSelf failed, function='EVALSHA'");
+        this->coord->CoreLogDebug("[gate_cluster] persistSelf failed, function='EVALSHA'");
         return;
     }
     promise->Then([this](redis::AsyncClient* client, redis::Reply& reply){
-        this->coord->coreLogError("[gate_cluster] persistSelf succ, reply=%ld", reply.Integer());
+        this->coord->CoreLogError("[gate_cluster] persistSelf succ, reply=%ld", reply.Integer());
     });
     promise->Else([this](redis::AsyncClient* client, redis::Reply& reply){
-        this->coord->coreLogError("[gate_cluster] persistSelf error, reply='%s'", reply.String());
+        this->coord->CoreLogError("[gate_cluster] persistSelf error, reply='%s'", reply.String());
     });
     //更新在线人数
     promise = this->asyncClient->HMSET(this->selfKey.c_str(), "online", std::to_string(this->gate->GetOnlineNum()).c_str());
     if (promise == nullptr) {
-        this->coord->coreLogDebug("[gate_cluster] persistSelf failed, function='HMSET'");
+        this->coord->CoreLogDebug("[gate_cluster] persistSelf failed, function='HMSET'");
         return;
     }
  }
@@ -682,14 +682,14 @@ void gate_cluster::checkExpireGate() {
         this->group.c_str(),
         this->coord->Config->Basic.Name.c_str());
     if (promise == nullptr) {
-        this->coord->coreLogDebug("[gate_cluster] checkExpireGate failed, function='EVALSHA'");
+        this->coord->CoreLogDebug("[gate_cluster] checkExpireGate failed, function='EVALSHA'");
         return;
     }
     promise->Then([this](auto client, auto& reply){
-        this->coord->coreLogError("[gate_cluster] checkExpireGate succ, reply=%ld", reply.Integer());
+        this->coord->CoreLogError("[gate_cluster] checkExpireGate succ, reply=%ld", reply.Integer());
     });
     promise->Else([this](auto client, auto& reply){
-        this->coord->coreLogError("[gate_cluster] checkExpireGate error, reply='%s'", reply.String());
+        this->coord->CoreLogError("[gate_cluster] checkExpireGate error, reply='%s'", reply.String());
     });
     return;
 }

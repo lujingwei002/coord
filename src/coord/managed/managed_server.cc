@@ -32,7 +32,7 @@ ManagedServer::~ManagedServer() {
 }
 
 int ManagedServer::start() {
-    this->coord->coreLogDebug("[ManagedServer] start, host=%s, port=%d", this->managed->config.Host.c_str(), this->managed->config.Port);
+    this->coord->CoreLogDebug("[ManagedServer] start, host=%s, port=%d", this->managed->config.Host.c_str(), this->managed->config.Port);
     net::TcpListener *listener = net::NewTcpListener(this->coord);
     listener->SetHandler(this);
     int err = listener->Listen(this->managed->config.Host.c_str(), this->managed->config.Port);
@@ -46,7 +46,7 @@ int ManagedServer::start() {
 
 void ManagedServer::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAgent){
     int sessionId = tcpAgent->sessionId;
-    this->coord->coreLogDebug("[ManagedServer] recvTcpNew sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[ManagedServer] recvTcpNew sessionId=%d", sessionId);
     tcpAgent->SetRecvBuffer(4096);
     ManagedAgent *agent = newManagedAgent(this->coord, this->managed, this, tcpAgent);
     agent->sessionId = sessionId;
@@ -57,10 +57,10 @@ void ManagedServer::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAge
 
 void ManagedServer::recvTcpClose(ManagedAgent* agent){
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[ManagedServer] recvTcpClose sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[ManagedServer] recvTcpClose sessionId=%d", sessionId);
     auto it = this->agentDict.find(sessionId);
     if(it == this->agentDict.end()){
-        this->coord->coreLogDebug("[ManagedServer] recvTcpClose failed, sessionId=%d, error='agent not found'", sessionId);
+        this->coord->CoreLogDebug("[ManagedServer] recvTcpClose failed, sessionId=%d, error='agent not found'", sessionId);
         return;
     }
     this->agentDict.erase(it);

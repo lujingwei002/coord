@@ -19,7 +19,7 @@ Client::Client(Coord *coord) {
 }   
 
 Client::~Client() {
-    this->coord->coreLogDebug("[RedisClient] ~RedisClient");
+    this->coord->CoreLogDebug("[RedisClient] ~RedisClient");
     if(this->context) {
         return;
     }
@@ -42,24 +42,24 @@ void Client::Close() {
 int Client::Connect() {
     redisContext* c = redisConnect(this->config.Host.c_str(), this->config.Port);
     if(c == nullptr) {
-        this->coord->coreLogError("[%s] Connect failed", this->TypeName());
+        this->coord->CoreLogError("[%s] Connect failed", this->TypeName());
         return -1;
     }
     if (c->err != 0) {
         redisFree(c);
-        this->coord->coreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, ""/*c->errstr */);
+        this->coord->CoreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, ""/*c->errstr */);
         return -1;
     }
     if(!(c->flags & REDIS_CONNECTED)){
         redisFree(c);
-        this->coord->coreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, ""/* c->errstr */);
+        this->coord->CoreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, ""/* c->errstr */);
         return -1;
     }
     this->context = c;
     if (this->config.Password.length() > 0) {
         Reply reply = this->AUTH(this->config.Password.c_str());
         if(reply.Error()) {
-            this->coord->coreLogError("[%s] Connect failed, function='AUTH', password='%s', error='%s'", this->TypeName(), this->config.Password.c_str(), ""/* c->errstr */);
+            this->coord->CoreLogError("[%s] Connect failed, function='AUTH', password='%s', error='%s'", this->TypeName(), this->config.Password.c_str(), ""/* c->errstr */);
             this->Close();
             return -1;
         }
@@ -67,7 +67,7 @@ int Client::Connect() {
     if (this->config.DB.length() > 0) {
         Reply reply = this->SELECT(this->config.DB.c_str());
         if(reply.Error()) {
-            this->coord->coreLogError("[%s] Connect failed, function='SELECT', db='%s', error='%s'", this->TypeName(), this->config.DB.c_str(), ""/* c->errstr */);
+            this->coord->CoreLogError("[%s] Connect failed, function='SELECT', db='%s', error='%s'", this->TypeName(), this->config.DB.c_str(), ""/* c->errstr */);
             this->Close();
             return -1;
         }
@@ -81,7 +81,7 @@ Reply Client::SELECT(const char* db) {
     }
     redisReply * reply = (redisReply *)redisCommand(this->context, "SELECT %s", db);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] SELECT failed, error='%s'", this->TypeName(), this->context->errstr);
+        this->coord->CoreLogError("[%s] SELECT failed, error='%s'", this->TypeName(), this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -93,7 +93,7 @@ Reply Client::AUTH(const char* password) {
     }
     redisReply * reply = (redisReply *)redisCommand(this->context, "AUTH %s", password);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] AUTH failed, error='%s'", this->TypeName(), this->context->errstr);
+        this->coord->CoreLogError("[%s] AUTH failed, error='%s'", this->TypeName(), this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -105,7 +105,7 @@ int Client::EXPIRE(const char* key, uint64_t expire) {
     }
     redisReply* reply = (redisReply *)redisCommand(this->context, "EXPIRE %s %ld", key, expire);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] Get failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] Get failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return -1;
     }
     if (reply->type == REDIS_REPLY_ERROR) {
@@ -121,7 +121,7 @@ Reply Client::GET(const char* key) {
     }
     redisReply* reply = (redisReply *)redisCommand(this->context, "GET %s", key);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] Get failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] Get failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -133,7 +133,7 @@ Reply Client::HGETALL(const char* key) {
     }
     redisReply * reply = (redisReply *)redisCommand(this->context, "HGETALL %s", key);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] HGETALL failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] HGETALL failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -145,7 +145,7 @@ int Client::HDEL(const char* key, const char* field) {
     }
     redisReply * reply = (redisReply *)redisCommand(this->context, "HDEL %s %s", key, field);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] HDEL failed, key='%s', field='%s', error='%s'", this->TypeName(), key, field, this->context->errstr);
+        this->coord->CoreLogError("[%s] HDEL failed, key='%s', field='%s', error='%s'", this->TypeName(), key, field, this->context->errstr);
         return -1;
     }
     if (reply->type == REDIS_REPLY_ERROR) {
@@ -165,7 +165,7 @@ Reply Client::HMSET(const char* key, const char* field, const char* value) {
     }
     redisReply * reply = (redisReply *)redisCommand(this->context, "HMSET %s %s %s", key, field, value);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] HMSET failed, key='%s', error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] HMSET failed, key='%s', error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -186,7 +186,7 @@ Reply Client::SET(const char* key, const char* value) {
     }
     redisReply * reply = (redisReply *)redisCommand(this->context, "SET %s %s", key, value);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] SET failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] SET failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -200,7 +200,7 @@ Reply Client::SET(const char* key, const char* data, size_t len) {
     const size_t argvlen[3] = {3, strlen(key), len};
     redisReply* reply = (redisReply *)redisCommandArgv(this->context, 3, argv, argvlen);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] SET failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] SET failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -216,7 +216,7 @@ Reply Client::SETEX(const char* key, const char* data, size_t len, size_t expire
     const size_t argvlen[4] = {5, strlen(key), (size_t)expireBufferLen, len};
     redisReply* reply = (redisReply *)redisCommandArgv(this->context, 4, argv, argvlen);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] SETEX failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] SETEX failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -235,7 +235,7 @@ Reply Client::DEL(const char* key) {
     }
     redisReply* reply = (redisReply *)redisCommand(this->context, "DEL %s", key);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] SETEX failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] SETEX failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -247,7 +247,7 @@ uint64_t Client::TIME() {
     }
     redisReply* reply = (redisReply *)redisCommand(this->context, "TIME");
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] TIME failed, error='%s'", this->TypeName(), this->context->errstr);
+        this->coord->CoreLogError("[%s] TIME failed, error='%s'", this->TypeName(), this->context->errstr);
         return 0;
     }
     if (reply->type == REDIS_REPLY_ERROR) {
@@ -271,7 +271,7 @@ Reply Client::SADD(const char* key, const char* value) {
     }
     redisReply* reply = (redisReply *)redisCommand(this->context, "SADD %s %s", key, value);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] SADD failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] SADD failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);
@@ -283,7 +283,7 @@ Reply Client::SREM(const char* key, const char* value) {
     }
     redisReply* reply = (redisReply *)redisCommand(this->context, "SREM %s %s", key, value);
     if(reply == nullptr){
-        this->coord->coreLogError("[%s] SREM failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
+        this->coord->CoreLogError("[%s] SREM failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
     return Reply(this->coord, reply);

@@ -44,7 +44,7 @@ timer::timer(Coord *coord, TimerMgr* timerMgr) {
 timer::~timer() {
     int err = uv_timer_stop(&this->handle);
     if (err < 0){
-        this->coord->coreLogError("[coord::timer] ~ failed, error=%d", err);
+        this->coord->CoreLogError("[coord::timer] ~ failed, error=%d", err);
     }
     if (this->ref >= 0) {
         lua_unref(this->coord->Script->L, this->ref);
@@ -71,7 +71,7 @@ cron::cron(Coord *coord, TimerMgr* timerMgr) {
 cron::~cron() {
     int err = uv_timer_stop(&this->handle);
     if (err < 0){
-        this->coord->coreLogError("[coord::cron] ~ failed, error=%d", err);
+        this->coord->CoreLogError("[coord::cron] ~ failed, error=%d", err);
     }
     if (this->ref >= 0) {
         lua_unref(this->coord->Script->L, this->ref);
@@ -83,7 +83,7 @@ void cron::reset() {
     time_t next = cron_next(&this->expr, this->coord->Time()/1000);
     int err = uv_timer_stop(&this->handle);
     if (err < 0){
-        this->coord->coreLogError("[coord::cron] reset failed, error=%d", uv_strerror(err));
+        this->coord->CoreLogError("[coord::cron] reset failed, error=%d", uv_strerror(err));
         return;
     }
     this->timeout = next * 1000 - this->coord->Time();
@@ -91,11 +91,11 @@ void cron::reset() {
     this->handle.data = this;
     err = uv_timer_start(&this->handle, uv_cron_cb, this->timeout, this->repeat);
     if(err < 0){
-        this->coord->coreLogError("[coord::cron] reset failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[coord::cron] reset failed, error='%s'", uv_strerror(err));
         return;
     }
     strftime(this->next, sizeof(this->next), "%Y-%m-%d_%H:%M:%S", localtime(&next));
-    this->coord->coreLogDebug("[coord::cron] reset, timeout:%ld next %s\n", this->timeout, this->next);
+    this->coord->CoreLogDebug("[coord::cron] reset, timeout:%ld next %s\n", this->timeout, this->next);
 }
 
 void cron::exec(){
@@ -232,7 +232,7 @@ int TimerMgr::setInterval(uint64_t repeat, ScriptComponent* object, int ref) {
 }
 
 int TimerMgr::addTimer(uint64_t timeout, uint64_t repeat, TimeoutFunc func) {
-    //this->coord->coreLogDebug("[TimeMgr] SetTimer, timeout=%ld, repeat=%ld", timeout, repeat);
+    //this->coord->CoreLogDebug("[TimeMgr] SetTimer, timeout=%ld, repeat=%ld", timeout, repeat);
     int id = ++this->id;
     timer* t = new timer(this->coord, this);
     t->timeout = timeout;
@@ -241,7 +241,7 @@ int TimerMgr::addTimer(uint64_t timeout, uint64_t repeat, TimeoutFunc func) {
     t->func = func;
     int err = uv_timer_start(&t->handle, uv_timer_cb, timeout, repeat);
     if(err < 0){
-        this->coord->coreLogError("[coord::TimerMgr] addTimer failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[coord::TimerMgr] addTimer failed, error='%s'", uv_strerror(err));
         return -1;
     }
     this->timerDict[id] = t;
@@ -249,7 +249,7 @@ int TimerMgr::addTimer(uint64_t timeout, uint64_t repeat, TimeoutFunc func) {
 }
 
 int TimerMgr::addTimer(uint64_t timeout, uint64_t repeat, ScriptComponent* object, int ref) {
-    //this->coord->coreLogDebug("[TimeMgr] SetTimer, timeout=%ld, repeat=%ld", timeout, repeat);
+    //this->coord->CoreLogDebug("[TimeMgr] SetTimer, timeout=%ld, repeat=%ld", timeout, repeat);
     int id = ++this->id;
     timer* t = new timer(this->coord, this);
     t->timeout = timeout;
@@ -259,7 +259,7 @@ int TimerMgr::addTimer(uint64_t timeout, uint64_t repeat, ScriptComponent* objec
     t->func = std::bind(&ScriptComponent::recvTimer, object, "recvTimer", ref);
     int err = uv_timer_start(&t->handle, uv_timer_cb, timeout, repeat);
     if(err < 0){
-        this->coord->coreLogError("[coord::TimerMgr] addTimer failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[coord::TimerMgr] addTimer failed, error='%s'", uv_strerror(err));
         return -1;
     }
     this->timerDict[id] = t;
@@ -305,7 +305,7 @@ int TimerMgr::SetCron(const char* expression, CronFunc func) {
     memset(&expr, 0, sizeof(expr));
     cron_parse_expr(expression, &expr, &error);
     if (error) {
-        this->coord->coreLogError("[coord::TimerMgr] SetCron failed, error='%s'", error);
+        this->coord->CoreLogError("[coord::TimerMgr] SetCron failed, error='%s'", error);
         return -1;
     }
     time_t next = cron_next(&expr, this->coord->Time()/1000);
@@ -318,12 +318,12 @@ int TimerMgr::SetCron(const char* expression, CronFunc func) {
     t->expr = expr;
     int err = uv_timer_start(&t->handle, uv_cron_cb, t->timeout, t->repeat);
     if(err < 0){
-        this->coord->coreLogError("[coord::TimerMgr] SetCron failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[coord::TimerMgr] SetCron failed, error='%s'", uv_strerror(err));
         return -1;
     }
     this->cronDict[id] = t;
     strftime(t->next, sizeof(t->next), "%Y-%m-%d_%H:%M:%S", localtime(&next));
-    this->coord->coreLogDebug("[coord::TimerMgr] SetCron, timeout:%ld next %s\n", t->timeout, t->next);
+    this->coord->CoreLogDebug("[coord::TimerMgr] SetCron, timeout:%ld next %s\n", t->timeout, t->next);
     return id;
 }
 
@@ -333,7 +333,7 @@ int TimerMgr::setCron(const char* expression, ScriptComponent* object, int ref) 
     memset(&expr, 0, sizeof(expr));
     cron_parse_expr(expression, &expr, &error);
     if (error) {
-        this->coord->coreLogError("[coord::TimerMgr] SetCron failed, error='%s'", error);
+        this->coord->CoreLogError("[coord::TimerMgr] SetCron failed, error='%s'", error);
         return -1;
     }
     time_t next = cron_next(&expr, this->coord->Time()/1000);
@@ -347,12 +347,12 @@ int TimerMgr::setCron(const char* expression, ScriptComponent* object, int ref) 
     t->expr = expr;
     int err = uv_timer_start(&t->handle, uv_cron_cb, t->timeout, t->repeat);
     if(err < 0){
-        this->coord->coreLogError("[coord::TimerMgr] SetCron failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[coord::TimerMgr] SetCron failed, error='%s'", uv_strerror(err));
         return -1;
     }
     this->cronDict[id] = t;
     strftime(t->next, sizeof(t->next), "%Y-%m-%d_%H:%M:%S", localtime(&next));
-    this->coord->coreLogDebug("[coord::TimerMgr] SetCron, timeout:%ld next %s\n", t->timeout, t->next);
+    this->coord->CoreLogDebug("[coord::TimerMgr] SetCron, timeout:%ld next %s\n", t->timeout, t->next);
     return id;
 }
 

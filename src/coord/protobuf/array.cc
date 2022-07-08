@@ -123,13 +123,13 @@ bool Array::MergeFrom(Array& other) {
             google::protobuf::Message* subMessage = reflection->AddMessage(message, this->field);
             const google::protobuf::Message* otherSubMessage = &(otherReflection->GetRepeatedMessage(*otherMessage, other.field, i));
             if(subMessage == NULL || otherSubMessage == NULL){
-                this->coord->coreLogError("[Array] MergeFrom failed, error='sub-message is null'");
+                this->coord->CoreLogError("[Array] MergeFrom failed, error='sub-message is null'");
                 break;
             }
             subMessage->CopyFrom(*otherSubMessage);
             this->SetDirty(true);
         } else{
-            this->coord->coreLogError("[Array] MergeFrom failed, type=%d, error='type unknown'", this->field->cpp_type());
+            this->coord->CoreLogError("[Array] MergeFrom failed, type=%d, error='type unknown'", this->field->cpp_type());
         }
     }
     return true;
@@ -252,7 +252,7 @@ int Array::Set(lua_State *L){
         lua_pushboolean(L, true);
         return 1;
     } else {
-        this->coord->coreLogError("[Array] Set failed, error='type unknown'");
+        this->coord->CoreLogError("[Array] Set failed, error='type unknown'");
         return 0;
     } 
 }
@@ -670,7 +670,7 @@ int Array::Add(lua_State *L) {
         tolua_pushusertype_and_takeownership(L, msg, "coord::protobuf::Reflect");
         return 1;
     } else{
-        this->coord->coreLogError("[Array] Add failed, error='type unknown'");
+        this->coord->CoreLogError("[Array] Add failed, error='type unknown'");
         lua_pushboolean(L, false);
         return 1;
     }

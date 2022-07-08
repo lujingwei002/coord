@@ -52,7 +52,7 @@ WebSocketServerConfig* Server::DefaultConfig() {
 }
 
 int Server::Start() {
-    this->coord->coreLogDebug("[websocket::Server] Listen, host=%s, port=%d, backlog=%d", this->config.Host.c_str(), this->config.Port, this->config.Backlog);
+    this->coord->CoreLogDebug("[websocket::Server] Listen, host=%s, port=%d, backlog=%d", this->config.Host.c_str(), this->config.Port, this->config.Backlog);
     http::HttpServerConfig* config = this->httpServer->DefaultConfig();
     config->Host = this->config.Host;
     config->Port = this->config.Port;
@@ -74,7 +74,7 @@ void Server::recvHttpRequest(http::HttpRequest* request){
 
 void Server::recvHttpUpgrade(http::HttpAgent* httpAgent, http::HttpRequest* request){
     int sessionId = httpAgent->sessionId;
-    this->coord->coreLogDebug("[websocket::Server] recvHttpUpgrade sessionId=%d, remoteAddr=%s", sessionId, httpAgent->remoteAddr.c_str());
+    this->coord->CoreLogDebug("[websocket::Server] recvHttpUpgrade sessionId=%d, remoteAddr=%s", sessionId, httpAgent->remoteAddr.c_str());
     Agent *agent = newAgent(this->coord, this, httpAgent);
     agent->sessionId = sessionId;
     agent->remoteAddr =  httpAgent->remoteAddr;
@@ -84,10 +84,10 @@ void Server::recvHttpUpgrade(http::HttpAgent* httpAgent, http::HttpRequest* requ
 
 void Server::recvAgentClose(Agent* agent){
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[websocket::Server] recvAgentClose sessionId=%d, ref=%d", sessionId, agent->_ref);
+    this->coord->CoreLogDebug("[websocket::Server] recvAgentClose sessionId=%d, ref=%d", sessionId, agent->_ref);
     auto it = this->agentDict.find(sessionId);
     if(it == this->agentDict.end()){
-        this->coord->coreLogDebug("[websocket::Server] recvAgentClose failed, error='agent not found', sessionId=%d", sessionId);
+        this->coord->CoreLogDebug("[websocket::Server] recvAgentClose failed, error='agent not found', sessionId=%d", sessionId);
         return;
     }
     this->agentDict.erase(it);
@@ -96,7 +96,7 @@ void Server::recvAgentClose(Agent* agent){
 
 void Server::recvWebSocketNew(Agent* agent){
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[websocket::Server] recvWebSocketNew, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[websocket::Server] recvWebSocketNew, sessionId=%d", sessionId);
     if(this->handler){
         this->handler->recvWebSocketNew(agent);
     } else {
@@ -106,13 +106,13 @@ void Server::recvWebSocketNew(Agent* agent){
 
 void Server::recvWebSocketClose(Agent* agent){
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[websocket::Server] recvWebSocketClose, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[websocket::Server] recvWebSocketClose, sessionId=%d", sessionId);
     this->Router->recvWebSocketClose(agent);
 }
 
 void Server::recvWebSocketFrame(Agent* agent, Frame* frame) {
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[websocket::Server] recvWebSocketFrame, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[websocket::Server] recvWebSocketFrame, sessionId=%d", sessionId);
     this->Router->recvWebSocketFrame(agent, frame);
 }
 

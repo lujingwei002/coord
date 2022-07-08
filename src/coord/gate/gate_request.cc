@@ -24,7 +24,7 @@ GateRequest::GateRequest(Coord* coord, GateAgent* agent) : BaseRequest(coord) {
 }
 
 GateRequest::~GateRequest() {
-    this->coord->coreLogDebug("[GateRequest] ~GateRequest");
+    this->coord->CoreLogDebug("[GateRequest] ~GateRequest");
     if(this->response){
         delete this->response;
         this->response = NULL;

@@ -56,7 +56,7 @@ TcpAgent::TcpAgent(Coord* coord, TcpListener* listener) : recvBuffer(1024) {
 }
 
 TcpAgent::~TcpAgent() {
-    this->coord->coreLogDebug("[TcpAgent] ~TcpAgent");
+    this->coord->CoreLogDebug("[TcpAgent] ~TcpAgent");
 }
 
 void TcpAgent::SetRecvBuffer(size_t size) {
@@ -74,9 +74,9 @@ int TcpAgent::Send(const void* data, size_t len) {
 }
 
 int TcpAgent::Send(byte_slice& data) {
-    this->coord->coreLogDebug("[TcpAgent] Send, sessionId=%d, len=%d", this->sessionId,  data.Len());
+    this->coord->CoreLogDebug("[TcpAgent] Send, sessionId=%d, len=%d", this->sessionId,  data.Len());
     if( this->status != TcpAgentStatus_CONNECTED) {
-        this->coord->coreLogDebug("[TcpAgent] Send failed, sessionId=%d, len=%d, status=%d, error='status err'", this->sessionId,  data.Len(), this->status);
+        this->coord->CoreLogDebug("[TcpAgent] Send failed, sessionId=%d, len=%d, status=%d, error='status err'", this->sessionId,  data.Len(), this->status);
         return -1;
     }
     uv_buf_t buf[] = {
@@ -85,14 +85,14 @@ int TcpAgent::Send(byte_slice& data) {
     WriteReq* req = new WriteReq(data);
     int err = uv_write(&req->req, (uv_stream_t *)&this->handle, buf, 1, uv_write_cb);
     if (err < 0){
-        this->coord->coreLogError("[TcpAgent] Send failed, sessionId=%d, error='%s'", this->sessionId, uv_strerror(err));
+        this->coord->CoreLogError("[TcpAgent] Send failed, sessionId=%d, error='%s'", this->sessionId, uv_strerror(err));
         return err;
     }
     return 0;
 }
 
 void TcpAgent::recvTcpData() {
-    this->coord->coreLogDebug("[TcpAgent] recvTcpData, len=%d", this->recvBuffer.Len());
+    this->coord->CoreLogDebug("[TcpAgent] recvTcpData, len=%d", this->recvBuffer.Len());
     if (!this->handler){
         return;
     }
@@ -107,16 +107,16 @@ void TcpAgent::recvTcpData() {
 }
 
 void TcpAgent::recvTcpNew() {
-    this->coord->coreLogDebug("[TcpAgent] recvTcpNew, sessionid=%d", this->sessionId);
+    this->coord->CoreLogDebug("[TcpAgent] recvTcpNew, sessionid=%d", this->sessionId);
     int err = uv_read_start((uv_stream_t*) &this->handle, uv_alloc_cb, uv_read_cb);
     if (err < 0) {
-        this->coord->coreLogDebug("[TcpAgent] recvTcpNew.uv_read_start failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogDebug("[TcpAgent] recvTcpNew.uv_read_start failed, error='%s'", uv_strerror(err));
         return;
     }
 }
 
 void TcpAgent::recvTcpError(int status) {
-    this->coord->coreLogDebug("[TcpAgent] recvTcpError, sessionid=%d, error='%s'", this->sessionId, uv_err_name(status));
+    this->coord->CoreLogDebug("[TcpAgent] recvTcpError, sessionid=%d, error='%s'", this->sessionId, uv_err_name(status));
     this->status = TcpAgentStatus_ERROR;
     if(status != UV_EOF){
         if(this->handler)this->handler->recvTcpError(this);
@@ -125,7 +125,7 @@ void TcpAgent::recvTcpError(int status) {
 }
 
 void TcpAgent::recvTcpClose() {
-    this->coord->coreLogDebug("[TcpAgent] recvTcpClose, sessionid=%d", this->sessionId);
+    this->coord->CoreLogDebug("[TcpAgent] recvTcpClose, sessionid=%d", this->sessionId);
     this->status = TcpAgentStatus_CLOSED;
     if(this->handler)this->handler->recvTcpClose(this);
     this->listener->recvAgentClose(this);
@@ -133,11 +133,11 @@ void TcpAgent::recvTcpClose() {
 
 void TcpAgent::Close() {
     if(this->status == TcpAgentStatus_CLOSING || this->status == TcpAgentStatus_CLOSED) {
-        this->coord->coreLogError("[TcpAgent] close failed1 %d", this->status);
+        this->coord->CoreLogError("[TcpAgent] close failed1 %d", this->status);
         return;
     }
     if(uv_is_closing((uv_handle_t*)&this->handle)) {
-        this->coord->coreLogError("[TcpAgent] close failed2");
+        this->coord->CoreLogError("[TcpAgent] close failed2");
         return;
     }
     this->status = TcpAgentStatus_CLOSING;

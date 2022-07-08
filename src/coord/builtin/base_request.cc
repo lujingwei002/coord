@@ -72,7 +72,7 @@ Argument* BaseRequest::Args() {
     }
     int err = argv->Parse(this->payload);
     if (err) {
-        this->coord->coreLogError("[BaseRequest] Args failed, error='%d'", err);
+        this->coord->CoreLogError("[BaseRequest] Args failed, error='%d'", err);
         delete argv;
         return NULL;
     }

@@ -59,7 +59,7 @@ int LoginSvr::main() {
     if (err) { 
         return err;
     }
-    this->coord->coreLogError("[LoginSvr] main, host='%s', port=%d, cluster='%s'", this->config.Host.c_str(), this->config.Port, this->config.Cluster.c_str());
+    this->coord->CoreLogError("[LoginSvr] main, host='%s', port=%d, cluster='%s'", this->config.Host.c_str(), this->config.Port, this->config.Cluster.c_str());
     return 0;
 } 
 

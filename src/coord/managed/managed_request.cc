@@ -21,7 +21,7 @@ ManagedRequest::ManagedRequest(Coord* coord, ManagedAgent* agent) {
 }
 
 ManagedRequest::~ManagedRequest() {
-    this->coord->coreLogDebug("[ManagedRequest] ~ManagedRequest");
+    this->coord->CoreLogDebug("[ManagedRequest] ~ManagedRequest");
     this->coord->Destory(this->agent);
 }
 

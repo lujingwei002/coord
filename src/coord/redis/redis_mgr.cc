@@ -43,7 +43,7 @@ Client* RedisMgr::GetClient(const char* name) {
     RedisConfig config;
     int err = this->coord->Config->RedisConfig(name, &config);
     if (err != 0) {
-        this->coord->coreLogError("[coord::RedisMgr] GetClient.RedisConfig failed, error=%d", err);
+        this->coord->CoreLogError("[coord::RedisMgr] GetClient.RedisConfig failed, error=%d", err);
         return NULL; 
     }
     Client* client = newClient(this->coord);
@@ -60,7 +60,7 @@ AsyncClient* RedisMgr::GetAsyncClient(const char* name) {
     RedisConfig config;
     int err = this->coord->Config->RedisConfig(name, &config);
     if (err != 0) {
-        this->coord->coreLogError("[coord::RedisMgr] GetAsyncClient.RedisConfig failed, error=%d", err);
+        this->coord->CoreLogError("[coord::RedisMgr] GetAsyncClient.RedisConfig failed, error=%d", err);
         return NULL;
     }
     AsyncClient* client = newAsyncClient(this->coord);

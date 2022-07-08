@@ -40,7 +40,7 @@ void parallel_action::execute() {
 void parallel_action::onComplete(Action* action) {
     auto it = this->actionDict.find(action);
     if (it != this->actionDict.end()) {
-        this->coord->coreLogError("[action::parallel_action] onComplete failed, action=%p, error='action already onCompleteed'", action);
+        this->coord->CoreLogError("[action::parallel_action] onComplete failed, action=%p, error='action already onCompleteed'", action);
         return;
     }
     this->actionDict[action] = true;

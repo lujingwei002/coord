@@ -20,7 +20,7 @@ Request::Request(Coord* coord) : BaseRequest(coord) {
 }
 
 Request::~Request() {
-    this->coord->coreLogDebug("[worker::Request] ~");
+    this->coord->CoreLogDebug("[worker::Request] ~");
     if(this->response != NULL){
         delete this->response;
         this->response = NULL;

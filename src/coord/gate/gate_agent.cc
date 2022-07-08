@@ -55,7 +55,7 @@ GateAgent::GateAgent(Coord* coord, Gate* gate, websocket::Agent* webSocketAgent)
 }
 
 GateAgent::~GateAgent() {
-    this->coord->coreLogDebug("[GateAgent] ~GateAgent");
+    this->coord->CoreLogDebug("[GateAgent] ~GateAgent");
     if (this->session != NULL){
         delete this->session;
         this->session = NULL;
@@ -91,7 +91,7 @@ int GateAgent::recvData(char* data, size_t len) {
 }   
 
 void GateAgent::recvPacket(Packet* packet) {
-    this->coord->coreLogDebug("[GateAgent] recvPacket, type=%d", packet->type);
+    this->coord->CoreLogDebug("[GateAgent] recvPacket, type=%d", packet->type);
     switch(packet->type) {
         case PacketType_Handshake:{
             this->recvHandShake(packet);
@@ -119,7 +119,7 @@ void GateAgent::recvHandShake(Packet* packet) {
         static thread_local byte_slice secret(0, 0);
         if (body["sys"] == nullptr || body["sys"]["token"] == nullptr){
             //查找token失败
-            this->coord->coreLogDebug("[GateAgent] recvHandShake failed, err='token not found'");
+            this->coord->CoreLogDebug("[GateAgent] recvHandShake failed, err='token not found'");
             nlohmann::json response = {{"code", 500}};
             auto data = response.dump();
             this->send(PacketType_Handshake, data.c_str(), data.length());
@@ -129,7 +129,7 @@ void GateAgent::recvHandShake(Packet* packet) {
         int err = encrypt::RsaPrivateDecrypt((unsigned char*)token.c_str(), token.length(), (unsigned char * )this->gate->rsaPrivateKey.c_str(), secret);
         if (err < 0){
             //解码失败
-            this->coord->coreLogDebug("[GateAgent] recvHandShake failed, err=%d", err);
+            this->coord->CoreLogDebug("[GateAgent] recvHandShake failed, err=%d", err);
             nlohmann::json response = {{"code", 500}};
             auto data = response.dump();
             this->send(PacketType_Handshake, data.c_str(), data.length());
@@ -144,12 +144,12 @@ void GateAgent::recvHandShake(Packet* packet) {
     auto data = response.dump();
     this->send(PacketType_Handshake, data.c_str(), data.length());
     this->status = GateAgentStatus_Handshake;
-    this->coord->coreLogDebug("[GateAgent] recvHandShake, secret=%s", this->secret.c_str());
+    this->coord->CoreLogDebug("[GateAgent] recvHandShake, secret=%s", this->secret.c_str());
 } 
 
 void GateAgent::recvHandShakeAck(Packet* packet) {
     if(this->status != GateAgentStatus_Handshake) {
-        this->coord->coreLogDebug("[GateAgent] recvData failed, status=%d, error='status not handshake'", this->status);
+        this->coord->CoreLogDebug("[GateAgent] recvData failed, status=%d, error='status not handshake'", this->status);
         return;
     }
     this->status = GateAgentStatus_Working;
@@ -160,13 +160,13 @@ void GateAgent::recvHandShakeAck(Packet* packet) {
 
 void GateAgent::recvData(Packet* packet) {
     if(this->status != GateAgentStatus_Working) {
-        this->coord->coreLogDebug("[GateAgent] recvData failed, status=%d, error='status not working'", this->status);
+        this->coord->CoreLogDebug("[GateAgent] recvData failed, status=%d, error='status not working'", this->status);
         return;
     }
     static thread_local Message message;
     int err = MessageDecode(message, packet->data, packet->length);
     if (err < 0){
-        this->coord->coreLogDebug("[GateAgent] recvData failed, err=%d", err);
+        this->coord->CoreLogDebug("[GateAgent] recvData failed, err=%d", err);
         return;
     }
     if (this->gate->config.RsaEncrypt) {
@@ -174,14 +174,14 @@ void GateAgent::recvData(Packet* packet) {
         size_t rawLength = 0;
         err = encrypt::des::Decrypt(message.data, message.length, this->secret.c_str(), message.data, &rawLength);
         if (err < 0){
-            this->coord->coreLogDebug("[GateAgent] recvData failed, err=%d", err);
+            this->coord->CoreLogDebug("[GateAgent] recvData failed, err=%d", err);
             return;
         }
         message.length = rawLength;
     }
     //发送到逻辑层
     //gamepb::LoginRequest req;
-    this->coord->coreLogDebug("[GateAgent] recvData type=%d, id=%d, route=%s, len=%d", message.type, message.id, message.route, message.length);
+    this->coord->CoreLogDebug("[GateAgent] recvData type=%d, id=%d, route=%s, len=%d", message.type, message.id, message.route, message.length);
     switch(message.type){
         case MessageType_Request: {
             GateRequest* request = newGateRequest(this->coord, this);
@@ -237,7 +237,7 @@ int GateAgent::send(PacketType type, const char* data, size_t len) {
     static thread_local byte_slice packet(0, 0);
     int err = PacketEncode(packet, type, data, len);
     if (err < 0){
-        this->coord->coreLogDebug("[GateAgent] Send failed, err=%d", err);
+        this->coord->CoreLogDebug("[GateAgent] Send failed, err=%d", err);
         return err;
     }
     this->send(packet.Data(), packet.Len());
@@ -249,7 +249,7 @@ int GateAgent::push(const char* route, protobuf::Reflect* proto){
 }
 
 int GateAgent::push(const char* route, google::protobuf::Message* proto){
-    this->coord->coreLogDebug("[GateAgent] Push, sessionId=%d, route=%s, proto=%s", this->sessionId, route, proto->DebugString().c_str());
+    this->coord->CoreLogDebug("[GateAgent] Push, sessionId=%d, route=%s, proto=%s", this->sessionId, route, proto->DebugString().c_str());
     byte_slice response;
     //packet header
     byte_slice packetHeader = response.Slice(response.Len(), response.Len());
@@ -292,7 +292,7 @@ int GateAgent::response(uint64_t id, const char* route, protobuf::Reflect* proto
 }
 
 int GateAgent::response(uint64_t id, const char* route, ::google::protobuf::Message* proto) {
-    this->coord->coreLogDebug("[GateAgent] Response, sessionId=%d, id=%d, route=%s, proto=%s", this->sessionId, id, route, proto->DebugString().c_str());
+    this->coord->CoreLogDebug("[GateAgent] Response, sessionId=%d, id=%d, route=%s, proto=%s", this->sessionId, id, route, proto->DebugString().c_str());
     byte_slice response;
     //packet header
     byte_slice packetHeader = response.Slice(response.Len(), response.Len());
@@ -335,7 +335,7 @@ int GateAgent::response(uint64_t id, const char* route, const byte_slice& data) 
 }
 
 int GateAgent::response(uint64_t id, const char* route, const char* data, size_t len) {
-    this->coord->coreLogDebug("[GateAgent] Response, sessionId=%d, id=%d, route=%s", this->sessionId, id, route);
+    this->coord->CoreLogDebug("[GateAgent] Response, sessionId=%d, id=%d, route=%s", this->sessionId, id, route);
     byte_slice response;
     //packet header
     byte_slice packetHeader = response.Slice(response.Len(), response.Len());
@@ -382,7 +382,7 @@ void GateAgent::heartbeatInterval() {
     }
     uint64_t deadline = this->coord->Now() - 2 * this->gate->config.Heartbeat*1000;
     if(this->lastHeartbeatTime < deadline){
-        this->coord->coreLogError("[GateAgent] heartbeatInterval deadline=%ld\n", deadline);
+        this->coord->CoreLogError("[GateAgent] heartbeatInterval deadline=%ld\n", deadline);
         return;
     }
     this->send(PacketType_Heartbeat, NULL, 0);
@@ -397,12 +397,12 @@ void GateAgent::recvTcpNew(net::TcpAgent* agent) {
 }
 
 void GateAgent::recvTcpClose(net::TcpAgent* agent){
-    this->coord->coreLogDebug("[GateAgent] recvTcpClose, sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[GateAgent] recvTcpClose, sessionId=%d", this->sessionId);
     this->recvClose();
 }
 
 void GateAgent::recvTcpError(net::TcpAgent* agent){
-    this->coord->coreLogDebug("[Gate] recvTcpError, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[Gate] recvTcpError, sessionId=%d", sessionId);
 }
 
 int GateAgent::recvTcpData(net::TcpAgent* agent, char* data, size_t len){
@@ -410,7 +410,7 @@ int GateAgent::recvTcpData(net::TcpAgent* agent, char* data, size_t len){
 }
 
 void GateAgent::recvWebSocketClose(websocket::Agent* agent) {
-    this->coord->coreLogDebug("[GateAgent] recvWebSocketClose, sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[GateAgent] recvWebSocketClose, sessionId=%d", this->sessionId);
     this->recvClose();
 }
 

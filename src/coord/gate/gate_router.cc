@@ -92,10 +92,10 @@ gate_router_handler* GateRouter::searchHandler(const char* event, const char* ro
 }
 
 void GateRouter::recvGateNotify(GateSession* session, GateNotify* notify) {
-    this->coord->coreLogDebug("[GateRouter] recvGateNotify");
+    this->coord->CoreLogDebug("[GateRouter] recvGateNotify");
     gate_router_handler* handler = this->searchHandler("NOTIFY", notify->route.c_str());
     if(handler == NULL){
-        this->coord->coreLogError("[GateRouter] recvGateNotify failed, error='router not found', route=%s", notify->route.c_str());
+        this->coord->CoreLogError("[GateRouter] recvGateNotify failed, error='router not found', route=%s", notify->route.c_str());
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -109,10 +109,10 @@ void GateRouter::recvGateRequest(GateSession* session, GateRequest* request) {
         this->recvGateAuth(session, request);
         return;
     }
-    this->coord->coreLogDebug("[GateRouter] recvGateRequest");
+    this->coord->CoreLogDebug("[GateRouter] recvGateRequest");
     gate_router_handler* handler = this->searchHandler("REQUEST", request->route.c_str());
     if(handler == NULL){
-        this->coord->coreLogError("[GateRouter] recvGateRequest failed, error='router not found', route=%s", request->route.c_str());
+        this->coord->CoreLogError("[GateRouter] recvGateRequest failed, error='router not found', route=%s", request->route.c_str());
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -122,10 +122,10 @@ void GateRouter::recvGateRequest(GateSession* session, GateRequest* request) {
 }
 
 void GateRouter::recvGateAuth(GateSession* session, GateRequest* request) {
-    this->coord->coreLogDebug("[GateRouter] recvGateAuth");
+    this->coord->CoreLogDebug("[GateRouter] recvGateAuth");
     gate_router_handler* handler = this->searchHandler("AUTH", request->route.c_str());
     if(handler == NULL){
-        this->coord->coreLogError("[GateRouter] recvGateAuth failed, error='router not found', route=%s", request->route.c_str());
+        this->coord->CoreLogError("[GateRouter] recvGateAuth failed, error='router not found', route=%s", request->route.c_str());
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -135,10 +135,10 @@ void GateRouter::recvGateAuth(GateSession* session, GateRequest* request) {
 }
 
 void GateRouter::recvGateSessionNew(GateSession* session) {
-    this->coord->coreLogDebug("[GateRouter] recvGateSessionNew, sessionId=%ld", session->Id);
+    this->coord->CoreLogDebug("[GateRouter] recvGateSessionNew, sessionId=%ld", session->Id);
     gate_router_handler* handler = this->searchHandler("NEW", "*");
     if(handler == NULL){
-        this->coord->coreLogError("[GateRouter] recvGateSessionNew failed, error='router not found'");
+        this->coord->CoreLogError("[GateRouter] recvGateSessionNew failed, error='router not found'");
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -148,10 +148,10 @@ void GateRouter::recvGateSessionNew(GateSession* session) {
 }
 
 void GateRouter::recvGateSessionClose(GateSession* session) {
-    this->coord->coreLogDebug("[GateRouter] recvGateSessionClose, sessionId=%ld", session->Id);
+    this->coord->CoreLogDebug("[GateRouter] recvGateSessionClose, sessionId=%ld", session->Id);
     gate_router_handler* handler = this->searchHandler("CLOSE", "*");
     if(handler == NULL){
-        this->coord->coreLogError("[GateRouter] recvGateSessionClose failed, error='router not found'");
+        this->coord->CoreLogError("[GateRouter] recvGateSessionClose failed, error='router not found'");
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -161,10 +161,10 @@ void GateRouter::recvGateSessionClose(GateSession* session) {
 }
 
 void GateRouter::recvGateUserLogin(GateSession* session) {
-    this->coord->coreLogDebug("[GateRouter] recvGateUserLogin, sessionId=%ld", session->Id);
+    this->coord->CoreLogDebug("[GateRouter] recvGateUserLogin, sessionId=%ld", session->Id);
     gate_router_handler* handler = this->searchHandler("LOGIN", "*");
     if(handler == NULL){
-        this->coord->coreLogError("[GateRouter] recvGateUserLogin failed, error='router not found'");
+        this->coord->CoreLogError("[GateRouter] recvGateUserLogin failed, error='router not found'");
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -174,10 +174,10 @@ void GateRouter::recvGateUserLogin(GateSession* session) {
 }
 
 void GateRouter::recvGateUserLogout(GateSession* session) {
-    this->coord->coreLogDebug("[GateRouter] recvGateUserLogout, sessionId=%ld", session->Id);
+    this->coord->CoreLogDebug("[GateRouter] recvGateUserLogout, sessionId=%ld", session->Id);
     gate_router_handler* handler = this->searchHandler("LOGOUT", "*");
     if(handler == NULL){
-        this->coord->coreLogError("[GateRouter] recvGateUserLogout failed, error='router not found'");
+        this->coord->CoreLogError("[GateRouter] recvGateUserLogout failed, error='router not found'");
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -187,10 +187,10 @@ void GateRouter::recvGateUserLogout(GateSession* session) {
 }
 
 void GateRouter::recvGateUserInstead(GateSession* session) {
-    this->coord->coreLogDebug("[GateRouter] recvGateUserInstead, sessionId=%ld", session->Id);
+    this->coord->CoreLogDebug("[GateRouter] recvGateUserInstead, sessionId=%ld", session->Id);
     gate_router_handler* handler = this->searchHandler("INSTEAD", "*");
     if(handler == NULL){
-        this->coord->coreLogError("[GateRouter] recvGateUserInstead failed, error='router not found'");
+        this->coord->CoreLogError("[GateRouter] recvGateUserInstead failed, error='router not found'");
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -636,7 +636,7 @@ int GateRouter::Auth(lua_State* L) {
 
 bool GateRouter::addRoute(const char* event, const char* route, gate_router_handler* handler) {
     gate_router_tree* tree = this->getTree(event);
-    //this->coord->coreLogDebug("[GateRouter] addRoute, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
+    //this->coord->CoreLogDebug("[GateRouter] addRoute, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
     auto it = tree->handlerDict.find(route);
     if (it != tree->handlerDict.end()) {
         delete it->second;

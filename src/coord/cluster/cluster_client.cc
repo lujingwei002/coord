@@ -26,7 +26,7 @@ cluster_client::cluster_client(Coord *coord, Cluster* cluster, const char* name,
 }
 
 cluster_client::~cluster_client() {
-    this->coord->coreLogDebug("[cluster_client] ~cluster_client");
+    this->coord->CoreLogDebug("[cluster_client] ~cluster_client");
     if(this->client != NULL) {
         this->client->SetHandler(NULL);
         this->coord->Destory(this->client);
@@ -43,7 +43,7 @@ int cluster_client::connect() {
     client->SetHandler(this);
     int err = client->Connect(this->host.c_str(), this->port);
     if (err < 0) {
-        this->coord->coreLogError("[cluster_client] connect failed, error=%d", err);
+        this->coord->CoreLogError("[cluster_client] connect failed, error=%d", err);
         return err;
     }
     this->client = client;
@@ -59,30 +59,30 @@ void cluster_client::tryReconnect() {
     }
     int err = client->Reconnect(this->host.c_str(), this->port);
     if (err < 0) {
-        this->coord->coreLogError("[cluster_client] tryReconnect failed, error=%d", err);
+        this->coord->CoreLogError("[cluster_client] tryReconnect failed, error=%d", err);
         return;
     }
 }
 
 void cluster_client::recvTcpConnect(){
-    this->coord->coreLogDebug("[cluster_client] recvTcpConnect, name=%s, host=%s, port=%d", 
+    this->coord->CoreLogDebug("[cluster_client] recvTcpConnect, name=%s, host=%s, port=%d", 
             this->name.c_str(), this->host.c_str(), this->port);
 
     this->sendHandshake();
 }
 
 void cluster_client::recvTcpClose(){
-    this->coord->coreLogDebug("[cluster_client] recvTcpClose, name=%s, host=%s, port=%d", 
+    this->coord->CoreLogDebug("[cluster_client] recvTcpClose, name=%s, host=%s, port=%d", 
             this->name.c_str(), this->host.c_str(), this->port);
 }
 
 void cluster_client::recvTcpError(int err){
-    this->coord->coreLogDebug("[cluster_client] recvTcpError, name=%s, host=%s, port=%d", 
+    this->coord->CoreLogDebug("[cluster_client] recvTcpError, name=%s, host=%s, port=%d", 
             this->name.c_str(), this->host.c_str(), this->port);
 } 
 
 int cluster_client::recvTcpData(char* data, size_t len){
-    this->coord->coreLogDebug("[cluster_client] recvTcpData, name=%s, len=%ld", 
+    this->coord->CoreLogDebug("[cluster_client] recvTcpData, name=%s, len=%ld", 
             this->name.c_str(), len);
     if(len < sizeof(cluster_packet_header)) {
         return 0;
@@ -102,12 +102,12 @@ int cluster_client::recvTcpData(char* data, size_t len){
 }
 
 void cluster_client::recvConnectError(const char* err) {
-   this->coord->coreLogError("[cluster_client] recvConnectError, name=%s, host=%s, port=%d, error='%s'", 
+   this->coord->CoreLogError("[cluster_client] recvConnectError, name=%s, host=%s, port=%d, error='%s'", 
         this->name.c_str(), this->host.c_str(), this->port, err);
 }
 
 void cluster_client::recvPacket(cluster_packet* packet) {
-    this->coord->coreLogDebug("[cluster_client] recvPacket, name=%s, type=%d", 
+    this->coord->CoreLogDebug("[cluster_client] recvPacket, name=%s, type=%d", 
         this->name.c_str(), packet->type);
     switch(packet->type) {
         case packet_type_handshake:{
@@ -141,17 +141,17 @@ void cluster_client::onDestory() {
 
 void cluster_client::recvData(cluster_packet* packet) {
     if(this->status != cluster_client_status_working) {
-        this->coord->coreLogDebug("[cluster_client] recvData failed, status=%d, error='status not working'", this->status);
+        this->coord->CoreLogDebug("[cluster_client] recvData failed, status=%d, error='status not working'", this->status);
         return;
     }
     static thread_local cluster_message message;
     int err = clusterMessageDecode(message, packet->data, packet->length);
     if (err < 0){
-        this->coord->coreLogDebug("[cluster_client] recvData failed, err=%d", err);
+        this->coord->CoreLogDebug("[cluster_client] recvData failed, err=%d", err);
         return;
     }
     //发送到逻辑层
-    this->coord->coreLogDebug("[cluster_client] recvData type=%d, id=%d, route=%s, len=%d", message.type, message.id, message.route, message.length);
+    this->coord->CoreLogDebug("[cluster_client] recvData type=%d, id=%d, route=%s, len=%d", message.type, message.id, message.route, message.length);
     switch(message.type){
         case message_type_response: {
             auto it = this->promiseDict.find(message.id);
@@ -183,22 +183,22 @@ void cluster_client::recvData(cluster_packet* packet) {
 
 void cluster_client::recvHandShake(cluster_packet* packet) {
     if(this->status != cluster_client_status_start) {
-        this->coord->coreLogError("[cluster_client] recvHandShake failed, status=%d, error='status not handshake'", this->status);
+        this->coord->CoreLogError("[cluster_client] recvHandShake failed, status=%d, error='status not handshake'", this->status);
         return;
     }
     google::protobuf::io::ArrayInputStream stream(packet->data, packet->length);
     if(this->handshakeResponse.ParseFromZeroCopyStream(&stream) == 0){
-        this->coord->coreLogError("[cluster_agent] recvHandShake.ParseFromZeroCopyStream failed");
+        this->coord->CoreLogError("[cluster_agent] recvHandShake.ParseFromZeroCopyStream failed");
         return;
     }
-    this->coord->coreLogDebug("[cluster_client] recvHandShake, code=%ld", this->handshakeResponse.code());
+    this->coord->CoreLogDebug("[cluster_client] recvHandShake, code=%ld", this->handshakeResponse.code());
     this->sendPacket(packet_type_handshakeack, &this->handshakeAck);
     this->status = cluster_client_status_working;
     this->flushPacketCache();
 }
 
 void cluster_client::recvHeartbeat(cluster_packet* packet) {
-    this->coord->coreLogDebug("[cluster_client] recvHeartbeat");
+    this->coord->CoreLogDebug("[cluster_client] recvHeartbeat");
     this->sendPacket(PacketType_Heartbeat, NULL, 0);
 }
 
@@ -239,7 +239,7 @@ int cluster_client::sendPacket(packet_type type, const char* data, size_t len) {
     static thread_local byte_slice packet;
     int err = clkusterPacketEncode(packet, type, data, len);
     if (err < 0){
-        this->coord->coreLogDebug("[cluster_client] Send failed, err=%d", err);
+        this->coord->CoreLogDebug("[cluster_client] Send failed, err=%d", err);
         return err;
     }
     this->client->Send(packet);
@@ -247,7 +247,7 @@ int cluster_client::sendPacket(packet_type type, const char* data, size_t len) {
 }
 
 int cluster_client::notify(const char* route, const char* data, size_t len) {
-    this->coord->coreLogError("[cluster_client] notify, route=%s", route);
+    this->coord->CoreLogError("[cluster_client] notify, route=%s", route);
     byte_slice packet;
     //packet header
     byte_slice header = packet.Slice(packet.Len(), packet.Len());
@@ -277,7 +277,7 @@ int cluster_client::notify(const char* route, const char* data, size_t len) {
 }
 
 Promise* cluster_client::request(const char* route, const char* data, size_t len) {
-    this->coord->coreLogDebug("[cluster_client] request, route=%s", route);
+    this->coord->CoreLogDebug("[cluster_client] request, route=%s", route);
     byte_slice packet;
     //packet header
     byte_slice header = packet.Slice(packet.Len(), packet.Len());
@@ -315,7 +315,7 @@ Promise* cluster_client::request(const char* route, const char* data, size_t len
 }
 
 Promise* cluster_client::request(const char* route, google::protobuf::Message* proto) {
-    this->coord->coreLogDebug("[cluster_client] request, route=%s", route);
+    this->coord->CoreLogDebug("[cluster_client] request, route=%s", route);
     byte_slice packet;
     //packet header
     byte_slice header = packet.Slice(packet.Len(), packet.Len());

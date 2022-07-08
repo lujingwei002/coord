@@ -81,7 +81,7 @@ int Reflect::CopyFrom(Reflect& other) {
     google::protobuf::Message* message = this->sharePtr->message;
     google::protobuf::Message* otherReflect = other.sharePtr->message;
     if(message->GetDescriptor() != otherReflect->GetDescriptor()){
-        this->coord->coreLogError("[Reflect] CopyFrom failed, this=%s, from=%s", message->GetTypeName().data(), otherReflect->GetTypeName().data());
+        this->coord->CoreLogError("[Reflect] CopyFrom failed, this=%s, from=%s", message->GetTypeName().data(), otherReflect->GetTypeName().data());
         return -1;
     }
     this->SetDirty(true);
@@ -96,7 +96,7 @@ int Reflect::MergeFrom(Reflect& other) {
     google::protobuf::Message* message = this->sharePtr->message;
     google::protobuf::Message* otherReflect = other.sharePtr->message;
     if(message->GetDescriptor() != otherReflect->GetDescriptor()){
-        this->coord->coreLogError("[Reflect] MergeFrom failed, this=%s, from=%s", message->GetTypeName().data(), otherReflect->GetTypeName().data());
+        this->coord->CoreLogError("[Reflect] MergeFrom failed, this=%s, from=%s", message->GetTypeName().data(), otherReflect->GetTypeName().data());
         return -1;
     }
     this->SetDirty(true);
@@ -155,7 +155,7 @@ int Reflect::ParseFrom(byte_slice& buffer) {
     google::protobuf::Message* message = this->sharePtr->message;
     google::protobuf::io::ArrayInputStream stream(buffer.Data(), buffer.Len());
     if(message->ParseFromZeroCopyStream(&stream) == 0){
-        this->coord->coreLogError("[Reflect] ParseFrom failed fail\n");
+        this->coord->CoreLogError("[Reflect] ParseFrom failed fail\n");
         return -1;
     }
     return 0;
@@ -168,7 +168,7 @@ int Reflect::ParseFrom(const char* data, size_t len) {
     google::protobuf::Message* message = this->sharePtr->message;
     google::protobuf::io::ArrayInputStream stream(data, len);
     if(message->ParseFromZeroCopyStream(&stream) == 0){
-        this->coord->coreLogError("[Reflect] ParseFrom failed fail\n");
+        this->coord->CoreLogError("[Reflect] ParseFrom failed fail\n");
         return -1;
     }
     return 0;
@@ -191,12 +191,12 @@ Reflect Reflect::GetMessage(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] Get failed, message='%s, field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] Get failed, message='%s, field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return Reflect(this->coord);
     }
     google::protobuf::Message* subMessage = reflection->MutableMessage(message, field);
     if(subMessage == nullptr){
-        this->coord->coreLogError("[Reflect] Get failed, message='%s, field='%s', error='message not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] Get failed, message='%s, field='%s', error='message not found'", descriptor->full_name().c_str(), fieldName);
         return Reflect(this->coord);
     } 
     return Reflect(this->coord, this->sharePtr, subMessage);
@@ -209,7 +209,7 @@ Array Reflect::GetRepeat(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] GetRepeat failed, message='%s, field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetRepeat failed, message='%s, field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return Array(this->coord);
     }
     return Array(this->coord, this->sharePtr, field);
@@ -224,11 +224,11 @@ const char* Reflect::GetString(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] GetString failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetString failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return nullptr; 
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_STRING) {
-        this->coord->coreLogError("[PrReflectoto] GetString failed, message='%s', field='%s', error='type not string'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[PrReflectoto] GetString failed, message='%s', field='%s', error='type not string'", descriptor->full_name().c_str(), fieldName);
         return nullptr; 
     } 
     return reflection->GetString(*message, field).c_str();
@@ -243,11 +243,11 @@ int32_t Reflect::GetInt32(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] GetInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_INT32) {
-        this->coord->coreLogError("[PrReflectoto] GetInt32 failed, message='%s', field='%s', error='type not int32'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[PrReflectoto] GetInt32 failed, message='%s', field='%s', error='type not int32'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     return reflection->GetInt32(*message, field);
@@ -262,11 +262,11 @@ int64_t Reflect::GetInt64(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] GetInt64 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetInt64 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_INT64) {
-        this->coord->coreLogError("[PrReflectoto] GetInt64 failed, message='%s', field='%s', error='type not int64'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[PrReflectoto] GetInt64 failed, message='%s', field='%s', error='type not int64'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     return reflection->GetInt64(*message, field);
@@ -281,11 +281,11 @@ uint32_t Reflect::GetUInt32(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] GetUInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetUInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_UINT32) {
-        this->coord->coreLogError("[PrReflectoto] GetUInt32 failed, message='%s', field='%s', error='type not uint32'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[PrReflectoto] GetUInt32 failed, message='%s', field='%s', error='type not uint32'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     return reflection->GetUInt32(*message, field);
@@ -300,11 +300,11 @@ uint64_t Reflect::GetUInt64(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] GetUInt64 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetUInt64 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_UINT64) {
-        this->coord->coreLogError("[PrReflectoto] GetUInt64 failed, message='%s', field='%s', error='type not uint64'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[PrReflectoto] GetUInt64 failed, message='%s', field='%s', error='type not uint64'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     return reflection->GetUInt64(*message, field);
@@ -319,11 +319,11 @@ float Reflect::GetFloat(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] GetFloat failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetFloat failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_FLOAT) {
-        this->coord->coreLogError("[PrReflectoto] GetFloat failed, message='%s', field='%s', error='type not float'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[PrReflectoto] GetFloat failed, message='%s', field='%s', error='type not float'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     return reflection->GetFloat(*message, field);
@@ -338,11 +338,11 @@ double Reflect::GetDouble(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] GetDouble failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetDouble failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_DOUBLE) {
-        this->coord->coreLogError("[PrReflectoto] GetDouble failed, message='%s', field='%s', error='type not double'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[PrReflectoto] GetDouble failed, message='%s', field='%s', error='type not double'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     return reflection->GetDouble(*message, field);
@@ -357,11 +357,11 @@ bool Reflect::GetBool(const char* fieldName) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] GetBool failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetBool failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_BOOL) {
-        this->coord->coreLogError("[PrReflectoto] GetBool failed, message='%s', field='%s', error='type not bool'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[PrReflectoto] GetBool failed, message='%s', field='%s', error='type not bool'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     return reflection->GetBool(*message, field);
@@ -377,7 +377,7 @@ int Reflect::Get(lua_State* L) {
     const char *fieldName = lua_tostring(L, 2);
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr) {
-        this->coord->coreLogError("[Reflect] Get failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] Get failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return 0; 
     }
     if (field->is_repeated()){
@@ -390,7 +390,7 @@ int Reflect::Get(lua_State* L) {
     } else if(field->cpp_type() == google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE){
         google::protobuf::Message* subMessage = reflection->MutableMessage(message, field);
         if(subMessage == nullptr){
-            this->coord->coreLogError("[Reflect] Get failed, message='%s', field='%s', error='MutableMessage not found'", descriptor->full_name().c_str(), fieldName);
+            this->coord->CoreLogError("[Reflect] Get failed, message='%s', field='%s', error='MutableMessage not found'", descriptor->full_name().c_str(), fieldName);
             return 0; 
         } 
         Reflect* msg = new Reflect(this->coord, this->sharePtr, subMessage);
@@ -425,7 +425,7 @@ int Reflect::Get(lua_State* L) {
         lua_pushboolean(L, reflection->GetBool(*message, field));
         return 1;
     } else {
-        this->coord->coreLogError("[Reflect] GetBool failed, message='%s', field='%s', error='type unknown'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] GetBool failed, message='%s', field='%s', error='type unknown'", descriptor->full_name().c_str(), fieldName);
     }
     return 0;
 }
@@ -446,11 +446,11 @@ bool Reflect::SetString(const char* fieldName, const char* value, size_t len) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetString failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetString failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_STRING) {
-        this->coord->coreLogError("[Reflect] SetString failed, message='%s', field='%s', error='type not string'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetString failed, message='%s', field='%s', error='type not string'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     reflection->SetString(message, field, std::string(value, len));
@@ -466,11 +466,11 @@ bool Reflect::SetString(const char* fieldName, const char* value) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetString failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetString failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_STRING) {
-        this->coord->coreLogError("[Reflect] SetString failed, message='%s', field='%s', error='type unknown'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetString failed, message='%s', field='%s', error='type unknown'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     reflection->SetString(message, field, value);
@@ -493,11 +493,11 @@ bool Reflect::SetInt64(const char* fieldName, int64_t value) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetInt64 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetInt64 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_INT64) {
-        this->coord->coreLogError("[Reflect] SetInt64 failed, message='%s', field='%s', error='type not int64'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetInt64 failed, message='%s', field='%s', error='type not int64'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     reflection->SetInt64(message, field, value);
@@ -517,11 +517,11 @@ bool Reflect::SetInt32(const char* fieldName, int32_t value) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_INT32) {
-        this->coord->coreLogError("[Reflect] SetInt32 failed, message='%s', field='%s', error='type not int32'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetInt32 failed, message='%s', field='%s', error='type not int32'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     reflection->SetInt32(message, field, value);
@@ -544,11 +544,11 @@ bool Reflect::SetUInt64(const char* fieldName, uint64_t value) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetUInt64 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetUInt64 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_UINT64) {
-        this->coord->coreLogError("[Reflect] SetUInt64 failed, message='%s', field='%s', error='type not uint64'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetUInt64 failed, message='%s', field='%s', error='type not uint64'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     reflection->SetUInt64(message, field, value);
@@ -571,11 +571,11 @@ bool Reflect::SetUInt32(const char* fieldName, uint32_t value) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetUInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetUInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_UINT32) {
-        this->coord->coreLogError("[Reflect] SetUInt32 failed, message='%s', field='%s', error='type not uint32'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetUInt32 failed, message='%s', field='%s', error='type not uint32'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     reflection->SetUInt32(message, field, value);
@@ -598,11 +598,11 @@ bool Reflect::SetFloat(const char* fieldName, float value) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetUInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetUInt32 failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_FLOAT) {
-        this->coord->coreLogError("[Reflect] SetUInt32 failed, message='%s', field='%s', error='type not float'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetUInt32 failed, message='%s', field='%s', error='type not float'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     reflection->SetFloat(message, field, value);
@@ -625,11 +625,11 @@ bool Reflect::SetDouble(const char* fieldName, double value) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetDouble failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetDouble failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_DOUBLE) {
-        this->coord->coreLogError("[Reflect] SetDouble failed, message='%s', field='%s', error='type not double'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetDouble failed, message='%s', field='%s', error='type not double'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     reflection->SetDouble(message, field, value);
@@ -652,11 +652,11 @@ bool Reflect::SetBool(const char* fieldName, bool value) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetBool failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetBool failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() != google::protobuf::FieldDescriptor::CPPTYPE_BOOL) {
-        this->coord->coreLogError("[Reflect] SetBool failed, message='%s', field='%s', error='type not bool'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetBool failed, message='%s', field='%s', error='type not bool'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     reflection->SetBool(message, field, value);
@@ -672,7 +672,7 @@ bool Reflect::SetNumber(const char* fieldName, double value) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] SetBool failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] SetBool failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
     if(field->cpp_type() == google::protobuf::FieldDescriptor::CPPTYPE_INT32){
@@ -719,15 +719,15 @@ int Reflect::Set(lua_State* L) {
     const google::protobuf::Descriptor* descriptor = this->sharePtr->descriptor;
     const google::protobuf::FieldDescriptor* field = descriptor->FindFieldByName(fieldName);
     if(field == nullptr){
-        this->coord->coreLogError("[Reflect] Set failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] Set failed, message='%s', field='%s', error='field not found'", descriptor->full_name().c_str(), fieldName);
         return 0;
     }
     if(field->is_repeated()){
-        this->coord->coreLogError("[Reflect] Set failed, message='%s', field='%s', error='field is repeated'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] Set failed, message='%s', field='%s', error='field is repeated'", descriptor->full_name().c_str(), fieldName);
         return 0;
     }
     if(lua_isnil(L, 3) && field->label() == google::protobuf::FieldDescriptor::LABEL_REQUIRED) {
-        this->coord->coreLogError("[Reflect] Set failed, message='%s', field='%s', error='field is required'", descriptor->full_name().c_str(), fieldName);
+        this->coord->CoreLogError("[Reflect] Set failed, message='%s', field='%s', error='field is required'", descriptor->full_name().c_str(), fieldName);
         return 0;
     }
     this->SetDirty(true);
@@ -744,7 +744,7 @@ int Reflect::Set(lua_State* L) {
         }
         google::protobuf::io::ArrayInputStream stream(str, str_len);
         if(subMessage->ParseFromZeroCopyStream(&stream) == 0) {
-            this->coord->coreLogError("[Reflect] Set failed, message='%s', field='%s', error='ParseFromZeroCopyStream'", descriptor->full_name().c_str(), fieldName);
+            this->coord->CoreLogError("[Reflect] Set failed, message='%s', field='%s', error='ParseFromZeroCopyStream'", descriptor->full_name().c_str(), fieldName);
             return 0;
         }
         lua_pushboolean(L, true);
@@ -760,7 +760,7 @@ int Reflect::Set(lua_State* L) {
         }
         google::protobuf::Message* otherMessage = otherProto->sharePtr->message;
         if(subMessage->GetDescriptor() != otherMessage->GetDescriptor()) {
-            this->coord->coreLogError("[Proto] Set failed, self=%s, other=%s error='descriptor is conflict'", subMessage->GetTypeName().data(), otherMessage->GetTypeName().data());
+            this->coord->CoreLogError("[Proto] Set failed, self=%s, other=%s error='descriptor is conflict'", subMessage->GetTypeName().data(), otherMessage->GetTypeName().data());
             return 0;
         }
         subMessage->CopyFrom(*otherMessage);

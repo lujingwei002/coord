@@ -39,10 +39,10 @@ WorkerSlave::~WorkerSlave() {
 }
 
 int WorkerSlave::start() {
-    //this->coord->coreLogDebug("[WorkerSlave] start");
+    //this->coord->CoreLogDebug("[WorkerSlave] start");
     int err = uv_async_init(&this->coord->loop, &this->async, uv_async_cb);
     if (err) {
-        this->coord->coreLogError("[WorkerSlave] start failed, error=%d", err);
+        this->coord->CoreLogError("[WorkerSlave] start failed, error=%d", err);
     }
     this->async.data = this;
     this->coord->SetInterval(500, std::bind(&WorkerSlave::onIdle, this));
@@ -59,7 +59,7 @@ void WorkerSlave::onReload() {
 
 //检查request队列, 运行在工作线程中
 void WorkerSlave::checkWorkerRequest() {
-    //this->coord->coreLogDebug("[WorkerSlave] checkWorkerRequest");
+    //this->coord->CoreLogDebug("[WorkerSlave] checkWorkerRequest");
     while(true) {
         uv_mutex_lock(&this->mutex);
         if (this->packetArr.size() <= 0) {
@@ -88,7 +88,7 @@ void WorkerSlave::checkWorkerRequest() {
 
 //slave处理request, 运行在工作线程中
 void WorkerSlave::recvWorkerRequest(worker_packet* packet, Request* request){
-    //this->coord->coreLogDebug("[WorkerSlave] recvWorkerRequest");
+    //this->coord->CoreLogDebug("[WorkerSlave] recvWorkerRequest");
     try{
         //传递到逻辑层
         this->Router->recvWorkerRequest(request);
@@ -102,7 +102,7 @@ void WorkerSlave::recvWorkerRequest(worker_packet* packet, Request* request){
 
 //slave处理request, 运行在工作线程中
 void WorkerSlave::recvWorkerNotify(worker_packet* packet, Notify* notify){
-    //this->coord->coreLogDebug("[WorkerSlave] recvWorkerNotify");
+    //this->coord->CoreLogDebug("[WorkerSlave] recvWorkerNotify");
     try{
         if (strcmp(notify->route.c_str(), "reload") == 0) {
             this->coord->Reload();
@@ -118,7 +118,7 @@ void WorkerSlave::recvWorkerNotify(worker_packet* packet, Notify* notify){
 
 //主线程发送请求到slave, 运行在主线程中
 int WorkerSlave::sendWorkerPacket(worker_packet* packet) {
-    //this->coord->coreLogDebug("[WorkerSlave] sendWorkerPacket");
+    //this->coord->CoreLogDebug("[WorkerSlave] sendWorkerPacket");
     packet->slave = this->coord;
     uv_mutex_lock(&this->mutex);
     this->packetArr.push_front(packet);

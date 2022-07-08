@@ -37,7 +37,7 @@ HttpAgent::HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) 
 }
 
 HttpAgent::~HttpAgent() {
-    this->coord->coreLogDebug("[HttpAgent] ~HttpAgent");
+    this->coord->CoreLogDebug("[HttpAgent] ~HttpAgent");
     if(this->tcpAgent != NULL) {
         this->tcpAgent->SetHandler(NULL);
         this->coord->Destory(this->tcpAgent);
@@ -60,19 +60,19 @@ void HttpAgent::recvTcpNew(net::TcpAgent* tcpAgent) {
 }
 
 void HttpAgent::recvTcpClose(net::TcpAgent* agent){
-    this->coord->coreLogDebug("[HttpAgent] recvTcpClose sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[HttpAgent] recvTcpClose sessionId=%d", this->sessionId);
     if(this->handler) {this->handler->recvHttpClose(this);}
     this->server->recvAgentClose(this);
 }
 
 void HttpAgent::recvTcpError(net::TcpAgent* agent){
     int sessionId = this->sessionId;
-    this->coord->coreLogDebug("[HttpAgent] recvTcpError sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[HttpAgent] recvTcpError sessionId=%d", sessionId);
 }
 
 int HttpAgent::recvTcpData(net::TcpAgent* agent, char* data, size_t len) {
     int sessionId = this->sessionId;
-    this->coord->coreLogDebug("[HttpAgent] recvTcpData sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[HttpAgent] recvTcpData sessionId=%d", sessionId);
     if (this->server->config.SSLEncrypt) {
         return this->recvEncryptData(data, len);
     } else {
@@ -92,13 +92,13 @@ int HttpAgent::recvEncryptData(char* data, size_t len) {
             } else if (err == SSL_ERROR_WANT_WRITE) { 
             }
         } else {
-            this->coord->coreLogDebug("完成握手1");
+            this->coord->CoreLogDebug("完成握手1");
             this->readDecryptData();
         }
         //握手过程中会产生要发送的数据
         this->writeBioToSocket();
     } else {
-        this->coord->coreLogDebug("完成握手2 %ld", len);
+        this->coord->CoreLogDebug("完成握手2 %ld", len);
         this->readDecryptData();
     }
     //printf("%s\n", data);
@@ -234,7 +234,7 @@ int HttpAgent::send(byte_slice& data) {
     if (this->server->config.SSLEncrypt) {
         int byteWrite = SSL_write(this->ssl, data.Data(), data.Len());  
         return this->writeBioToSocket();
-        //this->coord->coreLogDebug("[HttpAgent] send, ret=%d", byteWrite);
+        //this->coord->CoreLogDebug("[HttpAgent] send, ret=%d", byteWrite);
         if (byteWrite > 0) {
             // 写入socket
             return this->writeBioToSocket();

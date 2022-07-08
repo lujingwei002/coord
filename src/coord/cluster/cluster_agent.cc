@@ -29,12 +29,12 @@ cluster_agent::cluster_agent(Coord *coord, Cluster* cluster,  cluster_server* se
 }
 
 cluster_agent::~cluster_agent() {
-    this->coord->coreLogDebug("[cluster_agent] ~cluster_agent");
+    this->coord->CoreLogDebug("[cluster_agent] ~cluster_agent");
     this->coord->Destory(this->tcpAgent);
 }
 
 void cluster_agent::recvPacket(cluster_packet* packet) {
-    this->coord->coreLogDebug("[cluster_agent] recvPacket, type=%d", packet->type);
+    this->coord->CoreLogDebug("[cluster_agent] recvPacket, type=%d", packet->type);
     switch(packet->type) {
         case packet_type_handshake:{
             this->recvHandShake(packet);
@@ -54,18 +54,18 @@ void cluster_agent::recvPacket(cluster_packet* packet) {
 
 void cluster_agent::recvData(cluster_packet* packet) {
     if(this->status != cluster_agent_status_working) {
-        this->coord->coreLogDebug("[cluster_agent] recvData failed, status=%d, error='status not working'", this->status);
+        this->coord->CoreLogDebug("[cluster_agent] recvData failed, status=%d, error='status not working'", this->status);
         return;
     }
     static thread_local cluster_message message;
     int err = clusterMessageDecode(message, packet->data, packet->length);
     if (err < 0){
-        this->coord->coreLogDebug("[cluster_agent] recvData failed, error=%d", err);
+        this->coord->CoreLogDebug("[cluster_agent] recvData failed, error=%d", err);
         return;
     }
     //发送到逻辑层
     //gamepb::LoginRequest req;
-    this->coord->coreLogDebug("[cluster_agent] recvData type=%d, id=%d, route='%s', len=%d", message.type, message.id, message.route, message.length);
+    this->coord->CoreLogDebug("[cluster_agent] recvData type=%d, id=%d, route='%s', len=%d", message.type, message.id, message.route, message.length);
     switch(message.type){
         case message_type_request: {
             Request* request = newRequest(this->coord, this);
@@ -94,19 +94,19 @@ void cluster_agent::recvData(cluster_packet* packet) {
 
 void cluster_agent::recvHandShake(cluster_packet* packet) {
     if(this->status != cluster_agent_status_none) {
-        this->coord->coreLogDebug("[cluster_agent] recvHandShake failed, status=%d, error='status not start'", this->status);
+        this->coord->CoreLogDebug("[cluster_agent] recvHandShake failed, status=%d, error='status not start'", this->status);
         return;
     }
     cluster_handshake_request& request = this->handshakeRequest;
     cluster_handshake_response& response = this->handshakeResponse;
     google::protobuf::io::ArrayInputStream stream(packet->data, packet->length);
     if(request.ParseFromZeroCopyStream(&stream) == 0){
-        this->coord->coreLogError("[cluster_agent] recvHandShake.ParseFromZeroCopyStream failed");
+        this->coord->CoreLogError("[cluster_agent] recvHandShake.ParseFromZeroCopyStream failed");
         return;
     }
     this->name = request.nodename();
     this->version = request.version();
-    this->coord->coreLogDebug("[cluster_agent] recvHandShake, name=%s, version=%ld, host=%s, port=%ld", 
+    this->coord->CoreLogDebug("[cluster_agent] recvHandShake, name=%s, version=%ld, host=%s, port=%ld", 
         request.nodename().c_str(), request.version(), request.host().c_str(), request.port());
     response.set_code(0);
     this->sendPacket(packet_type_handshake, &response);
@@ -116,16 +116,16 @@ void cluster_agent::recvHandShake(cluster_packet* packet) {
 }
 
 void cluster_agent::recvHandShakeAck(cluster_packet* packet) {
-    this->coord->coreLogDebug("[cluster_agent] recvHandShakeAck");
+    this->coord->CoreLogDebug("[cluster_agent] recvHandShakeAck");
     if(this->status != cluster_agent_status_handshake) {
-        this->coord->coreLogDebug("[cluster_agent] recvHandShakeAck failed, status=%d, error='status not handshake'", this->status);
+        this->coord->CoreLogDebug("[cluster_agent] recvHandShakeAck failed, status=%d, error='status not handshake'", this->status);
         return;
     }
     this->status = cluster_agent_status_working;;
 } 
 
 void cluster_agent::recvHeartbeat(cluster_packet* packet) {
-    this->coord->coreLogDebug("[cluster_agent] recvHeartbeat");
+    this->coord->CoreLogDebug("[cluster_agent] recvHeartbeat");
 }
 
 int cluster_agent::sendPacket(packet_type type, ::google::protobuf::Message* message) {
@@ -156,7 +156,7 @@ int cluster_agent::sendPacket(packet_type type, const char* data, size_t len) {
     static thread_local byte_slice packet(0, 0);
     int err = clkusterPacketEncode(packet, type, data, len);
     if (err < 0){
-        this->coord->coreLogDebug("[cluster_agent] Send failed, err=%d", err);
+        this->coord->CoreLogDebug("[cluster_agent] Send failed, err=%d", err);
         return err;
     }
     this->send(packet);
@@ -164,13 +164,13 @@ int cluster_agent::sendPacket(packet_type type, const char* data, size_t len) {
 }
 
 void cluster_agent::heartbeat() {
-   // this->coord->coreLogDebug("[cluster_agent] heartbeat");
+   // this->coord->CoreLogDebug("[cluster_agent] heartbeat");
     if(this->status != cluster_agent_status_working){
         return;
     }
     uint64_t deadline = this->coord->Now() - 2 * this->cluster->config.Heartbeat*1000;
     if(this->lastHeartbeatTime < deadline){
-        this->coord->coreLogError("[cluster_agent] heartbeat failed, deadline=%ld\n", deadline);
+        this->coord->CoreLogError("[cluster_agent] heartbeat failed, deadline=%ld\n", deadline);
         this->close();
         return;
     }
@@ -182,7 +182,7 @@ int cluster_agent::response(uint64_t id, int code, byte_slice& data) {
 }
 
 int cluster_agent::response(uint64_t id, int code, const char* data, size_t len) {
-    this->coord->coreLogDebug("[cluster_agent] Response, sessionId=%d, id=%d, len=%d", this->sessionId, id, len);
+    this->coord->CoreLogDebug("[cluster_agent] Response, sessionId=%d, id=%d, len=%d", this->sessionId, id, len);
     byte_slice packet;
     //packet header
     byte_slice header = packet.Slice(packet.Len(), packet.Len());
@@ -217,7 +217,7 @@ int cluster_agent::response(uint64_t id, int code, protobuf::Reflect& proto) {
 }
 
 int cluster_agent::response(uint64_t id, int code, ::google::protobuf::Message* proto) {
-    this->coord->coreLogError("[cluster_agent] Response, sessionId=%d, id=%d", this->sessionId, id);
+    this->coord->CoreLogError("[cluster_agent] Response, sessionId=%d, id=%d", this->sessionId, id);
     byte_slice packet;
     //packet header
     byte_slice header = packet.Slice(packet.Len(), packet.Len());
@@ -251,20 +251,20 @@ int cluster_agent::response(uint64_t id, int code, ::google::protobuf::Message* 
 }
 
 void cluster_agent::recvTcpNew(net::TcpAgent* tcpAgent){
-    this->coord->coreLogDebug("[cluster_agent] recvTcpNew sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[cluster_agent] recvTcpNew sessionId=%d", this->sessionId);
 }
 
 void cluster_agent::recvTcpClose(net::TcpAgent* agent){
-    this->coord->coreLogDebug("[cluster_agent] recvTcpClose sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[cluster_agent] recvTcpClose sessionId=%d", this->sessionId);
     this->server->recvTcpClose(this);
 }
 
 void cluster_agent::recvTcpError(net::TcpAgent* agent){
-    this->coord->coreLogDebug("[cluster_agent] recvTcpError sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[cluster_agent] recvTcpError sessionId=%d", this->sessionId);
 }
 
 int cluster_agent::recvTcpData(net::TcpAgent* agent, char* data, size_t len){
-    this->coord->coreLogDebug("[cluster_agent] recvTcpData, len=%ld", len);
+    this->coord->CoreLogDebug("[cluster_agent] recvTcpData, len=%ld", len);
     if(len < sizeof(cluster_packet_header)) {
         return 0;
     } 

@@ -29,7 +29,7 @@ Object::Object(Coord* coord, const char* name) {
 }
 
 Object::~Object() {
-    this->coord->coreLogDebug("[Object] ~Object, name=%s", this->name);
+    this->coord->CoreLogDebug("[Object] ~Object, name=%s", this->name);
     for(auto object : this->children) {
         delete object;
     }
@@ -50,7 +50,7 @@ int Object::Save() {
 
 int Object::AddScript(lua_State* L) {
     if (!lua_istable(L, 2)) {
-        this->coord->coreLogError("[Object] AddScript failed, error='arg 1 table expected");
+        this->coord->CoreLogError("[Object] AddScript failed, error='arg 1 table expected");
         return 0;
     }
     lua_pushvalue(L, 2);                        // arg component component
@@ -59,7 +59,7 @@ int Object::AddScript(lua_State* L) {
     lua_gettable(L, -2);                        // arg component component['__COMPONENT']
     if (!lua_isstring(L, -1)) {
         lua_pop(L, 1);
-        this->coord->coreLogError("[Object] AddScript failed, error='invalid script component");
+        this->coord->CoreLogError("[Object] AddScript failed, error='invalid script component");
         return 0;
     }
     const char* scriptName =  (const char*)lua_tostring(L, -1);
@@ -79,10 +79,10 @@ int Object::AddComponent(Component* component) {
     if (script) {
         typeName = script->GetScriptName();
     }
-    this->coord->coreLogDebug("[Object<%s>] AddComponent, type='%s'", this->name, typeName);
+    this->coord->CoreLogDebug("[Object<%s>] AddComponent, type='%s'", this->name, typeName);
     auto it = this->componentDict.find(typeName);
     if (it != this->componentDict.end()) {
-        this->coord->coreLogError("[Object<%s>] AddComponent failed, type='%s'", this->name, typeName);
+        this->coord->CoreLogError("[Object<%s>] AddComponent failed, type='%s'", this->name, typeName);
         return -1;
     }
     this->componentArr.push_back(component);
@@ -278,7 +278,7 @@ void Object::onDestory() {
 }
 
 void Object::onAwake() {
-    this->coord->coreLogDebug("[Object<%s>] onAwake", this->name);
+    this->coord->CoreLogDebug("[Object<%s>] onAwake", this->name);
     this->transform = this->AddComponent<Transform>();
 }
 
@@ -308,14 +308,14 @@ void Object::Trace(int deep) {
     for (int i = 0; i < deep; i++){
         strcat(tab, "  ");
     }
-    //this->coord->coreLogDebug("%s|-%s", tab, this->name);
+    //this->coord->CoreLogDebug("%s|-%s", tab, this->name);
     for (uint32_t i = 0; i < this->componentArr.size(); i++){
         Component* component = componentArr[i];
         if (component->GetType() == ScriptComponent::_type){
-            //this->coord->coreLogDebug("%s  <%s(%s)>", tab, component->TypeName(), ((ScriptComponent*)component)->scriptName);
+            //this->coord->CoreLogDebug("%s  <%s(%s)>", tab, component->TypeName(), ((ScriptComponent*)component)->scriptName);
         }
         else {
-            //this->coord->coreLogDebug("%s  <%s>", tab, component->TypeName());
+            //this->coord->CoreLogDebug("%s  <%s>", tab, component->TypeName());
         }
     }
     for (uint32_t i = 0; i < this->children.size(); i++){

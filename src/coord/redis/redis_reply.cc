@@ -62,7 +62,7 @@ bool Reply::operator!= (std::nullptr_t v) const  {
 
 Reply::~Reply() {
     //printf("Reply::~Reply\n");
-    //this->coord->coreLogDebug("[RedisReply] ~RedisReply");
+    //this->coord->CoreLogDebug("[RedisReply] ~RedisReply");
     if(this->reply && this->owner) {
         if (refManager.release(this->reply) == 0) {
             freeReplyObject(this->reply);

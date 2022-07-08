@@ -59,10 +59,10 @@ router_handler* Router::searchHandler(const char* event, const char* route) {
 }
 
 void Router::recvWebSocketFrame(Agent* agent, Frame* frame) {
-    this->coord->coreLogDebug("[websocket::Router] recvWebSocketFrame %s", frame->payload);
+    this->coord->CoreLogDebug("[websocket::Router] recvWebSocketFrame %s", frame->payload);
     router_handler* handler = this->searchHandler("MESSAGE", "/hello");
     if(handler == nullptr){
-        this->coord->coreLogDebug("[websocket::Router] recvWebSocketFrame failed, error='router not found', path=%s", "/hello");
+        this->coord->CoreLogDebug("[websocket::Router] recvWebSocketFrame failed, error='router not found', path=%s", "/hello");
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -74,12 +74,12 @@ void Router::recvWebSocketFrame(Agent* agent, Frame* frame) {
 
 void Router::recvWebSocketNew(Agent* agent){
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[websocket::Router] recvWebSocketNew, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[websocket::Router] recvWebSocketNew, sessionId=%d", sessionId);
 }
 
 void Router::recvWebSocketClose(Agent* agent){
     int sessionId = agent->sessionId;
-    this->coord->coreLogDebug("[websocket::Router] recvWebSocketClose, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[websocket::Router] recvWebSocketClose, sessionId=%d", sessionId);
 }
 
 void Router::Trace() {
@@ -89,7 +89,7 @@ void Router::Trace() {
         for(auto const& it1 : tree->handlerDict) {
             auto handler = it1.second;
             uint64_t averageTime = handler->times <= 0 ? 0 : (handler->consumeTime/handler->times);
-            this->coord->coreLogDebug("[websocket::Router] %10s | %10d | %10s | %s", event.c_str(), handler->times, date::FormatNano(averageTime), it1.first.c_str());
+            this->coord->CoreLogDebug("[websocket::Router] %10s | %10d | %10s | %s", event.c_str(), handler->times, date::FormatNano(averageTime), it1.first.c_str());
         }
     }
 }

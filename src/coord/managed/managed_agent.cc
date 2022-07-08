@@ -26,27 +26,27 @@ ManagedAgent::ManagedAgent(Coord *coord, Managed* managed,  ManagedServer* serve
 }
 
 ManagedAgent::~ManagedAgent() {
-    this->coord->coreLogDebug("[ManagedAgent] ~ManagedAgent");
+    this->coord->CoreLogDebug("[ManagedAgent] ~ManagedAgent");
     this->coord->Destory(this->tcpAgent);
 }
 
 void ManagedAgent::recvTcpNew(net::TcpAgent* tcpAgent){
-    this->coord->coreLogDebug("[ManagedAgent] recvTcpNew");
+    this->coord->CoreLogDebug("[ManagedAgent] recvTcpNew");
     this->coord->DontDestory(this->tcpAgent);
     this->Response("welcome");
 }
 
 void ManagedAgent::recvTcpClose(net::TcpAgent* agent){
-    this->coord->coreLogDebug("[ManagedAgent] recvTcpClose sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[ManagedAgent] recvTcpClose sessionId=%d", this->sessionId);
     this->server->recvTcpClose(this);
 }
 
 void ManagedAgent::recvTcpError(net::TcpAgent* agent){
-    this->coord->coreLogDebug("[ManagedAgent] recvTcpError sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[ManagedAgent] recvTcpError sessionId=%d", this->sessionId);
 }
 
 int ManagedAgent::recvTcpData(net::TcpAgent* agent, char* data, size_t len){
-    this->coord->coreLogDebug("[ManagedAgent] recvTcpData, len=%ld", len);
+    this->coord->CoreLogDebug("[ManagedAgent] recvTcpData, len=%ld", len);
     int byteRead = 0;
     while(true) {
         char* delimiter = strstr(data, "\r\n");
@@ -63,11 +63,11 @@ int ManagedAgent::recvTcpData(net::TcpAgent* agent, char* data, size_t len){
 }
 
 void ManagedAgent::recvPacket(const char* data, size_t len) {
-    this->coord->coreLogDebug("[ManagedAgent] recvPacket, data=%s", data);
+    this->coord->CoreLogDebug("[ManagedAgent] recvPacket, data=%s", data);
     ManagedRequest* request = newManagedRequest(this->coord, this);
     int err = request->parse(data, len);
     if (err) {
-        this->coord->coreLogDebug("[ManagedAgent] recvPacket failed, error=%d", err);
+        this->coord->CoreLogDebug("[ManagedAgent] recvPacket failed, error=%d", err);
         this->coord->Destory(request);
         return;
     }

@@ -59,7 +59,7 @@ Cluster::~Cluster() {
 }
 
 int Cluster::main() {
-    this->coord->coreLogDebug("[Cluster] main, register_interval=%d, reload_interval=%d, heartbeat=%d, reconnect_interval=%d",
+    this->coord->CoreLogDebug("[Cluster] main, register_interval=%d, reload_interval=%d, heartbeat=%d, reconnect_interval=%d",
         this->config.RegisterInterval,
         this->config.ReloadInterval,
         this->config.Heartbeat,
@@ -95,26 +95,26 @@ int Cluster::main() {
 }
 
 void Cluster::recvNodeNew(cluster_node* node) {
-    this->coord->coreLogError("[Cluster] recvNodeNew, node=%s, version=%ld, host=%s, port=%d", node->name.c_str(), node->version, node->host.c_str(), node->port);
+    this->coord->CoreLogError("[Cluster] recvNodeNew, node=%s, version=%ld, host=%s, port=%d", node->name.c_str(), node->version, node->host.c_str(), node->port);
     auto it = this->clientDict.find(node->name);
     if (it != this->clientDict.end()) {
-        this->coord->coreLogError("[Cluster] recvNodeNew failed, client conflict, node=%s", node->name.c_str());
+        this->coord->CoreLogError("[Cluster] recvNodeNew failed, client conflict, node=%s", node->name.c_str());
         return;
     }
     cluster_client* client = newClusterClient(this->coord, this, node->name.c_str(), node->version, node->host.c_str(), node->port);
     int err = client->connect();
     if (err < 0) {
-        this->coord->coreLogError("[Cluster] recvNodeNew failed, error=%d", err);
+        this->coord->CoreLogError("[Cluster] recvNodeNew failed, error=%d", err);
         return;
     }
     this->clientDict[node->name] = client;
 }
 
 void Cluster::recvNodeExpire(cluster_node* node) {
-    this->coord->coreLogError("[Cluster] recvNodeExpire, node='%s', host='%s', port=%d", node->name.c_str(), node->host.c_str(), node->port);
+    this->coord->CoreLogError("[Cluster] recvNodeExpire, node='%s', host='%s', port=%d", node->name.c_str(), node->host.c_str(), node->port);
     auto it = this->clientDict.find(node->name);
     if (it == this->clientDict.end()) {
-        this->coord->coreLogError("[Cluster] recvNodeExpire, node='%s', error='client not found'", node->name.c_str());
+        this->coord->CoreLogError("[Cluster] recvNodeExpire, node='%s', error='client not found'", node->name.c_str());
         return;
     }
     cluster_client* client = it->second;
@@ -152,7 +152,7 @@ int Cluster::Notify(const char* nodeName, const char* route, const char* data, s
 }
 
 void Cluster::recvClusterNotify(cluster::Notify* notify) {
-    this->coord->coreLogDebug("[Cluster] recvClusterNotify");
+    this->coord->CoreLogDebug("[Cluster] recvClusterNotify");
     try{
         //传递到逻辑层
         this->Router->recvClusterNotify(notify);
@@ -187,7 +187,7 @@ Promise* Cluster::Request(const char* node, const char* route, google::protobuf:
 }
 
 void Cluster::recvClusterRequest(cluster::Request* request) {
-    this->coord->coreLogDebug("[Cluster] recvClusterRequest");
+    this->coord->CoreLogDebug("[Cluster] recvClusterRequest");
     try{
         //传递到逻辑层
         this->Router->recvClusterRequest(request);

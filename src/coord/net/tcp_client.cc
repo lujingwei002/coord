@@ -98,13 +98,13 @@ int TcpClient::Connect(const char* host, int16_t port) {
     struct sockaddr_in remoteAddr;
     int err = uv_ip4_addr(host, port, &remoteAddr);
     if (err != 0) {
-        this->coord->coreLogError("[TcpClient] Connect.uv_ip4_addr failed, error=%s", uv_strerror(err));
+        this->coord->CoreLogError("[TcpClient] Connect.uv_ip4_addr failed, error=%s", uv_strerror(err));
         return -1;
     }
     this->connectReq.data = this;
     err = uv_tcp_connect(&this->connectReq, &this->handle, (const struct sockaddr*)&remoteAddr, uv_connect_cb);
     if (err != 0) {
-        this->coord->coreLogError("[TcpClient] Connect.uv_tcp_connect failed, error=%s", uv_strerror(err));
+        this->coord->CoreLogError("[TcpClient] Connect.uv_tcp_connect failed, error=%s", uv_strerror(err));
         return -1;
     }
     this->status = TcpClientStatus_CONNECTING;
@@ -137,13 +137,13 @@ int TcpClient::Reconnect(const char* host, int16_t port) {
     struct sockaddr_in remoteAddr;
     int err = uv_ip4_addr(host, port, &remoteAddr);
     if (err != 0) {
-        this->coord->coreLogError("[TcpClient] Connect.uv_ip4_addr failed, error=%s", uv_strerror(err));
+        this->coord->CoreLogError("[TcpClient] Connect.uv_ip4_addr failed, error=%s", uv_strerror(err));
         return -1;
     }
     req->data = this;
     err = uv_tcp_connect(req, &this->handle, (const struct sockaddr*)&remoteAddr, uv_connect_cb);
     if (err != 0) {
-        this->coord->coreLogError("[TcpClient] Connect.uv_tcp_connect failed, error=%s", uv_strerror(err));
+        this->coord->CoreLogError("[TcpClient] Connect.uv_tcp_connect failed, error=%s", uv_strerror(err));
         return -1;
     }
     this->status = TcpClientStatus_CONNECTING;
@@ -156,11 +156,11 @@ int TcpClient::GetStatus() {
 
 void TcpClient::Close() {
     if(this->status == TcpClientStatus_CLOSING || this->status == TcpClientStatus_CLOSED) {
-        this->coord->coreLogDebug("[TcpClient] close failed1 %d", this->status);
+        this->coord->CoreLogDebug("[TcpClient] close failed1 %d", this->status);
         return;
     }
     if(uv_is_closing((uv_handle_t*)&this->handle)) {
-        this->coord->coreLogDebug("[TcpClient] close failed2");
+        this->coord->CoreLogDebug("[TcpClient] close failed2");
         return;
     }
     if(this->status == TcpClientStatus_CONNECTED) {
@@ -175,30 +175,30 @@ void TcpClient::Close() {
 }
 
 void TcpClient::recvTcpError(int err) {
-    this->coord->coreLogDebug("[TcpClient] recvTcpError");
+    this->coord->CoreLogDebug("[TcpClient] recvTcpError");
     this->status = TcpClientStatus_ERROR;
     if(this->handler != NULL) {this->handler->recvTcpError(err);}
     this->Close();
 }
 
 void TcpClient::recvTcpClose() {
-    this->coord->coreLogDebug("[TcpClient] recvTcpClose");
+    this->coord->CoreLogDebug("[TcpClient] recvTcpClose");
     this->status = TcpClientStatus_CLOSED;
     if(this->handler != NULL) {this->handler->recvTcpClose();}
 }
 
 void TcpClient::recvConnectError(int err) {
-    this->coord->coreLogDebug("[TcpClient] recvConnectError error='%s'", uv_strerror(err));
+    this->coord->CoreLogDebug("[TcpClient] recvConnectError error='%s'", uv_strerror(err));
     this->status = TcpClientStatus_ERROR;
     if(this->handler != NULL) {this->handler->recvConnectError(uv_strerror(err));}
     this->Close();
 }
 
 void TcpClient::recvTcpConnect() {
-    this->coord->coreLogDebug("[TcpClient] recvTcpConnect");
+    this->coord->CoreLogDebug("[TcpClient] recvTcpConnect");
     int err = uv_read_start((uv_stream_t*) &this->handle, uv_alloc_cb, uv_read_cb);
     if (err < 0) {
-        this->coord->coreLogError("[TcpClient] recvTcpConnect.uv_read_start failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[TcpClient] recvTcpConnect.uv_read_start failed, error='%s'", uv_strerror(err));
         if(this->handler != NULL) {this->handler->recvConnectError(uv_strerror(err));}
         this->Close();
         return;
@@ -208,7 +208,7 @@ void TcpClient::recvTcpConnect() {
 }
 
 void TcpClient::recvTcpData() {
-    //this->coord->coreLogDebug("[TcpClient] recvTcpData, len=%d", this->recvBuffer.Len());
+    //this->coord->CoreLogDebug("[TcpClient] recvTcpData, len=%d", this->recvBuffer.Len());
     if (!this->handler){
         return;
     }
@@ -227,14 +227,14 @@ int TcpClient::Send(const char* data, size_t len) {
 }
 
 int TcpClient::Send(byte_slice& data) {
-    this->coord->coreLogDebug("[TcpClient] Send, len=%d", data.Len());
+    this->coord->CoreLogDebug("[TcpClient] Send, len=%d", data.Len());
     uv_buf_t buf[] = {
         { .base = (char*)data.Data(), .len = data.Len()},
     };
     WriteReq* req = new WriteReq(data);
     int err = uv_write(&req->req, (uv_stream_t *)&this->handle, buf, 1, uv_write_cb);
     if (err < 0){
-        this->coord->coreLogError("[TcpClient] Send failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[TcpClient] Send failed, error='%s'", uv_strerror(err));
         return err;
     }
     return 0;

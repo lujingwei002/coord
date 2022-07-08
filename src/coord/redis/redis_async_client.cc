@@ -82,7 +82,7 @@ void AsyncClient::Close() {
 }
 
 void AsyncClient::recvConnectError(const char* error) {
-    this->coord->coreLogError("[RedisAsyncClient] recvConnectError, error='%s'", error);
+    this->coord->CoreLogError("[RedisAsyncClient] recvConnectError, error='%s'", error);
     this->status = redis_client_status_error;
     this->connectPromise->reject(this, nullptr);
     delete this->connectPromise;
@@ -106,7 +106,7 @@ void AsyncClient::rejectConnect() {
 }
 
 void AsyncClient::recvConnect() {
-    this->coord->coreLogDebug("[RedisAsyncClient] recvConnect");
+    this->coord->CoreLogDebug("[RedisAsyncClient] recvConnect");
     if (this->config.Password.length() <= 0) {
         this->resolveConnect();
         return;
@@ -118,7 +118,7 @@ void AsyncClient::recvConnect() {
         return;
     }
     promise->Then([this](AsyncClient* client, Reply& reply){
-        this->coord->coreLogDebug("[RedisAsyncClient] authResolve");
+        this->coord->CoreLogDebug("[RedisAsyncClient] authResolve");
         //密码验证成功
         if (this->config.DB.length() <= 0) {
             this->resolveConnect();
@@ -134,13 +134,13 @@ void AsyncClient::recvConnect() {
             return;
         });        
         promise->Else([this](AsyncClient* client, Reply& reply){
-            this->coord->coreLogDebug("[RedisAsyncClient] recvConnect failed, error='SELECT'");
+            this->coord->CoreLogDebug("[RedisAsyncClient] recvConnect failed, error='SELECT'");
             //密码验证失败，断开链接
             this->rejectConnect();
         });
     });
     promise->Else([this](AsyncClient* client, Reply& reply){
-        this->coord->coreLogDebug("[RedisAsyncClient] recvConnect failed, error='AUTH'");
+        this->coord->CoreLogDebug("[RedisAsyncClient] recvConnect failed, error='AUTH'");
         //密码验证失败，断开链接
         this->rejectConnect();
     });
@@ -158,12 +158,12 @@ void AsyncClient::recvGetCallback(Promise* promise, Reply& reply) {
 }
 
 void AsyncClient::recvDisconnectError(const char* error) {
-    this->coord->coreLogError("[RedisAsyncClient] recvDisconnectError, error='%s'", error);
+    this->coord->CoreLogError("[RedisAsyncClient] recvDisconnectError, error='%s'", error);
     this->status = redis_client_status_error;
 }
 
 void AsyncClient::recvDisconnect() {
-    this->coord->coreLogWarn("[RedisAsyncClient] recvDisconnect");
+    this->coord->CoreLogWarn("[RedisAsyncClient] recvDisconnect");
     this->status = redis_client_status_error;
 }
 
@@ -173,12 +173,12 @@ Promise* AsyncClient::Connect() {
     }
     redisAsyncContext* c = redisAsyncConnect(this->config.Host.c_str(), this->config.Port);
     if(c == nullptr) {
-        this->coord->coreLogError("[RedisAsyncClient] connect failed, error='out of memory'");
+        this->coord->CoreLogError("[RedisAsyncClient] connect failed, error='out of memory'");
         return nullptr;
     }
     if (c->err) {
         redisAsyncFree(c);
-        this->coord->coreLogError("[RedisAsyncClient] Connect failed, error=%s", c->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] Connect failed, error=%s", c->errstr);
         return nullptr;
     }
     c->data = this;
@@ -199,7 +199,7 @@ Promise * AsyncClient::select(const char* db) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "SELECT %s", db);
     if (err != REDIS_OK) {
-        this->coord->coreLogError("[RedisAsyncClient] SELECT failed, error='%s'", this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] SELECT failed, error='%s'", this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -214,7 +214,7 @@ Promise* AsyncClient::SELECT(const char* db) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "SELECT %s", db);
     if (err != REDIS_OK) {
-        this->coord->coreLogError("[RedisAsyncClient] SELECT failed, error='%s'", this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] SELECT failed, error='%s'", this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -229,7 +229,7 @@ Promise * AsyncClient::auth(const char* password) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "AUTH %s", password);
     if (err != REDIS_OK) {
-        this->coord->coreLogError("[RedisAsyncClient] AUTH failed, error='%s'", this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] AUTH failed, error='%s'", this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -244,7 +244,7 @@ Promise * AsyncClient::AUTH(const char* password) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "AUTH %s", password);
     if (err != REDIS_OK) {
-        this->coord->coreLogError("[RedisAsyncClient] AUTH failed, error='%s'", this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] AUTH failed, error='%s'", this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -259,7 +259,7 @@ Promise* AsyncClient::EXPIRE(const char* key, uint64_t expire) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "EXPIRE %s %ld", key, expire);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] Get failed, key=%s, error='%s'", key, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] Get failed, key=%s, error='%s'", key, this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -274,7 +274,7 @@ Promise* AsyncClient::GET(const char* key) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "GET %s", key);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] Get failed, key=%s, error='%s'", key, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] Get failed, key=%s, error='%s'", key, this->context->errstr);
         this->coord->Destory(promise);
     }
     this->promiseDict[promise] = promise;
@@ -288,7 +288,7 @@ Promise* AsyncClient::SCRIPT_LOAD(const char* str) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "SCRIPT LOAD %s", str);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] Get failed, command=%s, error='%s'", str, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] Get failed, command=%s, error='%s'", str, this->context->errstr);
         this->coord->Destory(promise);
     }
     this->promiseDict[promise] = promise;
@@ -308,7 +308,7 @@ Promise* AsyncClient::EVALSHA(const char* sha1, const char* format, ...) {
     int err = redisvAsyncCommand(this->context, getCallback, promise, buffer.Data(), args);
     va_end(args);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] Get failed, command=%s, error='%s'", buffer.Data(), this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] Get failed, command=%s, error='%s'", buffer.Data(), this->context->errstr);
         this->coord->Destory(promise);
     }
     this->promiseDict[promise] = promise;
@@ -322,7 +322,7 @@ Promise* AsyncClient::HGETALL(const char* key) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "HGETALL %s", key);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] HGETALL failed, key=%s, error='%s'", key, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] HGETALL failed, key=%s, error='%s'", key, this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -337,7 +337,7 @@ Promise* AsyncClient::HDEL(const char* key, const char* field) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "HDEL %s %s", key, field);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] HDEL failed, key=%s, field=%s, error='%s'", key, field, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] HDEL failed, key=%s, field=%s, error='%s'", key, field, this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -352,7 +352,7 @@ Promise* AsyncClient::HMSET(const char* key, const char* field, const char* valu
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "HMSET %s %s %s", key, field, value);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] HMSET failed, key=%s, error='%s'", key, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] HMSET failed, key=%s, error='%s'", key, this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -376,7 +376,7 @@ Promise* AsyncClient::SET(const char* key, const char* value) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "SET %s %s", key, value);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] SET failed, key=%s, error='%s'", key, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] SET failed, key=%s, error='%s'", key, this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -393,7 +393,7 @@ Promise* AsyncClient::SET(const char* key, const char* data, size_t len) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommandArgv(this->context, getCallback, promise, 3, argv, argvlen);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] SET failed, key=%s, error='%s'", key, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] SET failed, key=%s, error='%s'", key, this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -413,7 +413,7 @@ Promise* AsyncClient::SETEX(const char* key, const char* data, size_t len, size_
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommandArgv(this->context, getCallback, promise, 4, argv, argvlen);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] SETEX failed, key=%s, error='%s'", key, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] SETEX failed, key=%s, error='%s'", key, this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }
@@ -435,7 +435,7 @@ Promise * AsyncClient::DEL(const char* key) {
     Promise* promise = redis::newPromise(this->coord);
     int err = redisAsyncCommand(this->context, getCallback, promise, "DEL %s", key);
     if(err != REDIS_OK){
-        this->coord->coreLogError("[RedisAsyncClient] SETEX failed, key=%s, error='%s'", key, this->context->errstr);
+        this->coord->CoreLogError("[RedisAsyncClient] SETEX failed, key=%s, error='%s'", key, this->context->errstr);
         this->coord->Destory(promise);
         return nullptr;
     }

@@ -31,5 +31,23 @@ namespace coord {
             realPath.assign((char*)req.ptr);
             return 0;
         }
+
+        int MakeDir(const std::string& path, int mode) {
+            uv_fs_t req;
+            int err = uv_fs_mkdir(&coorda->loop, &req, path.c_str(), mode, nullptr);
+            if (err) {
+                return err;
+            }
+            return 0;
+        }
+
+        int Exists(const std::string& path) {
+            uv_fs_t req;
+            int err = uv_fs_stat(&coorda->loop, &req, path.c_str(), nullptr);
+            if (err) {
+                return err;
+            }
+            return 0;
+        }
     }
 }

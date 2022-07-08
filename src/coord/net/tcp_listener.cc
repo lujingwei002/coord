@@ -31,7 +31,7 @@ TcpListener::~TcpListener() {
 
 void TcpListener::recvTcpNew(int status) {
     if (status < 0) {
-        this->coord->coreLogDebug("[TcpListener] recvTcpNew failed, error='%s'", uv_strerror(status));
+        this->coord->CoreLogDebug("[TcpListener] recvTcpNew failed, error='%s'", uv_strerror(status));
         return;
     }
     TcpAgent *agent = newTcpAgent(this->coord, this);
@@ -40,14 +40,14 @@ void TcpListener::recvTcpNew(int status) {
     err = uv_accept((uv_stream_t*)&this->server, (uv_stream_t*) &agent->handle);
     if (err < 0) {
         delete agent;
-        this->coord->coreLogDebug("[TcpListener] recvTcpNew.uv_accept failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogDebug("[TcpListener] recvTcpNew.uv_accept failed, error='%s'", uv_strerror(err));
         return;
     }
     uv_os_sock_t sockfd;
     err = uv_fileno((uv_handle_t*)&agent->handle, &sockfd);
     if (err < 0) {
         delete agent;
-        this->coord->coreLogDebug("[TcpListener] recvTcpNew.uv_fileno failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogDebug("[TcpListener] recvTcpNew.uv_fileno failed, error='%s'", uv_strerror(err));
         return;
     } 
     agent->sockfd = sockfd;
@@ -57,7 +57,7 @@ void TcpListener::recvTcpNew(int status) {
     auto it = this->agentDict.find(sessionId);
     if (it != this->agentDict.end()){
         delete agent;
-        this->coord->coreLogDebug("[TcpListener] recvTcpNew failed, sessionId=%d, error='sessionId conflict'", sessionId);
+        this->coord->CoreLogDebug("[TcpListener] recvTcpNew failed, sessionId=%d, error='sessionId conflict'", sessionId);
         return;
     }
     struct sockaddr_in remoteSockAddr;
@@ -71,13 +71,13 @@ void TcpListener::recvTcpNew(int status) {
         }
     }
     this->agentDict[sessionId] = agent;
-    this->coord->coreLogDebug("[TcpListener] recvTcpNew, sockfd=%d, sessionId=%d", sockfd, sessionId);
+    this->coord->CoreLogDebug("[TcpListener] recvTcpNew, sockfd=%d, sessionId=%d", sockfd, sessionId);
     if(this->handler)this->handler->recvTcpNew(this, agent);
     agent->recvTcpNew();
 }
 
 int TcpListener::Listen(const char* host, unsigned short port, int backlog){
-    this->coord->coreLogDebug("[TcpListener] Listen, host:%s, port=%d", host, port);
+    this->coord->CoreLogDebug("[TcpListener] Listen, host:%s, port=%d", host, port);
     this->server.data = this;
     uv_tcp_init(&this->coord->loop, &this->server);
     sockaddr_in addr;
@@ -85,17 +85,17 @@ int TcpListener::Listen(const char* host, unsigned short port, int backlog){
     uv_tcp_bind(&this->server, (const struct sockaddr*)&addr, 0);
     int r = uv_listen((uv_stream_t*) &this->server, backlog, uv_connection_cb);
     if (r) {
-        this->coord->coreLogError("[TcpListener] Listen failed, error='%s'", uv_strerror(r));
+        this->coord->CoreLogError("[TcpListener] Listen failed, error='%s'", uv_strerror(r));
         return -1;
     }
     return 0;
 }
 
 void TcpListener::recvAgentClose(TcpAgent* agent) {
-    this->coord->coreLogDebug("[TcpListener] recvAgentClose ref=%d", agent->_ref);
+    this->coord->CoreLogDebug("[TcpListener] recvAgentClose ref=%d", agent->_ref);
     auto it = this->agentDict.find(agent->sessionId);
     if (it == this->agentDict.end()) {
-        this->coord->coreLogDebug("[TcpListener] recvAgentClose failed, sessionid=%d, error='agent not found'", agent->sessionId);
+        this->coord->CoreLogDebug("[TcpListener] recvAgentClose failed, sessionid=%d, error='agent not found'", agent->sessionId);
     } else {
         this->agentDict.erase(it);
         this->coord->Destory(agent);
@@ -107,7 +107,7 @@ void TcpListener::SetHandler(ITcpHandler* handler) {
 }
 
 void TcpListener::Close() {
-   this->coord->coreLogError("[TcpListener] Close failed, error='not implement'");
+   this->coord->CoreLogError("[TcpListener] Close failed, error='not implement'");
 }
 
 }

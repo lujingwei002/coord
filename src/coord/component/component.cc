@@ -25,11 +25,11 @@ void Component::onDestory(){
 }
 
 void Component::onAwake(){
-    this->coord->coreLogDebug("[Component<%s>] onAwake", this->TypeName());
+    this->coord->CoreLogDebug("[Component<%s>] onAwake", this->TypeName());
 }
 
 void Component::onStart(){
-    this->coord->coreLogDebug("[Component<%s>] onStart", this->TypeName());
+    this->coord->CoreLogDebug("[Component<%s>] onStart", this->TypeName());
 }
 
 void Component::onUpdate(uint64_t cur_tick){
@@ -97,7 +97,7 @@ Scene* Component::GetScene() {
 
 int Component::GetComponent(lua_State* L) {
     if (!this->object) {
-        this->coord->coreLogError("no object");
+        this->coord->CoreLogError("no object");
         return 0;
     }
     return this->object->GetComponent(L);
@@ -105,7 +105,7 @@ int Component::GetComponent(lua_State* L) {
 
 Component* Component::GetComponent(const char* name){
     if (!this->object) {
-        this->coord->coreLogError("no object");
+        this->coord->CoreLogError("no object");
         return NULL;
     }
     return this->object->GetComponent(name);
@@ -143,45 +143,45 @@ void Component::LogMsg(const char* str) const{
     this->coord->LogMsg("[%s] %s", this->TypeName(), str);
 }
 
-void Component::coreLogFatal(const char* fmt, ...) {
+void Component::CoreLogFatal(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    this->coord->coreLogFatal(fmt, args);
+    this->coord->CoreLogFatal(fmt, args);
     va_end(args);
 }
 
-void Component::coreLogError(const char* fmt, ...) {
+void Component::CoreLogError(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    this->coord->coreLogError(fmt, args);
+    this->coord->CoreLogError(fmt, args);
     va_end(args);
 }
 
-void Component::coreLogWarn(const char* fmt, ...) {
+void Component::CoreLogWarn(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    this->coord->coreLogWarn(fmt, args);
+    this->coord->CoreLogWarn(fmt, args);
     va_end(args);
 }
 
-void Component::coreLogInfo(const char* fmt, ...) {
+void Component::CoreLogInfo(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    this->coord->coreLogInfo(fmt, args);
+    this->coord->CoreLogInfo(fmt, args);
     va_end(args);
 }
 
-void Component::coreLogDebug(const char* fmt, ...) {
+void Component::CoreLogDebug(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    this->coord->coreLogDebug(fmt, args);
+    this->coord->CoreLogDebug(fmt, args);
     va_end(args);
 }
 
-void Component::coreLogMsg(const char* fmt, ...) {
+void Component::CoreLogMsg(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    this->coord->coreLogMsg(fmt, args);
+    this->coord->CoreLogMsg(fmt, args);
     va_end(args);
 }
 

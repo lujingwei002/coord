@@ -115,7 +115,7 @@ int Promise::Else(lua_State* L) {
 }
 
 void Promise::resolve(AsyncClient* client, CacheReader& reader) {
-    //this->coord->coreLogDebug("[CachePromise] resolve");
+    //this->coord->CoreLogDebug("[CachePromise] resolve");
     if(this->resolveFunc == NULL) {
         return;
     }
@@ -127,7 +127,7 @@ void Promise::resolve(AsyncClient* client, CacheReader& reader) {
 }
 
 void Promise::reject(AsyncClient* client, CacheReader& reader){
-    //this->coord->coreLogDebug("[CachePromise] reject");
+    //this->coord->CoreLogDebug("[CachePromise] reject");
     if(this->rejectFunc == NULL) {
         return;
     }

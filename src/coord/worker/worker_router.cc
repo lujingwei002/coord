@@ -53,10 +53,10 @@ worker_router_handler* WorkerRouter::searchHandler(const char* event, const char
 }
 
 void WorkerRouter::recvWorkerRequest(worker::Request* request) {
-    this->coord->coreLogDebug("[WorkerRouter] recvWorkerRequest");
+    this->coord->CoreLogDebug("[WorkerRouter] recvWorkerRequest");
     worker_router_handler* handler = this->searchHandler("REQUEST", request->route.c_str());
     if(handler == NULL){
-        this->coord->coreLogDebug("[WorkerRouter] recvWorkerRequest failed, error='router not found', route=%s", request->route.c_str());
+        this->coord->CoreLogDebug("[WorkerRouter] recvWorkerRequest failed, error='router not found', route=%s", request->route.c_str());
         Response* response = request->GetResponse();
         response->String("Not Found");
         response->Reject(404);
@@ -69,10 +69,10 @@ void WorkerRouter::recvWorkerRequest(worker::Request* request) {
 }
 
 void WorkerRouter::recvWorkerNotify(worker::Notify* notify) {
-    this->coord->coreLogDebug("[WorkerRouter] recvWorkerNotify");
+    this->coord->CoreLogDebug("[WorkerRouter] recvWorkerNotify");
     worker_router_handler* handler = this->searchHandler("NOTIFY", notify->route.c_str());
     if(handler == NULL){
-        this->coord->coreLogDebug("[WorkerRouter] recvWorkerNotify failed, error='router not found', route=%s", notify->route.c_str());
+        this->coord->CoreLogDebug("[WorkerRouter] recvWorkerNotify failed, error='router not found', route=%s", notify->route.c_str());
     } else {
         uint64_t t1 = this->coord->NanoTime();
         handler->recvWorkerNotify(notify);
@@ -88,7 +88,7 @@ void WorkerRouter::Trace() {
         for(auto const& it1 : tree->handlerDict) {
             auto handler = it1.second;
             uint64_t averageTime = handler->times <= 0 ? 0 : (handler->consumeTime/handler->times);
-            this->coord->coreLogDebug("[WorkerRouter] %10s | %10d | %10s | %s", event.c_str(), handler->times, date::FormatNano(averageTime), it1.first.c_str());
+            this->coord->CoreLogDebug("[WorkerRouter] %10s | %10d | %10s | %s", event.c_str(), handler->times, date::FormatNano(averageTime), it1.first.c_str());
         }
     }
 }
@@ -203,7 +203,7 @@ int WorkerRouter::Notify(lua_State* L) {
 
 bool WorkerRouter::addRoute(const char* event, const char* route, worker_router_handler* handler) {
     worker_router_tree* tree = this->getTree(event);
-    //this->coord->coreLogDebug("[WorkerRouter] addRoute, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
+    //this->coord->CoreLogDebug("[WorkerRouter] addRoute, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
     auto it = tree->handlerDict.find(route);
     if (it != tree->handlerDict.end()) {
         delete it->second;

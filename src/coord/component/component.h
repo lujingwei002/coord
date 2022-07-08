@@ -53,12 +53,12 @@ public:
     virtual void onDestory();
     virtual void onUpdate(uint64_t cur_tick);
     virtual void onReload();
-    void coreLogFatal(const char* fmt, ...);
-    void coreLogError(const char* fmt, ...);
-    void coreLogWarn(const char* fmt, ...);
-    void coreLogInfo(const char* fmt, ...);
-    void coreLogDebug(const char* fmt, ...);
-    void coreLogMsg(const char* fmt, ...);
+    void CoreLogFatal(const char* fmt, ...);
+    void CoreLogError(const char* fmt, ...);
+    void CoreLogWarn(const char* fmt, ...);
+    void CoreLogInfo(const char* fmt, ...);
+    void CoreLogDebug(const char* fmt, ...);
+    void CoreLogMsg(const char* fmt, ...);
 public:
     Object*     object; //tolua_export
     Scene*      scene;  //tolua_export

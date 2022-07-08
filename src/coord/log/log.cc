@@ -13,7 +13,7 @@ void LogFatal(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
     if(coorda) {
-        coorda->coreLogFatal(fmt, args);
+        coorda->CoreLogFatal(fmt, args);
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -27,7 +27,7 @@ void LogError(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
     if(coorda) {
-        coorda->coreLogError(fmt, args);
+        coorda->CoreLogError(fmt, args);
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -41,7 +41,7 @@ void LogWarn(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
     if(coorda) {
-        coorda->coreLogFatal(fmt, args);
+        coorda->CoreLogFatal(fmt, args);
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -54,7 +54,7 @@ void LogInfo(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
     if(coorda) {
-        coorda->coreLogInfo(fmt, args);
+        coorda->CoreLogInfo(fmt, args);
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -67,7 +67,7 @@ void LogMsg(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
     if(coorda) {
-        coorda->coreLogMsg(fmt, args);
+        coorda->CoreLogMsg(fmt, args);
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -80,7 +80,7 @@ void LogDebug(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
     if(coorda) {
-        coorda->coreLogDebug(fmt, args);
+        coorda->CoreLogDebug(fmt, args);
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);

@@ -21,7 +21,7 @@ Promise::Promise(Coord* coord) {
 }
 
 Promise::~Promise() {
-   this->coord->coreLogDebug("[Promise] ~");
+   this->coord->CoreLogDebug("[Promise] ~");
    if(this->resolveRef) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->resolveRef);
     }
@@ -31,7 +31,7 @@ Promise::~Promise() {
 }
 
 void Promise::resolve() {
-    this->coord->coreLogDebug("[Promise] resolve");
+    this->coord->CoreLogDebug("[Promise] resolve");
     if(this->resolveFunc == NULL) {
         return;
     }
@@ -43,7 +43,7 @@ void Promise::resolve() {
 }
 
 void Promise::reject() {
-    this->coord->coreLogDebug("[Promise] reject");
+    this->coord->CoreLogDebug("[Promise] reject");
     if(this->rejectFunc == NULL) {
         return;
         
