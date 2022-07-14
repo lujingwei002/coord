@@ -15,8 +15,21 @@ namespace coord {
 namespace worker {
 CC_IMPLEMENT(Worker, "coord::worker::Worker")
 
-struct worker_data {
-    char            configFile[PATH_MAX];
+class worker_data {
+public:
+    worker_data() {
+        this->thread = nullptr;
+        this->worker = nullptr;
+        this->coord = nullptr;
+    }
+    ~worker_data() {
+        if (nullptr != this->thread) {
+            free(this->thread);
+            this->thread = nullptr;
+        }
+    }
+public:
+    std::string     configPath;
     Worker*         worker;
     Coord*          coord;
     uv_thread_t*    thread;
@@ -33,13 +46,12 @@ static void coord_worker_thread(void* arg) {
     master->slaveDict[thread] = coordb;
     //master->slaveDeque.push_front(coordb);
     uv_mutex_unlock(&master->slaveMutex);
-    int err = coordb->asWorker(master, workerData->configFile, workerData->index);
+    int err = coordb->workerEntryPoint(master, workerData->configPath, workerData->index);
     if(err){
         //master->coord->CoreLogError("coord_worker_thread failed, error=%d", err);
         master->recvSlaveError(coordb);
     }
-    free(workerData->thread);
-    free(workerData);
+    delete workerData;
     delete coordb;
 }
 
@@ -116,8 +128,8 @@ void Worker::recvSlaveAwake() {
     uv_sem_post(this->sem);
 }
 
-int Worker::start(const char* configFile, uint16_t workerNum) {
-    this->coord->CoreLogDebug("[Worker] Start, config=%s, worker_num=%d", configFile, workerNum);
+int Worker::start(const std::string& configPath, uint16_t workerNum) {
+    this->coord->CoreLogDebug("[Worker] Start, config=%s, worker_num=%d", configPath.c_str(), workerNum);
     int err = uv_async_init(&this->coord->loop, &this->async, uv_async_cb);
     if (err) {
         this->coord->CoreLogError("[Worker] start failed, error=%d", err);
@@ -130,15 +142,15 @@ int Worker::start(const char* configFile, uint16_t workerNum) {
     }
     for (int i = 0; i < workerNum; i++) {
         uv_thread_t* thread = (uv_thread_t*)malloc(sizeof(uv_thread_t));
-        worker_data* workerData = (worker_data*)malloc(sizeof(worker_data));
-        strcpy(workerData->configFile, configFile);
+        worker_data* workerData = new worker_data();
+        workerData->configPath= configPath;
         workerData->worker = this;
         workerData->thread = thread;
         workerData->index = i + 1;
         int err = uv_thread_create(thread, coord_worker_thread, workerData);
         if (err) {
             this->coord->CoreLogError("[Worker] start failed, error=%d", err);
-            free(workerData);
+            delete workerData;
             return err;
         }
     }

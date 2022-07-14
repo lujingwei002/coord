@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <cstring>
 #include <vector>
+#include <iostream>
+#include <fstream>
 #include <uv.h>
 #include <ctype.h>
 #include "coord/builtin/string.h"
@@ -305,17 +307,23 @@ int Environment::scanEnvFile(const std::string& envFilePath) {
     return this->scanEnvMultiLine(envFilePath, lines, read);
 }
 
-int Environment::main(const char* configPath) {
+int Environment::main(const Argv& argv) {
     char buffer[PATH_MAX];
     size_t len = sizeof(buffer);
 
+    if (argv.Name.length() > 0) {
+        this->Name = argv.Name;
+    } else {
+        uv_pid_t pid = uv_os_getpid();
+        this->Name = std::to_string(pid);
+    }
+
     len = sizeof(buffer);
-    
     // 配置文件绝对路径
     uv_fs_t req;
-    int err = uv_fs_realpath(&this->coord->loop, &req, configPath, nullptr);
+    int err = uv_fs_realpath(&this->coord->loop, &req, argv.ConfigPath.c_str(), nullptr);
     if (err) {
-        this->coord->CoreLogError("%s %s", uv_strerror(err), configPath);
+        this->coord->CoreLogError("%s %s", uv_strerror(err), argv.ConfigPath.c_str());
         return err;
     }
     this->ConfigPath = (char*)req.ptr;
@@ -363,12 +371,15 @@ int Environment::main(const char* configPath) {
     this->ProjectDir = coord::path::DirName(this->ExecDir);
     
     this->ProcDir = coord::path::PathJoin(this->CoordDir, "proc");
+    this->RunDir = coord::path::PathJoin(this->ProcDir, this->Name);
+    this->PidPath = coord::path::PathJoin(this->RunDir, "pid");
+    this->ManagedSockPath = coord::path::PathJoin(this->RunDir, "managed.sock");
     this->Package = this->CoordDir + "/package";                        // 引擎目录
     this->Package = this->WorkingDir + "/package;" + this->Package;     // 工作目录
     this->Package = this->ConfigDir + "/package;" + this->Package;  // 配置文件目录
     this->Package = this->ConfigDir + ";" + this->Package;          // 配置文件目录
 
-
+    this->Variables["name"] = this->Name;
     this->Variables["version"] = this->Version;
     this->Variables["config-dir"] = this->ConfigDir;
     this->Variables["config-path"] = this->ConfigPath;
@@ -379,7 +390,10 @@ int Environment::main(const char* configPath) {
     this->Variables["project-dir"] = this->ProjectDir;
     this->Variables["home-dir"] = this->HomeDir;
     this->Variables["proc-dir"] = this->ProcDir;
+    this->Variables["run-dir"] = this->RunDir;
+    this->Variables["pid-path"] = this->PidPath;
     this->Variables["package"] = this->Package;
+    this->Variables["managed-sock-path"] = this->ManagedSockPath;
 
     std::string envFilePath = coord::path::PathJoin(this->ConfigDir, env_file_name);
     err = this->scanEnvFile(envFilePath);

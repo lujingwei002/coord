@@ -51,14 +51,14 @@ public:
     void recvConnectError(int err);
     void recvTcpConnect();
 public:
-    Coord* coord;
-    uv_tcp_t handle;    
-    uv_shutdown_t shutdownReq;
-    uv_connect_t connectReq;
-    RecvBuffer recvBuffer;  
-    ITcpClientHandler *handler;     
-    TcpClientStatus status;
-    bool isDestory;
+    Coord*              coord;
+    uv_tcp_t            handle;    
+    uv_shutdown_t       shutdownReq;
+    uv_connect_t        connectReq;
+    RecvBuffer          recvBuffer;  
+    ITcpClientHandler*  handler;     
+    TcpClientStatus     status;
+    bool                isDestory;
 };//tolua_export
 
 TcpClient* newTcpClient(Coord* coord);//tolua_export

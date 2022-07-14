@@ -1,4 +1,9 @@
 
+coordx:         基础库
+coord-service:  节点服务
+coord:          命令行工具
+
+
 ##### Environment
     ### 预定义环境变量
     version         : Coord版本
@@ -10,17 +15,19 @@
     coord-dir       : Coord目录
     home-dir        : Home目录
     proc-dir        : proc目录
+    run-dir         : proc/${name}
+    pid-path        : proc/${name}/pid
                 ${COORD_ROOT}
         搜索顺序 /usr/coord
                  /usr/local/coord
                  ${HomeDir}/coord
     project-dir      : 工程目录
-    package         : 包路径, 以;号分隔
+    package          : 包路径, 以;号分隔
                         ${coord-dir}/package
                         ${working-dir}/package
                         ${config-dir}/package
                         ${config-dir}
-
+    managed-sock-path   : managed的unix socket路径
     ### 自定义环境变量
     查找路径 ${config-dir}/.env
 

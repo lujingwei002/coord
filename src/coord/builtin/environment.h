@@ -1,5 +1,6 @@
 #pragma once 
 
+#include <uv.h>
 #include <map>
 #include <string>
 #include <optional>
@@ -20,6 +21,7 @@ extern "C" {
 namespace coord {//tolua_export
 
 class Coord;
+class Argv;
 
 class Environment {//tolua_export
 friend class Coord;
@@ -72,13 +74,22 @@ public:
     std::string ConfigDir;//tolua_export
     /// 包查找路径, 以分号分隔
     std::string Package;//tolua_export
-    /// 
+    /// proc目录
     std::string ProcDir;//tolua_export
+    /// run目录
+    std::string RunDir;//tolua_export
+    /// pid文件路径
     std::string PidPath;//tolua_export
+    /// 服务的名字
+    std::string Name;//tolua_export
+    /// managed的unix socket路径
+    std::string ManagedSockPath; //tolua_export
     /// 环境变量字典
     std::map<std::string, std::string> Variables;
+
+    uv_pid_t    Pid;
 private:
-    int main(const char* configPath);
+    int main(const Argv& argv);
     int searchCoordDir(char* buffer, size_t* len);
     template <typename T>
     bool extract(const std::string & value, T & dst);

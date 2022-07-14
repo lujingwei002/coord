@@ -77,7 +77,6 @@ Config::Config(Coord* coord) {
     this->Basic.Name = "coord";
     this->Basic.Update = 100;
     this->Basic.WorkerNum = 0;
-    this->Basic.Pid = "./";
     this->Basic.Version = "0.0.0";
     
     this->Web.Port = 0;
@@ -594,7 +593,6 @@ void Config::DebugString(){
     this->coord->LogInfo("[%s] %-15s: %s", TAG, "worker", this->Basic.Worker.c_str());
     this->coord->LogInfo("[%s] %-15s: %ld", TAG, "worker-num", this->Basic.WorkerNum);
     this->coord->LogInfo("[%s] %-15s: %s", TAG, "proto", this->Basic.Proto.c_str());
-    this->coord->LogInfo("[%s] %-15s: %s", TAG, "pid", this->Basic.Pid.c_str());
     this->coord->LogInfo("[%s] %-15s: %s", TAG, "version", this->Basic.Version.c_str());
     this->coord->LogInfo("[%s] %-15s: %s", TAG, "short-version", this->Basic.ShortVersion.c_str());
 
@@ -654,11 +652,11 @@ void Config::DebugString(){
 
 }
 
-int Config::parse(const char* configPath) {
+int Config::parse(const std::string&  configPath) {
     std::string realPath;
     int err = coord::path::RealPath(configPath, realPath);
     if (err) {
-        this->coord->CoreLogError("%s: %s", uv_strerror(err), configPath);
+        this->coord->CoreLogError("%s: %s", uv_strerror(err), configPath.c_str());
         return err;
     }
     err = this->scanConfigFile(realPath);
@@ -678,14 +676,9 @@ int Config::parse(const char* configPath) {
         this->get(it->second, "worker_num", this->Basic.WorkerNum);
         this->get(it->second, "proto", this->Basic.Proto);
         this->get(it->second, "name", this->Basic.Name);
-        if(!this->get(it->second, "pid", this->Basic.Pid)) {
-            std::string pidFile = this->Basic.Name + ".pid";
-            this->Basic.Pid = coord::path::PathJoin(this->coord->Environment->WorkingDir, pidFile);
-        }
         this->get(it->second, "version", this->Basic.Version);
     }
-    this->Basic.ProcDir = coord::path::PathJoin(this->coord->Environment->ProcDir, this->Basic.Name);
-    this->Basic.Pid = coord::path::PathJoin(this->Basic.ProcDir, "pid");
+
     // 处理package, 转换成绝对路径
     {
         std::string package;

@@ -15,9 +15,12 @@ public:
     }
 
     void SetUp() {
-        coord::Coord* coorda = coord::NewCoord();
-        this->coord = coorda;
-        int err = coorda->beforeTest("test/test.ini");
+        coord::Coord* coord = coord::NewCoord();
+        this->coord = coord;
+        coord::Argv argv;
+        argv.Name = "test";
+        argv.ConfigPath = "test/test.ini";
+        int err = coord->beforeTest(argv);
         ASSERT_EQ(err, 0);
     }
 

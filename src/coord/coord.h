@@ -80,6 +80,11 @@ class Result;
 namespace net {
 class TcpClient;
 }
+namespace pipe {
+class PipeClient;
+class PipeAgent;
+class PipeListener;
+}
 namespace managed {
 class Managed;
 class ManagedServer;
@@ -112,6 +117,9 @@ class ClosureMgr;
 class Closure;
 }
 class Environment;
+namespace run {
+class Running;
+}
 namespace event {
 class BaseEvent;
 class EventMgr;
@@ -143,11 +151,20 @@ class sql_mgr;
 namespace io {
 
 }
+
+class Argv {
+public:
+    std::string Name;           /// 名字
+    std::string ConfigPath;     /// 配置文件路径
+};
+
 class Coord { //tolua_export
+
 friend class worker::Worker;
 friend class Argument;
 friend class coord::Config;
 friend class coord::Environment;
+friend class coord::run::Running;
 friend class coord::BaseRequest;
 friend class coord::BaseResponse;
 friend class coord::Promise;
@@ -161,7 +178,10 @@ friend class coord::ScriptComponent;
 friend class coord::script::Script;
 friend class coord::net::TcpAgent;
 friend class coord::net::TcpClient;
-friend class coord::net::TcpListener;
+friend class coord::net::TcpListener; 
+friend class coord::pipe::PipeListener;
+friend class coord::pipe::PipeClient;
+friend class coord::pipe::PipeAgent;
 friend class coord::http::HttpAgent;
 friend class coord::http::HttpServer;
 friend class coord::http::HttpRequest;
@@ -221,7 +241,10 @@ friend class coord::json::JsonMgr;
 friend class coord::protobuf::my_multi_file_error_collector;
 friend int coord::path::RealPath(const std::string& path, std::string& realPath);
 friend int coord::path::MakeDir(const std::string& path, int mode);
-friend int coord::path::Exists(const std::string& path);
+friend int coord::path::RemoveDir(const std::string& path);
+friend int coord::path::RemoveDirRecursive(const std::string& path);
+friend int coord::path::Unlink(const std::string& path);
+friend bool coord::path::Exists(const std::string& path);
 friend void coord::log::LogFatal(const char *fmt, ...);
 friend void coord::log::LogError(const char *fmt, ...);
 friend void coord::log::LogWarn(const char *fmt, ...);
@@ -349,19 +372,20 @@ public:
 
     /// @入口函数
     /// worker启动入口
-    int Main(const char *configPath);  
-    int asWorker(worker::Worker* master, const char *configPath, int index);
+    int Main(const Argv& argv);  
+    int workerEntryPoint(worker::Worker* master, const std::string& configPath, int index);
     int asCommand(const char *configPath, const char* command);
-    int ActionEnv(const char *configPath);
+    int ActionEnv(const Argv& argv);
     int ActionStart(const char *configPath);
     int ActionStop(const char *configPath);
     int ActionStatus(const char *configPath);
     int ActionRestart(const char *configPath);
-    int beforeTest(const char *configPath); 
+    int beforeTest(const Argv& argv); 
     void loopTest();   
     int afterTest();  
     /// @入口函数
 private:
+    int initLogger();
     int master();
     int slave();
     int Local();
@@ -375,8 +399,6 @@ private:
     uint64_t onGC();        
     int onAwake(); 
     uint64_t onUpdate(); 
-    int readConfig(const char *filePath);
- 
 public:
     coord::Config*          Config;         //tolua_export
     script::Script*         Script;         //tolua_export   
@@ -394,6 +416,7 @@ public:
     worker::Worker*         Worker;         //tolua_export
     std::string             Name;           //tolua_export
     coord::Environment*     Environment;    //tolua_export
+    coord::run::Running*    Running;        
     action::ActionMgr*      Action;         
     closure::ClosureMgr*    Closure;        //tolua_export
     login::LoginSvr*        Login;          //tolua_export
@@ -417,7 +440,6 @@ private:
     bool                isAwake;
     uint64_t            time;
     uint64_t            nowRecord;
-    
 private:
     
 public:

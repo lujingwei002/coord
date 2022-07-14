@@ -44,13 +44,10 @@ public:
     std::string         Proto;              //tolua_export
     /// 节点名字
     std::string         Name;               //tolua_export
-    /// 保存pid文件的目录
-    std::string         Pid;                //tolua_export
     /// 版本
     std::string         Version;            //tolua_export
     /// 短版本
     std::string         ShortVersion;       //tolua_export
-    std::string         ProcDir;
 };//tolua_export
 
 class Config {//tolua_export
@@ -125,7 +122,7 @@ private:
     int gotConfigLineError(const std::string& configPath, int lineNum, char* data, size_t size);
     int urlParse(const char* path, std::string& section, std::string& key);
     int urlParse(const char* data, size_t size, std::string& section, std::string& key);
-    int parse(const char* filePath);
+    int parse(const std::string& path);
 private:
     Coord*                  coord;      
 };//tolua_export

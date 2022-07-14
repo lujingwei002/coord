@@ -12,3 +12,4 @@
 #define ErrorBufferNotEnough    -9
 #define ErrorNoSuchFileOrDirectory -10
 #define ErrorInterpret          -11
+#define ErrorRunning            -12

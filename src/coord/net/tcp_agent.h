@@ -50,15 +50,15 @@ public:
     void recvTcpData();
     void recvTcpClose();
 public:
-    Coord* coord;
-    ITcpAgentHandler* handler;
-    TcpListener* listener;
-    uv_tcp_t handle;
-    int sockfd;
-    int sessionId;
-    std::string remoteAddr;
-    RecvBuffer recvBuffer;  
-    int status;      
+    Coord*              coord;
+    ITcpAgentHandler*   handler;
+    TcpListener*        listener;
+    uv_tcp_t            handle;
+    int                 sockfd;
+    int                 sessionId;
+    std::string         remoteAddr;
+    RecvBuffer          recvBuffer;  
+    int                 status;      
 };//tolua_export
 
 TcpAgent* newTcpAgent(Coord* coord, TcpListener* listen);

@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.5)
 project (coord)
 
 #项目选项
@@ -19,6 +19,7 @@ aux_source_directory (src/proto SRC_LIST)
 aux_source_directory (src/util/os SRC_LIST)
 aux_source_directory (src/util/date SRC_LIST)
 aux_source_directory (src/coord/builtin SRC_LIST)
+aux_source_directory (src/coord/run SRC_LIST)
 aux_source_directory (src/coord/log SRC_LIST)
 aux_source_directory (src/coord/log4cc SRC_LIST)
 aux_source_directory (src/coord/event SRC_LIST)
@@ -49,10 +50,14 @@ aux_source_directory (src/coord/action SRC_LIST)
 aux_source_directory (src/coord/closure SRC_LIST)
 aux_source_directory (src/coord/json SRC_LIST)
 aux_source_directory (src/coord/login SRC_LIST)
+aux_source_directory (src/coord/pipe SRC_LIST)
 aux_source_directory (src/coord SRC_LIST)
 aux_source_directory (src/json11 SRC_LIST)
+aux_source_directory (src/interface-lua SRC_LIST)
 #aux_source_directory (src/lua-cjson SRC_LIST)
-aux_source_directory (src SRC_LIST)
+#aux_source_directory (src/coordx SRC_LIST)
+#aux_source_directory (src/coordx/config SRC_LIST)
+#aux_source_directory (src/coordx/environment SRC_LIST)
 
 #库文件
 find_library(LUA_LIB lua HINTS ${PROJECT_SOURCE_DIR}/lib/)
@@ -82,7 +87,7 @@ target_link_libraries (libcoord ${CCRONEXPR_LIB})
 target_link_libraries (libcoord ${CJSON_LIB})
 
 #coord
-add_executable (coord coord.cc)
+add_executable (coord src/coord.cc)
 target_link_libraries (coord libcoord)
 target_link_libraries (coord ${LUA_LIB})
 target_link_libraries (coord ${TOLUA_LIB})
@@ -101,8 +106,28 @@ target_link_libraries (coord ncurses)
 target_link_libraries (coord readline)
 target_link_libraries (coord pthread)
 
+#coordx
+#add_executable (coordx src/coordx.cc)
+#target_link_libraries (coordx libcoord)
+#target_link_libraries (coordx ${LUA_LIB})
+#target_link_libraries (coordx ${TOLUA_LIB})
+#target_link_libraries (coordx ${HTTP_PARSER_LIB})
+#target_link_libraries (coordx ${PROTOBUF_LIB})
+#target_link_libraries (coordx ${UV_LIB})
+#target_link_libraries (coordx ${HIREDIS_LIB})
+#target_link_libraries (coordx ${MYSQLCLIENT_LIB})
+#target_link_libraries (coordx ${CCRONEXPR_LIB})
+#target_link_libraries (coordx ${CJSON_LIB})
+#target_link_libraries (coordx ssl)
+#target_link_libraries (coordx crypto)
+#target_link_libraries (coordx dl)
+#target_link_libraries (coordx m)
+#target_link_libraries (coordx ncurses)
+#target_link_libraries (coordx readline)
+#target_link_libraries (coordx pthread)
+
 #test
-add_executable (test test.cc)
+add_executable (test src/test.cc)
 target_link_libraries (test libcoord)
 target_link_libraries (test ${LUA_LIB})
 target_link_libraries (test ${TOLUA_LIB})
@@ -124,7 +149,7 @@ target_link_libraries (test readline)
 target_link_libraries (test pthread)
 
 #benchmark
-add_executable (benchmark benchmark.cc)
+add_executable (benchmark src/benchmark.cc)
 target_link_libraries (benchmark libcoord)
 target_link_libraries (benchmark ${LUA_LIB})
 target_link_libraries (benchmark ${TOLUA_LIB})
@@ -148,7 +173,7 @@ target_link_libraries (benchmark pthread)
 
 add_custom_target(tolua
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src
-    COMMAND ${PROJECT_SOURCE_DIR}/bin/tolua++/tolua++ -n coord -o interface.cc interface.pkg
+    COMMAND ${PROJECT_SOURCE_DIR}/bin/tolua++/tolua++ -n coord -o interface-lua/interface.cc interface.pkg
 )
 
 add_custom_target(protoc

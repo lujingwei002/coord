@@ -18,7 +18,10 @@ public:
 
     void SetUp() {
         coord::Coord* coord = coord::NewCoord();
-        int err = coord->beforeTest("test/test.ini");
+        coord::Argv argv;
+        argv.Name = "test";
+        argv.ConfigPath = "test/test.ini";
+        int err = coord->beforeTest(argv);
         ASSERT_EQ(err, 0);
         this->coord = coord;
     }

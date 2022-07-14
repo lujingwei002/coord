@@ -1,6 +1,8 @@
 #include "coord/builtin/platform.h"
 #include "coord/coord.h"
 #include <uv.h>
+#include<sys/file.h> // flock
+#include <fcntl.h> // open
 
 
 namespace coord {
@@ -41,13 +43,71 @@ namespace coord {
             return 0;
         }
 
-        int Exists(const std::string& path) {
+        bool Exists(const std::string& path) {
             uv_fs_t req;
             int err = uv_fs_stat(&coorda->loop, &req, path.c_str(), nullptr);
             if (err) {
+                return false;
+            }
+            return true;
+        }
+
+        int FileLock(const std::string& path) {
+            int fd = open(path.c_str(), O_RDWR|O_CREAT, 0755);
+            if (fd < 0) {
+                return 1;
+            }
+            if (flock(fd, LOCK_EX | LOCK_NB) < 0) {
+                return 2;
+            }
+            return 0;
+        }
+
+        int RemoveDir(const std::string& path) {
+            uv_fs_t req;
+            int err = uv_fs_rmdir(&coorda->loop, &req, path.c_str(), nullptr);
+            if (err) {
+                coorda->CoreLogError("RemoveDir failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
                 return err;
             }
             return 0;
         }
+
+        int Unlink(const std::string& path) {
+            uv_fs_t req;
+            int err = uv_fs_unlink(&coorda->loop, &req, path.c_str(), nullptr);
+            if (err) {
+                coorda->CoreLogError("Unlink failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
+                return err;
+            }
+            return 0;
+        }
+
+        int RemoveDirRecursive(const std::string& path) {
+            uv_fs_t req;
+            uv_dirent_t ent;
+            uv_fs_scandir(&coorda->loop, &req, path.c_str(), 0, NULL);
+            int err;
+            while(uv_fs_scandir_next(&req, &ent) != UV_EOF) {
+                if (ent.type == UV_DIRENT_DIR) {
+                    std::string newPath = PathJoin(path, ent.name);
+                    err = RemoveDirRecursive(newPath);
+                    if (err) {
+                        return err;
+                    }
+                } else {
+                    std::string newPath = PathJoin(path, ent.name);
+                    err = Unlink(newPath);
+                    if (err) {
+                        return err;
+                    }
+                }
+            }
+            return RemoveDir(path);
+        }
+
+
+
+        
     }
 }

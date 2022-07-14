@@ -33,6 +33,7 @@
 #include "coord/worker/worker.h"
 #include "coord/worker/worker_slave.h"
 #include "coord/builtin/environment.h"
+#include "coord/run/running.h"
 #include "coord/action/action_mgr.h"
 #include "coord/closure/init.h"
 #include "coord/login/init.h"
@@ -61,13 +62,27 @@ extern void onDestory(coord::Coord* coord);
 
 namespace coord {
 
-    struct fork_data {
-        char configPath[PATH_MAX];
-        Coord* coord;
-        int exitCode;
+    class fork_data {
+    public:
+        fork_data() {
+            this->coord = nullptr;
+            this->exitCode = 0;
+        }
+    public:
+        Argv    argv;
+        Coord*  coord;
+        int     exitCode;
     };
     std::map<uv_thread_t*, Coord*> Coord::coordDict;
     static std::map<uv_thread_t*, fork_data*> forkDict;
+
+    //处理中断信号
+    static void coord_sigint_handler(uv_signal_t *handle, int signum) {
+        fprintf(stderr, "coord_sigint_handler: %d\n", signum);
+        uv_signal_stop(handle);
+        Coord* coord = (Coord*)handle->data;
+        coord->Destory(0);
+    }
 
     Coord *NewCoord() {
         Coord *coord = new Coord;
@@ -79,28 +94,10 @@ namespace coord {
         fork_data* forkData = (fork_data*)arg;
         coord::Coord* coord = coord::NewCoord();
         forkData->coord = coord;
-        int err = coord->Main(forkData->configPath);
+        int err = coord->Main(forkData->argv);
         forkData->exitCode = err;
         forkData->coord = nullptr;
         delete coord; 
-    }
-
-    //处理中断信号
-    static void coord_sigint_handler(uv_signal_t *handle, int signum) {
-        fprintf(stderr, "coord_sigint_handler: %d\n", signum);
-        uv_signal_stop(handle);
-        Coord* coord = (Coord*)handle->data;
-        coord->Destory(0);
-    }
-
-    static void coord_sigusr1_handler(uv_signal_t *handle, int signum) {
-        fprintf(stderr, "coord_sigusr1_handler: %d\n", signum);
-    }
-
-    static void coord_sigusr2_handler(uv_signal_t *handle, int signum) {
-        fprintf(stderr, "coord_sigusr2_handler: %d\n", signum);
-        Coord* coord = (Coord*)handle->data;
-        coord->Reload();
     }
 
     static int daemon() {
@@ -127,6 +124,38 @@ namespace coord {
     #endif
     }
 
+    static int action_stop(argparse::ArgumentParser& parser) {
+        int err;
+        std::string name = parser.get<std::string>("name");
+        err = coord::Init();
+        if (err) {
+            return err;
+        }
+        Argv argv;
+        argv.Name = name;
+        printf("bbbbbbb2\n");
+        //Coord* coord = NewCoord();
+        //err = coord->Main(argv);
+        coord::Destory(); 
+        return err;
+    }
+
+    static int action_status(argparse::ArgumentParser& parser) {
+        int err;
+        std::string name = parser.get<std::string>("name");
+        err = coord::Init();
+        if (err) {
+            return err;
+        }
+        Argv argv;
+        argv.Name = name;
+        printf("bbbbbbb\n");
+        //Coord* coord = NewCoord();
+        //err = coord->Main(argv);
+        coord::Destory(); 
+        return err;
+    }
+
     static int action_start(argparse::ArgumentParser& parser) {
         int err;
         if (parser.get<bool>("-d")) {
@@ -135,13 +164,17 @@ namespace coord {
                 return err;
             }
         }
+        std::string name = parser.get<std::string>("name");
+        std::string configPath = parser.get<std::string>("--configure");
         err = coord::Init();
         if (err) {
             return err;
         }
-        auto configureFile = parser.get<std::string>("--configure");
+        Argv argv;
+        argv.Name = name;
+        argv.ConfigPath = configPath;
         Coord* coord = NewCoord();
-        err = coord->Main(configureFile.c_str());
+        err = coord->Main(argv);
         coord::Destory(); 
         return err;
     }
@@ -179,11 +212,10 @@ namespace coord {
     
 
     // 运行在主线程中
-    int Fork(const char *configPath) {
+    int Fork(const Argv& argv) {
         uv_thread_t* thread = (uv_thread_t*)malloc(sizeof(uv_thread_t));
-        fork_data* forkData = (fork_data*)malloc(sizeof(fork_data));
-        memset(forkData, 0, sizeof(fork_data));
-        strcpy(forkData->configPath, configPath);
+        fork_data* forkData = new fork_data();
+        forkData->argv = argv;
         forkDict[thread] = forkData;
         int err = uv_thread_create(thread, coord_main_thread, forkData);
         return err;
@@ -198,7 +230,7 @@ namespace coord {
             int exitCode = it.second->exitCode;
             if (exitCode) { 
                 err = exitCode;
-                fprintf(stderr, "%s error:%d\n", forkData->configPath, exitCode);
+                fprintf(stderr, "%s error:%d\n", forkData->argv.ConfigPath.c_str(), exitCode);
             }
             free(forkData);
         }
@@ -232,19 +264,19 @@ namespace coord {
     }
 
     static int action_env(argparse::ArgumentParser& parser) {
-        coord::Init();
-        auto configures = parser.get<std::vector<std::string>>("--configure");
-        for (auto c : configures) {
-            coord::Coord* coorda = coord::NewCoord();
-            int err = coorda->ActionEnv(c.c_str());
-            if(err){
-                fprintf(stderr, "error: %d\n", err);
-                return err;
-            }
-            delete coorda;
+        std::string name = parser.get<std::string>("name");
+        std::string configPath = parser.get<std::string>("--configure");
+        int err = coord::Init();
+        if (err) {
+            return err;
         }
+        Argv argv;
+        argv.Name = name;
+        argv.ConfigPath = configPath;
+        Coord* coord = NewCoord();
+        err = coord->ActionEnv(argv);
         coord::Destory(); 
-        return 0;
+        return err;
     }
 
     int Main(int argc, const char** argv) {
@@ -263,24 +295,37 @@ namespace coord {
 
         argparse::ArgumentParser env_parser("env");
         env_parser.add_parents(program);
+        env_parser.add_argument("name")
+            .default_value(std::string(""))
+            .help("unique app name");
 
         argparse::ArgumentParser start_parser("start");
         start_parser.add_parents(program);
         start_parser.add_description("start program");
         start_parser.add_epilog("xxxxx");
+        start_parser.add_argument("name")
+            .default_value(std::string(""))
+            .help("unique app name");
         start_parser.add_argument("-d", "--daemon")
             .default_value(false)
             .implicit_value(true)
             .help("run daemon");
 
-        argparse::ArgumentParser stop_parser("stop");
-        stop_parser.add_parents(program);
-
         argparse::ArgumentParser restart_parser("restart");
         restart_parser.add_parents(program);
 
         argparse::ArgumentParser status_parser("status");
+        status_parser.add_argument("name")
+            .required()
+            .help("unique app name");
         status_parser.add_parents(program);
+
+        argparse::ArgumentParser stop_parser("stop");
+        stop_parser.add_argument("name")
+            .required()
+            .help("unique app name");
+        stop_parser.add_parents(program);
+
 
         argparse::ArgumentParser help_parser("help");
         help_parser.add_argument("command")
@@ -303,10 +348,12 @@ namespace coord {
         program.add_argument("status")
             .nargs(0)
             .help("status program");
+        program.add_argument("stop")
+            .nargs(0)
+            .help("stop program");
         program.add_argument("help")
             .nargs(0)
             .help("help program");
-
         if (argc < 2) {
             std::cerr << program;
             std::exit(EXIT_FAILURE);
@@ -322,6 +369,8 @@ namespace coord {
         std::map<std::string, argparser_action_func> actions = {
             {"env", action_env},
             {"start", action_start},
+            {"stop", action_stop},
+            {"status", action_status},
             {"help", [&](argparse::ArgumentParser& parser) -> int {
                 std::string command = parser.get<std::string>("command");
                 auto it = parsers.find(command);
@@ -348,23 +397,24 @@ namespace coord {
         }
         argc--;
 
-        auto parser = it->second;
+        auto subParser = it->second;
 
         try {
-            parser->parse_args(argc, argv);
+            subParser->parse_args(argc, argv);
         } catch (const std::runtime_error& err) {
+            printf("afsafsaf\n");
             std::cerr << err.what() << std::endl;
-            std::cerr << *parser;
+            std::cerr << *subParser;
             std::exit(EXIT_FAILURE);
         }
         auto it1 = actions.find(command);
         if (it1 == actions.end()) {
             std::cerr << "action not found" << std::endl;
-            std::cerr << *parser;
+            std::cerr << *subParser;
             std::exit(EXIT_FAILURE);
         }
         auto action = it1->second;
-        return action(*parser);
+        return action(*subParser);
     }
     
     
@@ -390,6 +440,7 @@ namespace coord {
         this->Worker = nullptr;
         this->WorkerSlave = nullptr;
         this->Environment = nullptr;
+        this->Running = nullptr;
         this->Action = nullptr;
         this->Closure = nullptr;
         this->Json = nullptr;
@@ -400,6 +451,22 @@ namespace coord {
         uv_loop_set_data(&this->loop, this);
         this->cacheTimeofday();
         this->ExitCode = EXIT_SUCCESS;
+        coorda = this;
+
+        this->LoggerMgr = log4cc::newLoggerMgr(this);
+        this->Config = new coord::Config(this); 
+        this->Environment = new coord::Environment(this);
+        this->Running = new coord::run::Running(this);
+        this->sceneMgr = newSceneMgr(this);     
+        this->Event = event::newEventMgr(this);        
+        this->Proto = protobuf::newProtobuf(this);
+        this->Timer = timer::newTimerMgr(this);
+        this->sqlMgr = sql::newSQLMgr(this);
+        this->RedisMgr = redis::newRedisMgr(this);
+        this->Script = script::newScript(this); 
+        this->Action = action::newActionMgr(this);
+        this->Closure = closure::newClosureMgr(this);
+        this->Json = json::newJsonMgr(this);
     }
 
     Coord::~Coord() {
@@ -476,6 +543,10 @@ namespace coord {
             delete this->Environment;
             this->Environment = nullptr;
         }  
+        if(this->Running) {
+            delete this->Running;
+            this->Running = nullptr;
+        } 
         if(this->Json) {
             delete this->Json;
             this->Json = nullptr;
@@ -526,19 +597,8 @@ namespace coord {
         if (this->workerRole == worker_role_master) {   
             this->CoreLogMsg("[coord] onAwake at %ld", this->Time()/1000);
         }
-        this->pid = uv_os_getpid();
         if (this->sceneMgr) {
             this->sceneMgr->onAwake();
-        }
-        if (this->workerRole == worker_role_master) {   
-            int err = coord::io::FileLock(this->Config->Basic.Pid.c_str());
-            if (err) {
-                fprintf(stderr, "lock failed: %s\n", this->Config->Basic.Pid.c_str());
-                return err;
-            }  
-            //记录Pid
-            std::ofstream outfile(this->Config->Basic.Pid, std::ios::trunc);
-            outfile << this->pid << std::endl;
         }
         if (this->workerRole == worker_role_master) {     
             int err = ::onAwake(this);
@@ -577,150 +637,60 @@ namespace coord {
             this->Script->onDestory();
         }
         if (this->workerRole == worker_role_master) { 
-            std::ifstream pidFile;
-            pidFile.open(this->Config->Basic.Pid.c_str(), std::ios::in);
-            if(pidFile){
-                uv_pid_t pid;
-                pidFile >> pid;
-                if(this->pid == pid) {
-                    ::remove(this->Config->Basic.Pid.c_str());
-                }
-            }
             ::onDestory(this);
+            this->Running->onDestory();
         }
     }
 
-    int Coord::asCommand(const char *configPath, const char* command) {
-        coorda = this;
-        this->LoggerMgr = log4cc::newLoggerMgr(this);
-        this->Config = new coord::Config(this); 
-        this->ConfigPath = configPath;
-        if (this->readConfig(configPath)) {
-            return EXIT_FAILURE;
-        }
-        {
-            auto logger = this->LoggerMgr->GetDefaultLogger();
-            if (nullptr == logger) return ErrorOutOfMemory;
-            int err = this->LoggerMgr->configDefaultLogger(logger);
-            if (err)return err;
-            this->logger = logger;
-        }
-
-        {
-            auto logger = this->LoggerMgr->GetCoreLogger();
-            if (nullptr == logger) return ErrorOutOfMemory;
-            int err = this->LoggerMgr->configCoreLogger(logger);
-            if (err)return err;
-            this->coreLogger = logger;
-        }
-
-        if (strcmp(command, "stop") == 0) {
-            std::ifstream ifile;
-            ifile.open(this->Config->Basic.Pid.c_str(), std::ios::in);
-            if(!ifile){
-                fprintf(stderr, "pid file not found: %s\n", this->Config->Basic.Pid.c_str());
-                return 1;
-            }
-            uv_pid_t pid;
-            ifile >> pid;
-            kill(pid, SIGINT);
-        } else if (strcmp(command, "status") == 0) {
-
-        } else if (strcmp(command, "reload") == 0) {
-            std::ifstream ifile;
-            ifile.open(this->Config->Basic.Pid.c_str(), std::ios::in);
-            if(!ifile){
-                fprintf(stderr, "pid file not found: %s\n", this->Config->Basic.Pid.c_str());
-                return 1;
-            }
-            uv_pid_t pid;
-            ifile >> pid;
-            kill(pid, SIGUSR2);
-        }
-        return 0;
-    }
     int Coord::ActionStart(const char *configPath) {
         return 0;
     }
+
     int Coord::ActionStop(const char *configPath) {
         return 0;
     }
+
     int Coord::ActionRestart(const char *configPath) {
         return 0;
     }
+
     int Coord::ActionStatus(const char *configPath) {
         return 0;
     }
-    int Coord::ActionEnv(const char *configPath) {
-        coorda = this;
-        this->Config = new coord::Config(this); 
-        this->Environment = new coord::Environment(this);
-        this->ConfigPath = configPath;
-        int err = this->Environment->main(configPath);
+
+    int Coord::ActionEnv(const Argv& argv) {
+        this->ConfigPath = argv.ConfigPath;
+        int err = this->Environment->main(argv);
         if (err) {
             return err;
         }
-        if (this->readConfig(configPath)) {
-            return EXIT_FAILURE;
+        err = this->Config->parse(argv.ConfigPath);
+        if (err) {
+            return err;
         }
         this->Environment->DebugString();
         this->Config->DebugString();
         return 0;
     }
-    int Coord::Main(const char *configPath) {
-        coorda = this;
-        this->LoggerMgr = log4cc::newLoggerMgr(this);
-        this->Config = new coord::Config(this); 
-        this->Environment = new coord::Environment(this);
-        this->sceneMgr = newSceneMgr(this);     
-        this->Event = event::newEventMgr(this);        
-        this->Proto = protobuf::newProtobuf(this);
-        this->Timer = timer::newTimerMgr(this);
-        this->sqlMgr = sql::newSQLMgr(this);
-        this->RedisMgr = redis::newRedisMgr(this);
-        this->Script = script::newScript(this); 
-        this->Action = action::newActionMgr(this);
-        this->Closure = closure::newClosureMgr(this);
-        this->Json = json::newJsonMgr(this);
-        this->ConfigPath = configPath;
-        int err = this->Environment->main(configPath);
+
+    int Coord::Main(const Argv& argv) {
+        this->ConfigPath = argv.ConfigPath;
+        int err = this->Environment->main(argv);
         if (err) {
             return err;
         }
-        if (this->readConfig(configPath)) {
-            return EXIT_FAILURE;
-        }
-        // 切换工作目录
-        err = uv_chdir(this->Environment->WorkingDir.c_str());
+        err = this->Config->parse(argv.ConfigPath);
         if (err) {
             return err;
         }
-        {
-            auto logger = this->LoggerMgr->GetDefaultLogger();
-            if (nullptr == logger) return ErrorOutOfMemory;
-            int err = this->LoggerMgr->configDefaultLogger(logger);
-            if (err)return err;
-            this->logger = logger;
+        err = this->Running->main();
+        if (err) {
+            return err;
         }
-
-        {
-            auto logger = this->LoggerMgr->GetCoreLogger();
-            if (nullptr == logger) return ErrorOutOfMemory;
-            int err = this->LoggerMgr->configCoreLogger(logger);
-            if (err)return err;
-            this->coreLogger = logger;
-        }
-
-        //listen int signal
+        err = this->initLogger();
         uv_signal_init(&this->loop, &this->sigInt);
         this->sigInt.data = this;
         uv_signal_start(&this->sigInt, coord_sigint_handler, SIGINT);
-        uv_signal_init(&this->loop, &this->sigUsr1);
-        this->sigUsr1.data = this;
-        uv_signal_start(&this->sigUsr1, coord_sigusr1_handler, SIGUSR1);
-        uv_signal_init(&this->loop, &this->sigUsr2);
-        this->sigUsr2.data = this;
-        uv_signal_start(&this->sigUsr2, coord_sigusr2_handler, SIGUSR2);
 
         this->Name = this->Config->Basic.Name;
         this->CoreLogDebug("[coord] running, cluster=%s", this->Config->Basic.Registery.c_str());
@@ -802,10 +772,10 @@ namespace coord {
         }
         //启动worker服务
         if(this->Config->Basic.WorkerNum > 0) {
-            std::string workerConfigPath = os::path::DirName(configPath);
+            std::string workerConfigPath = coord::path::DirName(argv.ConfigPath);
             workerConfigPath = workerConfigPath + this->Config->Basic.Worker;
             this->Worker = worker::newWorker(this);
-            int err = this->Worker->start(workerConfigPath.c_str(), this->Config->Basic.WorkerNum);
+            int err = this->Worker->start(workerConfigPath, this->Config->Basic.WorkerNum);
             if (err) {
                 this->CoreLogError("[Coord] worker start failed, error=%d", err);
                 return err;
@@ -881,52 +851,23 @@ namespace coord {
             ->Call();
         }
         uv_run(&this->loop, UV_RUN_DEFAULT);
-        uv_loop_close(&this->loop);
         this->onDestory(this->ExitCode);
+        uv_loop_close(&this->loop);
         return this->ExitCode;
     }
 
-    int Coord::asWorker(worker::Worker* master, const char *configPath, int index) {
-        coorda = this;
-        this->LoggerMgr = log4cc::newLoggerMgr(this);
-        this->Config = new coord::Config(this); 
-        this->Environment = new coord::Environment(this);
-        this->sceneMgr = newSceneMgr(this);     
-        this->Event = event::newEventMgr(this);        
-        this->Proto = protobuf::newProtobuf(this);
-        this->Timer = timer::newTimerMgr(this);
-        this->sqlMgr = sql::newSQLMgr(this);
-        this->RedisMgr = redis::newRedisMgr(this);
-        this->Script = script::newScript(this); 
-        this->Action = action::newActionMgr(this);
-        this->Closure = closure::newClosureMgr(this);  
-        this->Json = json::newJsonMgr(this);
+    int Coord::workerEntryPoint(worker::Worker* master, const std::string& configPath, int index) {
         this->ConfigPath = configPath;
-        int err = this->Environment->main(configPath);
+        int err;
+        // 继承master
+        *this->Environment = *master->coord->Environment;
+        //继承配置
+        this->Config->Basic = master->coord->Config->Basic;
+        err = this->Config->parse(configPath);
         if (err) {
             return err;
         }
-        //继承配置
-        this->Config->Basic = master->coord->Config->Basic;
-        if (this->readConfig(configPath)) {
-            return EXIT_FAILURE;
-        }
-        {
-            auto logger = this->LoggerMgr->GetDefaultLogger();
-            if (nullptr == logger) return ErrorOutOfMemory;
-            int err = this->LoggerMgr->configDefaultLogger(logger);
-            if (err)return err;
-            this->logger = logger;
-        }
-
-        {
-            auto logger = this->LoggerMgr->GetCoreLogger();
-            if (nullptr == logger) return ErrorOutOfMemory;
-            int err = this->LoggerMgr->configCoreLogger(logger);
-            if (err)return err;
-            this->coreLogger = logger;
-        }
-
+        err = this->initLogger();
         this->Name = this->Config->Basic.Name;
         err = this->Proto->main();
         if (err) {
@@ -973,33 +914,12 @@ namespace coord {
         uv_sleep(msec);
     }
 
-    int Coord::beforeTest(const char *configPath) {
-        coorda = this;
-        this->LoggerMgr = log4cc::newLoggerMgr(this);
-        this->Config = new coord::Config(this); 
-        this->Environment = new coord::Environment(this);
-        this->sceneMgr = newSceneMgr(this);     
-        this->Event = event::newEventMgr(this);        
-        this->Proto = protobuf::newProtobuf(this);
-        this->Timer = timer::newTimerMgr(this);
-        this->sqlMgr = sql::newSQLMgr(this);
-        this->RedisMgr = redis::newRedisMgr(this);
-        this->Script = script::newScript(this); 
-        this->Action = action::newActionMgr(this);
-        this->Closure = closure::newClosureMgr(this);
-        this->Json = json::newJsonMgr(this);
-        this->ConfigPath = configPath;
-        int err = this->Environment->main(configPath);
-        if (err) {
-            return err;
-        }
-        if (this->readConfig(configPath)) {
-            return EXIT_FAILURE;
-        }
+    int Coord::initLogger() {
+        int err;
         {
             auto logger = this->LoggerMgr->GetDefaultLogger();
             if (nullptr == logger) return ErrorOutOfMemory;
-            int err = this->LoggerMgr->configDefaultLogger(logger);
+            err = this->LoggerMgr->configDefaultLogger(logger);
             if (err)return err;
             this->logger = logger;
         }
@@ -1007,11 +927,28 @@ namespace coord {
         {
             auto logger = this->LoggerMgr->GetCoreLogger();
             if (nullptr == logger) return ErrorOutOfMemory;
-            int err = this->LoggerMgr->configCoreLogger(logger);
+            err = this->LoggerMgr->configCoreLogger(logger);
             if (err)return err;
             this->coreLogger = logger;
         }
+        return 0;
+    }
 
+    int Coord::beforeTest(const Argv& argv) {
+        this->ConfigPath = argv.ConfigPath;
+        int err = this->Environment->main(argv);
+        if (err) {
+            return err;
+        }
+        err = this->Config->parse(argv.ConfigPath);
+        if (err) {
+            return err;
+        }
+        err = this->Running->main();
+        if (err) {
+            return err;
+        }
+        err = this->initLogger();
         this->workerRole = worker_role_master;
         err = this->Proto->main();
         if (err) {
@@ -1058,10 +995,6 @@ namespace coord {
             this->sceneMgr->onReload();
         }
         return 0;
-    }
-
-    int Coord::readConfig(const char *filePath) {
-        return this->Config->parse(filePath);
     }
 
     Scene* Coord::CreateScene(const char* sceneName) {

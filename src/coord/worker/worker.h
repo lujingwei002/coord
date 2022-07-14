@@ -72,7 +72,7 @@ public:
     int Broadcast(const char* route, Argument& argv);
 public:
     void onDestory();
-    int start(const char* configFile, uint16_t workerNum);
+    int start(const std::string& configPath, uint16_t workerNum);
     void recvWorkerResult(Result* result);
     void sendWorkerPacket(worker_packet* packet, worker::Request* request);
     void sendWorkerPacket(worker_packet* packet);

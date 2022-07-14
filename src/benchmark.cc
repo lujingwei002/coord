@@ -17,14 +17,17 @@ void onDestory(coord::Coord* coord) {
 }
 
 
-int main(int argc, char** argv) {    
+int main(int argc, char** _argv) {    
     coord::Coord* coorda = coord::NewCoord();
-    int err = coorda->beforeTest("test/test.ini");
+    coord::Argv argv;
+    argv.Name = "benchmark";
+    argv.ConfigPath = "test/test.ini";
+    int err = coorda->beforeTest(argv);
     if (err) {
         return err;
     }
-    ::benchmark::Initialize(&argc, argv);                               
-    if (::benchmark::ReportUnrecognizedArguments(argc, argv)) return 1; 
+    ::benchmark::Initialize(&argc, _argv);                               
+    if (::benchmark::ReportUnrecognizedArguments(argc, _argv)) return 1; 
     ::benchmark::RunSpecifiedBenchmarks();   
     err = coorda->afterTest();
     delete coorda;                               

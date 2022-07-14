@@ -17,7 +17,10 @@ public:
 
     void SetUp() {
         auto coord = coord::NewCoord();
-        int err = coord->beforeTest("test/test.ini");
+        coord::Argv argv;
+        argv.Name = "test";
+        argv.ConfigPath = "test/test.ini";
+        int err = coord->beforeTest(argv);
         ASSERT_EQ(err, 0);
         auto cache = coord::cache::newClient(coord);
         auto config = cache->DefaultConfig();
