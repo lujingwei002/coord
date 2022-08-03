@@ -10,25 +10,20 @@ namespace coord {
 namespace cluster {
 CC_IMPLEMENT(Response, "coord::cluster::Response")
 
-Response* newResponse(Coord* coord, Request* request) {
-    Response* response = new Response(coord, request);
-    return response;
-}
 
-Response::Response(Coord* coord, Request* request) : BaseResponse(coord) {
-    this->request = request;
+Response::Response(Coord* coord, cluster_agent* agent, Request* request) : base_response(coord, agent, request) {
 }
 
 Response::~Response() {
-
 }
 
+/*  
 int Response::flush() {
-    BaseResponse::flush();
+    base_response::flush();
     Request* request = this->request;
     cluster_agent* agent = this->request->agent; 
-    return agent->response(request->id, this->code, this->payload);
-}
+    return agent->response(request->Id, this->Code, this->payload);
+}*/
 
 }
 

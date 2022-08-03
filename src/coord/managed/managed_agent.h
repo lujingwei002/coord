@@ -2,66 +2,71 @@
 
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
-#include "coord/net/tcp_agent.h"
+#include "coord/pipe/pipe_agent.h"
+#include "coord/base/base_agent.h"
+#include "proto/coord.pb.h"
+#include "coord/base/base_packet.h"
+#include "coord/base/base_message.h"
 #include <vector>
 #include <iostream>
 #include <map>
-namespace coord {//tolua_export
-    
-class Coord;
 
-namespace protobuf {
-class Reflect;
+namespace coord {
+    class Coord;
+    class base_packet;
+    namespace managed {
+        class managed_server;
+        class Managed;
+        class ManagedResponse;
+        class ManagedRequest;
+        class ManagedNotify;
+    }
+    namespace protobuf {
+        class Reflect;
+    }
 }
 
+namespace coord {//tolua_export
 namespace managed {//tolua_export
 
-class ManagedServer;
-class ManagedRequest;
-class Managed;
-enum ManagedAgentStatus {
-	ManagedAgentStatus_Start = 0,
-	ManagedAgentStatus_Handshake = 1,
-	ManagedAgentStatus_Working = 2,
-	ManagedAgentStatus_Closed = 3,
-};
-
-class ManagedAgent : public Destoryable, public net::ITcpAgentHandler  {//tolua_export
+class ManagedAgent : public base_agent, public pipe::IPipeAgentHandler  {//tolua_export
 CC_CLASS(ManagedAgent);
-public:
-    ManagedAgent(Coord *coord, Managed* managed,  ManagedServer* server, net::TcpAgent* tcpAgent);
+friend managed_server;
+friend ManagedResponse;
+friend coord::pipe::PipeAgent;
+private:
+    ManagedAgent(Coord *coord, Managed* managed,  managed_server* server, pipe::PipeAgent* pipeAgent);
     virtual ~ManagedAgent();
 public:
-
-    int Response(const char* data, size_t len);
-    int Response(const char* fmt, ...);
-public:
-    //关闭链接
-    void close();
-    int send(byte_slice& data);
-    int send(const char* data, size_t len);
-    void recvPacket(const char* data, size_t len);
+    /// 关闭链接
+    void Close();//tolua_export
+private:
     void recvRequest(ManagedRequest* request);
-    void recvTcpNew(net::TcpAgent* agent);
-    //implement net::ITcpAgentHandler begin
-    virtual void recvTcpClose(net::TcpAgent* agent);
-    virtual void recvTcpError(net::TcpAgent* agent);
-    virtual int recvTcpData(net::TcpAgent* agent, char* data, size_t len);
-    //implement net::ITcpAgentHandler end
-public:
-    Coord* coord;
-    ManagedServer* server;
-    Managed* managed;
-    int sessionId;
-    std::string remoteAddr;
-    int status;
-    uint64_t lastHeartbeatTime;
-    std::string name;
-    uint64_t version;
-    net::TcpAgent* tcpAgent;
+    void recvNotify(ManagedNotify* notify);
+    void recvPacket(base_packet* packet);
+    void recvPacketHandShake(base_packet* packet);
+    void recvPacketHandShakeAck(base_packet* packet);
+    void recvPacketData(base_packet* packet);
+    void recvAgentNew(pipe::PipeAgent* pipeAgent);
+protected:
+    virtual int send(const char* data, size_t len);
+    virtual int send(byte_slice& data);
+    //implement pipe::IPipeAgentHandler begin
+    virtual void EvClose(pipe::PipeAgent* agent);
+    virtual void EvError(pipe::PipeAgent* agent);
+    virtual int EvData(pipe::PipeAgent* agent, char* data, size_t len);
+    //implement pipe::IPipeAgentHandler end
+private:
+    managed_server*         server;
+    Managed*                managed;
+    pipe::PipeAgent*        pipeAgent;
+    int                     status;
+    uint64_t                lastHeartbeatTime;
+    base_handshake_request  handshakeRequest;   
+    base_handshake_response handshakeResponse;
+    base_handshake_ack      handshakeAck;
 };//tolua_export
 
-ManagedAgent* newManagedAgent(Coord* coord, Managed* managed,  ManagedServer* server, net::TcpAgent* tcpAgent);
 }//tolua_export
 }//tolua_export
 

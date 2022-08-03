@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/component/component.h"
+#include "coord/base/base_agent.h"
 #include "coord/gate/gate_packet.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/protobuf/init.h"
@@ -29,7 +30,7 @@ class Gate;
 class Packet;
 class GateSession;
 
-class GateAgent : public Destoryable, public net::ITcpAgentHandler, public websocket::IAgentHandler {
+class GateAgent : public base_agent, public net::ITcpAgentHandler, public websocket::IAgentHandler {
 CC_CLASS(GateAgent);  
 public:
     GateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent);
@@ -37,8 +38,8 @@ public:
     virtual ~GateAgent();
 public:
     // 发送接口
-    int send(const char* data, size_t len);
-    int send(byte_slice& data);
+    virtual int send(const char* data, size_t len);
+    virtual int send(byte_slice& data);
     int send(PacketType type, const char* data, size_t len);
     int response(uint64_t id, const char* route, const byte_slice& data);
     int response(uint64_t id, const char* route, const char* data, size_t len);
@@ -70,17 +71,14 @@ public:
     void recvHandShakeAck(Packet* packet);
     void recvData(Packet* packet);
 public:
-    Coord* coord;
-    Gate* gate;
-    GateSession* session;
-    uint64_t sessionId;
-    std::string remoteAddr;
-    std::string secret;
-    bool encrypt;
-    int status;
-    uint64_t lastHeartbeatTime;
-    net::TcpAgent* tcpAgent;
-    websocket::Agent* webSocketAgent;
+    Gate*               gate;
+    GateSession*        session;
+    std::string         secret;
+    bool                encrypt;
+    int                 status;
+    uint64_t            lastHeartbeatTime;
+    net::TcpAgent*      tcpAgent;
+    websocket::Agent*   webSocketAgent;
 };
 
 GateAgent* newGateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent);

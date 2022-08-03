@@ -13,3 +13,10 @@
 #define ErrorNoSuchFileOrDirectory -10
 #define ErrorInterpret          -11
 #define ErrorRunning            -12
+#define ErrorNotConnect         -13
+#define ErrorNotConnected       -13
+#define ErrorNotReady           -14
+#define ErrorIsClosed           -15
+#define ErrorIsClosing          -16
+#define ErrorInvalidStatus      -17
+#define ErrorDestory            -18

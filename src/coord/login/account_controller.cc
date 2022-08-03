@@ -5,6 +5,7 @@
 #include "coord/redis/redis_promise.h"
 #include "coord/redis/redis_reply.h"
 #include "coord/json/json_mgr.h"
+#include "coord/http/http_router.h"
 #include "coord/coord.h"
 
 namespace coord {

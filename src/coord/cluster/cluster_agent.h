@@ -5,6 +5,7 @@
 //#include "protobuf/cluster.pb.h"
 #include "proto/coord.pb.h"
 #include "coord/cluster/cluster_packet.h"
+#include "coord/base/base_agent.h"
 #include "coord/net/tcp_agent.h"
 #include <vector>
 #include <iostream>
@@ -30,7 +31,7 @@ enum cluster_agent_status {
 	cluster_agent_status_closed = 3,
 };
 
-class cluster_agent : public Destoryable, public net::ITcpAgentHandler  {//tolua_export
+class cluster_agent : public base_agent, public net::ITcpAgentHandler  {//tolua_export
 public:
     cluster_agent(Coord *coord, Cluster* cluster,  cluster_server* server, net::TcpAgent* tcpAgent);
     virtual ~cluster_agent();
@@ -55,7 +56,8 @@ public:
     void heartbeat();
     //关闭链接
     void close();
-    int send(byte_slice& data);
+    virtual int send(byte_slice& data);
+    virtual int send(const char* data, size_t len);
     //响应request
     int response(uint64_t id, int code, const char* data, size_t len);
     //响应request
@@ -69,11 +71,8 @@ public:
     virtual int recvTcpData(net::TcpAgent* agent, char* data, size_t len);
     //implement net::ITcpAgentHandler end
 public:
-    Coord*                      coord;
     cluster_server*             server;
     Cluster*                    cluster;
-    int                         sessionId;          //会话id
-    std::string                 remoteAddr;         //会话地址
     int                         status;             //当前状态
     cluster_handshake_request   handshakeRequest;   
     cluster_handshake_response  handshakeResponse;

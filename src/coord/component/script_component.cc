@@ -15,6 +15,7 @@
 #include "coord/worker/worker_request.h"
 #include "coord/worker/worker_result.h"
 #include "coord/worker/worker_notify.h"
+#include "coord/base/base_notify.h"
 #include "coord/builtin/exception.h"
 #include "coord/event/init.h"
 #include "coord/coord.h"
@@ -531,7 +532,7 @@ void ScriptComponent::recvGateSession(gate::GateSession* session, const char* sc
     lua_pop(L, lua_gettop(L));
 }
 
-void ScriptComponent::recvGatePromise(gate::GateSession* session, BaseRequest* request, const char* script, int ref) {
+void ScriptComponent::recvGatePromise(gate::GateSession* session, base_request* request, const char* script, int ref) {
     this->coord->CoreLogDebug("[ScriptComponent] recvGateSession");
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
@@ -568,12 +569,12 @@ void ScriptComponent::recvClusterRequest(cluster::Request* request, const char* 
     lua_pop(L, lua_gettop(L));
 }
 
-void ScriptComponent::recvClusterNotify(cluster::Notify* notify, const char* script, int ref){
+void ScriptComponent::recvClusterNotify(cluster::GateNotify* notify, const char* script, int ref){
     this->coord->CoreLogDebug("[ScriptComponent] recvClusterNotify");
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
     tolua_pushusertype(L, this, "coord::ScriptComponent");
-    tolua_pushusertype(L, notify, "coord::cluster::Notify");
+    tolua_pushusertype(L, notify, "coord::cluster::GateNotify");
     if (lua_pcall(L, 2, 0, 0) != 0) {
         this->coord->CoreLogError("[ScriptComponent] %s.%s failed, error=%s", this->scriptName, script, lua_tostring(L, -1));
         const char* error = lua_tostring(L, -1); 
@@ -632,7 +633,60 @@ void ScriptComponent::recvWorkerNotify(worker::Notify* notify, const char* scrip
     lua_pop(L, lua_gettop(L));
 }
 
-void ScriptComponent::recvWorkerResult(worker::Result* result, BaseRequest* request, const char* script, int ref){
+void ScriptComponent::recvRequest(base_request* request, const char* script, int ref){
+    this->coord->CoreLogDebug("[ScriptComponent] recvResult, script=%s, ref=%d", script, ref);
+    lua_State* L = this->GetLuaState(); 
+    lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
+    tolua_pushusertype(L, this, "coord::ScriptComponent");
+    tolua_pushusertype(L, request, request->TypeName());
+    if (lua_pcall(L, 2, 0, 0) != 0) {
+        this->coord->CoreLogError("[ScriptComponent] recvWorkerRequest %s %s failed, error=%s", this->scriptName, script, lua_tostring(L, -1));
+        const char* error = lua_tostring(L, -1); 
+        lua_pop(L, lua_gettop(L));
+        throw ScriptException(error);
+        return;
+    }
+    lua_pop(L, lua_gettop(L));
+}
+
+void ScriptComponent::recvNotify(base_notify* notify, const char* script, int ref){
+    this->coord->CoreLogDebug("[ScriptComponent] recvNotify, script=%s, ref=%d", script, ref);
+    lua_State* L = this->GetLuaState(); 
+    lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
+    tolua_pushusertype(L, this, "coord::ScriptComponent");
+    tolua_pushusertype(L, notify, notify->TypeName());
+    if (lua_pcall(L, 2, 0, 0) != 0) {
+        this->coord->CoreLogError("[ScriptComponent] %s.%s failed, error=%s", this->scriptName, script, lua_tostring(L, -1));
+        const char* error = lua_tostring(L, -1); 
+        lua_pop(L, lua_gettop(L));
+        throw ScriptException(error);
+        return;
+    }
+    lua_pop(L, lua_gettop(L));
+}
+
+void ScriptComponent::recvResult(base_result* result, base_request* request, const char* script, int ref){
+    this->coord->CoreLogDebug("[ScriptComponent] recvResult script=%s, ref=%d", script, ref);
+    lua_State* L = this->GetLuaState(); 
+    lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
+    tolua_pushusertype(L, this, "coord::ScriptComponent");
+    tolua_pushusertype(L, result, result->TypeName());
+    if (request) {
+        tolua_pushusertype(L, request, request->TypeName());
+    } else {
+        lua_pushnil(L);
+    }
+    if (lua_pcall(L, 3, 0, 0) != 0) {
+        this->coord->CoreLogError("[ScriptComponent] %s.%s failed, error=%s", this->scriptName, script, lua_tostring(L, -1));
+        const char* error = lua_tostring(L, -1); 
+        lua_pop(L, lua_gettop(L));
+        throw ScriptException(error);
+        return;
+    }
+    lua_pop(L, lua_gettop(L));
+}
+
+void ScriptComponent::recvWorkerResult(worker::Result* result, base_request* request, const char* script, int ref){
     this->coord->CoreLogDebug("[ScriptComponent] recvWorkerResult");
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);

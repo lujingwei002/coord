@@ -138,25 +138,6 @@ int Scene::create(const char* sceneName) {
     return 0;
 }
 
-int Scene::Destory() {
-    //处理节点
-    std::vector<Object*> objectArr;
-    for (auto object : this->objectArr){
-        objectArr.push_back(object);
-    } 
-    for (auto object : objectArr){
-        this->coord->Destory(object);
-    } 
-
-
-    
-
-    this->onDestory();
-    // 删除自身
-    delete this;
-    return 0;
-}
-
 void Scene::onDestory() {
     //处理节点
     for (auto it = this->objectArr.rbegin(); it < this->objectArr.rend(); ++it){

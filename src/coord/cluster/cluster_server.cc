@@ -24,7 +24,7 @@ cluster_server::~cluster_server() {
         delete this->listener;
         this->listener = nullptr;
     }
-     for(auto it = this->agentDict.begin(); it != this->agentDict.end();) {
+    for(auto it = this->agentDict.begin(); it != this->agentDict.end();) {
         cluster_agent* agent = it->second;
         this->coord->Destory(agent);
         ++it;
@@ -50,13 +50,13 @@ void cluster_server::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAg
     this->coord->CoreLogDebug("[cluster_server] recvTcpNew sessionId=%d", sessionId);
     tcpAgent->SetRecvBuffer(this->cluster->config.RecvBuffer);
     cluster_agent *agent = newClusterAgent(this->coord, this->cluster, this, tcpAgent);
-    agent->sessionId = sessionId;
-    agent->remoteAddr = tcpAgent->remoteAddr;
+    agent->SessionId = sessionId;
+    agent->RemoteAddr = tcpAgent->remoteAddr;
     this->agentDict[sessionId] = agent;
 }
 
 void cluster_server::recvTcpClose(cluster_agent* agent){
-    int sessionId = agent->sessionId;
+    int sessionId = agent->SessionId;
     this->coord->CoreLogDebug("[cluster_server] recvTcpClose sessionId=%d", sessionId);
     auto it = this->agentDict.find(sessionId);
     if(it == this->agentDict.end()){

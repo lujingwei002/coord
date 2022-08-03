@@ -4,12 +4,38 @@
 #include "coord/builtin/object_pool.h"
 
 namespace coord {//tolua_export
+
+class Reflectable {
+public:
+    virtual const char* TypeName() const = 0;
+};
+
 class Type {//tolua_export
 public:
     Type(const char* name);
     char name[64];
 };//tolua_export
 }//tolua_export
+
+#define CC_TEMPLATE(ClassName) \
+    public:\
+    static thread_local ::coord::object_pool<ClassName>* allocator;\
+    static void MemTrace() {\
+        ClassName::allocator->trace();\
+    }\
+    void operator delete(void *ptr) {\
+        ClassName::allocator->free((ClassName*)ptr);\
+    }\
+    void* operator new(size_t size) {\
+        return ClassName::allocator->alloc();\
+    }\
+    virtual ::coord::Type* GetType() {\
+        return ClassName::_type;\
+    }\
+    virtual const char* TypeName() const {\
+        return ClassName::_type->name;\
+    }\
+    static ::coord::Type* _type;
 
 #define CC_CLASS(ClassName) \
     public:\

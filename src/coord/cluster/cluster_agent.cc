@@ -18,8 +18,7 @@ cluster_agent* newClusterAgent(Coord* coord, Cluster* cluster,  cluster_server* 
     return self;
 }
 
-cluster_agent::cluster_agent(Coord *coord, Cluster* cluster,  cluster_server* server, net::TcpAgent* tcpAgent) {
-    this->coord = coord;
+cluster_agent::cluster_agent(Coord *coord, Cluster* cluster,  cluster_server* server, net::TcpAgent* tcpAgent) : base_agent(coord) {
     this->cluster = cluster;
     this->server = server;
     this->tcpAgent = tcpAgent;
@@ -69,8 +68,8 @@ void cluster_agent::recvData(cluster_packet* packet) {
     switch(message.type){
         case message_type_request: {
             Request* request = newRequest(this->coord, this);
-            request->id = message.id;
-            request->route = message.route;
+            request->Id = message.id;
+            request->Route = message.route;
             request->payload.Resize(0);
             coord::Append(request->payload, message.data, message.length);
             this->cluster->recvClusterRequest(request);
@@ -78,8 +77,8 @@ void cluster_agent::recvData(cluster_packet* packet) {
             break;
         }
         case message_type_notify: {
-            Notify* notify = newNotify(this->coord, this);
-            notify->route = message.route;
+            GateNotify* notify = newNotify(this->coord, this);
+            notify->Route = message.route;
             notify->payload.Resize(0);
             coord::Append(notify->payload, message.data, message.length);
             this->cluster->recvClusterNotify(notify);
@@ -182,7 +181,7 @@ int cluster_agent::response(uint64_t id, int code, byte_slice& data) {
 }
 
 int cluster_agent::response(uint64_t id, int code, const char* data, size_t len) {
-    this->coord->CoreLogDebug("[cluster_agent] Response, sessionId=%d, id=%d, len=%d", this->sessionId, id, len);
+    this->coord->CoreLogDebug("[cluster_agent] Response, sessionId=%d, id=%d, len=%d", this->SessionId, id, len);
     byte_slice packet;
     //packet header
     byte_slice header = packet.Slice(packet.Len(), packet.Len());
@@ -217,7 +216,7 @@ int cluster_agent::response(uint64_t id, int code, protobuf::Reflect& proto) {
 }
 
 int cluster_agent::response(uint64_t id, int code, ::google::protobuf::Message* proto) {
-    this->coord->CoreLogError("[cluster_agent] Response, sessionId=%d, id=%d", this->sessionId, id);
+    this->coord->CoreLogError("[cluster_agent] Response, sessionId=%d, id=%d", this->SessionId, id);
     byte_slice packet;
     //packet header
     byte_slice header = packet.Slice(packet.Len(), packet.Len());
@@ -251,16 +250,16 @@ int cluster_agent::response(uint64_t id, int code, ::google::protobuf::Message* 
 }
 
 void cluster_agent::recvTcpNew(net::TcpAgent* tcpAgent){
-    this->coord->CoreLogDebug("[cluster_agent] recvTcpNew sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[cluster_agent] recvTcpNew sessionId=%d", this->SessionId);
 }
 
 void cluster_agent::recvTcpClose(net::TcpAgent* agent){
-    this->coord->CoreLogDebug("[cluster_agent] recvTcpClose sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[cluster_agent] recvTcpClose sessionId=%d", this->SessionId);
     this->server->recvTcpClose(this);
 }
 
 void cluster_agent::recvTcpError(net::TcpAgent* agent){
-    this->coord->CoreLogDebug("[cluster_agent] recvTcpError sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[cluster_agent] recvTcpError sessionId=%d", this->SessionId);
 }
 
 int cluster_agent::recvTcpData(net::TcpAgent* agent, char* data, size_t len){
@@ -290,6 +289,9 @@ int cluster_agent::send(byte_slice& data) {
     return this->tcpAgent->Send(data);
 }
 
+int cluster_agent::send(const char* data, size_t len) {
+    return -1;
+}
 
 }
 }        

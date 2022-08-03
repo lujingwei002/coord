@@ -19,14 +19,14 @@ namespace coord {//tolua_export
 class Coord;
 class ScriptComponent;
 class RequestPipeline;
-class BaseRequest;
+class base_request;
 namespace gate {//tolua_export
 
 
 class GateSession;
 
-typedef std::function<void (GateSession* session, BaseRequest* request)> GatePromise_Resolve; 
-typedef std::function<void (GateSession* session, BaseRequest* request)> GatePromise_Reject; 
+typedef std::function<void (GateSession* session, base_request* request)> GatePromise_Resolve; 
+typedef std::function<void (GateSession* session, base_request* request)> GatePromise_Reject; 
 
 class GatePromise : public Destoryable { //tolua_export
 CC_CLASS(GatePromise);
@@ -43,7 +43,7 @@ public:
 
     GatePromise* Then(ScriptComponent* object, int ref);
     GatePromise* Else(ScriptComponent* object, int ref);
-    GatePromise* Using(BaseRequest* request);//tolua_export
+    GatePromise* Using(base_request* request);//tolua_export
 public:
     GatePromise_Resolve resolveFunc;
     GatePromise_Reject  rejectFunc;
@@ -53,7 +53,7 @@ public:
     uint64_t            reqTime; 
     std::string         route;
     //RequestPipeline*    pipeline;
-    BaseRequest*        requestUsing;
+    base_request*        requestUsing;
 };//tolua_export
 
 GatePromise* newGatePromise(Coord* coord);

@@ -32,8 +32,7 @@ GateAgent* newGateAgent(Coord* coord, Gate* gate, websocket::Agent* webSocketAge
     return gateAgent;
 }
 
-GateAgent::GateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent) {
-    this->coord = coord;
+GateAgent::GateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent) : base_agent(coord){
     this->gate = gate;
     this->status = GateAgentStatus_Start;
     this->session = NULL;
@@ -43,7 +42,7 @@ GateAgent::GateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent) {
     //this->coord->DontDestory(this->tcpAgent);
 }
 
-GateAgent::GateAgent(Coord* coord, Gate* gate, websocket::Agent* webSocketAgent) {
+GateAgent::GateAgent(Coord* coord, Gate* gate, websocket::Agent* webSocketAgent) : base_agent(coord) {
     this->coord = coord;
     this->gate = gate;
     this->status = GateAgentStatus_Start;
@@ -139,7 +138,7 @@ void GateAgent::recvHandShake(Packet* packet) {
     } 
     nlohmann::json response = {
         {"code", 200},
-        {"sys", {{"heartbeat", this->gate->config.Heartbeat},{"session", this->sessionId}}}
+        {"sys", {{"heartbeat", this->gate->config.Heartbeat},{"session", this->SessionId}}}
     };
     auto data = response.dump();
     this->send(PacketType_Handshake, data.c_str(), data.length());
@@ -186,8 +185,8 @@ void GateAgent::recvData(Packet* packet) {
         case MessageType_Request: {
             GateRequest* request = newGateRequest(this->coord, this);
             //this->coord->pushRequestPipeline(request);
-            request->id = message.id;
-            request->route = message.route;
+            request->Id = message.id;
+            request->Route = message.route;
             request->payload.Resize(0);
             coord::Append(request->payload, message.data, message.length);
             this->gate->recvGateRequest(this->session, request);
@@ -197,7 +196,7 @@ void GateAgent::recvData(Packet* packet) {
         }
         case MessageType_Notify: {
             GateNotify* notify = newGateNotify(this->coord, this);
-            notify->route = message.route;
+            notify->Route = message.route;
             notify->payload.Resize(0);
             coord::Append(notify->payload, message.data, message.length);
             this->gate->recvGateNotify(this->session, notify);
@@ -249,7 +248,7 @@ int GateAgent::push(const char* route, protobuf::Reflect* proto){
 }
 
 int GateAgent::push(const char* route, google::protobuf::Message* proto){
-    this->coord->CoreLogDebug("[GateAgent] Push, sessionId=%d, route=%s, proto=%s", this->sessionId, route, proto->DebugString().c_str());
+    this->coord->CoreLogDebug("[GateAgent] Push, sessionId=%d, route=%s, proto=%s", this->SessionId, route, proto->DebugString().c_str());
     byte_slice response;
     //packet header
     byte_slice packetHeader = response.Slice(response.Len(), response.Len());
@@ -292,7 +291,7 @@ int GateAgent::response(uint64_t id, const char* route, protobuf::Reflect* proto
 }
 
 int GateAgent::response(uint64_t id, const char* route, ::google::protobuf::Message* proto) {
-    this->coord->CoreLogDebug("[GateAgent] Response, sessionId=%d, id=%d, route=%s, proto=%s", this->sessionId, id, route, proto->DebugString().c_str());
+    this->coord->CoreLogDebug("[GateAgent] Response, sessionId=%d, id=%d, route=%s, proto=%s", this->SessionId, id, route, proto->DebugString().c_str());
     byte_slice response;
     //packet header
     byte_slice packetHeader = response.Slice(response.Len(), response.Len());
@@ -335,7 +334,7 @@ int GateAgent::response(uint64_t id, const char* route, const byte_slice& data) 
 }
 
 int GateAgent::response(uint64_t id, const char* route, const char* data, size_t len) {
-    this->coord->CoreLogDebug("[GateAgent] Response, sessionId=%d, id=%d, route=%s", this->sessionId, id, route);
+    this->coord->CoreLogDebug("[GateAgent] Response, sessionId=%d, id=%d, route=%s", this->SessionId, id, route);
     byte_slice response;
     //packet header
     byte_slice packetHeader = response.Slice(response.Len(), response.Len());
@@ -397,12 +396,12 @@ void GateAgent::recvTcpNew(net::TcpAgent* agent) {
 }
 
 void GateAgent::recvTcpClose(net::TcpAgent* agent){
-    this->coord->CoreLogDebug("[GateAgent] recvTcpClose, sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[GateAgent] recvTcpClose, sessionId=%d", this->SessionId);
     this->recvClose();
 }
 
 void GateAgent::recvTcpError(net::TcpAgent* agent){
-    this->coord->CoreLogDebug("[Gate] recvTcpError, sessionId=%d", sessionId);
+    this->coord->CoreLogDebug("[Gate] recvTcpError, sessionId=%d", this->SessionId);
 }
 
 int GateAgent::recvTcpData(net::TcpAgent* agent, char* data, size_t len){
@@ -410,7 +409,7 @@ int GateAgent::recvTcpData(net::TcpAgent* agent, char* data, size_t len){
 }
 
 void GateAgent::recvWebSocketClose(websocket::Agent* agent) {
-    this->coord->CoreLogDebug("[GateAgent] recvWebSocketClose, sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[GateAgent] recvWebSocketClose, sessionId=%d", this->SessionId);
     this->recvClose();
 }
 

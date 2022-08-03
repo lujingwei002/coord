@@ -93,9 +93,9 @@ gate_router_handler* GateRouter::searchHandler(const char* event, const char* ro
 
 void GateRouter::recvGateNotify(GateSession* session, GateNotify* notify) {
     this->coord->CoreLogDebug("[GateRouter] recvGateNotify");
-    gate_router_handler* handler = this->searchHandler("NOTIFY", notify->route.c_str());
+    gate_router_handler* handler = this->searchHandler("NOTIFY", notify->Route.c_str());
     if(handler == NULL){
-        this->coord->CoreLogError("[GateRouter] recvGateNotify failed, error='router not found', route=%s", notify->route.c_str());
+        this->coord->CoreLogError("[GateRouter] recvGateNotify failed, error='router not found', route=%s", notify->Route.c_str());
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -110,9 +110,9 @@ void GateRouter::recvGateRequest(GateSession* session, GateRequest* request) {
         return;
     }
     this->coord->CoreLogDebug("[GateRouter] recvGateRequest");
-    gate_router_handler* handler = this->searchHandler("REQUEST", request->route.c_str());
+    gate_router_handler* handler = this->searchHandler("REQUEST", request->Route.c_str());
     if(handler == NULL){
-        this->coord->CoreLogError("[GateRouter] recvGateRequest failed, error='router not found', route=%s", request->route.c_str());
+        this->coord->CoreLogError("[GateRouter] recvGateRequest failed, error='router not found', route=%s", request->Route.c_str());
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -123,9 +123,9 @@ void GateRouter::recvGateRequest(GateSession* session, GateRequest* request) {
 
 void GateRouter::recvGateAuth(GateSession* session, GateRequest* request) {
     this->coord->CoreLogDebug("[GateRouter] recvGateAuth");
-    gate_router_handler* handler = this->searchHandler("AUTH", request->route.c_str());
+    gate_router_handler* handler = this->searchHandler("AUTH", request->Route.c_str());
     if(handler == NULL){
-        this->coord->CoreLogError("[GateRouter] recvGateAuth failed, error='router not found', route=%s", request->route.c_str());
+        this->coord->CoreLogError("[GateRouter] recvGateAuth failed, error='router not found', route=%s", request->Route.c_str());
         return;
     }
     uint64_t t1 = this->coord->NanoTime();

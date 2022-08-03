@@ -4,7 +4,7 @@
 #include "coord/gate/gate_cluster.h"
 #include "coord/component/script_component.h"
 #include "coord/builtin/exception.h"
-#include "coord/builtin/base_request.h"
+#include "coord/base/base_request.h"
 namespace coord {
 
 namespace gate {
@@ -50,7 +50,7 @@ GatePromise* GatePromise::Else(GatePromise_Reject rejectFunc){
     return this;
 }
 
-GatePromise* GatePromise::Using(BaseRequest* request) {
+GatePromise* GatePromise::Using(base_request* request) {
     if(this->requestUsing) {
         this->coord->Destory(this->requestUsing);
         this->requestUsing = NULL;

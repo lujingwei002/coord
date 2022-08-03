@@ -424,4 +424,12 @@ int Argument::Unpack(lua_State* L) {
     return this->Count();
 }
 
+void Argument::DebugPrint() {
+    for (int i = 0; i < this->Count(); i++) {
+        if (this->IsString(i)) {
+            this->coord->LogDebug("%d) %s", i + 1, this->GetString(i));
+        }
+    }
+}
+
 }

@@ -28,10 +28,8 @@ enum ArgumentType {
 class argument_item {
 public:
     argument_item(Coord* coord) : coord(coord), type(0), proto(coord), table(coord) {
-
     }
     ~argument_item() {
-
     }
 public:
     Coord*              coord;
@@ -82,6 +80,7 @@ public:
      *返回：参数个数
      */
     int Unpack(lua_State* L);                       //tolua_export
+    void DebugPrint();
 public:
     /*
      *将参数打包进argument中

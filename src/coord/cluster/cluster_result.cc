@@ -16,7 +16,7 @@ Result* newResult(Coord* coord, cluster_client* client) {
     return result;
 }
 
-Result::Result(Coord* coord, cluster_client* client) : BaseResult(coord) {
+Result::Result(Coord* coord, cluster_client* client) : base_result(coord) {
     this->client = client;
     this->coord->DontDestory(this->client);
 }
@@ -27,8 +27,8 @@ Result::~Result() {
 }
 
 void Result::onDestory() {
-    uint64_t duration = uv_hrtime() - this->reqTime;
-    this->coord->LogDebug("|%10s|%20s | RESULT | %3d |\t\"%s\"", date::FormatNano(duration), this->client->name.c_str(), this->Code, this->route.c_str());
+    uint64_t duration = uv_hrtime() - this->ReqTime;
+    this->coord->LogDebug("|%10s|%20s | RESULT | %3d |\t\"%s\"", date::FormatNano(duration), this->client->name.c_str(), this->Code, this->Route.c_str());
 }
 
 

@@ -1,7 +1,6 @@
 #include "coord/coord.h"
 #include "coord/scene/scene_mgr.h"
 #include "coord/builtin/destoryable.h"
-#include "coord/builtin/request_pipeline.h"
 #include "coord/event/init.h"
 #include "coord/component/script_component.h"
 #include "coord/object/object.h"
@@ -467,6 +466,7 @@ namespace coord {
         this->Action = action::newActionMgr(this);
         this->Closure = closure::newClosureMgr(this);
         this->Json = json::newJsonMgr(this);
+        this->Managed = new managed::Managed(this);
     }
 
     Coord::~Coord() {
@@ -698,6 +698,11 @@ namespace coord {
         if (err) {
             return err;
         }
+        // managed
+        err = this->Managed->main();
+        if (err) {
+            return err;
+        } 
         //启动web服务
         if(this->Config->SectionExist("WEB")) {
             this->HttpServer = http::newHttpServer(this);
@@ -761,6 +766,7 @@ namespace coord {
         }
          ;
         //启动managed服务
+        /*
         if(this->Config->SectionExist("MANAGED")) {
             this->Managed = managed::newManaged(this);
             managed::ManagedConfig* config = this->Managed->DefaultConfig();
@@ -769,7 +775,7 @@ namespace coord {
             if (err) {
                 return err;
             } 
-        }
+        }*/
         //启动worker服务
         if(this->Config->Basic.WorkerNum > 0) {
             std::string workerConfigPath = coord::path::DirName(argv.ConfigPath);
@@ -949,11 +955,19 @@ namespace coord {
             return err;
         }
         err = this->initLogger();
+        uv_signal_init(&this->loop, &this->sigInt);
+        this->sigInt.data = this;
+        uv_signal_start(&this->sigInt, coord_sigint_handler, SIGINT);
         this->workerRole = worker_role_master;
         err = this->Proto->main();
         if (err) {
             return err;
         }
+        // managed
+        err = this->Managed->main();
+        if (err) {
+            return err;
+        } 
         //加载脚本 
         if (this->Config->Basic.Main.length() > 0) {              
             //加载脚本
@@ -1437,8 +1451,7 @@ namespace coord {
         if(object->_ref != 0){ //避免循环删除，要用!=0判断。 a删除b, b删除a, 导致一直循环
             return;
         }
-        object->onDestory();
-        delete object;
+        object->Destory();
     }
 
     void Coord::Destory(net::TcpClient* object) {

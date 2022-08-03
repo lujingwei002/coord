@@ -22,7 +22,7 @@ class cluster_client;
 class cluster_server;
 class cluster_node_config;
 class cluster_node;
-class Notify;
+class GateNotify;
 class Request;
 class ClusterRouter;
 class Promise;
@@ -57,7 +57,7 @@ public:
     //接收到节点过期的通知
     void recvNodeExpire(cluster_node* node);
     void recvClientClose(cluster_client* client);
-    void recvClusterNotify(cluster::Notify* notify);
+    void recvClusterNotify(cluster::GateNotify* notify);
     void recvClusterRequest(cluster::Request* request);
 public:
     std::string                             Name;       //tolua_export 节点名字

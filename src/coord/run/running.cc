@@ -11,7 +11,6 @@
 #include <ctype.h>
 #include "coord/builtin/string.h"
 #include "coord/builtin/error.h"
-#include "coord/run/managed_pipe_server.h"
 
 namespace coord {
 namespace run {
@@ -19,14 +18,8 @@ static const char* TAG = "Running";
 
 Running::Running(Coord* coord) {
     this->coord = coord;
-    this->server = nullptr;
 }
 Running::~Running() { 
-
-    if(nullptr == this->server) {
-        delete this->server;
-        this->server = nullptr;
-    }
 }
 
 int Running::main() {
@@ -36,7 +29,6 @@ int Running::main() {
     if (err) {
         return err;
     }
-    this->Pid = uv_os_getpid();
     if (!coord::path::Exists(this->coord->Environment->ProcDir)){
         return ErrorNoSuchFileOrDirectory;
     }
@@ -53,13 +45,7 @@ int Running::main() {
     }
     //记录Pid
     std::ofstream outfile(this->coord->Environment->PidPath, std::ios::trunc);
-    outfile << this->Pid << std::endl;
-    //开启管道
-    this->server = newManagedPipeServer(this->coord, this);
-    err = this->server->start();
-    if (err) {
-        return err;
-    }
+    outfile << this->coord->Environment->Pid << std::endl;
     return 0;
 }
 

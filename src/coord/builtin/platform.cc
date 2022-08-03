@@ -28,6 +28,7 @@ namespace coord {
             uv_fs_t req;
             int err = uv_fs_realpath(&coorda->loop, &req, path.c_str(), nullptr);
             if (err) {
+                coorda->CoreLogError("RealPath failed, path=%s, error=%s", path.c_str(), uv_strerror(err));
                 return err;
             }
             realPath.assign((char*)req.ptr);

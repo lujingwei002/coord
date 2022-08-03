@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/base_response.h"
+#include "coord/base/base_response.h"
 
 namespace coord {//tolua_export
 class Coord;
@@ -13,7 +13,7 @@ namespace worker {//tolua_export
 class Worker;
 class Request;
 
-class Response : public BaseResponse { //tolua_export
+class Response : public base_response { //tolua_export
 CC_CLASS(Response);
 public:
     Response(Coord* coord, Request* request);

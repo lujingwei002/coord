@@ -14,7 +14,6 @@
 #include "coord/websocket/websocket_frame.h"
 #include "coord/protobuf/init.h"
 #include "coord/builtin/exception.h"
-#include "coord/builtin/request_pipeline.h"
 #include <fstream>
 #include <iostream>
 namespace coord {
@@ -167,20 +166,20 @@ void Gate::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAgent) {
     this->coord->CoreLogDebug("[Gate] recvTcpNew, sessionId=%ld, remoteAddr=%s", sessionId, tcpAgent->remoteAddr.c_str());
     tcpAgent->SetRecvBuffer(this->config.RecvBuffer);
     GateAgent *agent = newGateAgent(this->coord, this, tcpAgent);
-    agent->sessionId = sessionId;
-    agent->remoteAddr = tcpAgent->remoteAddr;
+    agent->SessionId = sessionId;
+    agent->RemoteAddr = tcpAgent->remoteAddr;
     this->agentDict[sessionId] = agent;
 }
 
 void Gate::recvAgentClose(GateAgent* agent){
-    this->coord->CoreLogDebug("[Gate] recvAgentClose, sessionId=%ld, ref=%d", agent->sessionId, agent->_ref);
-    auto it = this->agentDict.find(agent->sessionId);
+    this->coord->CoreLogDebug("[Gate] recvAgentClose, sessionId=%ld, ref=%d", agent->SessionId, agent->_ref);
+    auto it = this->agentDict.find(agent->SessionId);
     if(it == this->agentDict.end()){
-        this->coord->CoreLogDebug("[Gate] recvAgentClose failed, error='agent not found', sessionId=%ld", agent->sessionId);
+        this->coord->CoreLogDebug("[Gate] recvAgentClose failed, error='agent not found', sessionId=%ld", agent->SessionId);
         return;
     }
     uint64_t userId = agent->session->UserId;
-    uint64_t sessionId = agent->sessionId;    
+    uint64_t sessionId = agent->SessionId;    
     if (this->cluster && userId) {
         this->cluster->unregisterAgent(sessionId, userId);
     } else {
@@ -193,8 +192,8 @@ void Gate::recvWebSocketNew(websocket::Agent* webSocketAgent){
     uint64_t sessionId = webSocketAgent->sessionId;
     this->coord->CoreLogDebug("[Gate] recvWebSocketNew, sessionId=%ld, remoteAddr=%s", sessionId, webSocketAgent->remoteAddr.c_str());
     GateAgent *agent = newGateAgent(this->coord, this, webSocketAgent);
-    agent->sessionId = sessionId;
-    agent->remoteAddr = webSocketAgent->remoteAddr;
+    agent->SessionId = sessionId;
+    agent->RemoteAddr = webSocketAgent->remoteAddr;
     this->agentDict[sessionId] = agent;
 }
 
@@ -268,7 +267,7 @@ GatePromise* Gate::login(GateAgent* agent, uint64_t userId) {
     if (this->cluster == NULL) {
         return NULL;
     }
-    uint64_t sessionId = agent->sessionId;
+    uint64_t sessionId = agent->SessionId;
     int err = this->cluster->registerAgent(sessionId, userId);
     if (err) {
         return NULL;

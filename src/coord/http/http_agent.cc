@@ -8,18 +8,13 @@ namespace coord {
 namespace http {
 CC_IMPLEMENT(HttpAgent, "coord::http::HttpAgent")
 
-HttpAgent* HttpAgent::New(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) {
-    HttpAgent* agent = new HttpAgent(coord, server, tcpAgent);
-    return agent;
-}
-
-HttpAgent::HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) {
+HttpAgent::HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) : base_agent(coord) {
     this->coord = coord;
     this->server = server;
     this->tcpAgent = tcpAgent;
-    this->request = NULL;
+    this->request = nullptr;
     this->isUpgrade = false;
-    this->handler = NULL;
+    this->handler = nullptr;
     this->tcpAgent->SetHandler(this);
     this->coord->DontDestory(this->tcpAgent);
     //开启https 
@@ -30,20 +25,20 @@ HttpAgent::HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) 
         SSL_set_bio(this->ssl, this->read_bio, this->write_bio);
         SSL_set_accept_state(this->ssl);
     } else {
-        this->ssl = NULL;
-        this->read_bio = NULL;
-        this->write_bio = NULL;
+        this->ssl = nullptr;
+        this->read_bio = nullptr;
+        this->write_bio = nullptr;
     }
 }
 
 HttpAgent::~HttpAgent() {
     this->coord->CoreLogDebug("[HttpAgent] ~HttpAgent");
-    if(this->tcpAgent != NULL) {
-        this->tcpAgent->SetHandler(NULL);
+    if(this->tcpAgent != nullptr) {
+        this->tcpAgent->SetHandler(nullptr);
         this->coord->Destory(this->tcpAgent);
-        this->tcpAgent = NULL;
+        this->tcpAgent = nullptr;
     }
-    this->request = NULL;
+    this->request = nullptr;
     if (this->server->config.SSLEncrypt) {
        // BIO_free(this->read_bio);
        // BIO_free(this->write_bio);
@@ -60,18 +55,18 @@ void HttpAgent::recvTcpNew(net::TcpAgent* tcpAgent) {
 }
 
 void HttpAgent::recvTcpClose(net::TcpAgent* agent){
-    this->coord->CoreLogDebug("[HttpAgent] recvTcpClose sessionId=%d", this->sessionId);
+    this->coord->CoreLogDebug("[HttpAgent] recvTcpClose sessionId=%d", this->SessionId);
     if(this->handler) {this->handler->recvHttpClose(this);}
     this->server->recvAgentClose(this);
 }
 
 void HttpAgent::recvTcpError(net::TcpAgent* agent){
-    int sessionId = this->sessionId;
+    int sessionId = this->SessionId;
     this->coord->CoreLogDebug("[HttpAgent] recvTcpError sessionId=%d", sessionId);
 }
 
 int HttpAgent::recvTcpData(net::TcpAgent* agent, char* data, size_t len) {
-    int sessionId = this->sessionId;
+    int sessionId = this->SessionId;
     this->coord->CoreLogDebug("[HttpAgent] recvTcpData sessionId=%d", sessionId);
     if (this->server->config.SSLEncrypt) {
         return this->recvEncryptData(data, len);
@@ -114,13 +109,13 @@ int HttpAgent::recvData(char* data, size_t len) {
         }
     } 
     char* header = strstr(data, "\r\n\r\n");
-    if(header == NULL){
+    if(header == nullptr){
         return 0;
     }
     HttpRequest* request = this->request;
-    if(request == NULL){
-        request = newHttpRequest(this->coord, this);
-        request->RemoteAddr = this->remoteAddr;
+    if(request == nullptr){
+        request = new HttpRequest(this->coord, this);
+        request->RemoteAddr = this->RemoteAddr;
         this->request = request;
         //request由server管理起来，超时后产生警告
     }
@@ -227,7 +222,11 @@ void HttpAgent::Close() {
 } 
 
 void HttpAgent::reset() {
-    this->request = NULL;
+    this->request = nullptr;
+}
+
+int HttpAgent::send(const char* data, size_t len) {
+    return -1;
 }
 
 int HttpAgent::send(byte_slice& data) {

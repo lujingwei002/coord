@@ -1,8 +1,6 @@
 #pragma once 
 #include "coord/builtin/type.h"
 #include "coord/component/component.h"
-#include "coord/http/http_router.h"
-#include "coord/gate/gate_router.h"
 #include <map>
 #include <string>
 #include <cstdint>
@@ -14,7 +12,9 @@ extern "C" {
 namespace coord {//tolua_export
 
 class Coord;
-class BaseRequest;
+class base_request;
+class base_result;
+class base_notify;
 namespace http {
 class HttpRequest;
 class HttpResponse;
@@ -31,7 +31,7 @@ class GateSession;
 }
 namespace cluster {
 class Request;
-class Notify;
+class GateNotify;
 class Result;
 }
 
@@ -70,6 +70,10 @@ public:
     void loadRef();
     void releaseRef();
 
+    void recvRequest(base_request* request, const char* script, int ref);
+    void recvResult(base_result* result, base_request* request, const char* script, int ref);
+    void recvNotify(base_notify* notify, const char* script, int ref);
+
     void recvEvent(event::BaseEvent* args, const char* script, int ref);
     void recvPromise(const char* script, int ref);
 
@@ -90,20 +94,20 @@ public:
     void recvGateUserLogout(gate::GateSession* session, const char* script);
     void recvGateUserInstead(gate::GateSession* session, const char* script);*/
     void recvGateSession(gate::GateSession* session, const char* script, int ref);
-    void recvGatePromise(gate::GateSession* session, BaseRequest* request, const char* script, int ref);
+    void recvGatePromise(gate::GateSession* session, base_request* request, const char* script, int ref);
     void recvGateRequest(gate::GateSession* session, gate::GateRequest* request, const char* script, int ref);
     void recvGateNotify(gate::GateSession* session, gate::GateNotify* notify, const char* script, int ref);
     // for gate end
     //
     // for cluster begin
     void recvClusterRequest(cluster::Request* request, const char* script, int ref);
-    void recvClusterNotify(cluster::Notify* notify, const char* script, int ref);
+    void recvClusterNotify(cluster::GateNotify* notify, const char* script, int ref);
     void recvClusterResult(cluster::Result* result, const char* script, int ref);
     // for cluster end
     // for worker begin
     void recvWorkerRequest(worker::Request* request, const char* script, int ref);
     void recvWorkerNotify(worker::Notify* notify, const char* script, int ref);
-    void recvWorkerResult(worker::Result* result, BaseRequest* request, const char* script, int ref);
+    void recvWorkerResult(worker::Result* result, base_request* request, const char* script, int ref);
     //void recvWorkerResultRef(worker::Result* result, int ref);
     // for worker end
     //

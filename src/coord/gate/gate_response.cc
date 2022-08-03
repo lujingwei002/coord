@@ -10,13 +10,7 @@ namespace coord {
 namespace gate {
 CC_IMPLEMENT(GateResponse, "coord::gate::GateResponse")
 
-GateResponse* newGateResponse(Coord* coord, GateRequest* request) {
-    GateResponse* response = new GateResponse(coord, request);
-    return response;
-}
-
-GateResponse::GateResponse(Coord* coord, GateRequest* request) : BaseResponse(coord) {
-    this->request = request;
+GateResponse::GateResponse(Coord* coord, GateAgent* agent, GateRequest* request) : base_response(coord, agent, request) {
 }
 
 GateResponse::~GateResponse() {
@@ -24,13 +18,15 @@ GateResponse::~GateResponse() {
 }
 
 int GateResponse::flush() {
+    /*  
     GateRequest* request = this->request;
     GateAgent* agent = this->request->agent; 
     if(this->proto != nullptr){
-        return agent->response(request->id, request->route.c_str(), this->proto.GetMessage());
+        return agent->response(request->Id, request->Route.c_str(), this->proto.GetMessage());
     } else {
-        return agent->response(request->id, request->route.c_str(), this->payload);
-    }
+        return agent->response(request->Id, request->Route.c_str(), this->payload);
+    }*/
+    return 0;
 }
 
 

@@ -17,8 +17,6 @@ message HandshakeAck {
  
 }
 
-
-
 message GateInstead {
     uint64 userId = 1;
 }

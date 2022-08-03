@@ -8,25 +8,25 @@
 namespace coord {
 
 namespace cluster {
-CC_IMPLEMENT(Notify, "coord::cluster::Notify")
+CC_IMPLEMENT(GateNotify, "coord::cluster::GateNotify")
 
-Notify* newNotify(Coord* coord, cluster_agent* agent) {
-    Notify* notify = new Notify(coord, agent);
+GateNotify* newNotify(Coord* coord, cluster_agent* agent) {
+    GateNotify* notify = new GateNotify(coord, agent);
     return notify;
 }
 
-Notify::Notify(Coord* coord, cluster_agent* agent) : BaseRequest(coord) {
+GateNotify::GateNotify(Coord* coord, cluster_agent* agent) : base_notify(coord, nullptr) {
     this->agent = agent;
     this->coord->DontDestory(this->agent);
 }
 
-Notify::~Notify() {
+GateNotify::~GateNotify() {
     this->coord->Destory(this->agent);
 }
 
-void Notify::onDestory() {
-    uint64_t duration = uv_hrtime() - this->reqTime;
-    this->coord->LogDebug("|%10s|%20s | NOTIFY |\t\"%s\"", date::FormatNano(duration), this->agent->name.c_str(), this->route.c_str());
+void GateNotify::onDestory() {
+    uint64_t duration = uv_hrtime() - this->ReqTime;
+    this->coord->LogDebug("|%10s|%20s | NOTIFY |\t\"%s\"", date::FormatNano(duration), this->agent->name.c_str(), this->Route.c_str());
 }
 
 

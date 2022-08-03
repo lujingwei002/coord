@@ -101,8 +101,8 @@ int cluster_client::recvTcpData(char* data, size_t len){
     return length + sizeof(cluster_packet_header);
 }
 
-void cluster_client::recvConnectError(const char* err) {
-   this->coord->CoreLogError("[cluster_client] recvConnectError, name=%s, host=%s, port=%d, error='%s'", 
+void cluster_client::recvTcpConnectError(const char* err) {
+   this->coord->CoreLogError("[cluster_client] recvTcpConnectError, name=%s, host=%s, port=%d, error='%s'", 
         this->name.c_str(), this->host.c_str(), this->port, err);
 }
 
@@ -128,8 +128,8 @@ void cluster_client::onDestory() {
         result->Code = 501;
         for(auto it = this->promiseDict.begin(); it != this->promiseDict.end();) {
             Promise* promise = it->second;
-            result->route = promise->route;
-            result->reqTime = promise->reqTime;
+            result->Route = promise->route;
+            result->ReqTime = promise->reqTime;
             promise->reject(result);
             this->coord->Destory(promise);
             ++it;   
@@ -159,17 +159,17 @@ void cluster_client::recvData(cluster_packet* packet) {
                 Promise* promise = it->second;
                 Result* result = newResult(this->coord, this);
                 result->Code = message.code;
-                result->route = promise->route;
-                result->reqTime = promise->reqTime;
+                result->Route = promise->route;
+                result->ReqTime = promise->reqTime;
                 result->payload.Resize(0);
                 coord::Append(result->payload, message.data, message.length);
+                this->promiseDict.erase(it);
                 if (result->Code == 0) {
                     promise->resolve(result);
                 } else {
                     promise->reject(result);
                 }
                 this->coord->Destory(result);
-                this->promiseDict.erase(it);
                 this->coord->Destory(promise);
                 break; 
             }

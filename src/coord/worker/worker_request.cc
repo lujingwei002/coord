@@ -15,7 +15,7 @@ Request* newRequest(Coord* coord) {
     return request;
 }
 
-Request::Request(Coord* coord) : BaseRequest(coord) {
+Request::Request(Coord* coord) : base_request(coord, nullptr) {
     this->response = newResponse(this->coord, this);
 }
 
@@ -28,8 +28,8 @@ Request::~Request() {
 }
 
 void Request::onDestory() {
-    uint64_t duration = uv_hrtime() - this->reqTime;
-    this->coord->LogDebug("[worker::Request] %10s| REQUEST |\t\"%s\"", date::FormatNano(duration), this->route.c_str());
+    uint64_t duration = uv_hrtime() - this->ReqTime;
+    this->coord->LogDebug("[worker::Request] %10s| REQUEST |\t\"%s\"", date::FormatNano(duration), this->Route.c_str());
 }
  
 Response* Request::GetResponse() {

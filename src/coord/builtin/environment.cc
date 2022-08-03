@@ -311,10 +311,11 @@ int Environment::main(const Argv& argv) {
     char buffer[PATH_MAX];
     size_t len = sizeof(buffer);
 
+    this->Pid = uv_os_getpid();
     if (argv.Name.length() > 0) {
         this->Name = argv.Name;
     } else {
-        uv_pid_t pid = uv_os_getpid();
+        uv_pid_t pid = this->Pid;
         this->Name = std::to_string(pid);
     }
 
@@ -353,13 +354,10 @@ int Environment::main(const Argv& argv) {
     this->HomeDir = buffer;
 
     // coord 目录
-    len = sizeof(buffer);
-    err = this->searchCoordDir(buffer, &len);
+    err = this->searchCoordDir(this->CoordDir);
     if (err) {
         return err;
     }
-    this->CoordDir = buffer;
-
     // 配置文件所在的目录
     this->ConfigDir = coord::path::DirName(this->ConfigPath);
     // 工作目录
@@ -396,6 +394,9 @@ int Environment::main(const Argv& argv) {
     this->Variables["managed-sock-path"] = this->ManagedSockPath;
 
     std::string envFilePath = coord::path::PathJoin(this->ConfigDir, env_file_name);
+    if (!coord::path::Exists(envFilePath)) {
+        return 0;
+    }
     err = this->scanEnvFile(envFilePath);
     if (err) {
         return err;
@@ -421,20 +422,26 @@ void Environment::DebugString() {
     }
 }
 
-int Environment::searchCoordDir(char* buffer, size_t* len) {
-    int err = uv_os_getenv("COORD_ROOT", buffer, len);
-    if(!err) {
+int Environment::searchCoordDir(std::string& coordDir) {
+    char buffer[PATH_MAX];
+    size_t len = sizeof(buffer);
+    int err = uv_os_getenv("COORD_ROOT", buffer, &len);
+    if(err == 0) {
+        coordDir.assign(buffer, len);
+        err = coord::path::RealPath(coordDir, coordDir);
+        if (err) {
+            return err;
+        }
         return 0;
     }
     std::vector<std::string> searchDirArr;
     searchDirArr.push_back("/usr");
     searchDirArr.push_back("/usr/local");
     searchDirArr.push_back(this->HomeDir);
-    for (size_t i = 0; i < searchDirArr.size(); i++) {
-        sprintf(buffer, "%s%s", searchDirArr[i].c_str(), "/coord");
-        uv_fs_t req;
-        int err = uv_fs_stat(&this->coord->loop, &req, buffer, NULL);
-        if(!err) {
+    for (auto searchDir : searchDirArr) {
+        auto dir = coord::path::PathJoin(searchDir, "coord");
+        if (coord::path::Exists(dir)) {
+            coordDir = dir;
             return 0;
         }
     }

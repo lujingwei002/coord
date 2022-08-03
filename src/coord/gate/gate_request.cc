@@ -16,32 +16,26 @@ GateRequest* newGateRequest(Coord* coord, GateAgent* agent) {
     return request;
 }
 
-GateRequest::GateRequest(Coord* coord, GateAgent* agent) : BaseRequest(coord) {
+GateRequest::GateRequest(Coord* coord, GateAgent* agent) : base_request(coord, agent) {
     this->agent = agent;
-    this->response = newGateResponse(this->coord, this);
-    this->sessionId = agent->sessionId;
-    this->coord->DontDestory(this->agent);
+    this->response = new GateResponse(this->coord, agent, this);
 }
 
 GateRequest::~GateRequest() {
-    this->coord->CoreLogDebug("[GateRequest] ~GateRequest");
-    if(this->response){
-        delete this->response;
-        this->response = NULL;
-    }
-    this->coord->Destory(this->agent);
 }
 
+/*  
 void GateRequest::onDestory() {
     if(this->response){
         this->response->flush();
     }
     uint64_t duration = uv_hrtime() - this->reqTime;
-    this->coord->LogDebug("[GateRequest] REQUEST | %10s | %16s | \"%s\"", date::FormatNano(duration), this->agent->remoteAddr.c_str(), this->route.c_str());
+    this->coord->LogDebug("[GateRequest] REQUEST | %10s | %16s | \"%s\"", date::FormatNano(duration), this->agent->remoteAddr.c_str(), this->Route.c_str());
 }
+*/
  
 GateResponse* GateRequest::GetResponse() {
-    return this->response;
+    return dynamic_cast<GateResponse*>(this->response);
 }
 
 void GateRequest::Kick(const char* reason) {
@@ -50,6 +44,7 @@ void GateRequest::Kick(const char* reason) {
     }
     this->agent->kick(reason);
 }
+
 GateSession* GateRequest::GetSession() {
     return this->agent->session;
 }

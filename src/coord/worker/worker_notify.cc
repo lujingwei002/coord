@@ -15,7 +15,7 @@ Notify* newNotify(Coord* coord) {
     return notify;
 }
 
-Notify::Notify(Coord* coord) : BaseRequest(coord) {
+Notify::Notify(Coord* coord) : base_notify(coord, nullptr) {
    
 }
 
@@ -24,8 +24,8 @@ Notify::~Notify() {
 }
 
 void Notify::onDestory() {
-    uint64_t duration = uv_hrtime() - this->reqTime;
-    this->coord->LogDebug("[worker::Notify] %10s| NOTIFY |\t\"%s\"", date::FormatNano(duration), this->route.c_str());
+    uint64_t duration = uv_hrtime() - this->ReqTime;
+    this->coord->LogDebug("[worker::Notify] %10s| NOTIFY |\t\"%s\"", date::FormatNano(duration), this->Route.c_str());
 }
  
 

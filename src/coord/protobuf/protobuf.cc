@@ -3,6 +3,7 @@
 #include "coord/protobuf/array.h"
 #include "coord/config/config.h"
 #include "coord/builtin/error.h"
+#include "coord/builtin/environment.h"
 #include "coord/coord.h"
 
 namespace coord {
@@ -66,7 +67,6 @@ Protobuf::Protobuf(Coord* coord) : coord(coord) {
     this->sourceTree = new google::protobuf::compiler::DiskSourceTree();
     this->errorCollector = new my_multi_file_error_collector();
     this->importer = new google::protobuf::compiler::Importer(sourceTree, errorCollector);
-    this->sourceTree->MapPath("", "");
     this->pool = importer->pool();
     this->factory = new google::protobuf::DynamicMessageFactory();
 }
@@ -158,6 +158,7 @@ static int __newindex(lua_State* L) {
 }
 
 int Protobuf::main() {
+    this->sourceTree->MapPath("", this->coord->Environment->WorkingDir);
     if(this->coord->Config->Basic.Proto.length() > 0) {
         int err = this->ImportDir(this->coord->Config->Basic.Proto.c_str());
         if (err) {

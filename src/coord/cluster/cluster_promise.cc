@@ -94,7 +94,7 @@ int Promise::Then(lua_State* L) {
 #ifndef TOLUA_RELEASE
     tolua_Error tolua_err;
     if (
-        !tolua_isusertype(L,1,"coord::worker::Promise",0,&tolua_err) ||
+        !tolua_isusertype(L,1,"coord::cluster::Promise",0,&tolua_err) ||
         !tolua_isusertype(L,2,"coord::ScriptComponent",0,&tolua_err) ||
         !tolua_isfunction(L,3,0,&tolua_err) ||
         !tolua_isnoobj(L,4,&tolua_err)
@@ -111,7 +111,7 @@ int Promise::Then(lua_State* L) {
             return 0;
         }
         Promise* tolua_ret = (Promise*)  this->Then(object,ref);
-        tolua_pushusertype(L,(void*)tolua_ret,"coord::worker::Promise");
+        tolua_pushusertype(L,(void*)tolua_ret,"coord::cluster::Promise");
     }
     return 1;
 #ifndef TOLUA_RELEASE
@@ -125,7 +125,7 @@ int Promise::Else(lua_State* L) {
 #ifndef TOLUA_RELEASE
     tolua_Error tolua_err;
     if (
-        !tolua_isusertype(L,1,"coord::worker::Promise",0,&tolua_err) ||
+        !tolua_isusertype(L,1,"coord::cluster::Promise",0,&tolua_err) ||
         !tolua_isusertype(L,2,"coord::ScriptComponent",0,&tolua_err) ||
         !tolua_isfunction(L,3,0,&tolua_err) ||
         !tolua_isnoobj(L,4,&tolua_err)
@@ -142,7 +142,7 @@ int Promise::Else(lua_State* L) {
             return 0;
         }
         Promise* tolua_ret = (Promise*)  this->Else(object,ref);
-        tolua_pushusertype(L,(void*)tolua_ret,"coord::worker::Promise"); 
+        tolua_pushusertype(L,(void*)tolua_ret,"coord::cluster::Promise"); 
     }
     return 1;
 #ifndef TOLUA_RELEASE

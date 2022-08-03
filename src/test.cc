@@ -23,6 +23,7 @@
 #include "test/test-json.cc"
 #include "test/test-protobuf.cc"
 #include "test/test-cluster.cc"
+#include "test/test-managed.cc"
 #include <stdio.h>
 #include <string.h>
 #include <iostream>

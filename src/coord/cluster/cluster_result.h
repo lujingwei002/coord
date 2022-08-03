@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/base_result.h"
+#include "coord/base/base_result.h"
 #include "coord/cluster/cluster_message.h"
 
 
@@ -18,7 +18,7 @@ class Cluster;
 class Request;
 class cluster_client;
 
-class Result : public BaseResult  { //tolua_export
+class Result : public base_result  { //tolua_export
 CC_CLASS(Result);
 public:
     Result(Coord* coord, cluster_client* client);

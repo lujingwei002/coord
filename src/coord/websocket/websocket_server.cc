@@ -73,11 +73,11 @@ void Server::recvHttpRequest(http::HttpRequest* request){
 }
 
 void Server::recvHttpUpgrade(http::HttpAgent* httpAgent, http::HttpRequest* request){
-    int sessionId = httpAgent->sessionId;
-    this->coord->CoreLogDebug("[websocket::Server] recvHttpUpgrade sessionId=%d, remoteAddr=%s", sessionId, httpAgent->remoteAddr.c_str());
+    int sessionId = httpAgent->SessionId;
+    this->coord->CoreLogDebug("[websocket::Server] recvHttpUpgrade sessionId=%d, remoteAddr=%s", sessionId, httpAgent->RemoteAddr.c_str());
     Agent *agent = newAgent(this->coord, this, httpAgent);
     agent->sessionId = sessionId;
-    agent->remoteAddr =  httpAgent->remoteAddr;
+    agent->remoteAddr =  httpAgent->RemoteAddr;
     this->agentDict[sessionId] = agent;
     this->recvWebSocketNew(agent);
 }

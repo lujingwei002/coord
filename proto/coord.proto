@@ -32,3 +32,17 @@ message gate_test_request {
 message gate_test_response {
     
 }
+
+message base_handshake_request {
+    int64   Version = 1;
+}
+
+message base_handshake_response {
+    int32   Code = 1;
+}
+
+message base_handshake_ack {
+ 
+}
+
+

@@ -14,10 +14,10 @@ class ScriptComponent;
 namespace cluster {//tolua_export
 
 class Request;
-class Notify;
+class GateNotify;
 
 typedef std::function<void (Request* request)> ClusterRouter_RecvClusterRequest; 
-typedef std::function<void (Notify* notify)> ClusterRouter_RecvClusterNotify; 
+typedef std::function<void (GateNotify* notify)> ClusterRouter_RecvClusterNotify; 
 
 class cluster_router_handler {
 public:
@@ -34,7 +34,7 @@ public:
     ~cluster_router_handler();
 public:
     void recvClusterRequest(Request* request);
-    void recvClusterNotify(Notify* notify);
+    void recvClusterNotify(GateNotify* notify);
 public:
     Coord*                              coord;
     ClusterRouter_RecvClusterRequest    recvClusterRequestFunc;
@@ -69,7 +69,7 @@ public:
     void Trace();//tolua_export
 public:
     void recvClusterRequest(cluster::Request* request);
-    void recvClusterNotify(cluster::Notify* notify);
+    void recvClusterNotify(cluster::GateNotify* notify);
 private:
     cluster_router_handler* searchHandler(const char* event, const char* path);
     bool addRoute(const char* event, const char* path, cluster_router_handler* handler);

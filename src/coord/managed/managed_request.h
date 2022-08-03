@@ -1,43 +1,31 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
-#include <uv.h>
-#include <map>
-#include <tuple>
-#include "coord/builtin/slice.h"
-extern "C" {
-#include <lua/lua.h>
-#include <lua/lualib.h>
-#include <lua/lauxlib.h>
+#include "coord/base/base_request.h"
+#include "coord/managed/managed_response.h"
+
+//declaration
+namespace coord {
+    class Coord;
+    namespace managed {
+        class managed_server;
+        class ManagedAgent;
+        class ManagedResponse;
+    }
 }
 
+
 namespace coord {//tolua_export
-class Coord;
-
 namespace managed {//tolua_export
-class ManagedAgent;
-class ManagedServer;
 
-class ManagedRequest : public Destoryable  { //tolua_export
+class ManagedRequest : public base_request { //tolua_export
 CC_CLASS(ManagedRequest);
-public:
+friend ManagedAgent;
+private:
     ManagedRequest(Coord* coord, ManagedAgent* agent);
     virtual ~ManagedRequest();
 public:
-    size_t Count();
-    const char* Arg(size_t i);
-    
-public:
-    int parse(const char*data, size_t len);
-    
-public:
-    ManagedAgent* agent; 
-    Coord* coord;
-    std::vector<std::string> args;
+    virtual ManagedResponse* GetResponse();
 };//tolua_export
-
-ManagedRequest* newManagedRequest(Coord* coord, ManagedAgent* agent);
 
 }//tolua_export
 }//tolua_export

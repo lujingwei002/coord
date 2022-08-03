@@ -30,7 +30,7 @@ void cluster_router_handler::recvClusterRequest(Request* request) {
     } 
 } 
 
-void cluster_router_handler::recvClusterNotify(Notify* notify) {
+void cluster_router_handler::recvClusterNotify(GateNotify* notify) {
     if(this->recvClusterNotifyFunc != nullptr){
         this->recvClusterNotifyFunc(notify);
     } 
@@ -53,11 +53,11 @@ cluster_router_handler* ClusterRouter::searchHandler(const char* event, const ch
     return it->second;
 }
 
-void ClusterRouter::recvClusterNotify(cluster::Notify* notify) {
+void ClusterRouter::recvClusterNotify(cluster::GateNotify* notify) {
     this->coord->CoreLogDebug("[ClusterRouter] recvClusterNotify");
-    cluster_router_handler* handler = this->searchHandler("NOTIFY", notify->route.c_str());
+    cluster_router_handler* handler = this->searchHandler("NOTIFY", notify->Route.c_str());
     if(handler == NULL){
-        this->coord->CoreLogDebug("[ClusterRouter] recvClusterNotify failed, error='router not found', path=%s", notify->route.c_str());
+        this->coord->CoreLogDebug("[ClusterRouter] recvClusterNotify failed, error='router not found', path=%s", notify->Route.c_str());
         return;
     }
     uint64_t t1 = this->coord->NanoTime();
@@ -68,9 +68,9 @@ void ClusterRouter::recvClusterNotify(cluster::Notify* notify) {
 
 void ClusterRouter::recvClusterRequest(cluster::Request* request) {
     this->coord->CoreLogDebug("[ClusterRouter] recvClusterRequest");
-    cluster_router_handler* handler = this->searchHandler("REQUEST", request->route.c_str());
+    cluster_router_handler* handler = this->searchHandler("REQUEST", request->Route.c_str());
     if(handler == NULL){
-        this->coord->CoreLogDebug("[ClusterRouter] recvClusterRequest failed, error='router not found', path=%s", request->route.c_str());
+        this->coord->CoreLogDebug("[ClusterRouter] recvClusterRequest failed, error='router not found', path=%s", request->Route.c_str());
         Response* response = request->GetResponse();
         response->String("Not Found");
         response->Reject(404);

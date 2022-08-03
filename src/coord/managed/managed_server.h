@@ -1,40 +1,48 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-#include "coord/net/tcp_listener.h"
-#include <vector>
-#include <iostream>
+#include "coord/pipe/pipe_listener.h"
+#include "coord/base/base_server.h"
 #include <map>
-namespace coord {//tolua_export
-    
-class Coord;
 
-namespace managed {//tolua_export
+//declaration
+namespace coord {
+    class Coord;
+namespace managed {
+    class Managed;
+    class ManagedAgent;
+}
+}
 
-class Managed;
-class Packet;
-class ManagedAgent;
+namespace coord {
+namespace managed {
 
-class ManagedServer : public net::ITcpHandler  {//tolua_export
-public:
-    ManagedServer(Coord *coord, Managed* managed);
-    virtual ~ManagedServer();
-public:
-    // implement net::ITcpHandler begin
-    virtual void recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAgent);
-    // implement net::ITcpHandler end
-    void recvTcpClose(ManagedAgent* agent);
+class managed_server : public Destoryable, public pipe::IPipeHandler  {
+CC_CLASS(managed_server);
+friend managed::Managed;
+friend managed::ManagedAgent;
+private:
+    managed_server(Coord *coord, Managed* managed);
+    virtual ~managed_server();
+protected:
+    // implement pipe::IPipeHandler begin
+    virtual void EvConnection(pipe::PipeListener* listener, pipe::PipeAgent* pipeAgent);
+    virtual void EvClose(pipe::PipeListener* listener);
+    // implement pipe::IPipeHandler end
+private:
+    // 启动
     int start();
-    void close();
-public:
-    Coord* coord;
-    net::TcpListener* listener;
-    Managed* managed;
-    std::map<int, ManagedAgent*> agentDict;
-};//tolua_export
+    // 主动关闭
+    int close();
+    // agent关闭
+    void recvAgentClose(ManagedAgent* agent);
+private:
+    Coord*                              coord;
+    pipe::PipeListener*                 listener;
+    Managed*                            managed;
+    std::map<int, ManagedAgent*>        agentDict;
+};
 
-ManagedServer* newManagedServer(Coord* coord, Managed* managed);
-}//tolua_export
-}//tolua_export
+}
+}
 
 

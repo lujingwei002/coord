@@ -24,9 +24,7 @@ public:
     ~Scene();
 public:
     Object* Instantiate(const char* name, const char* filePath);//tolua_export
-    Object* CreateObject(const char* name);//tolua_export
-    /// 销毁自身
-    int Destory();   
+    Object* CreateObject(const char* name);//tolua_export  
 public:
     int addObject(Object* object);
     Object* createObjectInternal(const char* name);

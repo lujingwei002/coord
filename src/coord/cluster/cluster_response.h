@@ -1,9 +1,8 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/base_response.h"
+#include "coord/base/base_response.h"
 #include "coord/cluster/cluster_message.h"
-
 
 namespace coord {//tolua_export
 class Coord;
@@ -18,18 +17,16 @@ class cluster_agent;
 class Cluster;
 class Request;
 
-class Response : public BaseResponse { //tolua_export
+class Response : public base_response { //tolua_export
 CC_CLASS(Response);
 public:
-    Response(Coord* coord, Request* request);
+    Response(Coord* coord, cluster_agent* agent, Request* request);
     virtual ~Response();
 public:
-    virtual int flush();
+    //virtual int flush();
 public:
-    Request* request;
 };//tolua_export
 
-Response* newResponse(Coord* coord, Request* request);
 
 }//tolua_export
 }//tolua_export

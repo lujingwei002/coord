@@ -45,7 +45,7 @@ public:
     virtual void recvTcpConnect();
     virtual void recvTcpClose();
     virtual void recvTcpError(int err);
-    virtual void recvConnectError(const char* err);
+    virtual void recvTcpConnectError(const char* err);
     virtual int recvTcpData(char* data, size_t len);
     //implement net::ITcpClientHandler end
     int sendHandshake();

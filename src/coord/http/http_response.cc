@@ -15,14 +15,8 @@ namespace coord {
 namespace http {
 CC_IMPLEMENT(HttpResponse, "coord::http::HttpResponse")
 
-HttpResponse* newHttpResponse(HttpRequest* request) {
-    HttpResponse* response = new HttpResponse(request);
-    return response;
-}
-
-HttpResponse::HttpResponse(HttpRequest* request) {
+HttpResponse::HttpResponse(Coord* coord, HttpAgent* agent, HttpRequest* request) : base_response(coord, agent, request) {
     this->request = request;
-    this->coord = request->coord;
     this->statusCode = 200;
     this->server = request->server;
 }
@@ -163,7 +157,7 @@ int HttpResponse::Upgrade() {
     return 0; 
 }
 
-void HttpResponse::flush() {
+int HttpResponse::flush() {
     this->headerDict["Access-Control-Allow-Credentials"] = "false";
     this->headerDict["Access-Control-Allow-Origin"] = "*";
     this->headerDict["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS, PUT, DELETE,UPDATE";
@@ -183,7 +177,7 @@ void HttpResponse::flush() {
     coord::Append(this->response, this->body.Data(), this->body.Len());
     //this->coord->CoreLogDebug("HttpResponse::Flush data=\n%s, len=%d", this->response.Data(), this->response.Len());
     this->request->send(this->response);
-    return;
+    return 0;
 }
 }
 }

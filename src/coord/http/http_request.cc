@@ -96,17 +96,11 @@ static int on_chunk_complete(http_parser* parser){
     return 0;
 }
 
-HttpRequest* newHttpRequest(Coord* coord, HttpAgent* agent) {
-    HttpRequest* request = new HttpRequest(coord, agent);
-    return request;
-}
-
-HttpRequest::HttpRequest(Coord* coord, HttpAgent* agent) : BaseRequest(coord) {
+HttpRequest::HttpRequest(Coord* coord, HttpAgent* agent) : base_request(coord, agent) {
     this->agent = agent;
     this->server = agent->server;
     //this->coord = coord;
-    this->response = NULL;
-    this->sessionId = agent->sessionId;
+    this->SessionId = agent->SessionId;
     this->isUpgrade = false;
     this->isComplete = false;
     this->reqTime = uv_hrtime();
@@ -123,15 +117,15 @@ HttpRequest::HttpRequest(Coord* coord, HttpAgent* agent) : BaseRequest(coord) {
     this->setting.on_message_complete = on_message_complete;
     this->setting.on_chunk_header = on_chunk_header;
     this->setting.on_chunk_complete = on_chunk_complete;
-    this->response = newHttpResponse(this);
     this->coord->DontDestory(this->agent);
+    this->response = new HttpResponse(this->coord, agent, this);
 }
 
 HttpRequest::~HttpRequest() {
     this->coord->CoreLogDebug("[HttpRequest] ~HttpRequest");
     if(this->response){
-        delete this->response;
-        this->response = NULL;
+        this->coord->Destory(this->response);
+        this->response = nullptr;
     }
     this->coord->Destory(this->agent);
 }
@@ -164,15 +158,17 @@ size_t HttpRequest::parse(char* data, size_t len) {
 }
 
 HttpResponse* HttpRequest::GetResponse() {
-    return this->response;
+    return dynamic_cast<HttpResponse*>(this->response);
 }
 
+/*  
 void HttpRequest::onDestory() {
     this->response->flush();
     uint64_t duration = uv_hrtime() - this->reqTime;
     this->coord->LogDebug("[HttpRequest] %d | %10s | %16s | %8s \"%s\"", this->response->statusCode, date::FormatNano(duration), this->RemoteAddr.c_str(), this->Method.c_str(), this->Url.c_str());
     this->agent->reset();
 }
+*/
 
 int HttpRequest::send(byte_slice& data) {
     return this->agent->send(data);

@@ -1,7 +1,8 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/base_request.h"
+#include "coord/base/base_request.h"
+#include "coord/worker/worker_response.h"
 
 namespace coord {//tolua_export
 class Coord;
@@ -11,16 +12,15 @@ class Reflect;
 }
 namespace worker {//tolua_export
 class Worker;
-class Response;
 class Result;
 
-class Request : public BaseRequest  { //tolua_export
+class Request : public base_request  { //tolua_export
 CC_CLASS(Request);
 public:
     Request(Coord* coord);
     virtual ~Request();
 public:
-    Response* GetResponse();//tolua_export   
+    virtual Response* GetResponse();//tolua_export   
     virtual void onDestory();
 public:
     Response* response;

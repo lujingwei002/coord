@@ -151,7 +151,7 @@ int Cluster::Notify(const char* nodeName, const char* route, const char* data, s
     return client->notify(route, data, len);
 }
 
-void Cluster::recvClusterNotify(cluster::Notify* notify) {
+void Cluster::recvClusterNotify(cluster::GateNotify* notify) {
     this->coord->CoreLogDebug("[Cluster] recvClusterNotify");
     try{
         //传递到逻辑层

@@ -7,6 +7,7 @@
 #include <tuple>
 #include "http-parser/http_parser.h"
 #include "coord/builtin/slice.h"
+#include "coord/base/base_response.h"
 extern "C" {
 #include <lua/lua.h>
 #include <lua/lualib.h>
@@ -23,11 +24,12 @@ namespace http {//tolua_export
 class HttpAgent;
 class HttpServer;
 class HttpRequest;
-class HttpResponse  { //tolua_export
+class HttpResponse : public base_response { //tolua_export
 CC_CLASS(HttpResponse);
 public:
-    HttpResponse(HttpRequest* request);
+    HttpResponse(Coord* coord, HttpAgent* agent, HttpRequest* request);
     virtual ~HttpResponse();  
+public:
     int Text(lua_State* L);//tolua_export
     bool Text(const char* content);//tolua_export
     bool Json(json::Reflect& json);//tolua_export
@@ -38,19 +40,16 @@ public:
     bool File(const char* path);//tolua_export
     bool Allow();
 public:
-    void flush();
+    int flush();
 public:
     HttpRequest*                        request;
     HttpServer*                         server;
-    Coord*                              coord;
     std::map<std::string, std::string>  headerDict;
     byte_slice                          body;
     byte_slice                          response;
     std::string                         contentType;
     int                                 statusCode;
 };//tolua_export
-
- HttpResponse* newHttpResponse(HttpRequest* request);
 
 }//tolua_export
 }//tolua_export

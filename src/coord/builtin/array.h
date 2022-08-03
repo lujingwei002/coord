@@ -63,7 +63,7 @@ public:
             return 0;
         }
         this->arr.resize(capacity);
-        if (this->arr.capacity() != capacity) {
+        if (this->arr.capacity() < capacity) {
             return -1;
         }
         this->capacity = capacity;

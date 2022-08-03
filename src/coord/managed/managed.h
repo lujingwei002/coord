@@ -7,34 +7,48 @@
 #include <iostream>
 #include <map>
 #include <google/protobuf/message.h>
+
+namespace coord {
+    class Coord;
+    namespace managed {
+        class ManagedClient;
+        class managed_server;
+        class ManagedRouter;
+        class ManagedRequest;
+        class ManagedNotify;
+        class ManagedAgent;
+    }
+}
+
 namespace coord {//tolua_export
-    
-class Coord;
-
 namespace managed {//tolua_export
-
-class ManagedServer;
-
-
 
 class Managed {//tolua_export
 CC_CLASS(Managed);
-public:
+friend coord::Coord;
+friend ManagedAgent;
+private:
     Managed(Coord *coord);
     virtual ~Managed();
 public:
-    int start();
-    //获取cluser的配置信息
-    ManagedConfig* DefaultConfig();
-public:
+    // 创建Client
+    ManagedClient* NewClient(const std::string& path);
+    // 关闭
+    int Close();
 
-public:
-    Coord*          coord;
-    ManagedConfig     config;
-    ManagedServer*    server;
+private:
+    int main();
+    void recvRequest(ManagedRequest* request);
+    void recvNotify(ManagedNotify* notify);
+    void recvRequest_status(ManagedRequest* request);
+    void recvRequest_stop(ManagedRequest* request);
+private:
+    Coord*              coord;
+    ManagedConfig       config;
+    managed_server*     server;
+    ManagedRouter*      Router;
 };//tolua_export
 
-Managed* newManaged(Coord* coord);
 }//tolua_export
 }//tolua_export
 

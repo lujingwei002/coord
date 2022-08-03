@@ -15,9 +15,9 @@ GateNotify* newGateNotify(Coord* coord, GateAgent* agent) {
     return notify;
 }
 
-GateNotify::GateNotify(Coord* coord, GateAgent* agent) : BaseRequest(coord) {
+GateNotify::GateNotify(Coord* coord, GateAgent* agent) : base_notify(coord, nullptr) {
     this->agent = agent;
-    this->sessionId = agent->sessionId;
+    this->sessionId = agent->SessionId;
     this->coord->DontDestory(this->agent);
 }
 
@@ -26,8 +26,8 @@ GateNotify::~GateNotify() {
 }
 
 void GateNotify::onDestory() {
-    uint64_t duration = uv_hrtime() - this->reqTime;
-    this->coord->LogDebug("| %10s | %16s | NOTIFY | \"%s\"", date::FormatNano(duration), this->agent->remoteAddr.c_str(), this->route.c_str());
+    uint64_t duration = uv_hrtime() - this->ReqTime;
+    this->coord->LogDebug("| %10s | %16s | NOTIFY | \"%s\"", date::FormatNano(duration), this->agent->RemoteAddr.c_str(), this->Route.c_str());
 }
  
 

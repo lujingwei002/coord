@@ -20,8 +20,8 @@ GateSession::GateSession(Coord* coord, GateAgent* agent) {
     this->agent = agent;
     this->gate = agent->gate;
     this->coord = coord;
-    this->Id = agent->sessionId;
-    this->RemoteAddr = agent->remoteAddr;
+    this->Id = agent->SessionId;
+    this->RemoteAddr = agent->RemoteAddr;
     this->UserId = 0;
 }
 

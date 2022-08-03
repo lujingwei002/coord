@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/base_request.h"
+#include "coord/base/base_notify.h"
 #include "coord/cluster/cluster_message.h"
 
 
@@ -14,18 +14,18 @@ namespace cluster {//tolua_export
 class cluster_agent; 
 class Cluster;
 
-class Notify : public BaseRequest { //tolua_export
-CC_CLASS(Notify);
+class GateNotify : public base_notify { //tolua_export
+CC_CLASS(GateNotify);
 public:
-    Notify(Coord* coord, cluster_agent* agent);
-    virtual ~Notify();
+    GateNotify(Coord* coord, cluster_agent* agent);
+    virtual ~GateNotify();
 public:
     virtual void onDestory(); 
 public:
     cluster_agent* agent; 
 };//tolua_export
 
-Notify* newNotify(Coord* coord, cluster_agent* agent);
+GateNotify* newNotify(Coord* coord, cluster_agent* agent);
 
 }//tolua_export
 }//tolua_export

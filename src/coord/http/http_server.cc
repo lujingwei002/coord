@@ -34,20 +34,20 @@ HttpServer* newHttpServer(Coord* coord) {
 }
 
 HttpServer::HttpServer(Coord* coord) : coord(coord) {
-    this->handler = NULL;
+    this->handler = nullptr;
     this->listener = net::NewTcpListener(coord);
     this->Router = newHttpRouter(coord, this);
-    this->sslCtx = NULL;
+    this->sslCtx = nullptr;
 }
 
 HttpServer::~HttpServer(){
     delete this->Router;
-    this->Router = NULL;
+    this->Router = nullptr;
     delete this->listener;
-    this->listener = NULL;
+    this->listener = nullptr;
     if(this->sslCtx) {
         SSL_CTX_free(this->sslCtx);
-        this->sslCtx = NULL;
+        this->sslCtx = nullptr;
     }
 } 
 
@@ -87,7 +87,7 @@ void HttpServer::SetHandler(IHttpHandler* handler) {
 
 void HttpServer::recvHttpRequest(HttpRequest* request){
     HttpAgent* agent = request->agent;
-    int sessionId = agent->sessionId;
+    int sessionId = agent->SessionId;
     this->coord->CoreLogDebug("[HttpServer] recvHttpRequest, sessionId=%d", sessionId);
     if(this->handler) {
         this->handler->recvHttpRequest(request);
@@ -97,7 +97,7 @@ void HttpServer::recvHttpRequest(HttpRequest* request){
 }
 
 void HttpServer::recvHttpUpgrade(HttpAgent* agent, HttpRequest* request){
-    int sessionId = agent->sessionId;
+    int sessionId = agent->SessionId;
     this->coord->CoreLogDebug("[HttpServer] recvHttpUpgrade, sessionId=%d", sessionId);
     if(this->handler) {
         this->handler->recvHttpUpgrade(agent, request);
@@ -110,14 +110,14 @@ void HttpServer::recvTcpNew(net::TcpListener* listener, net::TcpAgent* tcpAgent)
     int sessionId = tcpAgent->sessionId;
     this->coord->CoreLogDebug("[HttpServer] recvTcpNew sessionId=%d, remoteAddr=%s", sessionId, tcpAgent->remoteAddr.c_str());
     tcpAgent->SetRecvBuffer(this->config.RecvBufferSize);
-    HttpAgent *agent = HttpAgent::New(this->coord, this, tcpAgent);
-    agent->sessionId = sessionId;
-    agent->remoteAddr =  tcpAgent->remoteAddr;
+    HttpAgent *agent = new HttpAgent(this->coord, this, tcpAgent);
+    agent->SessionId = sessionId;
+    agent->RemoteAddr =  tcpAgent->remoteAddr;
     this->agentDict[sessionId] = agent;
 }
 
 void HttpServer::recvAgentClose(HttpAgent* agent){
-    int sessionId = agent->sessionId;
+    int sessionId = agent->SessionId;
     this->coord->CoreLogDebug("[HttpServer] recvAgentClose sessionId=%d, ref=%d", sessionId, agent->_ref);
     auto it = this->agentDict.find(sessionId);
     if(it == this->agentDict.end()){

@@ -90,7 +90,7 @@ public:
     uv_pid_t    Pid;
 private:
     int main(const Argv& argv);
-    int searchCoordDir(char* buffer, size_t* len);
+    int searchCoordDir(std::string& coordDir);
     template <typename T>
     bool extract(const std::string & value, T & dst);
     bool extract(const std::string & value, std::string & dst) {

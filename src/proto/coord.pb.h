@@ -46,7 +46,7 @@ struct TableStruct_proto_2fcoord_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[7]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[10]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -54,6 +54,15 @@ struct TableStruct_proto_2fcoord_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_proto_2fcoord_2eproto;
 namespace coord {
+class base_handshake_ack;
+struct base_handshake_ackDefaultTypeInternal;
+extern base_handshake_ackDefaultTypeInternal _base_handshake_ack_default_instance_;
+class base_handshake_request;
+struct base_handshake_requestDefaultTypeInternal;
+extern base_handshake_requestDefaultTypeInternal _base_handshake_request_default_instance_;
+class base_handshake_response;
+struct base_handshake_responseDefaultTypeInternal;
+extern base_handshake_responseDefaultTypeInternal _base_handshake_response_default_instance_;
 class cluster_handshake_ack;
 struct cluster_handshake_ackDefaultTypeInternal;
 extern cluster_handshake_ackDefaultTypeInternal _cluster_handshake_ack_default_instance_;
@@ -77,6 +86,9 @@ struct gate_test_responseDefaultTypeInternal;
 extern gate_test_responseDefaultTypeInternal _gate_test_response_default_instance_;
 }  // namespace coord
 PROTOBUF_NAMESPACE_OPEN
+template<> ::coord::base_handshake_ack* Arena::CreateMaybeMessage<::coord::base_handshake_ack>(Arena*);
+template<> ::coord::base_handshake_request* Arena::CreateMaybeMessage<::coord::base_handshake_request>(Arena*);
+template<> ::coord::base_handshake_response* Arena::CreateMaybeMessage<::coord::base_handshake_response>(Arena*);
 template<> ::coord::cluster_handshake_ack* Arena::CreateMaybeMessage<::coord::cluster_handshake_ack>(Arena*);
 template<> ::coord::cluster_handshake_request* Arena::CreateMaybeMessage<::coord::cluster_handshake_request>(Arena*);
 template<> ::coord::cluster_handshake_response* Arena::CreateMaybeMessage<::coord::cluster_handshake_response>(Arena*);
@@ -1015,6 +1027,389 @@ class gate_test_response final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_proto_2fcoord_2eproto;
 };
+// -------------------------------------------------------------------
+
+class base_handshake_request final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:coord.base_handshake_request) */ {
+ public:
+  inline base_handshake_request() : base_handshake_request(nullptr) {}
+  ~base_handshake_request() override;
+  explicit constexpr base_handshake_request(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  base_handshake_request(const base_handshake_request& from);
+  base_handshake_request(base_handshake_request&& from) noexcept
+    : base_handshake_request() {
+    *this = ::std::move(from);
+  }
+
+  inline base_handshake_request& operator=(const base_handshake_request& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline base_handshake_request& operator=(base_handshake_request&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const base_handshake_request& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const base_handshake_request* internal_default_instance() {
+    return reinterpret_cast<const base_handshake_request*>(
+               &_base_handshake_request_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  friend void swap(base_handshake_request& a, base_handshake_request& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(base_handshake_request* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(base_handshake_request* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline base_handshake_request* New() const final {
+    return new base_handshake_request();
+  }
+
+  base_handshake_request* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<base_handshake_request>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const base_handshake_request& from);
+  void MergeFrom(const base_handshake_request& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(base_handshake_request* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "coord.base_handshake_request";
+  }
+  protected:
+  explicit base_handshake_request(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kVersionFieldNumber = 1,
+  };
+  // int64 Version = 1;
+  void clear_version();
+  ::PROTOBUF_NAMESPACE_ID::int64 version() const;
+  void set_version(::PROTOBUF_NAMESPACE_ID::int64 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int64 _internal_version() const;
+  void _internal_set_version(::PROTOBUF_NAMESPACE_ID::int64 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:coord.base_handshake_request)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int64 version_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_proto_2fcoord_2eproto;
+};
+// -------------------------------------------------------------------
+
+class base_handshake_response final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:coord.base_handshake_response) */ {
+ public:
+  inline base_handshake_response() : base_handshake_response(nullptr) {}
+  ~base_handshake_response() override;
+  explicit constexpr base_handshake_response(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  base_handshake_response(const base_handshake_response& from);
+  base_handshake_response(base_handshake_response&& from) noexcept
+    : base_handshake_response() {
+    *this = ::std::move(from);
+  }
+
+  inline base_handshake_response& operator=(const base_handshake_response& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline base_handshake_response& operator=(base_handshake_response&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const base_handshake_response& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const base_handshake_response* internal_default_instance() {
+    return reinterpret_cast<const base_handshake_response*>(
+               &_base_handshake_response_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(base_handshake_response& a, base_handshake_response& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(base_handshake_response* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(base_handshake_response* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline base_handshake_response* New() const final {
+    return new base_handshake_response();
+  }
+
+  base_handshake_response* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<base_handshake_response>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const base_handshake_response& from);
+  void MergeFrom(const base_handshake_response& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(base_handshake_response* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "coord.base_handshake_response";
+  }
+  protected:
+  explicit base_handshake_response(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kCodeFieldNumber = 1,
+  };
+  // int32 Code = 1;
+  void clear_code();
+  ::PROTOBUF_NAMESPACE_ID::int32 code() const;
+  void set_code(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_code() const;
+  void _internal_set_code(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:coord.base_handshake_response)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int32 code_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_proto_2fcoord_2eproto;
+};
+// -------------------------------------------------------------------
+
+class base_handshake_ack final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:coord.base_handshake_ack) */ {
+ public:
+  inline base_handshake_ack() : base_handshake_ack(nullptr) {}
+  ~base_handshake_ack() override;
+  explicit constexpr base_handshake_ack(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  base_handshake_ack(const base_handshake_ack& from);
+  base_handshake_ack(base_handshake_ack&& from) noexcept
+    : base_handshake_ack() {
+    *this = ::std::move(from);
+  }
+
+  inline base_handshake_ack& operator=(const base_handshake_ack& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline base_handshake_ack& operator=(base_handshake_ack&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const base_handshake_ack& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const base_handshake_ack* internal_default_instance() {
+    return reinterpret_cast<const base_handshake_ack*>(
+               &_base_handshake_ack_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(base_handshake_ack& a, base_handshake_ack& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(base_handshake_ack* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(base_handshake_ack* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline base_handshake_ack* New() const final {
+    return new base_handshake_ack();
+  }
+
+  base_handshake_ack* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<base_handshake_ack>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const base_handshake_ack& from);
+  void MergeFrom(const base_handshake_ack& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(base_handshake_ack* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "coord.base_handshake_ack";
+  }
+  protected:
+  explicit base_handshake_ack(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:coord.base_handshake_ack)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_proto_2fcoord_2eproto;
+};
 // ===================================================================
 
 
@@ -1240,9 +1635,67 @@ inline void gate_cluster_instead_response::set_userid(::PROTOBUF_NAMESPACE_ID::u
 
 // gate_test_response
 
+// -------------------------------------------------------------------
+
+// base_handshake_request
+
+// int64 Version = 1;
+inline void base_handshake_request::clear_version() {
+  version_ = int64_t{0};
+}
+inline ::PROTOBUF_NAMESPACE_ID::int64 base_handshake_request::_internal_version() const {
+  return version_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int64 base_handshake_request::version() const {
+  // @@protoc_insertion_point(field_get:coord.base_handshake_request.Version)
+  return _internal_version();
+}
+inline void base_handshake_request::_internal_set_version(::PROTOBUF_NAMESPACE_ID::int64 value) {
+  
+  version_ = value;
+}
+inline void base_handshake_request::set_version(::PROTOBUF_NAMESPACE_ID::int64 value) {
+  _internal_set_version(value);
+  // @@protoc_insertion_point(field_set:coord.base_handshake_request.Version)
+}
+
+// -------------------------------------------------------------------
+
+// base_handshake_response
+
+// int32 Code = 1;
+inline void base_handshake_response::clear_code() {
+  code_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 base_handshake_response::_internal_code() const {
+  return code_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 base_handshake_response::code() const {
+  // @@protoc_insertion_point(field_get:coord.base_handshake_response.Code)
+  return _internal_code();
+}
+inline void base_handshake_response::_internal_set_code(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  code_ = value;
+}
+inline void base_handshake_response::set_code(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_code(value);
+  // @@protoc_insertion_point(field_set:coord.base_handshake_response.Code)
+}
+
+// -------------------------------------------------------------------
+
+// base_handshake_ack
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

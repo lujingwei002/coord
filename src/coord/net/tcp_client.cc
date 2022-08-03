@@ -12,7 +12,7 @@ static void uv_connect_cb(uv_connect_t* req, int status) {
     TcpClient* client = (TcpClient*)req->data;
     //free(req);
     if(status < 0) {
-        client->recvConnectError(status);
+        client->recvTcpConnectError(status);
     } else {
         client->recvTcpConnect();
     }
@@ -187,10 +187,10 @@ void TcpClient::recvTcpClose() {
     if(this->handler != NULL) {this->handler->recvTcpClose();}
 }
 
-void TcpClient::recvConnectError(int err) {
-    this->coord->CoreLogDebug("[TcpClient] recvConnectError error='%s'", uv_strerror(err));
+void TcpClient::recvTcpConnectError(int err) {
+    this->coord->CoreLogDebug("[TcpClient] recvTcpConnectError error='%s'", uv_strerror(err));
     this->status = TcpClientStatus_ERROR;
-    if(this->handler != NULL) {this->handler->recvConnectError(uv_strerror(err));}
+    if(this->handler != NULL) {this->handler->recvTcpConnectError(uv_strerror(err));}
     this->Close();
 }
 
@@ -199,7 +199,7 @@ void TcpClient::recvTcpConnect() {
     int err = uv_read_start((uv_stream_t*) &this->handle, uv_alloc_cb, uv_read_cb);
     if (err < 0) {
         this->coord->CoreLogError("[TcpClient] recvTcpConnect.uv_read_start failed, error='%s'", uv_strerror(err));
-        if(this->handler != NULL) {this->handler->recvConnectError(uv_strerror(err));}
+        if(this->handler != NULL) {this->handler->recvTcpConnectError(uv_strerror(err));}
         this->Close();
         return;
     }

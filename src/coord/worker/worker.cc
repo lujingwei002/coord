@@ -7,7 +7,6 @@
 #include "coord/worker/worker_packet.h"
 #include "coord/config/config.h"
 #include "coord/builtin/exception.h"
-#include "coord/builtin/request_pipeline.h"
 #include "coord/coord.h"
 
 
@@ -232,7 +231,7 @@ Promise* Worker::Request(worker_packet* packet) {
     packet->id = requestId;
     packet->type = worker_packet_request;
     //申请promise
-    Promise* promise = worker::newPromise(this->coord);
+    Promise* promise = new worker::Promise(this->coord);
     promise->route = packet->route;
     this->promiseDict[requestId] = promise;
     //分配slave
@@ -365,10 +364,10 @@ void Worker::sendWorkerPacket(worker_packet* packet, worker::Request* request) {
     //this->coord->CoreLogDebug("[Worker] sendWorkerRequest");
     //拷贝结果到packet中
     auto response = request->GetResponse();
-    response->flush();
+    response->Flush();
     packet->type = worker_packet_response;
-    packet->id = request->id;
-    packet->code = response->code;
+    packet->id = request->Id;
+    packet->code = response->Code;
     packet->payload = response->payload;
     uv_mutex_lock(&this->mutex);
     this->resultArr.push_front(packet);
@@ -398,7 +397,7 @@ void Worker::recvWorkerPacket(worker_packet* packet) {
         
     } else if (packet->type == worker_packet_response)  {
         auto result = newResult(this->coord);
-        result->id = packet->id;
+        result->Id = packet->id;
         result->Code = packet->code;
         result->payload = packet->payload;
         this->recvWorkerResult(result);
@@ -415,18 +414,18 @@ void Worker::recvWorkerPacket(worker_packet* packet) {
 //收到slave的回复， 运行在主线程中
 void Worker::recvWorkerResult(Result* result) {
     //this->coord->CoreLogError("[Worker] recvWorkerResult");
-    auto it = this->promiseDict.find(result->id);
+    auto it = this->promiseDict.find(result->Id);
     if (it == this->promiseDict.end()) {
-        this->coord->CoreLogError("[Worker] recvWorkerResult failed, requestId=%d, error='request not found'", result->id);
+        this->coord->CoreLogError("[Worker] recvWorkerResult failed, requestId=%d, error='request not found'", result->Id);
         return ;
     }
     Promise* promise = it->second;
-    if (result->Code == 0) {
-        promise->resolve(result);
-    } else {
-        promise->reject(result);
-    }
     this->promiseDict.erase(it);
+    if (result->Code == 0) {
+        promise->resolve(this, result);
+    } else {
+        promise->reject(this, result);
+    }
     this->coord->Destory(promise);
     return;
 }

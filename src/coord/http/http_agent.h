@@ -3,6 +3,7 @@
 
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
+#include "coord/base/base_agent.h"
 #include <uv.h>
 #include "coord/http/http_util.h"
 #include "coord/http/http_base.h"
@@ -32,17 +33,17 @@ public:
     virtual int recvHttpData(HttpAgent* agent, char* data, size_t len) = 0;
 };//tolua_export
 
-class HttpAgent : public Destoryable, public net::ITcpAgentHandler {//tolua_export
+class HttpAgent : public base_agent, public net::ITcpAgentHandler {//tolua_export
 CC_CLASS(HttpAgent);
-public:
-    static HttpAgent* New(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent);
 public:
     HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent);
     virtual ~HttpAgent();
+public:
     void Close();
     void SetHandler(IHttpAgentHandler* handler);
 public:
-    int send(byte_slice& data);
+    virtual int send(byte_slice& data);
+    virtual int send(const char* data, size_t len);
     int writeBioToSocket();
     void readDecryptData();
     int recvData(char* data, size_t len);
@@ -61,21 +62,17 @@ public:
     virtual void recvTcpError(net::TcpAgent* agent);
     virtual int recvTcpData(net::TcpAgent* agent, char* data, size_t len);
     //implement net::ITcpAgentHandler end
-
 public:
-    Coord* coord;
-    int sessionId;
-    HttpServer* server;
-    HttpRequest* request;
-    std::string remoteAddr;
-    bool isUpgrade;
-    bool isKeepAlive;
-    SSL *ssl;
-    SSL_CTX *ssl_ctx;
-    BIO *read_bio;
-    BIO *write_bio;  
-    net::TcpAgent* tcpAgent;
-    IHttpAgentHandler* handler;
+    HttpServer*         server;
+    HttpRequest*        request;
+    bool                isUpgrade;
+    bool                isKeepAlive;
+    SSL*                ssl;
+    SSL_CTX*            ssl_ctx;
+    BIO*                read_bio;
+    BIO*                write_bio;  
+    net::TcpAgent*      tcpAgent;
+    IHttpAgentHandler*  handler;
 };//tolua_export
 
 }//tolua_export

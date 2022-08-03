@@ -15,7 +15,7 @@ Result* newResult(Coord* coord) {
     return result;
 }
 
-Result::Result(Coord* coord) : BaseResult(coord) {
+Result::Result(Coord* coord) : base_result(coord) {
 
 }
 

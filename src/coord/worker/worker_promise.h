@@ -3,6 +3,7 @@
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/builtin/slice.h"
+#include "coord/base/base_promise.h"
 #include <uv.h>
 #include <map>
 #include <functional>
@@ -17,49 +18,20 @@ extern "C" {
 namespace coord {//tolua_export
 
 class Coord;
-class RequestPipeline;
-class BaseRequest;
-class ScriptComponent;
-
-namespace protobuf{
-class Reflect;
-}
 
 namespace worker {//tolua_export
-class Worker;
+
 class Result;
+class Worker;
 
-typedef std::function<void (Result* result, BaseRequest* request)> PromiseResolveFunc; 
-typedef std::function<void (Result* result, BaseRequest* request)> PromiseRejectFunc; 
-
-class Promise : public Destoryable { //tolua_export
+typedef base_promise<Worker, Result> base_worker_promise;
+class Promise: public base_worker_promise, public Destoryable { //tolua_export
 CC_CLASS(Promise);
 public:
-    Promise(Coord* coord);
+    Promise(Coord *coord);
     virtual ~Promise();
-public:
-    Promise* Then(PromiseResolveFunc resolveFunc);
-    Promise* Else(PromiseRejectFunc rejectFunc);
-    int Then(lua_State* L);//tolua_export
-    int Else(lua_State* L);//tolua_export
-    Promise* Then(ScriptComponent* object, int ref);
-    Promise* Else(ScriptComponent* object, int ref);
-    Promise* Using(BaseRequest* request);//tolua_export
-public:
-    void resolve(Result* result);
-    void reject(Result* result);
-public:
-    PromiseResolveFunc      resolveFunc;
-    PromiseRejectFunc       rejectFunc;
-    int                     resolveRef;
-    int                     rejectRef;
-    Coord*                  coord;
-    uint64_t                reqTime; 
-    std::string             route;
-    BaseRequest*            requestUsing;
+private:
 };//tolua_export
-
-Promise* newPromise(Coord* coord);
 
 }//tolua_export
 

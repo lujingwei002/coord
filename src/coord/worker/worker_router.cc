@@ -54,9 +54,9 @@ worker_router_handler* WorkerRouter::searchHandler(const char* event, const char
 
 void WorkerRouter::recvWorkerRequest(worker::Request* request) {
     this->coord->CoreLogDebug("[WorkerRouter] recvWorkerRequest");
-    worker_router_handler* handler = this->searchHandler("REQUEST", request->route.c_str());
+    worker_router_handler* handler = this->searchHandler("REQUEST", request->Route.c_str());
     if(handler == NULL){
-        this->coord->CoreLogDebug("[WorkerRouter] recvWorkerRequest failed, error='router not found', route=%s", request->route.c_str());
+        this->coord->CoreLogDebug("[WorkerRouter] recvWorkerRequest failed, error='router not found', route=%s", request->Route.c_str());
         Response* response = request->GetResponse();
         response->String("Not Found");
         response->Reject(404);
@@ -70,9 +70,9 @@ void WorkerRouter::recvWorkerRequest(worker::Request* request) {
 
 void WorkerRouter::recvWorkerNotify(worker::Notify* notify) {
     this->coord->CoreLogDebug("[WorkerRouter] recvWorkerNotify");
-    worker_router_handler* handler = this->searchHandler("NOTIFY", notify->route.c_str());
+    worker_router_handler* handler = this->searchHandler("NOTIFY", notify->Route.c_str());
     if(handler == NULL){
-        this->coord->CoreLogDebug("[WorkerRouter] recvWorkerNotify failed, error='router not found', route=%s", notify->route.c_str());
+        this->coord->CoreLogDebug("[WorkerRouter] recvWorkerNotify failed, error='router not found', route=%s", notify->Route.c_str());
     } else {
         uint64_t t1 = this->coord->NanoTime();
         handler->recvWorkerNotify(notify);

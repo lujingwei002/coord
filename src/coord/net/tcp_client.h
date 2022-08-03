@@ -16,7 +16,7 @@ public:
     virtual void recvTcpConnect() = 0;
     virtual void recvTcpError(int err) = 0;
     virtual int recvTcpData(char* data, size_t len) = 0;
-    virtual void recvConnectError(const char* err) = 0;
+    virtual void recvTcpConnectError(const char* err) = 0;
 };//tolua_export
 
 enum TcpClientStatus {
@@ -48,7 +48,7 @@ public:
     void recvTcpError(int err);
     void recvTcpClose();
     void recvTcpData();
-    void recvConnectError(int err);
+    void recvTcpConnectError(int err);
     void recvTcpConnect();
 public:
     Coord*              coord;

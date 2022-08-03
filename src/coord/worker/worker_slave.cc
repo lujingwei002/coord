@@ -71,14 +71,14 @@ void WorkerSlave::checkWorkerRequest() {
         uv_mutex_unlock(&this->mutex);
         if (packet->type == worker_packet_request) {
             auto request = newRequest(this->coord);
-            request->id = packet->id;
-            request->route = packet->route;
+            request->Id = packet->id;
+            request->Route = packet->route;
             request->payload = packet->payload;
             this->recvWorkerRequest(packet, request);
             this->coord->Destory(request);
         } else if (packet->type == worker_packet_notify) {
             auto notify = newNotify(this->coord);
-            notify->route = packet->route;
+            notify->Route = packet->route;
             notify->payload = packet->payload;
             this->recvWorkerNotify(packet, notify);
             this->coord->Destory(notify);
@@ -104,7 +104,7 @@ void WorkerSlave::recvWorkerRequest(worker_packet* packet, Request* request){
 void WorkerSlave::recvWorkerNotify(worker_packet* packet, Notify* notify){
     //this->coord->CoreLogDebug("[WorkerSlave] recvWorkerNotify");
     try{
-        if (strcmp(notify->route.c_str(), "reload") == 0) {
+        if (strcmp(notify->Route.c_str(), "reload") == 0) {
             this->coord->Reload();
         } else {
             //传递到逻辑层

@@ -1,8 +1,7 @@
 #pragma once 
 
-#include "coord/component/component.h"
-#include "coord/pipe/pipe_agent.h"
-#include "coord/builtin/slice.h"
+#include "coord/builtin/type.h"
+#include "coord/builtin/destoryable.h"
 #include <uv.h>
 #include <map>
 namespace coord {//tolua_export
@@ -11,34 +10,52 @@ class Coord;
 
 namespace pipe {//tolua_export
 
+void uv_pipe_connection_cb(uv_stream_t *server, int status);
+
 class PipeAgent;
+class PipeListener;
 
 class IPipeHandler {//tolua_export
-public:
-    virtual void recvPipeNew(PipeListener* listener, PipeAgent* agent) = 0;
+friend PipeListener;
+protected:
+    virtual void EvConnection(PipeListener* listener, PipeAgent* agent) = 0;
+    /// 全部连接关闭后才会触发Close事件
+    virtual void EvClose(PipeListener* listener) = 0;
 };//tolua_export
 
-class PipeListener  {//tolua_export
+class PipeListener : public Destoryable {//tolua_export
 CC_CLASS(PipeListener);
+friend PipeAgent;
+friend void uv_pipe_connection_cb(uv_stream_t *server, int status);
 public:
     PipeListener(Coord* coord);
     virtual ~PipeListener();
-    //开始侦听
-    int Listen(const std::string& path, int ipc, int backlog = 1024);//tolua_export
-    //关闭服务器
-    void Close();//tolua_export
-    //设置handler
+public:
+    /// 开始侦听
+    int Listen(const std::string& path, int backlog = 1024);//tolua_export
+    /// 关闭服务器
+    int Close();//tolua_export
+    /// 设置handler
     void SetHandler(IPipeHandler* handler);
-public:
-    void recvPipeNew(int status);
+protected:
+    // implement Destoryable
+    virtual void Destory();
+    // implement Destoryable
+private:
+    static void uv_close_cb(uv_handle_t* req);
+    static void uv_pipe_connection_cb(uv_stream_t *server, int status);
+    void evConnection(int status);
+    void evClose();
     void recvAgentClose(PipeAgent* agent);
-public:
+    void ifNotAgentDestoryMySelf();
+protected:
     IPipeHandler*               handler;
     Coord*                      coord;
     uv_pipe_t                   server;
     int                         sessionId;
     std::map<int, PipeAgent*>   agentDict;
-    int                         ipc;
+    int                         status;
+    bool                        destoryDelay;
 };//tolua_export
 
 PipeListener* NewPipeListener(Coord* coord);

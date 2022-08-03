@@ -32,6 +32,13 @@ class RequestPipeline;
 namespace http {
 class HttpServer;
 class HttpRequest;
+class HttpAgent;
+class HttpRouter;
+}
+namespace websocket {
+class Server;
+class Agent;
+class Router;
 }
 namespace script {
 class Script;
@@ -52,6 +59,10 @@ namespace gate {
 class Gate;
 class GateRequest;
 class GateNotify;
+class GateAgent;
+class GateRouter;
+class GatePromise;
+class gate_cluster;
 }
 namespace sql {
 class SQLClient;
@@ -79,6 +90,8 @@ class Result;
 }
 namespace net {
 class TcpClient;
+class TcpAgent;
+class TcpListener;
 }
 namespace pipe {
 class PipeClient;
