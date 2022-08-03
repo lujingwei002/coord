@@ -1,0 +1,147 @@
+#include "coord/base/base_writer.h"
+#include "coord/coord.h"
+namespace coord {
+
+base_writer::base_writer(Coord* coord) : proto(coord), table(coord) {
+    this->coord = coord;
+    this->argv = NULL;
+    this->type = response_type_none;
+}
+
+base_writer::~base_writer() {
+    if(this->argv != NULL) {
+        delete this->argv;
+        this->argv = NULL;
+    }
+}
+
+
+int base_writer::String(const char* data, size_t len) {
+    this->payload.Resize(0);
+    coord::Append(this->payload, data, len);
+    this->type = response_type_string;
+    return 0;
+}
+
+int base_writer::String(const char* data) {
+    return this->String(data, strlen(data));
+}
+
+int base_writer::Json(){
+    this->type = response_type_json;
+    return 0;
+}
+
+int base_writer::Proto(google::protobuf::Message& message) {
+    int err = protobuf::Serialize(this->payload, &message);
+    if (err) {
+        this->coord->CoreLogError("[base_writer] Proto failed, error='Serialize err'");
+        return -1;
+    }
+    this->type = response_type_proto;
+    return 0;
+}
+
+int base_writer::Proto(protobuf::Reflect& proto) {
+    this->proto = proto;
+    this->type = response_type_proto;
+    return 0;
+}
+
+protobuf::Reflect& base_writer::Proto(){
+    static thread_local protobuf::Reflect nullPtr(this->coord);
+    if(this->proto != nullptr) {
+        this->type = response_type_proto;
+        return this->proto;
+    } else {
+        return nullPtr;
+    }
+}
+
+protobuf::Reflect& base_writer::Proto(const char* name){
+    static thread_local protobuf::Reflect nullPtr(this->coord);
+    if(this->proto != nullptr) {
+        this->type = response_type_proto;
+        return this->proto;
+    } else {
+        auto proto = this->coord->Proto->NewReflect(name);
+        if (proto == nullptr) {
+            this->coord->CoreLogError("[base_writer] Proto failed, name=%s, error='NewReflect err'", name);
+            return nullPtr;
+        }
+        this->proto = proto;
+        this->type = response_type_proto;
+        return this->proto;
+    }
+}
+
+int base_writer::Pack(lua_State* L) {
+    auto argv = this->Args();
+    if (argv == NULL) {
+        return 0;
+    }
+    return argv->Pack(L);
+}
+
+Argument* base_writer::Args() {
+    if (this->argv != NULL) {
+        return this->argv;
+    }
+    auto argv = new Argument(this->coord);
+    if (argv == NULL) {
+        return NULL;
+    }
+    this->argv = argv;
+    this->type = response_type_argument;
+    return argv;
+}
+
+script::Reflect& base_writer::Table() {
+    this->type = response_type_table;
+    return this->table;
+}
+
+int base_writer::Table(lua_State* L) {
+    int type = lua_type(L, -1);
+    int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+    if (ref == LUA_NOREF) {
+        this->coord->CoreLogError("[base_writer] Table failed, error='luaL_ref err'");
+        lua_pushinteger(L, -1);
+        return 1;
+    }
+    this->table = script::newReflect(this->coord, ref, type);
+    lua_pushinteger(L, 0);
+    this->type = response_type_table;
+    return 1;
+}
+
+int base_writer::flush() {
+    if(this->type == response_type_proto && this->proto != nullptr) {
+        this->payload.Resize(0);
+        int err = this->proto.Serialize(this->payload);
+        if(err){
+            this->coord->CoreLogError("[base_writer] write failed");
+            return -1;
+        }
+        return 0;
+    } else if(this->type == response_type_argument && this->argv != nullptr){
+        this->payload.Resize(0);
+        int err = this->argv->Serialize(this->payload);
+        if(err){
+            this->coord->CoreLogError("[base_writer] write failed");
+            return -1;
+        }
+        return 0;
+    } else if(this->type == response_type_table && this->table != nullptr){
+        this->payload.Resize(0);
+        int err = this->table.Encode(this->payload);
+        if(err){
+            this->coord->CoreLogError("[base_writer] write failed");
+            return -1;
+        }
+        return 0;
+    }
+    return 0;
+}
+
+}

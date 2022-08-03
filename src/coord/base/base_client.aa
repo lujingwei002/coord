@@ -1,0 +1,303 @@
+#include "coord/base/base_client.h"
+#include "coord/config/config.h"
+#include "coord/protobuf/init.h"
+#include "coord/base/base_result.h"
+#include "coord/base/base_result.h"
+#include "coord/base/base_message.h"
+#include "coord/base/base_promise.h"
+#include "json/json.hpp"
+#include "coord/coord.h"
+namespace coord {
+
+
+base_client::base_client(Coord *coord) {
+    this->coord = coord;
+    this->status = base_client_status_nil;
+    this->requestId = 0;
+    this->connectPromise = nullptr;
+}
+
+base_client::~base_client() {
+    this->coord->CoreLogDebug("[base_client] ~base_client");
+}
+
+void base_client::recvConnect(){
+    this->sendHandshake();
+}
+
+void base_client::recvClose(){
+}
+
+void base_client::recvError(int err){
+} 
+
+int base_client::recvData(char* data, size_t len){
+    this->coord->CoreLogDebug("[base_client] recvData, len=%ld", len);
+    if(len < sizeof(base_packet_header)) {
+        return 0;
+    } 
+    base_packet_header *header = (base_packet_header*)data;
+    uint32_t length = (header->length[0] << 16) | (header->length[1] << 8) | header->length[2];
+    if (len < length + sizeof(base_packet_header)) {
+        return 0;
+    }
+    static thread_local base_packet packet;
+    int err = base_packet_decode(packet, data, len);
+    if(err < 0){
+        return 0;
+    }    
+    this->recvPacket(&packet);
+    return length + sizeof(base_packet_header);
+}
+
+void base_client::recvConnectError(const char* err) {
+}
+
+void base_client::recvPacketHandShake(base_packet* packet) {
+    if (nullptr != this->connectPromise) {
+        this->connectPromise->resolve(this);
+        delete this->connectPromise;
+        this->connectPromise = nullptr;
+    }
+}
+void base_client::recvPacket(base_packet* packet) {
+    this->coord->CoreLogDebug("[base_client] recvPacket, type=%d", packet->type);
+    switch(packet->type) {
+        case base_packet_type_handshake:{
+            this->recvPacketHandShake(packet);
+        }break;
+        case base_packet_type_data:{
+            this->recvPacketData(packet);
+        }break;
+        case base_packet_type_heartbeat:{
+            this->recvPacketHeartbeat(packet);
+        }break;
+    }
+}
+
+void base_client::onDestory() {
+    if (this->promiseDict.size() > 0) {
+        base_result* result = this->newResult(this->coord, this);
+        result->Code = 501;
+        for(auto it = this->promiseDict.begin(); it != this->promiseDict.end();) {
+            base_promise* promise = it->second;
+            result->Route = promise->route;
+            result->reqTime = promise->reqTime;
+            promise->reject(result);
+            this->coord->Destory(promise);
+            ++it;   
+        }
+        this->coord->Destory(result);
+        this->promiseDict.clear();
+    }
+}
+
+void base_client::recvPacketData(base_packet* packet) {
+    if(this->status != base_client_status_working) {
+        this->coord->CoreLogDebug("[base_client] recvPacketData failed, status=%d, error='status not working'", this->status);
+        return;
+    }
+    static thread_local base_message message;
+    int err = base_message_decode(message, packet->data, packet->length);
+    if (err < 0){
+        this->coord->CoreLogDebug("[base_client] recvPacketData failed, err=%d", err);
+        return;
+    }
+    //发送到逻辑层
+    this->coord->CoreLogDebug("[base_client] recvPacketData type=%d, id=%d, route=%s, len=%d", message.type, message.id, message.route, message.length);
+    switch(message.type){
+        case base_message_type_response: {
+            auto it = this->promiseDict.find(message.id);
+            if (it != this->promiseDict.end()) {
+                base_promise* promise = it->second;
+                base_result* result = this->newResult(this->coord, this);
+                result->Code = message.code;
+                result->Route = promise->route;
+                result->reqTime = promise->reqTime;
+                result->payload.Resize(0);
+                coord::Append(result->payload, message.data, message.length);
+                this->promiseDict.erase(it);
+                if (result->Code == 0) {
+                    promise->resolve(result);
+                } else {
+                    promise->reject(result);
+                }
+                this->coord->Destory(result);
+                this->coord->Destory(promise);
+                break; 
+            }
+            break;
+        } 
+        default:{
+            
+        }
+    }
+} 
+
+void base_client::recvPacketHeartbeat(base_packet* packet) {
+    this->coord->CoreLogDebug("[base_client] recvPacetHeartbeat");
+    this->sendPacket(base_packet_type_heartbeat, nullptr, 0);
+}
+
+int base_client::sendPacket(base_packet_type type, ::google::protobuf::Message* message) {
+    byte_slice packet;
+    //packet header
+    byte_slice header = packet.Slice(packet.Len(), packet.Len());
+    int err = base_packet_header_encode(header, type, 0);
+    if (err < 0){
+        return err;
+    }
+    packet.Resize(packet.Len() + header.Len());
+    //packet body
+    byte_slice body = packet.Slice(packet.Len(), packet.Len());
+    body.Reserve(message->ByteSizeLong());
+    char* end = (char *)message->SerializeWithCachedSizesToArray((google::protobuf::uint8 *)body.Data());
+    body.Resize(end - body.Data());
+    packet.Resize(packet.Len() + body.Len());
+    //重新写packet header 
+    header.Resize(0);
+    err = base_packet_header_encode(header, type, body.Len());
+    if (err < 0){
+        return err;
+    } 
+    return this->Send(packet);
+}
+
+int base_client::sendPacket(base_packet_type type, const char* data, size_t len) {
+    static thread_local byte_slice packet;
+    int err = base_packet_encode(packet, type, data, len);
+    if (err < 0){
+        this->coord->CoreLogDebug("[base_client] Send failed, err=%d", err);
+        return err;
+    }
+    this->Send(packet);
+    return 0;
+}
+
+int base_client::Notify(const char* route, const char* data, size_t len) {
+    this->coord->CoreLogError("[base_client] notify, route=%s", route);
+    byte_slice packet;
+    //packet header
+    byte_slice header = packet.Slice(packet.Len(), packet.Len());
+    int err = base_packet_header_encode(header, base_packet_type_data, 0);
+    if (err < 0){
+        return err;
+    }
+    packet.Resize(packet.Len() + header.Len());
+    //message header
+    byte_slice message = packet.Slice(packet.Len(), packet.Len());
+    err = base_message_header_encode(message, base_message_type_notify, 0, route);
+    if (err < 0){
+        return err;
+    }
+    packet.Resize(packet.Len() + message.Len());
+    //message body
+    byte_slice payload = packet.Slice(packet.Len(), packet.Len());
+    coord::Append(payload, data, len);
+    packet.Resize(packet.Len() + payload.Len());
+    //重新写packet header 
+    header.Resize(0);
+    err = base_packet_header_encode(header, base_packet_type_data, message.Len() + payload.Len());
+    if (err < 0){
+        return err;
+    } 
+    return  this->sendPacket(packet);
+}
+
+IPromise* base_client::Request(const char* route, const char* data, size_t len) {
+    this->coord->CoreLogDebug("[base_client] request, route=%s", route);
+    byte_slice packet;
+    //packet header
+    byte_slice header = packet.Slice(packet.Len(), packet.Len());
+    int err = base_packet_header_encode(header, base_packet_type_data, 0);
+    if (err < 0){
+        return NULL;
+    }
+    packet.Resize(packet.Len() + header.Len());
+    //message header
+    int requestId = ++this->requestId;
+    byte_slice message = packet.Slice(packet.Len(), packet.Len());
+    err = base_message_header_encode(message, base_message_type_request, requestId, route);
+    if (err < 0){
+        return NULL;
+    }
+    packet.Resize(packet.Len() + message.Len());
+    //message body
+    byte_slice payload = packet.Slice(packet.Len(), packet.Len());
+    coord::Append(payload, data, len);
+    packet.Resize(packet.Len() + payload.Len());
+    //重新写packet header 
+    header.Resize(0);
+    err = base_packet_header_encode(header, base_packet_type_data, message.Len() + payload.Len());
+    if (err < 0){
+        return NULL;
+    } 
+    err =  this->sendPacket(packet);
+    if (err < 0) {
+        return NULL;
+    }
+    base_promise* promise = new base_promise(this->coord);
+    promise->route = route;
+    this->promiseDict[requestId] = promise;
+    return promise;
+}
+
+IPromise* base_client::Request(const char* route, google::protobuf::Message* proto) {
+    this->coord->CoreLogDebug("[base_client] request, route=%s", route);
+    byte_slice packet;
+    //packet header
+    byte_slice header = packet.Slice(packet.Len(), packet.Len());
+    int err = base_packet_header_encode(header, base_packet_type_data, 0);
+    if (err < 0){
+        return NULL;
+    }
+    packet.Resize(packet.Len() + header.Len());
+    //message header
+    int requestId = ++this->requestId;
+    byte_slice message = packet.Slice(packet.Len(), packet.Len());
+    err = base_message_header_encode(message, base_message_type_request, requestId, route);
+    if (err < 0){
+        return NULL;
+    }
+    packet.Resize(packet.Len() + message.Len());
+    //message body
+    byte_slice payload = packet.Slice(packet.Len(), packet.Len());
+    err = protobuf::Serialize(payload, proto);
+    if(err){
+        return NULL;
+    }
+    packet.Resize(packet.Len() + payload.Len());
+    //重新写packet header 
+    header.Resize(0);
+    err = base_packet_header_encode(header, base_packet_type_data, message.Len() + payload.Len());
+    if (err < 0){
+        return NULL;
+    } 
+    err =  this->sendPacket(packet);
+    if (err < 0) {
+        return NULL;
+    }
+    base_promise* promise = new base_promise(this->coord);
+    promise->route = route;
+    this->promiseDict[requestId] = promise;
+    return promise;
+}
+
+int base_client::sendPacket(byte_slice& packet) {
+    if(this->status == base_client_status_nil) {
+        this->packetCache.push_back(packet);
+        return 0;
+    }
+    return this->Send(packet);
+}
+
+void base_client::flushPacketCache() {
+    if(this->status != base_client_status_working) {
+        return;
+    }
+    for(auto it : this->packetCache) {
+        this->sendPacket(it);
+    }
+}
+
+}  
