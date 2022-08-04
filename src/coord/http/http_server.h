@@ -46,14 +46,11 @@ public:
 
 class HttpServer : public net::ITcpHandler, public Destoryable {//tolua_export
 CC_CLASS(HttpServer);
-public:
-    HttpServer(Coord* coord);
-    virtual ~HttpServer();
-    int Start();//tolua_export
-    void SetHandler(IHttpHandler* handler);
-    void Close();
-    HttpServerConfig* DefaultConfig();//tolua_export
-public:
+friend HttpAgent;
+friend HttpRequest;
+friend HttpResponse;
+friend HttpRouter;
+private:
     // implement net::ITcpHandler
     virtual void recvTcpNew(net::TcpListener* listener, net::TcpAgent* agent);
     //// implement net::ITcpHandler end
@@ -62,15 +59,33 @@ public:
     // agent通知server协议升级
     void recvHttpUpgrade(HttpAgent* agent, HttpRequest* request);
     // agent通知server有新的请求
-    void recvHttpRequest(HttpRequest* request);
-public:
+    void recvHttpRequest(HttpAgent* agent, HttpRequest* request);
+private:
     std::map<int, HttpAgent*>   agentDict;
     Coord*                      coord;
     net::TcpListener*           listener;
-    HttpRouter*                 Router;//tolua_export
     IHttpHandler*               handler;
     HttpServerConfig            config;
     SSL_CTX*                    sslCtx;
+
+
+
+
+
+
+public:
+    HttpServer(Coord* coord);
+    virtual ~HttpServer();
+public:
+    int Start();//tolua_export
+    void SetHandler(IHttpHandler* handler);
+    void Close();
+    HttpServerConfig* DefaultConfig();//tolua_export
+public:
+    HttpRouter*                 Router;     //tolua_export
+
+
+    
 };//tolua_export
 
 HttpServer* newHttpServer(Coord* coord);

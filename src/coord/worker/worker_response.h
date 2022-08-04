@@ -13,7 +13,7 @@ namespace worker {//tolua_export
 class Worker;
 class Request;
 
-class Response : public base_response { //tolua_export
+class Response : public internal_response { //tolua_export
 CC_CLASS(Response);
 public:
     Response(Coord* coord, Request* request);

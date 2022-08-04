@@ -22,6 +22,7 @@ namespace coord {
     class base_request;
     class Coord;
     class base_agent;
+    class internal_agent;
 }
 
 namespace coord {//tolua_export
@@ -29,14 +30,47 @@ namespace coord {//tolua_export
 
 class base_response : public Destoryable { //tolua_export
 CC_CLASS(base_response);
-public:
+protected:
     base_response(Coord* coord, base_agent* agent, base_request* request);
     virtual ~base_response();
 public:
+    /// 将数据刷新到远端
+    virtual int Flush() = 0;
+    virtual void DebugLog();
     void Resolve();                                     //tolua_export
     void Reject(int code);                              //tolua_export
-    int Flush();
+public:
+    Coord*                      coord;
+    int                         Code;                   //tolua_export
+    byte_slice                  Payload;
+    uint64_t                    ReqTime; 
+    /// 数据类型
+    int                         DataType;
+protected:
+    virtual void onDestory(); 
+protected:
+    base_agent*                 agent;
+    base_request*               request;
+    protobuf::Reflect           proto;
+    Argument*                   argv;
+    script::Reflect             table;
+};//tolua_export
 
+
+
+
+
+
+
+
+class internal_response : public base_response {//tolua_export
+CC_CLASS(internal_response);
+protected:
+    internal_response(Coord* coord, internal_agent* agent, base_request* request);
+    virtual ~internal_response();
+public:
+    virtual int Flush();
+    /// ##export method
     /// 返回JSON格式的数据
     int Json();
 
@@ -57,24 +91,7 @@ public:
     /// 返回table类型的数据
     int Table(lua_State* L);                            //tolua_export
     script::Reflect& Table();
-
-public:
-    Coord*                      coord;
-    std::string                 Route;                  //tolua_export
-    int                         Code;                   //tolua_export
-    byte_slice                  payload;
-    uint64_t                    ReqTime; 
-    /// 数据类型
-    int                         DataType;
-protected:
-    virtual void onDestory(); 
-protected:
-    base_agent*                 agent;
-    base_request*               request;
-    protobuf::Reflect           proto;
-    Argument*                   argv;
-    script::Reflect             table;
-
+private:
+    internal_agent* agent;
 };//tolua_export
-
 }//tolua_export

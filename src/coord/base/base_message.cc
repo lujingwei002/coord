@@ -138,7 +138,6 @@ int base_response_encode(byte_slice& packet, uint64_t id, int code, Argument* ar
     packet.Resize(packet.Len() + header.Len());
     //message header
     byte_slice message = packet.Slice(packet.Len(), packet.Len());
-    printf("gggggggggggg\n");
     err = base_message_response_header_encode(message, base_message_type_response, base_message_data_type_argument, id, code);
     if (err){
         return err;

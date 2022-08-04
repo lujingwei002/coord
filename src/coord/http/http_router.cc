@@ -12,19 +12,16 @@ namespace http {
 
 CC_IMPLEMENT(HttpRouter, "coord::http::HttpRouter")
 
-HttpRouter* newHttpRouter(Coord* coord, HttpServer* server) {
-    HttpRouter* httpRouter = new HttpRouter(coord, server);
-    return httpRouter;
-}
 
-http_router_handler::~http_router_handler() {
+
+HttpRouter::http_router_handler::~http_router_handler() {
     if(this->ref >= 0) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->ref);
         this->ref = LUA_NOREF;
     }
 }
 
-void http_router_handler::recvHttpRequest(HttpRequest* request) {
+void HttpRouter::http_router_handler::recvHttpRequest(HttpRequest* request) {
     if(this->recvHttpRequestFunc != NULL){
         this->recvHttpRequestFunc(request);
     } 
@@ -39,7 +36,7 @@ HttpRouter::~HttpRouter(){
 
 }
 
-HttpRouteNode* HttpRouter::searchNode(HttpRouteNode* root, int i, int argc, const char** argv) {
+HttpRouter::http_router_node* HttpRouter::searchNode(HttpRouter::http_router_node* root, int i, int argc, const char** argv) {
     const char* word = argv[i];
     if (root->path[0] == ':' && *word != 0) {
         if (root->nodeArr.size() <= 0 && i >= argc - 1 && root->handler != NULL) {
@@ -58,7 +55,7 @@ HttpRouteNode* HttpRouter::searchNode(HttpRouteNode* root, int i, int argc, cons
         return NULL;
     }
     word = argv[i + 1];
-    HttpRouteNode* node = NULL;
+    HttpRouter::http_router_node* node = NULL;
     auto const it = root->nodeDict.find(word);
     if (it != root->nodeDict.end()) {
         node = this->searchNode(it->second, i + 1, argc, argv);
@@ -81,8 +78,8 @@ HttpRouteNode* HttpRouter::searchNode(HttpRouteNode* root, int i, int argc, cons
     return NULL;
 }
 
-HttpRouteNode* HttpRouter::searchNode(const char* method, const char* url) {
-    RouterMethodTree* methodTree = this->getMethodTree(method);
+HttpRouter::http_router_node* HttpRouter::searchNode(const char* method, const char* url) {
+    router_method_tree* methodTree = this->getMethodTree(method);
     static thread_local int argc = 0;
     static thread_local const char* argv[16];
     static char buffer[1024];
@@ -105,8 +102,8 @@ HttpRouteNode* HttpRouter::searchNode(const char* method, const char* url) {
         } 
     }
     const char* word = argv[0];
-    HttpRouteNode* node = NULL;
-    HttpRouteNode* root = methodTree->root;
+    HttpRouter::http_router_node* node = NULL;
+    HttpRouter::http_router_node* root = methodTree->root;
     auto const it = root->nodeDict.find(word);
     if (it != root->nodeDict.end()) {
         node = this->searchNode(it->second, 0, argc, argv);
@@ -129,8 +126,8 @@ HttpRouteNode* HttpRouter::searchNode(const char* method, const char* url) {
     return node;
 }
 
-http_router_handler* HttpRouter::searchHandler(const char* group, const char* url) {
-    HttpRouteNode* node = this->searchNode(group, url);
+HttpRouter::http_router_handler* HttpRouter::searchHandler(const char* group, const char* url) {
+    HttpRouter::http_router_node* node = this->searchNode(group, url);
     if (!node) {
         return NULL;
     }
@@ -142,7 +139,7 @@ void HttpRouter::recvHttpRequest(HttpRequest* request) {
         request->GetResponse()->Allow();
         return;
     }
-    http_router_handler* handler = this->searchHandler(request->Method.c_str(), request->Path.c_str());
+    HttpRouter::http_router_handler* handler = this->searchHandler(request->Method.c_str(), request->Path.c_str());
     if(handler == NULL){
         throw HttpPageNotFoundException(request->Path.c_str());
         return;
@@ -160,7 +157,7 @@ void HttpRouter::Trace() {
     }
 }
 
-void HttpRouter::trace(const char* event, HttpRouteNode* node) {
+void HttpRouter::trace(const char* event, HttpRouter::http_router_node* node) {
     auto handler = node->handler;
     if (handler != NULL){
         uint64_t averageTime = handler->times <= 0 ? 0 : (handler->consumeTime/handler->times);
@@ -173,27 +170,27 @@ void HttpRouter::trace(const char* event, HttpRouteNode* node) {
 }
 
 bool HttpRouter::Get(const char* path, HttpRouter_RecvHttpRequest func){
-    http_router_handler* handler = new http_router_handler(this->coord, func);
+    HttpRouter::http_router_handler* handler = new http_router_handler(this->coord, func);
     return this->addRoute("GET", path, handler);
 }
  
 bool HttpRouter::Get(const char* path, ScriptComponent* object, int ref) {
-    http_router_handler* handler = new http_router_handler(this->coord, std::bind(&ScriptComponent::recvHttpRequest, object, std::placeholders::_1, ref), ref);
+    HttpRouter::http_router_handler* handler = new http_router_handler(this->coord, std::bind(&ScriptComponent::recvHttpRequest, object, std::placeholders::_1, ref), ref);
     return this->addRoute("GET", path, handler);
 }
  
 bool HttpRouter::Post(const char* path, HttpRouter_RecvHttpRequest func){
-    http_router_handler* handler = new http_router_handler(this->coord, func);
+    HttpRouter::http_router_handler* handler = new http_router_handler(this->coord, func);
     return this->addRoute("POST", path, handler);
 }
 
 bool HttpRouter::Post(const char* path, ScriptComponent* object, int ref) {
-    http_router_handler* handler = new http_router_handler(this->coord, std::bind(&ScriptComponent::recvHttpRequest, object, std::placeholders::_1, ref), ref);
+    HttpRouter::http_router_handler* handler = new http_router_handler(this->coord, std::bind(&ScriptComponent::recvHttpRequest, object, std::placeholders::_1, ref), ref);
     return this->addRoute("POST", path, handler);
 }
 
 bool HttpRouter::Static(const char* url, const char* dir) {
-    http_router_handler* handler = new http_router_handler(this->coord, std::bind(&HttpRouter::recvStaticRequest, this, std::placeholders::_1, dir));
+    HttpRouter::http_router_handler* handler = new http_router_handler(this->coord, std::bind(&HttpRouter::recvStaticRequest, this, std::placeholders::_1, dir));
     return this->addRoute("GET", url, handler);
 }
 
@@ -206,7 +203,7 @@ int HttpRouter::Get(lua_State* L) {
 #ifndef TOLUA_RELEASE
     tolua_Error tolua_err;
     if (
-        !tolua_isusertype(L,1,"coord::http::HttpRouter",0,&tolua_err) ||
+        !tolua_isusertype(L,1,this->TypeName(),0,&tolua_err) ||
         !tolua_isstring(L,2,0,&tolua_err) ||
         !tolua_isusertype(L,3,"coord::ScriptComponent",0,&tolua_err) ||
         (!tolua_isfunction(L,4,0,&tolua_err) && !tolua_istable(L,4,0,&tolua_err)) ||
@@ -274,7 +271,7 @@ int HttpRouter::Post(lua_State* L) {
 #ifndef TOLUA_RELEASE
     tolua_Error tolua_err;
     if (
-        !tolua_isusertype(L,1,"coord::http::HttpRouter",0,&tolua_err) ||
+        !tolua_isusertype(L,1,this->TypeName(),0,&tolua_err) ||
         !tolua_isstring(L,2,0,&tolua_err) ||
         !tolua_isusertype(L,3,"coord::ScriptComponent",0,&tolua_err) ||
         (!tolua_isfunction(L,4,0,&tolua_err) && !tolua_istable(L,4,0,&tolua_err)) ||
@@ -352,9 +349,9 @@ void HttpRouter::recvStaticFileRequest(HttpRequest* request, const char* dir) {
 }
 
 bool HttpRouter::addRoute(const char* method, const char* path, http_router_handler* handler) {
-    RouterMethodTree* methodTree = this->getMethodTree(method);
+    router_method_tree* methodTree = this->getMethodTree(method);
     this->coord->CoreLogDebug("[HttpRouter] addRoute, method=%s, path=%s", method, path);
-    HttpRouteNode* node = methodTree->root;
+    http_router_node* node = methodTree->root;
     int pathLen = strlen(path);
 
     if(pathLen == 0){
@@ -378,7 +375,7 @@ bool HttpRouter::addRoute(const char* method, const char* path, http_router_hand
             std::string word(path + wordStart, wordEnd - wordStart + 1);
             auto it = node->nodeDict.find(word);
             if (it == node->nodeDict.end()){
-                HttpRouteNode* newNode = new HttpRouteNode(word.c_str());
+                HttpRouter::http_router_node* newNode = new HttpRouter::http_router_node(word.c_str());
                 node->nodeDict[word] = newNode;
                 node->nodeArr.push_back(newNode);
                 if (word.size() > 0 && word[0] == ':') {
@@ -397,23 +394,23 @@ bool HttpRouter::addRoute(const char* method, const char* path, http_router_hand
             wordEnd = wordStart;
         }
     }
-    if(handler != NULL) {
-        if(node->handler != NULL){
+    if(handler != nullptr) {
+        if(node->handler != nullptr){
             return false;
         }
         node->handler = handler;
         node->fullPath = path;
     } else {
-        node->handler = NULL;
+        node->handler = nullptr;
     }
     //this->coord->CoreLogDebug("bbb %s %s", node->path.c_str(), node->fullPath.c_str());
     return true;
 } 
 
-RouterMethodTree* HttpRouter::getMethodTree(const char* method) {
+HttpRouter::router_method_tree* HttpRouter::getMethodTree(const char* method) {
     const auto it = this->trees.find(method);
     if (it == this->trees.end()){
-        RouterMethodTree* methodTree = new RouterMethodTree();
+        router_method_tree* methodTree = new router_method_tree();
         this->trees[method] = methodTree;
         return methodTree;
     } else {

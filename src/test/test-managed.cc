@@ -42,7 +42,7 @@ TEST_F(TestManaged, Basic) {
         printf("connect succeed\n");
         coord::Argument argument(self->coord);
         argument.AddString("hello");
-        auto promise1 = client->Request("stop", &argument);
+        auto promise1 = client->Request("status", &argument);
         promise1->Then([&self](auto client, auto result) {
             printf("fffffffffffffff1\n");
             auto argument = result->Args();

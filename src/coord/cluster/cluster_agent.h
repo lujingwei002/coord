@@ -31,7 +31,7 @@ enum cluster_agent_status {
 	cluster_agent_status_closed = 3,
 };
 
-class cluster_agent : public base_agent, public net::ITcpAgentHandler  {//tolua_export
+class cluster_agent : public internal_agent, public net::ITcpAgentHandler  {//tolua_export
 public:
     cluster_agent(Coord *coord, Cluster* cluster,  cluster_server* server, net::TcpAgent* tcpAgent);
     virtual ~cluster_agent();

@@ -10,100 +10,103 @@ namespace coord {
 namespace http {
 CC_IMPLEMENT(HttpRequest, "coord::http::HttpRequest")
 
-static int on_message_begin(http_parser* parser){
-    //printf("on_message_begin\n");
+int HttpRequest::on_message_begin(http_parser* parser){
     return 0;
 }
 
-static int on_url(http_parser* parser, const char *at, size_t length){
-    //printf("on_url ength:%d\n", length);
+int HttpRequest::on_url(http_parser* parser, const char *at, size_t length){
     HttpRequest* request = (HttpRequest*)parser->data;
     request->Url.assign(at, length);
     http_parser_url urlParser;
     http_parser_url_init(&urlParser);
     http_parser_parse_url(at, length, 1, &urlParser);
+    // http://127.0.0.1/account/login?username=lujingwei
+    // 路径 /account/login
     if(urlParser.field_set & (1 << UF_PATH)) {
         request->Path.assign(at + urlParser.field_data[UF_PATH].off, urlParser.field_data[UF_PATH].len);
+        request->Route = request->Path;
     }
+    // 查询字符串 username=lujingwei
     if(urlParser.field_set & (1 << UF_QUERY)) {
         request->Query.assign(at + urlParser.field_data[UF_QUERY].off, urlParser.field_data[UF_QUERY].len);
     }
+    // http
     if(urlParser.field_set & (1 << UF_SCHEMA)) {
         request->Schema.assign(at + urlParser.field_data[UF_SCHEMA].off, urlParser.field_data[UF_SCHEMA].len);
     }
+    // 127.0.0.1
     if(urlParser.field_set & (1 << UF_HOST)) {
         request->Host.assign(at + urlParser.field_data[UF_HOST].off, urlParser.field_data[UF_HOST].len);
     }
     return 0;
 }
 
-static int on_status(http_parser* parser, const char *at, size_t length){
-    //printf("on_status length:%d\n", length);
+int HttpRequest::on_status(http_parser* parser, const char *at, size_t length){
     return 0;
 }
 
-static int on_header_field(http_parser* parser, const char *at, size_t length){
-    //printf("on_header_field length:%d\n", length);
+int HttpRequest::on_header_field(http_parser* parser, const char *at, size_t length){
     HttpRequest* request = (HttpRequest*)parser->data;
     std::locale loc;
-    request->headerField.assign(at, length);
+    request->tempHeaderField.assign(at, length);
     return 0;
 }
 
-static int on_header_value(http_parser* parser, const char *at, size_t length){
+int HttpRequest::on_header_value(http_parser* parser, const char *at, size_t length){
     HttpRequest* request = (HttpRequest*)parser->data;
     std::string value(at, length);
-    std::string field = request->headerField;
+    std::string field = request->tempHeaderField;
     std::transform(field.begin(), field.end(), field.begin(), ::tolower);
-    //std::transform(value.begin(), value.end(), value.begin(), ::tolower);
     request->headerDict[field] = value;
-    //printf("on_header_value %s:%s\n", field.c_str(), value.c_str());
     return 0;
 }
 
-static int on_headers_complete(http_parser* parser){
-    //printf("on_headers_complete\n");
+int HttpRequest::on_headers_complete(http_parser* parser){
     HttpRequest* request = (HttpRequest*)parser->data;
     request->Method.assign(http_method_str((http_method)parser->method));
     std::transform(request->Method.begin(), request->Method.end(), request->Method.begin(), ::toupper);
-    request->isUpgrade = parser->upgrade == 1 ? true : false;
+    request->IsUpgrade = parser->upgrade == 1 ? true : false;
     return 0;
 }
 
-static int on_body(http_parser* parser, const char *at, size_t length){
+int HttpRequest::on_body(http_parser* parser, const char *at, size_t length){
     HttpRequest* request = (HttpRequest*)parser->data;
-    //request->Body.append(at, length);
     coord::Append(request->payload, at, length);
     coord::Append(request->payload, 0);
-    //printf("on_body length:%d\n", length);
     return 0;
 }
 
-static int on_message_complete(http_parser* parser){
-    //printf("on_message_complete\n");
+int HttpRequest::on_message_complete(http_parser* parser){
     HttpRequest* request = (HttpRequest*)parser->data;
     request->isComplete = true;
     return 0;
 }
 
-static int on_chunk_header(http_parser* parser){
-    printf("on_chunk_header\n");
+int HttpRequest::on_chunk_header(http_parser* parser){
     return 0;
 }
 
-static int on_chunk_complete(http_parser* parser){
-    printf("on_chunk_complete\n");    
+int HttpRequest::on_chunk_complete(http_parser* parser){
     return 0;
 }
 
 HttpRequest::HttpRequest(Coord* coord, HttpAgent* agent) : base_request(coord, agent) {
-    this->agent = agent;
     this->server = agent->server;
-    //this->coord = coord;
-    this->SessionId = agent->SessionId;
-    this->isUpgrade = false;
+    this->agent = agent;
+    this->IsUpgrade = false;
     this->isComplete = false;
-    this->reqTime = uv_hrtime();
+    this->initHttpParser();
+    this->response = new HttpResponse(this->coord, this->server, agent, this);
+}
+
+HttpRequest::~HttpRequest() {
+    if(this->response){
+        this->coord->Destory(this->response);
+        this->response = nullptr;
+    }
+}
+
+void HttpRequest::initHttpParser() {
     http_parser_init(&this->parser, HTTP_REQUEST);
     this->parser.data = this;
     http_parser_settings_init(&this->setting);
@@ -117,27 +120,12 @@ HttpRequest::HttpRequest(Coord* coord, HttpAgent* agent) : base_request(coord, a
     this->setting.on_message_complete = on_message_complete;
     this->setting.on_chunk_header = on_chunk_header;
     this->setting.on_chunk_complete = on_chunk_complete;
-    this->coord->DontDestory(this->agent);
-    this->response = new HttpResponse(this->coord, agent, this);
-}
-
-HttpRequest::~HttpRequest() {
-    this->coord->CoreLogDebug("[HttpRequest] ~HttpRequest");
-    if(this->response){
-        this->coord->Destory(this->response);
-        this->response = nullptr;
-    }
-    this->coord->Destory(this->agent);
 }
 
 const char* HttpRequest::GetHeader(const char* field) {
     const auto it = this->headerDict.find(field);
-   // for (auto it = this->headerDict.begin(); it != this->headerDict.end(); ++it) {
-     //   printf("%s\n", it->first.c_str());
-    //    printf("%s\n", it->second.c_str());
-   // }
     if(it == this->headerDict.end()) {
-        return NULL;
+        return nullptr;
     }
     return it->second.c_str();
 }
@@ -145,33 +133,20 @@ const char* HttpRequest::GetHeader(const char* field) {
 bool HttpRequest::HasHeader(const char* field, const char* value) {
     auto it = this->headerDict.find(field);
     if(it == this->headerDict.end()) {
-        return NULL;
+        return false;
     }
     std::string v = it->second;
     std::transform(v.begin(), v.end(), v.begin(), ::tolower);
     return strcmp(v.c_str(), value) == 0;
 }
 
-size_t HttpRequest::parse(char* data, size_t len) {
+size_t HttpRequest::recvData(char* data, size_t len) {
     size_t byteRead = http_parser_execute(&this->parser, &this->setting, data, len);
     return byteRead;
 }
 
 HttpResponse* HttpRequest::GetResponse() {
     return dynamic_cast<HttpResponse*>(this->response);
-}
-
-/*  
-void HttpRequest::onDestory() {
-    this->response->flush();
-    uint64_t duration = uv_hrtime() - this->reqTime;
-    this->coord->LogDebug("[HttpRequest] %d | %10s | %16s | %8s \"%s\"", this->response->statusCode, date::FormatNano(duration), this->RemoteAddr.c_str(), this->Method.c_str(), this->Url.c_str());
-    this->agent->reset();
-}
-*/
-
-int HttpRequest::send(byte_slice& data) {
-    return this->agent->send(data);
 }
 
 

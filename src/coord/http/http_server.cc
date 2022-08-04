@@ -36,7 +36,7 @@ HttpServer* newHttpServer(Coord* coord) {
 HttpServer::HttpServer(Coord* coord) : coord(coord) {
     this->handler = nullptr;
     this->listener = net::NewTcpListener(coord);
-    this->Router = newHttpRouter(coord, this);
+    this->Router = new HttpRouter(coord, this);
     this->sslCtx = nullptr;
 }
 
@@ -85,8 +85,7 @@ void HttpServer::SetHandler(IHttpHandler* handler) {
     this->handler = handler;
 }
 
-void HttpServer::recvHttpRequest(HttpRequest* request){
-    HttpAgent* agent = request->agent;
+void HttpServer::recvHttpRequest(HttpAgent* agent, HttpRequest* request){
     int sessionId = agent->SessionId;
     this->coord->CoreLogDebug("[HttpServer] recvHttpRequest, sessionId=%d", sessionId);
     if(this->handler) {

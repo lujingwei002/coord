@@ -12,7 +12,7 @@ namespace managed {
 
 CC_IMPLEMENT(ManagedAgent, "coord::managed::ManagedAgent")
 
-ManagedAgent::ManagedAgent(Coord *coord, Managed* managed, managed_server* server, pipe::PipeAgent* pipeAgent) : base_agent(coord) {
+ManagedAgent::ManagedAgent(Coord *coord, Managed* managed, managed_server* server, pipe::PipeAgent* pipeAgent) : internal_agent(coord) {
     this->managed = managed;
     this->server = server;
     this->pipeAgent = pipeAgent;
@@ -113,7 +113,7 @@ void ManagedAgent::recvPacketHandShake(base_packet* packet) {
     }
     this->coord->CoreLogDebug("[%s] recvPacketHandShake", this->TypeName());
     response.set_code(0);
-    this->sendPacket(base_packet_type_handshake, &response);
+    this->SendPacket(base_packet_type_handshake, &response);
     this->status = base_agent_status_handshake;
 }
 

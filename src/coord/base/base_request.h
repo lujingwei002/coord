@@ -24,10 +24,11 @@ protected:
     virtual ~base_request();
 public:
     virtual base_response* GetResponse();
+    virtual void DebugLog();
 public:
     uint64_t                    Id;
     std::string                 Route;
-    uint64_t                    SessionId;//tolua_export
+    uint64_t                    SessionId;  //tolua_export
     uint64_t                    ReqTime; 
 protected:
     virtual void onDestory(); 

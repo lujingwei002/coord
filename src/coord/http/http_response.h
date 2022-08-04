@@ -14,41 +14,51 @@ extern "C" {
 #include <lua/lauxlib.h>
 }
 
+namespace coord {
+    class Coord;
+    namespace json {
+        class Reflect;
+    }
+    namespace http {
+        class HttpAgent;
+        class HttpServer;
+        class HttpRequest;
+    }
+}
+
 
 namespace coord {//tolua_export
-class Coord;
-namespace json {
-class Reflect;
-}
 namespace http {//tolua_export
-class HttpAgent;
-class HttpServer;
-class HttpRequest;
+
 class HttpResponse : public base_response { //tolua_export
 CC_CLASS(HttpResponse);
-public:
-    HttpResponse(Coord* coord, HttpAgent* agent, HttpRequest* request);
+friend HttpRequest;
+private:
+    HttpResponse(Coord* coord, HttpServer* server, HttpAgent* agent, HttpRequest* request);
     virtual ~HttpResponse();  
-public:
-    int Text(lua_State* L);//tolua_export
-    bool Text(const char* content);//tolua_export
-    bool Json(json::Reflect& json);//tolua_export
-    int Upgrade();//tolua_export
-    void PageNotFound();//tolua_export
-    void Exception(const char* msg);//tolua_export
-    void SetStatusCode(int code);//tolua_export
-    bool File(const char* path);//tolua_export
-    bool Allow();
-public:
-    int flush();
-public:
+private:
     HttpRequest*                        request;
     HttpServer*                         server;
+    // 响应头
     std::map<std::string, std::string>  headerDict;
-    byte_slice                          body;
-    byte_slice                          response;
     std::string                         contentType;
-    int                                 statusCode;
+
+
+
+/// ##export method
+public:
+    int Text(lua_State* L);             //tolua_export
+    bool Text(const char* content);     //tolua_export
+    bool Json(json::Reflect& json);     //tolua_export
+    int Upgrade();                      //tolua_export
+    void PageNotFound();                //tolua_export
+    void Exception(const char* msg);    //tolua_export
+    void SetStatusCode(int code);       //tolua_export
+    bool File(const char* path);        //tolua_export
+    bool Allow();
+    virtual int Flush();
+
+
 };//tolua_export
 
 }//tolua_export

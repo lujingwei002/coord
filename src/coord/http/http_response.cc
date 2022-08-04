@@ -11,21 +11,37 @@
 #include <map>
 
 
+
 namespace coord {
 namespace http {
 CC_IMPLEMENT(HttpResponse, "coord::http::HttpResponse")
 
-HttpResponse::HttpResponse(Coord* coord, HttpAgent* agent, HttpRequest* request) : base_response(coord, agent, request) {
+static std::map<int, std::string> contentTypeDict = {
+    {base_message_data_type_string, "text/plain"}
+};
+
+static std::map<std::string, std::string> defaultHeaderArr = {
+    {"Access-Control-Allow-Credentials", "false"},
+    {"Access-Control-Allow-Origin", "*"},
+    {"Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE,UPDATE"},
+    {"Access-Control-Allow-Headers", "Content-Type"},
+    {"Access-Control-Expose-Headers", "Content-Type"},
+    {"Server", "Coord"}
+};
+
+static std::string defaultContentType = "text/plain";
+
+HttpResponse::HttpResponse(Coord* coord, HttpServer* server, HttpAgent* agent, HttpRequest* request) : base_response(coord, agent, request) {
     this->request = request;
-    this->statusCode = 200;
-    this->server = request->server;
+    this->Code = 200;
+    this->server = server;
 }
 
 HttpResponse::~HttpResponse() {
 }
 
 void HttpResponse::SetStatusCode(int code) {
-    this->statusCode = code;
+    this->Code = code;
 }
 
 int HttpResponse::Text(lua_State* L){
@@ -36,66 +52,71 @@ int HttpResponse::Text(lua_State* L){
     size_t len = 0;
     const char* data = (const char*)lua_tolstring(L, 2, &len);
     this->coord->CoreLogDebug("HttpResponse::Text data=%s, len=%d", data, len);
-    this->body.Resize(0);
-    coord::Append(this->body, data, len);
+    this->Payload.Resize(0);
+    coord::Append(this->Payload, data, len);
     this->contentType = "text/html";
+    this->DataType = base_message_data_type_string;
     return 0;
 }
 
 void HttpResponse::PageNotFound() {
-    this->statusCode = 404;
+    this->Code = 404;
     this->contentType = "text/plain";
-    coord::Appendf(this->body, "404 page not found");
+    this->DataType = base_message_data_type_string;
+    coord::Appendf(this->Payload, "404 page not found");
 }
 
 void HttpResponse::Exception(const char* msg) {
-    this->statusCode = 500;
+    this->Code = 500;
+    this->DataType = base_message_data_type_string;
     this->contentType = "text/plain";
-    coord::Appendf(this->body, msg);
+    coord::Appendf(this->Payload, msg);
 }
 
 bool HttpResponse::Text(const char* content) {
     this->coord->CoreLogDebug("[HttpResponse] Text, content=%s", content);
-    coord::Appendf(this->body, content);
+    coord::Appendf(this->Payload, content);
+    this->DataType = base_message_data_type_string;
     this->contentType = "text/plain";
     return true;
 }
 
 bool HttpResponse::Json(json::Reflect& json) {
     this->coord->CoreLogDebug("[HttpResponse] JSON, content=%s", json.ToString());
-    if(json.Encode(this->body)){
+    if(json.Encode(this->Payload)){
         return false;
     }
    // this->body.Write(content, strlen(content));
     this->contentType = "application/json";
+    this->DataType = base_message_data_type_json;
     return true;
 }
 
 bool HttpResponse::Allow() {
-    
     return true;
 }
 
 bool HttpResponse::File(const char* path) {
     this->coord->CoreLogDebug("[HttpResponse] File, path=%s", path);
-    int err = io::ReadFile(path, this->body);
+    int err = io::ReadFile(path, this->Payload);
     if (err) {
         this->PageNotFound();
         return false;
     }
     const char* fileType = os::path::FileType(path);
     this->contentType = http::GetContentType(fileType); 
+    this->DataType = base_message_data_type_string;
 
     //ETag和If-None-Match控制缓存
     if (this->server->config.UseEtag) {
         //使用etag控制文件缓存
         static thread_local byte_slice etag;
         const char* ifNoneMatchHeader = this->request->GetHeader("if-none-match");
-        int err = http::GetFileETag(this->body, etag);
+        int err = http::GetFileETag(this->Payload, etag);
         if (!err) {
             if (ifNoneMatchHeader != NULL && strcmp(etag.Data(), ifNoneMatchHeader) == 0) {
-                this->body.Resize(0);
-                this->statusCode = HttpStatusCode_NotModify;
+                this->Payload.Resize(0);
+                this->Code = HttpStatusCode_NotModify;
                 return true;
             } else {
                 this->headerDict["ETag"] = etag.Data();
@@ -111,8 +132,8 @@ bool HttpResponse::File(const char* path) {
         if (ifModifySince) {
             int64_t since = http::UnixTimeStamp(ifModifySince);
             if (since == stat->st_mtim.tv_sec) {
-                this->body.Resize(0);
-                this->statusCode = HttpStatusCode_NotModify;
+                this->Payload.Resize(0);
+                this->Code = HttpStatusCode_NotModify;
                 return true;
             }
         }
@@ -147,7 +168,7 @@ int HttpResponse::Upgrade() {
     time_t t = time(NULL);
     struct tm* tmp = localtime(&t);
     strftime(dateStr, sizeof(dateStr), "%a, %d %b %Y %H:%M:%S GMT", tmp);
-    this->statusCode = 101;
+    this->Code = 101;
     this->headerDict["Connection"] = "upgrade";
     this->headerDict["Upgrade"] = "WebSocket";
     this->headerDict["Access-Control-Allow-Credentials"] = "true";
@@ -157,26 +178,36 @@ int HttpResponse::Upgrade() {
     return 0; 
 }
 
-int HttpResponse::flush() {
-    this->headerDict["Access-Control-Allow-Credentials"] = "false";
-    this->headerDict["Access-Control-Allow-Origin"] = "*";
-    this->headerDict["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS, PUT, DELETE,UPDATE";
-    this->headerDict["Access-Control-Allow-Headers"] = "Content-Type";
-    this->headerDict["Access-Control-Expose-Headers"] = "Content-Type";
+int HttpResponse::Flush() {
 
-    coord::Appendf(this->response, "HTTP/1.1 %d %s\r\n", this->statusCode, http_status_str((http_status)this->statusCode)); 
-    size_t contentLength = this->body.Len();
-    coord::Appendf(this->response, "Content-Length: %d\r\n", contentLength);
+    byte_slice response;
+
+    // Response Line
+    coord::Appendf(response, "HTTP/1.1 %d %s\r\n", this->Code, http_status_str((http_status)this->Code)); 
+    
+    // Content-Length
+    size_t contentLength = this->Payload.Len();
+    coord::Appendf(response, "Content-Length: %d\r\n", contentLength);
+
+    // Connection
     //this->response.Writef("connection: close\r\n");
-    coord::Appendf(this->response, "Server: coord\r\n");
-    coord::Appendf(this->response, "Content-Type: %s\r\n", this->contentType.c_str());
-    for(auto it = this->headerDict.begin(); it != this->headerDict.end(); ++it){
-        coord::Appendf(this->response, "%s: %s\r\n", it->first.c_str(), it->second.c_str());
+
+    // Content-Type
+    coord::Appendf(response, "Content-Type: %s\r\n", this->contentType.c_str());
+
+    // Default Header
+    for(auto it = defaultHeaderArr.begin(); it != defaultHeaderArr.end(); ++it){
+        coord::Appendf(response, "%s: %s\r\n", it->first.c_str(), it->second.c_str());
     }
-    coord::Appendf(this->response, "\r\n");
-    coord::Append(this->response, this->body.Data(), this->body.Len());
-    //this->coord->CoreLogDebug("HttpResponse::Flush data=\n%s, len=%d", this->response.Data(), this->response.Len());
-    this->request->send(this->response);
+    // Other header
+    for(auto it = this->headerDict.begin(); it != this->headerDict.end(); ++it){
+        coord::Appendf(response, "%s: %s\r\n", it->first.c_str(), it->second.c_str());
+    }
+    coord::Appendf(response, "\r\n");
+
+    // 序列化
+    coord::Append(response, this->Payload.Data(), this->Payload.Len());
+    this->request->agent->response(this->request->Id, response);
     return 0;
 }
 }

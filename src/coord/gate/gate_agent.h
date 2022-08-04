@@ -30,7 +30,7 @@ class Gate;
 class Packet;
 class GateSession;
 
-class GateAgent : public base_agent, public net::ITcpAgentHandler, public websocket::IAgentHandler {
+class GateAgent : public internal_agent, public net::ITcpAgentHandler, public websocket::IAgentHandler {
 CC_CLASS(GateAgent);  
 public:
     GateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent);

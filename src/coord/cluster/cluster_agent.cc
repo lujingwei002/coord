@@ -18,7 +18,7 @@ cluster_agent* newClusterAgent(Coord* coord, Cluster* cluster,  cluster_server* 
     return self;
 }
 
-cluster_agent::cluster_agent(Coord *coord, Cluster* cluster,  cluster_server* server, net::TcpAgent* tcpAgent) : base_agent(coord) {
+cluster_agent::cluster_agent(Coord *coord, Cluster* cluster,  cluster_server* server, net::TcpAgent* tcpAgent) : internal_agent(coord) {
     this->cluster = cluster;
     this->server = server;
     this->tcpAgent = tcpAgent;

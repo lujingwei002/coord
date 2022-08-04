@@ -281,6 +281,18 @@ int Config::gotConfigQuoteValue(char* data, size_t size) {
 
 int Config::gotConfigValue(char* data, size_t size) {
     if (temp_session == nullptr) {
+        auto it = this->Sections.find(DEFAULT_SECTION_NAME);
+        if (it == this->Sections.end()) {
+            this->Sections[DEFAULT_SECTION_NAME] = std::map<std::string, std::string>{};
+            auto it1 = this->Sections.find(DEFAULT_SECTION_NAME);
+            if (it1 != this->Sections.end()) {
+                temp_session = &it1->second;
+            }
+        } else {
+            temp_session = &it->second;
+        }
+    }
+    if (temp_session == nullptr) {
         return ErrorInvalidArg;
     }
     std::string word = std::string(data, size);
@@ -407,7 +419,8 @@ int Config::scanConfigLine(const std::string& configPath, char* data, size_t siz
         } else if (IS_ASCII('=', c, codePointLength)) {
             int err = this->scanConfigKey(data, i);
             if (err) return err;
-            return this->scanConfigValue(data + i + 1, size - i - 1);
+            err = this->scanConfigValue(data + i + 1, size - i - 1);
+            return err;
         }
     }
     return this->scanConfigDirectiveLine(configPath, data, size);

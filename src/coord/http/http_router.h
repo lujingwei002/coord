@@ -7,19 +7,36 @@
 #include <map>
 #include <string>
 #include <functional>
+
+namespace coord {
+    class Coord;
+    class ScriptComponent;
+    namespace http {
+        class HttpRequest;
+        class HttpFrame;
+        class HttpServer;
+    }
+}
+
 namespace coord {//tolua_export
-
-class Coord;
-
-class ScriptComponent;
-
 namespace http {//tolua_export
 
-class HttpRequest;
-class HttpFrame;
-class HttpServer;
+///
+///
+///
+///
+
 typedef std::function<void (HttpRequest* request)> HttpRouter_RecvHttpRequest; 
 
+
+
+
+
+class HttpRouter {//tolua_export
+CC_CLASS(HttpRouter);
+friend HttpServer;
+
+private:
 class http_router_handler {
 public:
     //http_router_handler(){}
@@ -42,40 +59,64 @@ public:
     int                         consumeTime;        //耗时
 };
 
-class HttpRouteNode {
+class http_router_node {
 public:
-    HttpRouteNode(const char* path):handler(NULL){
+    http_router_node(const char* path):handler(nullptr){
         this->path = path;
-        this->optionalNode = NULL;
-        this->requiredNode = NULL;
+        this->optionalNode = nullptr;
+        this->requiredNode = nullptr;
     }
 public:
-    std::string fullPath;
-    std::string path;
-    http_router_handler* handler;
-    std::map<std::string, HttpRouteNode*> nodeDict;
-    std::vector<HttpRouteNode*> nodeArr;
-    HttpRouteNode* optionalNode;//*
-    HttpRouteNode* requiredNode;//:
+    std::string                                 fullPath;
+    std::string                                 path;
+    http_router_handler*                        handler;
+    std::map<std::string, http_router_node*>    nodeDict;
+    std::vector<http_router_node*>              nodeArr;
+    http_router_node*                           optionalNode;//*
+    http_router_node*                           requiredNode;//:
 };
 
-class RouterMethodTree {
+class router_method_tree {
 public:
-    RouterMethodTree() {
-        this->root = new HttpRouteNode("/");
+    router_method_tree() {
+        this->root = new http_router_node("/");
     }
 public:
-    HttpRouteNode* root;
+    http_router_node* root;
 };
 
-typedef std::map<std::string, http_router_handler> RouterHandlerMap;
 
-class HttpRouter {//tolua_export
-CC_CLASS(HttpRouter);
-public:
+
+
+
+
+
+
+private:
     HttpRouter(Coord* coord, HttpServer* server);
     virtual ~HttpRouter();
+private:
+    void trace(const char* event, http_router_node* node);
+    void recvStaticRequest(HttpRequest* request, const char* dir);
+    void recvStaticFileRequest(HttpRequest* request, const char* path);
+    void recvHttpRequest(HttpRequest* request);
+private:
+    http_router_node* searchNode(http_router_node* root, int i, int argc, const char** argv);
+    http_router_node* searchNode(const char* method, const char* path);
+    http_router_handler* searchHandler(const char* method, const char* path);
+    bool addRoute(const char* method, const char* path, http_router_handler* handler);
+    router_method_tree* getMethodTree(const char* method);
+private:
+    Coord*                                      coord;
+    HttpServer*                                 server;
+    std::map<std::string, router_method_tree*>  trees;
+
+
+
+
+
 public:
+    /// ##export method
     int Get(lua_State* L);  //tolua_export
     int Post(lua_State* L); //tolua_export
     bool Get(const char* url, ScriptComponent* object, int ref);
@@ -86,24 +127,7 @@ public:
     bool Static(const char* url, const char* dir);//tolua_export
     bool StaticFile(const char* url, const char* path);//tolua_export
     void Trace();//tolua_export
-public:
-    void trace(const char* event, HttpRouteNode* node);
-    void recvStaticRequest(HttpRequest* request, const char* dir);
-    void recvStaticFileRequest(HttpRequest* request, const char* path);
-    void recvHttpRequest(HttpRequest* request);
-public:
-    HttpRouteNode* searchNode(HttpRouteNode* root, int i, int argc, const char** argv);
-    HttpRouteNode* searchNode(const char* method, const char* path);
-    http_router_handler* searchHandler(const char* method, const char* path);
-    bool addRoute(const char* method, const char* path, http_router_handler* handler);
-    RouterMethodTree* getMethodTree(const char* method);
-public:
-    Coord*                                      coord;
-    HttpServer*                                 server;
-    std::map<std::string, RouterMethodTree*>    trees;
 };//tolua_export
-
-HttpRouter* newHttpRouter(Coord* coord, HttpServer* server);
 
 }//tolua_export
 }//tolua_export

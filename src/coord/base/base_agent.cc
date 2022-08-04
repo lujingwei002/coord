@@ -3,6 +3,7 @@
 namespace coord {
 
 CC_IMPLEMENT(base_agent, "coord::base_agent")
+CC_IMPLEMENT(internal_agent, "coord::internal_agent")
 
 base_agent::base_agent(Coord *coord) {
     this->coord = coord;
@@ -11,11 +12,18 @@ base_agent::base_agent(Coord *coord) {
 base_agent::~base_agent() {
 }
 
-int base_agent::Notify(const std::string& route, byte_slice& data) {
+
+internal_agent::internal_agent(Coord *coord) : base_agent(coord) {
+}
+
+internal_agent::~internal_agent() {
+}
+
+int internal_agent::Notify(const std::string& route, byte_slice& data) {
     return this->Notify(route, data.Data(), data.Len());
 }
 
-int base_agent::Notify(const std::string& route, const char* data, size_t len) {
+int internal_agent::Notify(const std::string& route, const char* data, size_t len) {
     this->coord->CoreLogDebug("[%s] Notify, sessionId=%d, route=%d, len=%d", this->TypeName(), this->SessionId, route.c_str(), len);
     byte_slice packet;
     int err = base_notify_encode(packet, route.c_str(), data, len);
@@ -26,12 +34,12 @@ int base_agent::Notify(const std::string& route, const char* data, size_t len) {
     return 0; 
 }
 
-int base_agent::Notify(const std::string& route, protobuf::Reflect& proto) {
+int internal_agent::Notify(const std::string& route, protobuf::Reflect& proto) {
     return this->Notify(route, proto.GetMessage());
 }
 
-int base_agent::Notify(const std::string& route, ::google::protobuf::Message* proto) {
-    this->coord->CoreLogError("[%s] Response, sessionId=%d, route=%d", this->TypeName(), this->SessionId, route.c_str());
+int internal_agent::Notify(const std::string& route, ::google::protobuf::Message* proto) {
+    this->coord->CoreLogError("[%s] Notify, sessionId=%d, route=%d", this->TypeName(), this->SessionId, route.c_str());
     byte_slice packet;
     int err = base_notify_encode(packet, route.c_str(), proto);
     if (err < 0){
@@ -41,11 +49,11 @@ int base_agent::Notify(const std::string& route, ::google::protobuf::Message* pr
     return 0; 
 }
 
-int base_agent::response(uint64_t id, int code, byte_slice& data) {
-    return this->response(id, code, data.Data(), data.Len());
+int internal_agent::Response(uint64_t id, int code, byte_slice& data) {
+    return this->Response(id, code, data.Data(), data.Len());
 }
 
-int base_agent::response(uint64_t id, int code, const char* data, size_t len) {
+int internal_agent::Response(uint64_t id, int code, const char* data, size_t len) {
     this->coord->CoreLogDebug("[%s] Response, sessionId=%d, id=%d, len=%d", this->TypeName(), this->SessionId, id, len);
     byte_slice packet;
     int err = base_response_encode(packet, id, code, data, len);
@@ -55,11 +63,11 @@ int base_agent::response(uint64_t id, int code, const char* data, size_t len) {
     return this->send(packet);
 }
 
-int base_agent::response(uint64_t id, int code, protobuf::Reflect& proto) {
-    return this->response(id, code, proto.GetMessage());
+int internal_agent::Response(uint64_t id, int code, protobuf::Reflect& proto) {
+    return this->Response(id, code, proto.GetMessage());
 }
 
-int base_agent::response(uint64_t id, int code, ::google::protobuf::Message* proto) {
+int internal_agent::Response(uint64_t id, int code, ::google::protobuf::Message* proto) {
     this->coord->CoreLogError("[%s] Response, sessionId=%d, id=%d", this->TypeName(), this->SessionId, id);
     byte_slice packet;
     int err = base_response_encode(packet, id, code, proto);
@@ -69,7 +77,7 @@ int base_agent::response(uint64_t id, int code, ::google::protobuf::Message* pro
     return this->send(packet);
 }
 
-int base_agent::response(uint64_t id, int code, Argument* argument) {
+int internal_agent::Response(uint64_t id, int code, Argument* argument) {
     this->coord->CoreLogError("[%s] Response, sessionId=%d, id=%d", this->TypeName(), this->SessionId, id);
     byte_slice packet;
     int err = base_response_encode(packet, id, code, argument);
@@ -79,7 +87,7 @@ int base_agent::response(uint64_t id, int code, Argument* argument) {
     return this->send(packet);
 }
 
-int base_agent::sendPacket(base_packet_type type, ::google::protobuf::Message* message) {
+int internal_agent::SendPacket(base_packet_type type, ::google::protobuf::Message* message) {
     byte_slice packet;
     int err = base_packet_encode(packet, type, message);
     if (err < 0){

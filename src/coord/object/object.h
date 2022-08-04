@@ -87,8 +87,8 @@ public:
     void*           data;           //tolua_export
     char            name[64];       //tolua_export
     Transform*      transform;      //tolua_export
-    Scene*          scene;          //tolua_export;
-    Coord*          coord;          //tolua_export;
+    Scene*          scene;          //tolua_export
+    Coord*          coord;          //tolua_export
 private:
     Object*                             parent;
     std::vector<Object*>                children;

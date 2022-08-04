@@ -53,6 +53,7 @@ int Object::AddScript(lua_State* L) {
         this->coord->CoreLogError("[Object] AddScript failed, error='arg 1 table expected");
         return 0;
     }
+    // 验证是否一个合法的lua component
     lua_pushvalue(L, 2);                        // arg component component
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);   // arg component
     lua_pushstring(L, "__COMPONENT");           // arg component '__COMPONENT'

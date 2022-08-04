@@ -15,6 +15,8 @@ HttpAgent::HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) 
     this->request = nullptr;
     this->isUpgrade = false;
     this->handler = nullptr;
+    this->requestId = 0;
+    this->minimumAlreadyResponseRequestId = 0;
     this->tcpAgent->SetHandler(this);
     this->coord->DontDestory(this->tcpAgent);
     //开启https 
@@ -33,12 +35,15 @@ HttpAgent::HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) 
 
 HttpAgent::~HttpAgent() {
     this->coord->CoreLogDebug("[HttpAgent] ~HttpAgent");
-    if(this->tcpAgent != nullptr) {
+    if(nullptr != this->tcpAgent) {
         this->tcpAgent->SetHandler(nullptr);
         this->coord->Destory(this->tcpAgent);
         this->tcpAgent = nullptr;
     }
-    this->request = nullptr;
+    if (nullptr != this->request) {
+        this->coord->Destory(this->request);
+        this->request = nullptr;
+    }
     if (this->server->config.SSLEncrypt) {
        // BIO_free(this->read_bio);
        // BIO_free(this->write_bio);
@@ -96,18 +101,17 @@ int HttpAgent::recvEncryptData(char* data, size_t len) {
         this->coord->CoreLogDebug("完成握手2 %ld", len);
         this->readDecryptData();
     }
-    //printf("%s\n", data);
     return len;
 }
 
 int HttpAgent::recvData(char* data, size_t len) {
     if(this->isUpgrade){
-        if(this->handler) {
-            return this->handler->recvHttpData(this, data, len);
-        } else {
-            return 0;
+        if(nullptr == this->handler) {
+            return len;
         }
+        return this->handler->recvHttpData(this, data, len);
     } 
+    // search delimit
     char* header = strstr(data, "\r\n\r\n");
     if(header == nullptr){
         return 0;
@@ -115,18 +119,15 @@ int HttpAgent::recvData(char* data, size_t len) {
     HttpRequest* request = this->request;
     if(request == nullptr){
         request = new HttpRequest(this->coord, this);
-        request->RemoteAddr = this->RemoteAddr;
+        request->Id = ++this->requestId;
         this->request = request;
-        //request由server管理起来，超时后产生警告
     }
-    if(request->isComplete){
-        //请求末完成，忽略新的数据或者直接关闭链接
-        return 0;
+    size_t byteRead = request->recvData(data, len);
+    if(!request->isComplete){
+        return byteRead;
     }
-    size_t byteRead = request->parse(data, len);
-    if(request->isComplete){
-        this->recvHttpRequest(request);    
-    }     
+    this->recvHttpRequest(request);    
+    this->request = nullptr;
     return byteRead;
 }
 
@@ -172,7 +173,7 @@ int HttpAgent::writeBioToSocket() {
 }
 
 void HttpAgent::recvHttpRequest(HttpRequest* request) {
-    //request->recvHttpRequest();
+    this->coord->CoreLogDebug("[HttpAgent] recvHttpRequest, url=%s", request->Url.c_str());
     if(this->request->HasHeader("connection", "upgrade")){
         //协议升级
         if(this->request->HasHeader("upgrade", "websocket")) {
@@ -184,11 +185,11 @@ void HttpAgent::recvHttpRequest(HttpRequest* request) {
         bool isKeepAlive = this->request->HasHeader("connection", "keep-alive");
         this->isKeepAlive = isKeepAlive;
         try{
-            this->server->recvHttpRequest(request);
+            this->server->recvHttpRequest(this, request);
         } catch(HttpException& e){
-            this->recvHttpException(request, e);
+            this->catchHttpException(request, e);
         } catch(HttpPageNotFoundException& e){
-            this->recvPageNotFoundException(request, e);
+            this->catchPageNotFoundException(request, e);
         }
     }
     this->coord->Destory(request);
@@ -197,12 +198,12 @@ void HttpAgent::recvHttpRequest(HttpRequest* request) {
     }
 } 
 
-void HttpAgent::recvHttpException(HttpRequest* request, HttpException& e) {
+void HttpAgent::catchHttpException(HttpRequest* request, HttpException& e) {
     HttpResponse* response = request->GetResponse();
     response->Exception(e.What());  
 }
 
-void HttpAgent::recvPageNotFoundException(HttpRequest* request, HttpPageNotFoundException& e) {
+void HttpAgent::catchPageNotFoundException(HttpRequest* request, HttpPageNotFoundException& e) {
     request->GetResponse()->PageNotFound();
 }
 
@@ -220,10 +221,6 @@ void HttpAgent::recvHttpUpgrade(HttpRequest* request) {
 void HttpAgent::Close() {
     this->tcpAgent->Close();
 } 
-
-void HttpAgent::reset() {
-    this->request = nullptr;
-}
 
 int HttpAgent::send(const char* data, size_t len) {
     return -1;
@@ -252,6 +249,34 @@ int HttpAgent::send(byte_slice& data) {
     } else {
         return this->tcpAgent->Send(data);
     }
+}
+
+void HttpAgent::responseWaitQueueIfNeed() {
+    while (this->payloadWaitingResponse.size() > 0) {
+        uint64_t requestId = this->requestIdWaitingResponse.top();
+        if (requestId == this->minimumAlreadyResponseRequestId + 1) {
+            this->requestIdWaitingResponse.pop();
+            auto it = this->payloadWaitingResponse.find(requestId);
+            if (it != this->payloadWaitingResponse.end()) {
+                this->send(it->second);
+                this->payloadWaitingResponse.erase(it);
+            }
+            this->minimumAlreadyResponseRequestId = requestId;
+        } else {
+            break;
+        }
+    }
+}
+
+int HttpAgent::response(uint64_t id, byte_slice& data) {
+    if (id == this->minimumAlreadyResponseRequestId + 1) {
+         return this->send(data);
+    } else {
+        this->requestIdWaitingResponse.push(id);
+        this->payloadWaitingResponse[id] = data;
+        this->responseWaitQueueIfNeed();
+        return 0;
+    }  
 }
 
 }

@@ -10,7 +10,7 @@ namespace coord {
 namespace gate {
 CC_IMPLEMENT(GateResponse, "coord::gate::GateResponse")
 
-GateResponse::GateResponse(Coord* coord, GateAgent* agent, GateRequest* request) : base_response(coord, agent, request) {
+GateResponse::GateResponse(Coord* coord, GateAgent* agent, GateRequest* request) : internal_response(coord, agent, request) {
 }
 
 GateResponse::~GateResponse() {

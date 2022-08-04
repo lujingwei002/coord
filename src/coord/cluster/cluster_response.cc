@@ -11,7 +11,7 @@ namespace cluster {
 CC_IMPLEMENT(Response, "coord::cluster::Response")
 
 
-Response::Response(Coord* coord, cluster_agent* agent, Request* request) : base_response(coord, agent, request) {
+Response::Response(Coord* coord, cluster_agent* agent, Request* request) : internal_response(coord, agent, request) {
 }
 
 Response::~Response() {

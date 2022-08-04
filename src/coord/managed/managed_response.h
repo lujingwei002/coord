@@ -14,7 +14,7 @@ namespace coord {
 namespace coord {//tolua_export
 namespace managed {//tolua_export
 
-class ManagedResponse : public base_response { //tolua_export
+class ManagedResponse : public internal_response { //tolua_export
 CC_CLASS(ManagedResponse);
 public:
     ManagedResponse(Coord* coord, ManagedAgent* agent, ManagedRequest* request);

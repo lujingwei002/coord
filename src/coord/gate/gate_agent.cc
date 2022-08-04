@@ -32,7 +32,7 @@ GateAgent* newGateAgent(Coord* coord, Gate* gate, websocket::Agent* webSocketAge
     return gateAgent;
 }
 
-GateAgent::GateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent) : base_agent(coord){
+GateAgent::GateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent) : internal_agent(coord){
     this->gate = gate;
     this->status = GateAgentStatus_Start;
     this->session = NULL;
@@ -42,7 +42,7 @@ GateAgent::GateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent) : base_a
     //this->coord->DontDestory(this->tcpAgent);
 }
 
-GateAgent::GateAgent(Coord* coord, Gate* gate, websocket::Agent* webSocketAgent) : base_agent(coord) {
+GateAgent::GateAgent(Coord* coord, Gate* gate, websocket::Agent* webSocketAgent) : internal_agent(coord) {
     this->coord = coord;
     this->gate = gate;
     this->status = GateAgentStatus_Start;

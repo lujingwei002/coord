@@ -16,7 +16,7 @@ class GateAgent;
 class Gate;
 class GateRequest;
 
-class GateResponse : public base_response { //tolua_export
+class GateResponse : public internal_response { //tolua_export
 CC_CLASS(GateResponse);
 public:
     GateResponse(Coord* coord, GateAgent* agent, GateRequest* request);

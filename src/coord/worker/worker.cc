@@ -368,7 +368,7 @@ void Worker::sendWorkerPacket(worker_packet* packet, worker::Request* request) {
     packet->type = worker_packet_response;
     packet->id = request->Id;
     packet->code = response->Code;
-    packet->payload = response->payload;
+    packet->payload = response->Payload;
     uv_mutex_lock(&this->mutex);
     this->resultArr.push_front(packet);
     uv_mutex_unlock(&this->mutex);

@@ -28,7 +28,7 @@ public:
     }
 
     ~array(){
-        LOG_DEBUG("[Array] ~Array capacity=%d", this->capacity);
+        //LOG_DEBUG("[Array] ~Array capacity=%d", this->capacity);
     }
 
     /// 返回写入的长度

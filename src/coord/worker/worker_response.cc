@@ -14,7 +14,7 @@ Response* newResponse(Coord* coord, Request* request) {
     return response;
 }
 
-Response::Response(Coord* coord, Request* request) : base_response(coord, nullptr, nullptr) {
+Response::Response(Coord* coord, Request* request) : internal_response(coord, nullptr, nullptr) {
     this->request = request;
 }
 

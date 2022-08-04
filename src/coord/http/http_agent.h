@@ -12,20 +12,29 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/bio.h>
+#include <queue>
+
+namespace coord {
+    class Coord;
+    namespace net {
+        class RecvBuffer;
+        class TcpAgent;
+    }
+    namespace http {
+        class HttpServer;
+        class HttpAgent;
+        class HttpRequest;
+        class HttpResponse;
+    }
+    namespace websocket {
+        class Agent;
+    }
+}
+
+
 
 namespace coord {//tolua_export
-class Coord;
-
-namespace net {
-class RecvBuffer;
-class TcpAgent;
-}
 namespace http {//tolua_export
-    
-class HttpServer;
-class HttpAgent;
-class HttpRequest;
-class HttpResponse;
 
 class IHttpAgentHandler {//tolua_export
 public:
@@ -35,44 +44,57 @@ public:
 
 class HttpAgent : public base_agent, public net::ITcpAgentHandler {//tolua_export
 CC_CLASS(HttpAgent);
-public:
+friend HttpServer;
+friend HttpRequest;
+friend HttpResponse;
+friend coord::websocket::Agent;
+private:
     HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent);
     virtual ~HttpAgent();
 public:
     void Close();
     void SetHandler(IHttpAgentHandler* handler);
 public:
-    virtual int send(byte_slice& data);
-    virtual int send(const char* data, size_t len);
-    int writeBioToSocket();
-    void readDecryptData();
-    int recvData(char* data, size_t len);
-    int recvEncryptData(char* data, size_t len);
-
-    //重置状态, 使HTTP服务端可以转移向该连接上的下一个请求。
-    void reset();
-    void recvHttpException(HttpRequest* request, HttpException& e);
-    void recvPageNotFoundException(HttpRequest* request, HttpPageNotFoundException& e);
-    void recvHttpRequest(HttpRequest* request);
-    void recvHttpUpgrade(HttpRequest* request);
-
     //implement net::ITcpAgentHandler
     virtual void recvTcpNew(net::TcpAgent* agent);
     virtual void recvTcpClose(net::TcpAgent* agent);
     virtual void recvTcpError(net::TcpAgent* agent);
     virtual int recvTcpData(net::TcpAgent* agent, char* data, size_t len);
     //implement net::ITcpAgentHandler end
-public:
+protected:
+    //implement base_agent
+    virtual int send(byte_slice& data);
+    virtual int send(const char* data, size_t len);
+    //implement base_agent
+    // 根据id, 保证按顺序返回response给客户端
+    int response(uint64_t id, byte_slice& data);
+private:
+    int writeBioToSocket();
+    void readDecryptData();
+    int recvData(char* data, size_t len);
+    int recvEncryptData(char* data, size_t len);
+    void catchHttpException(HttpRequest* request, HttpException& e);
+    void catchPageNotFoundException(HttpRequest* request, HttpPageNotFoundException& e);
+    void recvHttpRequest(HttpRequest* request);
+    void recvHttpUpgrade(HttpRequest* request);
+    void responseWaitQueueIfNeed();
+private:
     HttpServer*         server;
     HttpRequest*        request;
     bool                isUpgrade;
     bool                isKeepAlive;
+    net::TcpAgent*      tcpAgent;
+    IHttpAgentHandler*  handler;
+    uint64_t            requestId;
+    // 保证按顺序返回response
+    uint64_t            minimumAlreadyResponseRequestId;
+    std::priority_queue<uint64_t, std::vector<uint64_t>, std::less<uint64_t> > requestIdWaitingResponse;
+    std::map<uint64_t, byte_slice> payloadWaitingResponse;
+    // ssl相关
     SSL*                ssl;
     SSL_CTX*            ssl_ctx;
     BIO*                read_bio;
     BIO*                write_bio;  
-    net::TcpAgent*      tcpAgent;
-    IHttpAgentHandler*  handler;
 };//tolua_export
 
 }//tolua_export
