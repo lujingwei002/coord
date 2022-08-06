@@ -58,7 +58,7 @@ TEST_F(TestR3, Insert) {
         printf("not match /account/login/\n");
     }
 
-    tree->dump(10);
+    tree->dump(0);
 }
 
 

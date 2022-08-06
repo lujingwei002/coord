@@ -81,3 +81,4 @@ dep/protobuf*
 dep/tolua*
 dep/argparse*
 dep/r3*
+install/proc

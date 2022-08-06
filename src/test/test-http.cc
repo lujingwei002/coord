@@ -40,16 +40,9 @@ TEST_F(TestHttp, TestRouter) {
     auto httpServer = this->coord->NewHttpServer();
     auto router = httpServer->Router;
     router->Get("/", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/aa", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/aa/", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/aa/bb", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/aa/bb/", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/11/22", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/asset/*path", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/static/:path", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/hello/:name", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/hi/*name", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
-    router->Get("/hi/song", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
+    router->Get("/account/login", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
+    router->Get("/account/index", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
+ 
     //router->Trace();
 /*    auto node = router->searchNode("GET", "/");*/
     //ASSERT_TRUE(node);
@@ -110,5 +103,5 @@ TEST_F(TestHttp, TestRouter) {
     /*this->coord->Destory(httpServer);*/
 }
 
-TEST_F(TestHttp, TestServer) {
-}
+// TEST_F(TestHttp, TestServer) {
+// }
