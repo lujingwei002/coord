@@ -161,10 +161,10 @@ void Category::Log(const char* str){
     for (auto it : this->appenderArr) {
         it->Log(str);
     }
-    if (this->appenderArr.size() <= 0) {
-        printf(str);
-        fflush(stdout);
-    }
+    // if (this->appenderArr.size() <= 0) {
+    //     printf(str);
+    //     fflush(stdout);
+    // }
 }
 
 

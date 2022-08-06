@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Thu Aug  4 14:54:02 2022.
+** Generated automatically by tolua++-1.0.92 on Fri Aug  5 15:12:28 2022.
 */
 
 #ifndef __cplusplus
@@ -36,6 +36,7 @@ TOLUA_API int  tolua_coord_open (lua_State* tolua_S);
 #include "coord/http/http_router.h"
 #include "coord/http/http_agent.h"
 #include "coord/web/web_config.h"
+#include "coord/web/web_server.h"
 #include "coord/websocket/websocket_server.h"
 #include "coord/websocket/websocket_router.h"
 #include "coord/websocket/websocket_frame.h"
@@ -163,7 +164,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::http::HttpAgent");
  tolua_usertype(tolua_S,"coord::websocket::WebSocketServerConfig");
  tolua_usertype(tolua_S,"coord::websocket::Agent");
- tolua_usertype(tolua_S,"coord::script::Script");
+ tolua_usertype(tolua_S,"coord::web::WebServer");
  tolua_usertype(tolua_S,"coord::net::TcpListener");
  tolua_usertype(tolua_S,"coord::cache::CacheReader");
  tolua_usertype(tolua_S,"coord::http::HttpResponse");
@@ -173,91 +174,93 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::Transform");
  tolua_usertype(tolua_S,"coord::base_request");
  tolua_usertype(tolua_S,"coord::login::LoginConfig");
+ tolua_usertype(tolua_S,"coord::json::Reflect");
  tolua_usertype(tolua_S,"coord::Object");
  tolua_usertype(tolua_S,"coord::websocket::Frame");
  tolua_usertype(tolua_S,"coord::Config");
  tolua_usertype(tolua_S,"internal_agent");
- tolua_usertype(tolua_S,"coord::ScriptComponent");
+ tolua_usertype(tolua_S,"coord::http::HttpRouter");
  tolua_usertype(tolua_S,"coord::Environment");
+ tolua_usertype(tolua_S,"coord::login::LoginSvr");
  tolua_usertype(tolua_S,"coord::websocket::IAgentHandler");
- tolua_usertype(tolua_S,"base_notify");
- tolua_usertype(tolua_S,"coord::json::Reflect");
+ tolua_usertype(tolua_S,"coord::websocket::Server");
+ tolua_usertype(tolua_S,"coord::pipe::PipeAgent");
  tolua_usertype(tolua_S,"coord::IReader");
  tolua_usertype(tolua_S,"coord::Scene");
  tolua_usertype(tolua_S,"coord::cluster::ClusterRouter");
  tolua_usertype(tolua_S,"coord::base_response");
  tolua_usertype(tolua_S,"coord::sql::SQLConfig");
- tolua_usertype(tolua_S,"coord::login::LoginSvr");
- tolua_usertype(tolua_S,"coord::pipe::PipeAgent");
- tolua_usertype(tolua_S,"coord::net::ITcpAgentHandler");
  tolua_usertype(tolua_S,"coord::pipe::IPipeAgentHandler");
  tolua_usertype(tolua_S,"coord::closure::ClosureMgr");
+ tolua_usertype(tolua_S,"coord::net::ITcpAgentHandler");
  tolua_usertype(tolua_S,"base_worker_promise");
  tolua_usertype(tolua_S,"coord::worker::Notify");
+ tolua_usertype(tolua_S,"coord::worker::Result");
+ tolua_usertype(tolua_S,"coord::cluster::ClusterConfig");
  tolua_usertype(tolua_S,"coord::internal_response");
  tolua_usertype(tolua_S,"coord::Coord");
- tolua_usertype(tolua_S,"coord::worker::Result");
+ tolua_usertype(tolua_S,"coord::worker::WorkerRouter");
  tolua_usertype(tolua_S,"coord::worker::Request");
  tolua_usertype(tolua_S,"coord::http::IHttpAgentHandler");
- tolua_usertype(tolua_S,"coord::cluster::GateNotify");
- tolua_usertype(tolua_S,"coord::worker::WorkerRouter");
+ tolua_usertype(tolua_S,"coord::worker::WorkerConfig");
+ tolua_usertype(tolua_S,"coord::script::Reflect");
  tolua_usertype(tolua_S,"coord::protobuf::Reflect");
  tolua_usertype(tolua_S,"coord::cluster::Response");
- tolua_usertype(tolua_S,"coord::worker::WorkerConfig");
+ tolua_usertype(tolua_S,"coord::managed::ManagedAgent");
  tolua_usertype(tolua_S,"coord::sql::SQLClient");
- tolua_usertype(tolua_S,"coord::script::Reflect");
+ tolua_usertype(tolua_S,"coord::cache::Client");
  tolua_usertype(tolua_S,"coord::Vector3");
  tolua_usertype(tolua_S,"coord::redis::Promise");
- tolua_usertype(tolua_S,"coord::managed::ManagedAgent");
- tolua_usertype(tolua_S,"coord::cluster::Cluster");
+ tolua_usertype(tolua_S,"coord::cluster::GateNotify");
+ tolua_usertype(tolua_S,"coord::redis::RedisMgr");
  tolua_usertype(tolua_S,"lua_Number");
- tolua_usertype(tolua_S,"coord::redis::AsyncClient");
- tolua_usertype(tolua_S,"coord::net::TcpClient");
  tolua_usertype(tolua_S,"coord::cluster::Promise");
+ tolua_usertype(tolua_S,"coord::net::TcpClient");
+ tolua_usertype(tolua_S,"coord::ScriptComponent");
  tolua_usertype(tolua_S,"coord::http::HttpRequest");
  tolua_usertype(tolua_S,"coord::redis::Reply");
  tolua_usertype(tolua_S,"coord::worker::Response");
- tolua_usertype(tolua_S,"coord::http::HttpRouter");
+ tolua_usertype(tolua_S,"coord::cluster::Cluster");
  tolua_usertype(tolua_S,"coord::websocket::IWebSocketHandler");
- tolua_usertype(tolua_S,"coord::cluster::ClusterConfig");
- tolua_usertype(tolua_S,"coord::managed::Managed");
  tolua_usertype(tolua_S,"coord::cache::AsyncClient");
- tolua_usertype(tolua_S,"coord::cache::Client");
+ tolua_usertype(tolua_S,"coord::managed::Managed");
+ tolua_usertype(tolua_S,"coord::redis::Client");
+ tolua_usertype(tolua_S,"coord::redis::AsyncClient");
  tolua_usertype(tolua_S,"coord::http::IHttpHandler");
  tolua_usertype(tolua_S,"coord::event::BaseEvent");
- tolua_usertype(tolua_S,"coord::gate::Gate");
- tolua_usertype(tolua_S,"coord::http::HttpServer");
- tolua_usertype(tolua_S,"coord::redis::Client");
+ tolua_usertype(tolua_S,"coord::BasicConfig");
+ tolua_usertype(tolua_S,"coord::web::IWebHandler");
+ tolua_usertype(tolua_S,"coord::gate::GateRequest");
  tolua_usertype(tolua_S,"coord::base_result");
  tolua_usertype(tolua_S,"coord::net::ITcpClientHandler");
  tolua_usertype(tolua_S,"coord::Destoryable");
- tolua_usertype(tolua_S,"coord::gate::GateSession");
- tolua_usertype(tolua_S,"coord::redis::RedisMgr");
- tolua_usertype(tolua_S,"coord::websocket::Router");
  tolua_usertype(tolua_S,"coord::sql::MySQLClient");
  tolua_usertype(tolua_S,"coord::sql::SQLRows");
- tolua_usertype(tolua_S,"coord::event::Listener");
- tolua_usertype(tolua_S,"coord::BasicConfig");
- tolua_usertype(tolua_S,"coord::websocket::Server");
+ tolua_usertype(tolua_S,"coord::websocket::Router");
+ tolua_usertype(tolua_S,"coord::gate::Gate");
  tolua_usertype(tolua_S,"coord::timer::TimerMgr");
- tolua_usertype(tolua_S,"coord::gate::GateNotify");
- tolua_usertype(tolua_S,"coord::Component");
+ tolua_usertype(tolua_S,"coord::event::Listener");
+ tolua_usertype(tolua_S,"coord::http::HttpServer");
  tolua_usertype(tolua_S,"coord::protobuf::Protobuf");
+ tolua_usertype(tolua_S,"coord::Component");
+ tolua_usertype(tolua_S,"coord::gate::GateNotify");
  tolua_usertype(tolua_S,"coord::event::EventMgr");
+ tolua_usertype(tolua_S,"coord::gate::GatePromise");
+ tolua_usertype(tolua_S,"coord::gate::GateSession");
  tolua_usertype(tolua_S,"base_agent");
  tolua_usertype(tolua_S,"coord::Promise");
  tolua_usertype(tolua_S,"coord::Argument");
- tolua_usertype(tolua_S,"coord::base_reader");
- tolua_usertype(tolua_S,"coord::gate::GatePromise");
- tolua_usertype(tolua_S,"coord::redis::RedisConfig");
  tolua_usertype(tolua_S,"coord::gate::GateResponse");
+ tolua_usertype(tolua_S,"base_notify");
+ tolua_usertype(tolua_S,"coord::redis::RedisConfig");
  tolua_usertype(tolua_S,"coord::Type");
- tolua_usertype(tolua_S,"coord::gate::GateRequest");
+ tolua_usertype(tolua_S,"coord::base_reader");
+ tolua_usertype(tolua_S,"coord::gate::GateConfig");
  tolua_usertype(tolua_S,"coord::protobuf::Array");
  tolua_usertype(tolua_S,"coord::managed::ManagedRequest");
  tolua_usertype(tolua_S,"coord::gate::GateRouter");
  tolua_usertype(tolua_S,"coord::http::HttpServerConfig");
- tolua_usertype(tolua_S,"coord::gate::GateConfig");
+ tolua_usertype(tolua_S,"coord::script::Script");
  tolua_usertype(tolua_S,"coord::cluster::Request");
 }
 
@@ -1522,31 +1525,31 @@ static int tolua_set_coord__Coord_Gate_ptr(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* get function: HttpServer of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_get_coord__Coord_HttpServer_ptr
-static int tolua_get_coord__Coord_HttpServer_ptr(lua_State* tolua_S)
+/* get function: WebServer of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_get_coord__Coord_WebServer_ptr
+static int tolua_get_coord__Coord_WebServer_ptr(lua_State* tolua_S)
 {
   coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'HttpServer'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'WebServer'",NULL);
 #endif
-  tolua_pushusertype(tolua_S,(void*)self->HttpServer,"coord::http::HttpServer");
+  tolua_pushusertype(tolua_S,(void*)self->WebServer,"coord::web::WebServer");
  return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* set function: HttpServer of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_set_coord__Coord_HttpServer_ptr
-static int tolua_set_coord__Coord_HttpServer_ptr(lua_State* tolua_S)
+/* set function: WebServer of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_set_coord__Coord_WebServer_ptr
+static int tolua_set_coord__Coord_WebServer_ptr(lua_State* tolua_S)
 {
   coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'HttpServer'",NULL);
-  if (!tolua_isusertype(tolua_S,2,"coord::http::HttpServer",0,&tolua_err))
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'WebServer'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"coord::web::WebServer",0,&tolua_err))
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
-  self->HttpServer = ((coord::http::HttpServer*)  tolua_tousertype(tolua_S,2,0))
+  self->WebServer = ((coord::web::WebServer*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
@@ -7679,6 +7682,100 @@ static int tolua_set_coord__web__WebConfig_UseEtag(lua_State* tolua_S)
    tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
 #endif
   self->UseEtag = ((bool)  tolua_toboolean(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: DefaultConfig of class  coord::web::WebServer */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_web_WebServer_DefaultConfig00
+static int tolua_coord_coord_web_WebServer_DefaultConfig00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::web::WebServer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::web::WebServer* self = (coord::web::WebServer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'DefaultConfig'",NULL);
+#endif
+  {
+   coord::web::WebConfig* tolua_ret = (coord::web::WebConfig*)  self->DefaultConfig();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::web::WebConfig");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'DefaultConfig'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: Start of class  coord::web::WebServer */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_web_WebServer_Start00
+static int tolua_coord_coord_web_WebServer_Start00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::web::WebServer",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::web::WebServer* self = (coord::web::WebServer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Start'",NULL);
+#endif
+  {
+   int tolua_ret = (int)  self->Start();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Start'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: Router of class  coord::web::WebServer */
+#ifndef TOLUA_DISABLE_tolua_get_coord__web__WebServer_Router_ptr
+static int tolua_get_coord__web__WebServer_Router_ptr(lua_State* tolua_S)
+{
+  coord::web::WebServer* self = (coord::web::WebServer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Router'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)self->Router,"coord::http::HttpRouter");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: Router of class  coord::web::WebServer */
+#ifndef TOLUA_DISABLE_tolua_set_coord__web__WebServer_Router_ptr
+static int tolua_set_coord__web__WebServer_Router_ptr(lua_State* tolua_S)
+{
+  coord::web::WebServer* self = (coord::web::WebServer*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Router'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"coord::http::HttpRouter",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->Router = ((coord::http::HttpRouter*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
 }
@@ -18414,7 +18511,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"Config",tolua_get_coord__Coord_Config_ptr,tolua_set_coord__Coord_Config_ptr);
     tolua_variable(tolua_S,"Script",tolua_get_coord__Coord_Script_ptr,tolua_set_coord__Coord_Script_ptr);
     tolua_variable(tolua_S,"Gate",tolua_get_coord__Coord_Gate_ptr,tolua_set_coord__Coord_Gate_ptr);
-    tolua_variable(tolua_S,"HttpServer",tolua_get_coord__Coord_HttpServer_ptr,tolua_set_coord__Coord_HttpServer_ptr);
+    tolua_variable(tolua_S,"WebServer",tolua_get_coord__Coord_WebServer_ptr,tolua_set_coord__Coord_WebServer_ptr);
     tolua_variable(tolua_S,"Proto",tolua_get_coord__Coord_Proto_ptr,tolua_set_coord__Coord_Proto_ptr);
     tolua_variable(tolua_S,"RedisMgr",tolua_get_coord__Coord_RedisMgr_ptr,tolua_set_coord__Coord_RedisMgr_ptr);
     tolua_variable(tolua_S,"Cache",tolua_get_coord__Coord_Cache_ptr,tolua_set_coord__Coord_Cache_ptr);
@@ -18750,7 +18847,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"coord");
    tolua_module(tolua_S,"http",0);
    tolua_beginmodule(tolua_S,"http");
-    tolua_cclass(tolua_S,"HttpRouter","coord::http::HttpRouter","",NULL);
+    tolua_cclass(tolua_S,"HttpRouter","coord::http::HttpRouter","coord::Destoryable",NULL);
     tolua_beginmodule(tolua_S,"HttpRouter");
      tolua_function(tolua_S,"Get",tolua_coord_coord_http_HttpRouter_Get00);
      tolua_function(tolua_S,"Post",tolua_coord_coord_http_HttpRouter_Post00);
@@ -18788,6 +18885,21 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
      tolua_variable(tolua_S,"SSLKeyFile",tolua_get_coord__web__WebConfig_SSLKeyFile,tolua_set_coord__web__WebConfig_SSLKeyFile);
      tolua_variable(tolua_S,"AssetDir",tolua_get_coord__web__WebConfig_AssetDir,tolua_set_coord__web__WebConfig_AssetDir);
      tolua_variable(tolua_S,"UseEtag",tolua_get_coord__web__WebConfig_UseEtag,tolua_set_coord__web__WebConfig_UseEtag);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"coord",0);
+  tolua_beginmodule(tolua_S,"coord");
+   tolua_module(tolua_S,"web",0);
+   tolua_beginmodule(tolua_S,"web");
+    tolua_cclass(tolua_S,"IWebHandler","coord::web::IWebHandler","",NULL);
+    tolua_beginmodule(tolua_S,"IWebHandler");
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"WebServer","coord::web::WebServer","coord::http::IHttpHandler",NULL);
+    tolua_beginmodule(tolua_S,"WebServer");
+     tolua_function(tolua_S,"DefaultConfig",tolua_coord_coord_web_WebServer_DefaultConfig00);
+     tolua_function(tolua_S,"Start",tolua_coord_coord_web_WebServer_Start00);
+     tolua_variable(tolua_S,"Router",tolua_get_coord__web__WebServer_Router_ptr,tolua_set_coord__web__WebServer_Router_ptr);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
@@ -18894,7 +19006,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_cclass(tolua_S,"ITcpHandler","coord::net::ITcpHandler","",NULL);
     tolua_beginmodule(tolua_S,"ITcpHandler");
     tolua_endmodule(tolua_S);
-    tolua_cclass(tolua_S,"TcpListener","coord::net::TcpListener","",NULL);
+    tolua_cclass(tolua_S,"TcpListener","coord::net::TcpListener","coord::Destoryable",NULL);
     tolua_beginmodule(tolua_S,"TcpListener");
      tolua_function(tolua_S,"Listen",tolua_coord_coord_net_TcpListener_Listen00);
      tolua_function(tolua_S,"Close",tolua_coord_coord_net_TcpListener_Close00);
@@ -19928,223 +20040,198 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     125, 10,108,111, 99, 97,108, 32,102,117,110, 99,116,105,111,
     110, 32, 95,105,109,112,111,114,116, 95, 40,115,101, 97,114,
      99,104, 68,105,114, 44, 32,112, 97, 99,107, 97,103,101, 80,
-     97,116,104, 44, 32,101,120,112,111,114,116, 78, 97,109,101,
-     41, 10,108,111, 99, 97,108, 32,102,117,108,108, 68,105,114,
-     32, 61, 32,115,101, 97,114, 99,104, 68,105,114, 46, 46, 39,
-     47, 39, 46, 46,112, 97, 99,107, 97,103,101, 80, 97,116,104,
-     10,105,102, 32,110,111,116, 32,111,115, 46,112, 97,116,104,
-     46, 73,115, 68,105,114, 40,102,117,108,108, 68,105,114, 41,
-     32,116,104,101,110, 10,114,101,116,117,114,110, 32,102, 97,
-    108,115,101, 10,101,110,100, 10,108,111, 99, 97,108, 32,112,
-     97, 99,107, 97,103,101, 78, 97,109,101, 32, 61, 32,111,115,
-     46,112, 97,116,104, 46, 66, 97,115,101, 78, 97,109,101, 40,
-    112, 97, 99,107, 97,103,101, 80, 97,116,104, 41, 10,108,111,
-     99, 97,108, 32,101,110,118, 32, 61, 32,115, 99,114,105,112,
-    116, 46,112, 97, 99,107, 97,103,101, 91,112, 97, 99,107, 97,
-    103,101, 80, 97,116,104, 93, 10,105,102, 32,110,111,116, 32,
-    101,110,118, 32,116,104,101,110, 10,101,110,118, 32, 61, 32,
-    123, 95, 95, 78, 65, 77, 69, 32, 61, 32,101,120,112,111,114,
-    116, 78, 97,109,101, 44, 32, 95, 95, 80, 65, 67, 75, 65, 71,
-     69, 32, 61, 32,112, 97, 99,107, 97,103,101, 80, 97,116,104,
-     44, 32, 95, 95, 80, 65, 84, 72, 32, 61, 32,102,117,108,108,
-     68,105,114, 44, 32, 76,111,103, 32, 61, 32, 76,111,103, 44,
-     32, 76,111,103, 70, 97,116, 97,108, 32, 61, 32, 76,111,103,
-     70, 97,116, 97,108, 44, 32, 76,111,103, 69,114,114,111,114,
-     32, 61, 32, 76,111,103, 69,114,114,111,114, 44, 32, 76,111,
-    103, 87, 97,114,110, 32, 61, 32, 76,111,103, 87, 97,114,110,
-     44, 32, 76,111,103, 73,110,102,111, 32, 61, 32, 76,111,103,
-     73,110,102,111, 44, 32, 76,111,103, 68,101, 98,117,103, 32,
-     61, 32, 76,111,103, 68,101, 98,117,103, 44, 32, 76,111,103,
-     77,115,103, 32, 61, 32, 76,111,103, 77,115,103,125, 10,101,
-    110,118, 46,112, 97, 99,107, 97,103,101, 32, 61, 32,101,110,
-    118, 10,115,101,116,109,101,116, 97,116, 97, 98,108,101, 40,
-    101,110,118, 44, 32,123, 95, 95,105,110,100,101,120, 32, 61,
-     32, 95, 71,125, 41, 10,101,110,100, 10,108,111, 99, 97,108,
-     32,102,105,108,101, 65,114,114, 44, 32,100,105,114, 65,114,
-    114, 32, 61, 32,111,115, 46, 76,105,115,116, 68,105,114, 40,
-    102,117,108,108, 68,105,114, 41, 10,102,111,114, 32, 95, 44,
-     32,102,105,108,101, 78, 97,109,101, 32,105,110, 32,112, 97,
-    105,114,115, 40,102,105,108,101, 65,114,114, 41, 32,100,111,
-     10,105,102, 32,115,116,114,105,110,103, 46,102,105,110,100,
-     40,102,105,108,101, 78, 97,109,101, 44, 32, 39, 46,108,117,
-     97, 36, 39, 41, 32,116,104,101,110, 10,108,111, 99, 97,108,
-     32,102,117,108,108, 80, 97,116,104, 32, 61, 32,102,117,108,
-    108, 68,105,114, 46, 46, 39, 47, 39, 46, 46,102,105,108,101,
-     78, 97,109,101, 10,108,111, 99, 97,108, 32,112, 97, 99,107,
-     97,103,101, 78, 97,109,101, 82,101, 97,108, 32, 61, 32,110,
-    105,108, 10,102,111,114, 32,108,105,110,101, 32,105,110, 32,
-    105,111, 46,108,105,110,101,115, 40,102,117,108,108, 80, 97,
-    116,104, 41, 32,100,111, 10,102,111,114, 32,107, 44, 32, 95,
-     32,105,110, 32,115,116,114,105,110,103, 46,103,109, 97,116,
-     99,104, 40,108,105,110,101, 44, 32, 34, 95,112, 97, 99,107,
-     97,103,101, 95, 37, 40, 91, 92, 34, 92, 39, 93, 40, 91, 37,
-    119, 92, 46, 35, 92, 47, 45, 93, 43, 41, 91, 92, 34, 92, 39,
-     93, 34, 41, 32,100,111, 10,112, 97, 99,107, 97,103,101, 78,
-     97,109,101, 82,101, 97,108, 32, 61, 32,107, 10, 98,114,101,
-     97,107, 10,101,110,100, 10,105,102, 32,112, 97, 99,107, 97,
-    103,101, 78, 97,109,101, 82,101, 97,108, 32,116,104,101,110,
-     10, 98,114,101, 97,107, 10,101,110,100, 10,101,110,100, 10,
-    105,102, 32,112, 97, 99,107, 97,103,101, 78, 97,109,101, 82,
-    101, 97,108, 32, 61, 61, 32,112, 97, 99,107, 97,103,101, 78,
-     97,109,101, 32,111,114, 32,112, 97, 99,107, 97,103,101, 78,
-     97,109,101, 82,101, 97,108, 32, 61, 61, 32, 39,109, 97,105,
-    110, 39, 32,116,104,101,110, 10,108,111, 99, 97,108, 32,102,
-     44, 32,101,114,114, 32, 61, 32,108,111, 97,100,102,105,108,
-    101, 40,102,117,108,108, 80, 97,116,104, 41, 10,105,102, 32,
-    110,111,116, 32,102, 32,116,104,101,110, 10,101,114,114,111,
-    114, 40,101,114,114, 41, 10,101,110,100, 10,115,101,116,102,
-    101,110,118, 40,102, 44, 32,101,110,118, 41, 10,102, 40, 41,
-     10,101,108,115,101, 10,112,114,105,110,116, 40, 39,105,103,
-    110,111,114,101, 39, 44, 32,102,117,108,108, 80, 97,116,104,
-     44, 32, 39, 97, 39, 44, 32,112, 97, 99,107, 97,103,101, 78,
-     97,109,101, 82,101, 97,108, 44, 32, 39, 98, 39, 44, 32,112,
-     97, 99,107, 97,103,101, 78, 97,109,101, 41, 10,101,110,100,
-     10,101,110,100, 10,101,110,100, 10,115, 99,114,105,112,116,
-     46,112, 97, 99,107, 97,103,101, 91,112, 97, 99,107, 97,103,
-    101, 80, 97,116,104, 93, 32, 61, 32,101,110,118, 10,115, 99,
-    114,105,112,116, 46,101,120,112,111,114,116, 91,101,120,112,
-    111,114,116, 78, 97,109,101, 93, 32, 61, 32,101,110,118, 10,
+     97,116,104, 41, 10,108,111, 99, 97,108, 32,102,117,108,108,
+     68,105,114, 32, 61, 32,115,101, 97,114, 99,104, 68,105,114,
+     46, 46, 39, 47, 39, 46, 46,112, 97, 99,107, 97,103,101, 80,
+     97,116,104, 10,105,102, 32,110,111,116, 32,111,115, 46,112,
+     97,116,104, 46, 73,115, 68,105,114, 40,102,117,108,108, 68,
+    105,114, 41, 32,116,104,101,110, 10,114,101,116,117,114,110,
+     32,102, 97,108,115,101, 10,101,110,100, 10,108,111, 99, 97,
+    108, 32,112, 97, 99,107, 97,103,101, 78, 97,109,101, 32, 61,
+     32,111,115, 46,112, 97,116,104, 46, 66, 97,115,101, 78, 97,
+    109,101, 40,112, 97, 99,107, 97,103,101, 80, 97,116,104, 41,
+     10,108,111, 99, 97,108, 32,112, 97, 99,107, 97,103,101, 32,
+     61, 32,115, 99,114,105,112,116, 46,112, 97, 99,107, 97,103,
+    101, 91,102,117,108,108, 68,105,114, 93, 10,105,102, 32,112,
+     97, 99,107, 97,103,101, 32,116,104,101,110, 10,105,102, 32,
+    110,111,116, 32,115, 99,114,105,112,116, 46,114,101,108,111,
+     97,100,105,110,103, 32,116,104,101,110, 10,114,101,116,117,
+    114,110, 32,112, 97, 99,107, 97,103,101, 10,101,108,115,101,
     105,102, 32,115, 99,114,105,112,116, 46,114,101,108,111, 97,
-    100,105,110,103, 32,116,104,101,110, 10,115, 99,114,105,112,
-    116, 46,114,101,108,111, 97,100, 91,112, 97, 99,107, 97,103,
-    101, 80, 97,116,104, 93, 32, 61, 32,101,110,118, 10,105,102,
-     32,116,121,112,101, 40,101,110,118, 46,111,110, 82,101,108,
-    111, 97,100, 41, 32, 61, 61, 32, 39,102,117,110, 99,116,105,
-    111,110, 39, 32,116,104,101,110, 10,101,110,118, 46,111,110,
-     82,101,108,111, 97,100, 40, 41, 10,101,110,100, 10,101,108,
-    115,101, 10,105,102, 32,116,121,112,101, 40,101,110,118, 46,
-    111,110, 65,119, 97,107,101, 41, 32, 61, 61, 32, 39,102,117,
-    110, 99,116,105,111,110, 39, 32,116,104,101,110, 10,101,110,
-    118, 46,111,110, 65,119, 97,107,101, 40, 41, 10,101,110,100,
-     10,101,110,100, 10,114,101,116,117,114,110, 32,101,110,118,
-     10,101,110,100, 10,102,117,110, 99,116,105,111,110, 32,105,
-    109,112,111,114,116, 40,112, 97, 99,107, 97,103,101, 80, 97,
-    116,104, 44, 32,101,120,112,111,114,116, 78, 97,109,101, 41,
-     10,105,102, 32,110,111,116, 32,101,120,112,111,114,116, 78,
-     97,109,101, 32,116,104,101,110, 10,101,120,112,111,114,116,
-     78, 97,109,101, 32, 61, 32,111,115, 46,112, 97,116,104, 46,
-     66, 97,115,101, 78, 97,109,101, 40,112, 97, 99,107, 97,103,
-    101, 80, 97,116,104, 41, 10,101,110,100, 10,108,111, 99, 97,
-    108, 32,112, 97, 99,107, 97,103,101, 32, 61, 32,115, 99,114,
-    105,112,116, 46,101,120,112,111,114,116, 91,101,120,112,111,
-    114,116, 78, 97,109,101, 93, 10,105,102, 32,112, 97, 99,107,
-     97,103,101, 32, 97,110,100, 32,112, 97, 99,107, 97,103,101,
-     46, 95, 95, 80, 65, 67, 75, 65, 71, 69, 32,126, 61, 32,112,
-     97, 99,107, 97,103,101, 80, 97,116,104, 32,116,104,101,110,
-     10,101,114,114,111,114, 40,115,116,114,105,110,103, 46,102,
-    111,114,109, 97,116, 40, 34,112, 97, 99,107, 97,103,101, 32,
-     37,115, 32, 99,111,110,102,108,105, 99,116, 32,119,105,116,
-    104, 32, 37,115, 34, 44, 32,112, 97, 99,107, 97,103,101, 80,
-     97,116,104, 44, 32,112, 97, 99,107, 97,103,101, 46, 95, 95,
-     80, 65, 67, 75, 65, 71, 69, 41, 41, 10,101,110,100, 10,108,
-    111, 99, 97,108, 32,112, 97, 99,107, 97,103,101, 32, 61, 32,
-    115, 99,114,105,112,116, 46,112, 97, 99,107, 97,103,101, 91,
-    112, 97, 99,107, 97,103,101, 80, 97,116,104, 93, 10,105,102,
-     32,112, 97, 99,107, 97,103,101, 32,116,104,101,110, 10,105,
-    102, 32,110,111,116, 32,115, 99,114,105,112,116, 46,114,101,
-    108,111, 97,100,105,110,103, 32,116,104,101,110, 10,114,101,
-    116,117,114,110, 32,112, 97, 99,107, 97,103,101, 10,101,108,
-    115,101,105,102, 32,115, 99,114,105,112,116, 46,114,101,108,
-    111, 97,100, 91,112, 97, 99,107, 97,103,101, 80, 97,116,104,
-     93, 32,116,104,101,110, 10,114,101,116,117,114,110, 32,112,
-     97, 99,107, 97,103,101, 10,101,110,100, 10,101,110,100, 10,
-    102,111,114, 32,115,101, 97,114, 99,104, 68,105,114, 44, 32,
-     95, 32,105,110, 32,115,116,114,105,110,103, 46,103,109, 97,
-    116, 99,104, 40, 99,111,111,114,100, 97, 46, 83, 99,114,105,
-    112,116, 46, 80, 97,116,104, 44, 32, 34, 91, 94, 59, 93, 43,
-     34, 41, 32,100,111, 10,108,111, 99, 97,108, 32,112, 97, 99,
-    107, 97,103,101, 32, 61, 32, 95,105,109,112,111,114,116, 95,
-     40,115,101, 97,114, 99,104, 68,105,114, 44, 32,112, 97, 99,
-    107, 97,103,101, 80, 97,116,104, 44, 32,101,120,112,111,114,
-    116, 78, 97,109,101, 41, 10,105,102, 32,112, 97, 99,107, 97,
-    103,101, 32,116,104,101,110, 10,114,101,116,117,114,110, 32,
-    112, 97, 99,107, 97,103,101, 10,101,110,100, 10,101,110,100,
-     10,101,110,100, 10,102,117,110, 99,116,105,111,110, 32, 99,
-    111,109,112,111,110,101,110,116, 40,110, 97,109,101, 41, 10,
+    100, 91,102,117,108,108, 68,105,114, 93, 32,116,104,101,110,
+     10,114,101,116,117,114,110, 32,112, 97, 99,107, 97,103,101,
+     10,101,110,100, 10,101,110,100, 10,105,102, 32,110,111,116,
+     32,112, 97, 99,107, 97,103,101, 32,116,104,101,110, 10,112,
+     97, 99,107, 97,103,101, 32, 61, 32,123, 95, 95, 78, 65, 77,
+     69, 32, 61, 32,112, 97, 99,107, 97,103,101, 78, 97,109,101,
+     44, 32, 95, 95, 80, 65, 67, 75, 65, 71, 69, 32, 61, 32,112,
+     97, 99,107, 97,103,101, 80, 97,116,104, 44, 32, 95, 95, 80,
+     65, 84, 72, 32, 61, 32,102,117,108,108, 68,105,114, 44, 32,
+     76,111,103, 32, 61, 32, 76,111,103, 44, 32, 76,111,103, 70,
+     97,116, 97,108, 32, 61, 32, 76,111,103, 70, 97,116, 97,108,
+     44, 32, 76,111,103, 69,114,114,111,114, 32, 61, 32, 76,111,
+    103, 69,114,114,111,114, 44, 32, 76,111,103, 87, 97,114,110,
+     32, 61, 32, 76,111,103, 87, 97,114,110, 44, 32, 76,111,103,
+     73,110,102,111, 32, 61, 32, 76,111,103, 73,110,102,111, 44,
+     32, 76,111,103, 68,101, 98,117,103, 32, 61, 32, 76,111,103,
+     68,101, 98,117,103, 44, 32, 76,111,103, 77,115,103, 32, 61,
+     32, 76,111,103, 77,115,103,125, 10,112, 97, 99,107, 97,103,
+    101, 46,112, 97, 99,107, 97,103,101, 32, 61, 32,112, 97, 99,
+    107, 97,103,101, 10,115,101,116,109,101,116, 97,116, 97, 98,
+    108,101, 40,112, 97, 99,107, 97,103,101, 44, 32,123, 95, 95,
+    105,110,100,101,120, 32, 61, 32, 95, 71,125, 41, 10,101,110,
+    100, 10,108,111, 99, 97,108, 32,102,105,108,101, 65,114,114,
+     44, 32,100,105,114, 65,114,114, 32, 61, 32,111,115, 46, 76,
+    105,115,116, 68,105,114, 40,102,117,108,108, 68,105,114, 41,
+     10,102,111,114, 32, 95, 44, 32,102,105,108,101, 78, 97,109,
+    101, 32,105,110, 32,112, 97,105,114,115, 40,102,105,108,101,
+     65,114,114, 41, 32,100,111, 10,105,102, 32,115,116,114,105,
+    110,103, 46,102,105,110,100, 40,102,105,108,101, 78, 97,109,
+    101, 44, 32, 39, 46,108,117, 97, 36, 39, 41, 32,116,104,101,
+    110, 10,108,111, 99, 97,108, 32,102,117,108,108, 80, 97,116,
+    104, 32, 61, 32,102,117,108,108, 68,105,114, 46, 46, 39, 47,
+     39, 46, 46,102,105,108,101, 78, 97,109,101, 10,108,111, 99,
+     97,108, 32,112, 97, 99,107, 97,103,101, 78, 97,109,101, 82,
+    101, 97,108, 32, 61, 32,110,105,108, 10,102,111,114, 32,108,
+    105,110,101, 32,105,110, 32,105,111, 46,108,105,110,101,115,
+     40,102,117,108,108, 80, 97,116,104, 41, 32,100,111, 10,102,
+    111,114, 32,107, 44, 32, 95, 32,105,110, 32,115,116,114,105,
+    110,103, 46,103,109, 97,116, 99,104, 40,108,105,110,101, 44,
+     32, 34, 95,112, 97, 99,107, 97,103,101, 95, 37, 40, 91, 92,
+     34, 92, 39, 93, 40, 91, 37,119, 92, 46, 35, 92, 47, 45, 93,
+     43, 41, 91, 92, 34, 92, 39, 93, 34, 41, 32,100,111, 10,112,
+     97, 99,107, 97,103,101, 78, 97,109,101, 82,101, 97,108, 32,
+     61, 32,107, 10, 98,114,101, 97,107, 10,101,110,100, 10,105,
+    102, 32,112, 97, 99,107, 97,103,101, 78, 97,109,101, 82,101,
+     97,108, 32,116,104,101,110, 10, 98,114,101, 97,107, 10,101,
+    110,100, 10,101,110,100, 10,105,102, 32,112, 97, 99,107, 97,
+    103,101, 78, 97,109,101, 82,101, 97,108, 32, 61, 61, 32,112,
+     97, 99,107, 97,103,101, 78, 97,109,101, 32,111,114, 32,112,
+     97, 99,107, 97,103,101, 78, 97,109,101, 82,101, 97,108, 32,
+     61, 61, 32, 39,109, 97,105,110, 39, 32,116,104,101,110, 10,
+    108,111, 99, 97,108, 32,102, 44, 32,101,114,114, 32, 61, 32,
+    108,111, 97,100,102,105,108,101, 40,102,117,108,108, 80, 97,
+    116,104, 41, 10,105,102, 32,110,111,116, 32,102, 32,116,104,
+    101,110, 10,101,114,114,111,114, 40,101,114,114, 41, 10,101,
+    110,100, 10,115,101,116,102,101,110,118, 40,102, 44, 32,112,
+     97, 99,107, 97,103,101, 41, 10,102, 40, 41, 10,101,108,115,
+    101, 10,112,114,105,110,116, 40, 39,105,103,110,111,114,101,
+     39, 44, 32,102,117,108,108, 80, 97,116,104, 44, 32, 39, 97,
+     39, 44, 32,112, 97, 99,107, 97,103,101, 78, 97,109,101, 82,
+    101, 97,108, 44, 32, 39, 98, 39, 44, 32,112, 97, 99,107, 97,
+    103,101, 78, 97,109,101, 41, 10,101,110,100, 10,101,110,100,
+     10,101,110,100, 10,115, 99,114,105,112,116, 46,112, 97, 99,
+    107, 97,103,101, 91,102,117,108,108, 68,105,114, 93, 32, 61,
+     32,112, 97, 99,107, 97,103,101, 10,105,102, 32,115, 99,114,
+    105,112,116, 46,114,101,108,111, 97,100,105,110,103, 32,116,
+    104,101,110, 10,115, 99,114,105,112,116, 46,114,101,108,111,
+     97,100, 91,102,117,108,108, 68,105,114, 93, 32, 61, 32,112,
+     97, 99,107, 97,103,101, 10,105,102, 32,116,121,112,101, 40,
+    112, 97, 99,107, 97,103,101, 46,111,110, 82,101,108,111, 97,
+    100, 41, 32, 61, 61, 32, 39,102,117,110, 99,116,105,111,110,
+     39, 32,116,104,101,110, 10,112, 97, 99,107, 97,103,101, 46,
+    111,110, 82,101,108,111, 97,100, 40, 41, 10,101,110,100, 10,
+    101,108,115,101, 10,105,102, 32,116,121,112,101, 40,112, 97,
+     99,107, 97,103,101, 46,111,110, 65,119, 97,107,101, 41, 32,
+     61, 61, 32, 39,102,117,110, 99,116,105,111,110, 39, 32,116,
+    104,101,110, 10,112, 97, 99,107, 97,103,101, 46,111,110, 65,
+    119, 97,107,101, 40, 41, 10,101,110,100, 10,101,110,100, 10,
+    114,101,116,117,114,110, 32,112, 97, 99,107, 97,103,101, 10,
+    101,110,100, 10,102,117,110, 99,116,105,111,110, 32,105,109,
+    112,111,114,116, 40,112, 97, 99,107, 97,103,101, 80, 97,116,
+    104, 41, 10,102,111,114, 32,115,101, 97,114, 99,104, 68,105,
+    114, 44, 32, 95, 32,105,110, 32,115,116,114,105,110,103, 46,
+    103,109, 97,116, 99,104, 40, 99,111,111,114,100, 97, 46, 83,
+     99,114,105,112,116, 46, 80, 97,116,104, 44, 32, 34, 91, 94,
+     59, 93, 43, 34, 41, 32,100,111, 10,108,111, 99, 97,108, 32,
+    112, 97, 99,107, 97,103,101, 32, 61, 32, 95,105,109,112,111,
+    114,116, 95, 40,115,101, 97,114, 99,104, 68,105,114, 44, 32,
+    112, 97, 99,107, 97,103,101, 80, 97,116,104, 41, 10,105,102,
+     32,112, 97, 99,107, 97,103,101, 32,116,104,101,110, 10,114,
+    101,116,117,114,110, 32,112, 97, 99,107, 97,103,101, 10,101,
+    110,100, 10,101,110,100, 10,101,110,100, 10,102,117,110, 99,
+    116,105,111,110, 32, 99,111,109,112,111,110,101,110,116, 40,
+    110, 97,109,101, 41, 10,108,111, 99, 97,108, 32,112, 97, 99,
+    107, 97,103,101, 32, 61, 32,103,101,116,102,101,110,118, 40,
+     50, 41, 10,108,111, 99, 97,108, 32,101,110,118, 32, 61, 32,
+    112, 97, 99,107, 97,103,101, 91,110, 97,109,101, 93, 10,105,
+    102, 32,110,111,116, 32,101,110,118, 32,116,104,101,110, 10,
+    101,110,118, 32, 61, 32,123, 95, 95, 67, 79, 77, 80, 79, 78,
+     69, 78, 84, 32, 61, 32,112, 97, 99,107, 97,103,101, 46, 95,
+     95, 80, 65, 67, 75, 65, 71, 69, 46, 46, 39, 46, 39, 46, 46,
+    110, 97,109,101, 44, 32,112, 97, 99,107, 97,103,101, 32, 61,
+     32,112, 97, 99,107, 97,103,101, 44, 32, 95, 95, 73, 78, 84,
+     69, 82, 70, 65, 67, 69, 32, 61, 32,123,125,125, 10,115,101,
+    116,109,101,116, 97,116, 97, 98,108,101, 40,101,110,118, 44,
+     32,123, 95, 95,105,110,100,101,120, 32, 61, 32, 95, 71,125,
+     41, 10,112, 97, 99,107, 97,103,101, 91,110, 97,109,101, 93,
+     32, 61, 32,101,110,118, 10,101,110,100, 10,115,101,116,102,
+    101,110,118, 40, 50, 44, 32,101,110,118, 41, 10,101,110,100,
+     10,102,117,110, 99,116,105,111,110, 32,105,109,112,108,101,
+    109,101,110,116, 40,110, 97,109,101, 41, 10,108,111, 99, 97,
+    108, 32,101,110,118, 32, 61, 32,103,101,116,102,101,110,118,
+     40, 50, 41, 10,116, 97, 98,108,101, 46,105,110,115,101,114,
+    116, 40,101,110,118, 46, 95, 95, 73, 78, 84, 69, 82, 70, 65,
+     67, 69, 44, 32,110, 97,109,101, 41, 10,101,110,100, 10,108,
+    111, 99, 97,108, 32,102,117,110, 99,116,105,111,110, 32,116,
+    114, 97, 99,101, 71, 40, 41, 10,102,111,114, 32,107, 44, 32,
+    118, 32,105,110, 32,112, 97,105,114,115, 40, 95, 71, 41, 32,
+    100,111, 10,112,114,105,110,116, 40,107, 41, 10,101,110,100,
+     10,101,110,100, 10,108,111, 99, 97,108, 32,108, 97,115,116,
+     80,114,105,110,116, 32, 61, 32,112,114,105,110,116, 10,102,
+    117,110, 99,116,105,111,110, 32,112,114,105,110,116, 40, 46,
+     46, 46, 41, 10, 99,111,111,114,100, 97, 58, 76,111,103, 40,
+     46, 46, 46, 41, 10,101,110,100, 10,102,117,110, 99,116,105,
+    111,110, 32, 95,109, 97,105,110, 95, 40, 41, 10,115, 99,114,
+    105,112,116, 46,112, 97, 99,107, 97,103,101, 32, 61, 32,123,
+    125, 10,115, 99,114,105,112,116, 46,109, 97,105,110, 32, 61,
+     32,110,105,108, 10,101,110,100, 10,102,117,110, 99,116,105,
+    111,110, 32, 95,111,110, 65,119, 97,107,101, 95, 40, 41, 10,
     108,111, 99, 97,108, 32,112, 97, 99,107, 97,103,101, 32, 61,
-     32,103,101,116,102,101,110,118, 40, 50, 41, 10,108,111, 99,
-     97,108, 32,101,110,118, 32, 61, 32,112, 97, 99,107, 97,103,
-    101, 91,110, 97,109,101, 93, 10,105,102, 32,110,111,116, 32,
-    101,110,118, 32,116,104,101,110, 10,101,110,118, 32, 61, 32,
-    123, 95, 95, 67, 79, 77, 80, 79, 78, 69, 78, 84, 32, 61, 32,
-    112, 97, 99,107, 97,103,101, 46, 95, 95, 80, 65, 67, 75, 65,
-     71, 69, 46, 46, 39, 46, 39, 46, 46,110, 97,109,101, 44, 32,
-    112, 97, 99,107, 97,103,101, 32, 61, 32,112, 97, 99,107, 97,
-    103,101, 44, 32, 95, 95, 73, 78, 84, 69, 82, 70, 65, 67, 69,
-     32, 61, 32,123,125,125, 10,115,101,116,109,101,116, 97,116,
-     97, 98,108,101, 40,101,110,118, 44, 32,123, 95, 95,105,110,
-    100,101,120, 32, 61, 32, 95, 71,125, 41, 10,112, 97, 99,107,
-     97,103,101, 91,110, 97,109,101, 93, 32, 61, 32,101,110,118,
-     10,101,110,100, 10,115,101,116,102,101,110,118, 40, 50, 44,
-     32,101,110,118, 41, 10,101,110,100, 10,102,117,110, 99,116,
-    105,111,110, 32,105,109,112,108,101,109,101,110,116, 40,110,
-     97,109,101, 41, 10,108,111, 99, 97,108, 32,101,110,118, 32,
-     61, 32,103,101,116,102,101,110,118, 40, 50, 41, 10,116, 97,
-     98,108,101, 46,105,110,115,101,114,116, 40,101,110,118, 46,
-     95, 95, 73, 78, 84, 69, 82, 70, 65, 67, 69, 44, 32,110, 97,
-    109,101, 41, 10,101,110,100, 10,108,111, 99, 97,108, 32,102,
-    117,110, 99,116,105,111,110, 32,116,114, 97, 99,101, 71, 40,
-     41, 10,102,111,114, 32,107, 44, 32,118, 32,105,110, 32,112,
-     97,105,114,115, 40, 95, 71, 41, 32,100,111, 10,112,114,105,
-    110,116, 40,107, 41, 10,101,110,100, 10,101,110,100, 10,108,
-    111, 99, 97,108, 32,108, 97,115,116, 80,114,105,110,116, 32,
-     61, 32,112,114,105,110,116, 10,102,117,110, 99,116,105,111,
-    110, 32,112,114,105,110,116, 40, 46, 46, 46, 41, 10, 99,111,
-    111,114,100, 97, 58, 76,111,103, 40, 46, 46, 46, 41, 10,101,
-    110,100, 10,102,117,110, 99,116,105,111,110, 32, 95,109, 97,
-    105,110, 95, 40, 41, 10,115, 99,114,105,112,116, 46,112, 97,
-     99,107, 97,103,101, 32, 61, 32,123,125, 10,115, 99,114,105,
-    112,116, 46,101,120,112,111,114,116, 32, 61, 32,123,125, 10,
-    101,110,100, 10,102,117,110, 99,116,105,111,110, 32, 95,111,
-    110, 65,119, 97,107,101, 95, 40, 41, 10,108,111, 99, 97,108,
-     32,112, 97, 99,107, 97,103,101, 32, 61, 32,105,109,112,111,
-    114,116, 40, 99,111,111,114,100, 97, 46, 83, 99,114,105,112,
-    116, 46, 77, 97,105,110, 44, 32, 39,109, 97,105,110, 39, 41,
-     10,105,102, 32,110,111,116, 32,112, 97, 99,107, 97,103,101,
-     32,116,104,101,110, 10,101,114,114,111,114, 40, 34,105,109,
-    112,111,114,116, 32,109, 97,105,110, 32,112, 97, 99,107, 97,
-    103,101, 32,102, 97,105,108,101,100, 34, 41, 10,101,110,100,
-     10,101,110,100, 10,102,117,110, 99,116,105,111,110, 32, 95,
-    111,110, 68,101,115,116,111,114,121, 95, 40, 41, 10,105,102,
-     32,110,111,116, 32, 99,111,111,114,100, 97, 32,116,104,101,
-    110, 10,114,101,116,117,114,110, 10,101,110,100, 10,105,102,
-     32,110,111,116, 32,115, 99,114,105,112,116, 46,101,120,112,
-    111,114,116, 46,109, 97,105,110, 32,116,104,101,110, 10,114,
-    101,116,117,114,110, 10,101,110,100, 10,115, 99,114,105,112,
-    116, 46,101,120,112,111,114,116, 46,109, 97,105,110, 46,111,
-    110, 68,101,115,116,111,114,121, 40, 41, 10,101,110,100, 10,
-    102,117,110, 99,116,105,111,110, 32, 95,111,110, 82,101,108,
-    111, 97,100, 95, 40, 41, 10,115, 99,114,105,112,116, 46,114,
-    101,108,111, 97,100,105,110,103, 32, 61, 32,116,114,117,101,
-     10,115, 99,114,105,112,116, 46,114,101,108,111, 97,100, 32,
-     61, 32,123,125, 10,108,111, 99, 97,108, 32,112, 97, 99,107,
-     97,103,101, 32, 61, 32,105,109,112,111,114,116, 40, 99,111,
-    111,114,100, 97, 46, 83, 99,114,105,112,116, 46, 77, 97,105,
-    110, 44, 32, 39,109, 97,105,110, 39, 41, 10,115, 99,114,105,
+     32,105,109,112,111,114,116, 40, 99,111,111,114,100, 97, 46,
+     83, 99,114,105,112,116, 46, 77, 97,105,110, 44, 32, 39,109,
+     97,105,110, 39, 41, 10,105,102, 32,110,111,116, 32,112, 97,
+     99,107, 97,103,101, 32,116,104,101,110, 10,101,114,114,111,
+    114, 40, 34,105,109,112,111,114,116, 32,109, 97,105,110, 32,
+    112, 97, 99,107, 97,103,101, 32,102, 97,105,108,101,100, 34,
+     41, 10,101,110,100, 10,115, 99,114,105,112,116, 46,109, 97,
+    105,110, 32, 61, 32,112, 97, 99,107, 97,103,101, 10,101,110,
+    100, 10,102,117,110, 99,116,105,111,110, 32, 95,111,110, 68,
+    101,115,116,111,114,121, 95, 40, 41, 10,105,102, 32,110,111,
+    116, 32, 99,111,111,114,100, 97, 32,116,104,101,110, 10,114,
+    101,116,117,114,110, 10,101,110,100, 10,105,102, 32,110,111,
+    116, 32,115, 99,114,105,112,116, 46,109, 97,105,110, 32,116,
+    104,101,110, 10,114,101,116,117,114,110, 10,101,110,100, 10,
+    115, 99,114,105,112,116, 46,109, 97,105,110, 46,111,110, 68,
+    101,115,116,111,114,121, 40, 41, 10,101,110,100, 10,102,117,
+    110, 99,116,105,111,110, 32, 95,111,110, 82,101,108,111, 97,
+    100, 95, 40, 41, 10,115, 99,114,105,112,116, 46,114,101,108,
+    111, 97,100,105,110,103, 32, 61, 32,116,114,117,101, 10,115,
+     99,114,105,112,116, 46,114,101,108,111, 97,100, 32, 61, 32,
+    123,125, 10,108,111, 99, 97,108, 32,112, 97, 99,107, 97,103,
+    101, 32, 61, 32,105,109,112,111,114,116, 40, 99,111,111,114,
+    100, 97, 46, 83, 99,114,105,112,116, 46, 77, 97,105,110, 44,
+     32, 39,109, 97,105,110, 39, 41, 10,115, 99,114,105,112,116,
+     46,114,101,108,111, 97,100,105,110,103, 32, 61, 32,102, 97,
+    108,115,101, 10,115, 99,114,105,112,116, 46,114,101,108,111,
+     97,100, 32, 61, 32,123,125, 10,105,102, 32,110,111,116, 32,
+    112, 97, 99,107, 97,103,101, 32,116,104,101,110, 10,101,114,
+    114,111,114, 40, 34,105,109,112,111,114,116, 32,109, 97,105,
+    110, 32,112, 97, 99,107, 97,103,101, 32,102, 97,105,108,101,
+    100, 34, 41, 10,101,110,100, 10,101,110,100, 10,102,117,110,
+     99,116,105,111,110, 32,114,101,108,111, 97,100, 40,112, 97,
+     99,107, 97,103,101, 80, 97,116,104, 41, 10,115, 99,114,105,
     112,116, 46,114,101,108,111, 97,100,105,110,103, 32, 61, 32,
-    102, 97,108,115,101, 10,115, 99,114,105,112,116, 46,114,101,
-    108,111, 97,100, 32, 61, 32,123,125, 10,105,102, 32,110,111,
-    116, 32,112, 97, 99,107, 97,103,101, 32,116,104,101,110, 10,
-    101,114,114,111,114, 40, 34,105,109,112,111,114,116, 32,109,
-     97,105,110, 32,112, 97, 99,107, 97,103,101, 32,102, 97,105,
-    108,101,100, 34, 41, 10,101,110,100, 10,101,110,100, 10,102,
-    117,110, 99,116,105,111,110, 32,114,101,108,111, 97,100, 40,
-    112, 97, 99,107, 97,103,101, 80, 97,116,104, 44, 32,101,120,
-    112,111,114,116, 78, 97,109,101, 41, 10,115, 99,114,105,112,
-    116, 46,114,101,108,111, 97,100,105,110,103, 32, 61, 32,116,
-    114,117,101, 10,115, 99,114,105,112,116, 46,114,101,108,111,
-     97,100, 32, 61, 32,123,125, 10,108,111, 99, 97,108, 32,112,
-     97, 99,107, 97,103,101, 32, 61, 32,105,109,112,111,114,116,
-     40,112, 97, 99,107, 97,103,101, 80, 97,116,104, 44, 32,101,
-    120,112,111,114,116, 78, 97,109,101, 41, 10,115, 99,114,105,
-    112,116, 46,114,101,108,111, 97,100,105,110,103, 32, 61, 32,
-    102, 97,108,115,101, 10,115, 99,114,105,112,116, 46,114,101,
-    108,111, 97,100, 32, 61, 32,123,125, 10,114,101,116,117,114,
-    110, 32,112, 97, 99,107, 97,103,101, 10,101,110,100, 10,102,
-    117,110, 99,116,105,111,110, 32, 95, 82, 69, 81, 85, 69, 83,
-     84, 40,115,101,108,102, 44, 32, 97,114,103,115, 41, 10,112,
-    114,105,110,116, 40,115,101,108,102, 41, 10,112,114,105,110,
-    116, 40, 34,103,103,103,103,103,103, 34, 44, 32, 97,114,103,
+    116,114,117,101, 10,115, 99,114,105,112,116, 46,114,101,108,
+    111, 97,100, 32, 61, 32,123,125, 10,108,111, 99, 97,108, 32,
+    112, 97, 99,107, 97,103,101, 32, 61, 32,105,109,112,111,114,
+    116, 40,112, 97, 99,107, 97,103,101, 80, 97,116,104, 41, 10,
+    115, 99,114,105,112,116, 46,114,101,108,111, 97,100,105,110,
+    103, 32, 61, 32,102, 97,108,115,101, 10,115, 99,114,105,112,
+    116, 46,114,101,108,111, 97,100, 32, 61, 32,123,125, 10,114,
+    101,116,117,114,110, 32,112, 97, 99,107, 97,103,101, 10,101,
+    110,100, 10,102,117,110, 99,116,105,111,110, 32, 95, 82, 69,
+     81, 85, 69, 83, 84, 40,115,101,108,102, 44, 32, 97,114,103,
     115, 41, 10,101,110,100,32
    };
    tolua_dobuffer(tolua_S,(char*)B,sizeof(B),"tolua embedded: ../lualib/lib.lua");

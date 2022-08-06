@@ -416,7 +416,7 @@ public:
     coord::Config*          Config;         //tolua_export
     script::Script*         Script;         //tolua_export   
     gate::Gate*             Gate;           //tolua_export
-    http::HttpServer*       HttpServer;     //tolua_export 
+    web::WebServer*         WebServer;      //tolua_export 
     event::EventMgr*        Event;
     protobuf::Protobuf*     Proto;          //tolua_export
     redis::RedisMgr*        RedisMgr;       //tolua_export

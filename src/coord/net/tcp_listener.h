@@ -18,7 +18,7 @@ public:
     virtual void recvTcpNew(TcpListener* listener, TcpAgent* agent) = 0;
 };//tolua_export
 
-class TcpListener  {//tolua_export
+class TcpListener : public Destoryable {//tolua_export
 CC_CLASS(TcpListener);
 public:
     TcpListener(Coord* coord);

@@ -81,3 +81,84 @@ logger
     默认输出到控制台
     file: ${ConfigFileDir}/log/${Name}.log 
 
+## 脚本
+    脚本组织架构是包(package)和component
+
+    定义入口包，修改脚本文件的main字段，默认是main
+
+### 包(package)
+    包的声明方法是_package_('包名')
+    ```
+    -- 包名必须和文件夹名字一致, 不相同的会被忽略
+    _package_('main')
+    function onAwake()
+        print('hello')        
+    end
+    ```
+    生命周期方法
+    ```
+    -- 模块唤醒时调用
+    function onAwake()
+    end
+    -- 模块重载时调用
+    function onReload()
+    end
+    -- 模块销毁时调用, main包才有会有回调
+    function onDestory()
+    end
+    ```
+    -- 模块self
+    ```
+    function onAwake()
+        -- package代表本模块
+        print(package)
+        -- 环境中预定义的函数
+        -- 这些打印函数会带上模块名
+        Log
+        LogFatal
+        LogError
+        LogWarn
+        LogInfo
+        LogDebug
+        LogMsg
+        -- 包路径
+        __PACKAGE 
+        -- 包的完整路径
+        __PATH
+        -- 包名
+        __NAME
+    end
+    ```
+
+    # 导入包
+    ```
+    local controller = import('web/controller')
+    ```
+    # 包重载
+    ```
+    reload('web/controller')
+    ```
+
+### 组件(component)
+    组件定义在包内
+    ```
+    _package_("controller")
+    component("AccountController")
+    function onAwake(self)
+    end
+    function onDestory(self)
+    end
+    function onUpdate(self)
+    end
+    ```
+    使用组件的方法
+    ```
+    -- 先导入模块
+    local controller = import('web/controller')
+    -- 添加到Object上
+    coorda:AddScript(controller.AccountController)
+    ```
+
+
+
+

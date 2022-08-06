@@ -80,7 +80,6 @@ end
 
 -------------------------------------------------------------
 function _package_(name)
-
 end
 
 local function Log(str)
@@ -113,19 +112,27 @@ local function LogMsg(str)
 end
 
 local script = {}
-local function _import_(searchDir, packagePath, exportName)
+local function _import_(searchDir, packagePath)
     local fullDir = searchDir..'/'..packagePath
     if not os.path.IsDir(fullDir) then
         return false
     end
     local packageName = os.path.BaseName(packagePath)
-    local env = script.package[packagePath]
-    if not env then
-        env = {__NAME = exportName, __PACKAGE = packagePath, __PATH = fullDir, Log = Log, LogFatal = LogFatal, LogError = LogError, LogWarn = LogWarn, LogInfo = LogInfo, LogDebug = LogDebug, LogMsg = LogMsg}
-        --env.static = env
-        env.package = env
-        setmetatable(env, {__index = _G})
-        --_G[exportName] = env
+
+    --是否已经导入过了
+    local package = script.package[fullDir]
+    if package then
+        if not script.reloading then
+            return package
+        elseif script.reload[fullDir] then
+            return package
+        end
+    end
+
+    if not package then
+        package = {__NAME = packageName, __PACKAGE = packagePath, __PATH = fullDir, Log = Log, LogFatal = LogFatal, LogError = LogError, LogWarn = LogWarn, LogInfo = LogInfo, LogDebug = LogDebug, LogMsg = LogMsg}
+        package.package = package 
+        setmetatable(package, {__index = _G})
     end
     local fileArr, dirArr = os.ListDir(fullDir)    
     for _, fileName in pairs(fileArr) do
@@ -147,54 +154,31 @@ local function _import_(searchDir, packagePath, exportName)
                 if not f then
                     error(err)
                 end
-                setfenv(f, env)
+                setfenv(f, package)
                 f()
             else
                 print('ignore', fullPath, 'a', packageNameReal, 'b', packageName)
             end
         end
     end 
-    script.package[packagePath] = env
-    script.export[exportName] = env
+    script.package[fullDir] = package 
     if script.reloading then
-        script.reload[packagePath] = env
-        if type(env.onReload) == 'function' then
-            env.onReload()
+        script.reload[fullDir] = package 
+        if type(package.onReload) == 'function' then
+            package.onReload()
         end
     else
-        if type(env.onAwake) == 'function' then
-            env.onAwake()
+        if type(package.onAwake) == 'function' then
+            package.onAwake()
         end
     end
-    return env
+    return package
 end
 
-function import(packagePath, exportName)
-    if not exportName then
-        exportName = os.path.BaseName(packagePath)
-    end
-    --环境变量名冲突
-    -- if _G[exportName] and not script.export[exportName] then
-    --     error(string.format("environment %s conflict", exportName))
-    --     return
-    -- end
-    --检查导出包名冲突
-    local package = script.export[exportName]
-    if package and package.__PACKAGE ~= packagePath then
-        error(string.format("package %s conflict with %s", packagePath, package.__PACKAGE))
-    end
-    --是否已经导入过了
-    local package = script.package[packagePath]
-    if package then
-        if not script.reloading then
-            return package
-        elseif script.reload[packagePath] then
-            return package
-        end
-    end
+function import(packagePath)
     --搜索导入
     for searchDir, _ in string.gmatch(coorda.Script.Path, "[^;]+") do
-        local package = _import_(searchDir, packagePath, exportName)
+        local package = _import_(searchDir, packagePath)
         if package then
             return package
         end
@@ -232,27 +216,27 @@ function _main_()
     --coorda:CoreLogDebug(coorda.Script.Path)
     --环境初始化
     script.package = {}
-    script.export = {}
+    -- 入口模块
+    script.main = nil
 end
 
 function _onAwake_() 
     --导入启动包
-    --local exportName = os.path.BaseName(coorda.script.Main)
     local package = import(coorda.Script.Main, 'main')
     if not package then
         error("import main package failed")
     end
+    script.main = package
 end
 
 function _onDestory_()
     if not coorda then
         return
     end
-    --local exportName = os.path.BaseName(coorda.Script.Main)
-    if not script.export.main then
+    if not script.main then
         return
     end
-    script.export.main.onDestory()
+    script.main.onDestory()
 end
 
 function _onReload_()
@@ -266,16 +250,14 @@ function _onReload_()
     end
 end
 
-function reload(packagePath, exportName)
+function reload(packagePath)
     script.reloading = true
     script.reload = {}
-    local package = import(packagePath, exportName)
+    local package = import(packagePath)
     script.reloading = false
     script.reload = {}
     return package
 end
 
 function _REQUEST(self, args)
-    print(self)
-    print("gggggg", args)
 end

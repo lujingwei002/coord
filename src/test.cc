@@ -24,6 +24,7 @@
 #include "test/test-protobuf.cc"
 #include "test/test-cluster.cc"
 #include "test/test-managed.cc"
+#include "test/test-r3.cc"
 #include <stdio.h>
 #include <string.h>
 #include <iostream>

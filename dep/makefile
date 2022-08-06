@@ -16,6 +16,7 @@ HIREDIS_VERSION=1.0.0
 HTTPPARSER_VERSION=2.9.4
 ARGPARSE_VERSION=2.6
 LUA_VERSION=5.1
+R3_VERSION=1.0.1
 
 # ============================================= libuv ===================================================
 LIBUV_DIR=libuv-$(LIBUV_VERSION)
@@ -558,20 +559,63 @@ $(ARGPARSE_DIR)/install:
 	cp -rf $(ARGPARSE_DIR)/include/argparse/argparse.hpp ../include/argparse/argparse.hpp
 # ============================================= p-ranav/argparse ===================================================
 
+
+
+# ============================================= c9s/r3 ==================================================
+R3_DIR=r3-$(R3_VERSION)
+R3_LIB=$(R3_DIR)/libr3/lib/libr3.a
+
+$(R3_DIR): archive/r3-$(R3_VERSION).tar.gz
+	tar xzvf $? -C .
+	touch $@
+
+$(R3_DIR)/download: archive/r3-$(R3_VERSION).tar.gz
+
+archive/r3-$(R3_VERSION).tar.gz:
+	@echo
+	@echo "=== Downloading c9s r3 $(R3_VERSION) ==="
+	@echo
+	curl "https://github.com/c9s/r3/archive/refs/tags/$(R3_VERSION).tar.gz" -o $@
+
+$(R3_LIB): $(R3_DIR)
+	cd $(R3_DIR);./autogen.sh
+	cd $(R3_DIR);./configure --prefix=`pwd`/libr3
+	mkdir -p $(R3_DIR)/libr3
+	$(MAKE) -C $(R3_DIR) -j 10
+	$(MAKE) -C $(R3_DIR) install
+
+$(R3_DIR)/clean:
+	$(MAKE) -C $(R3_DIR) clean
+	rm -rf $(R3_DIR)/libprotobuf
+
+$(R3_DIR)/remove:
+	@rm -rf $(R3_DIR)
+
+$(R3_DIR)/install:
+	@echo
+	@echo '=== install c9s/r3==='
+	@mkdir -p ../lib
+	@mkdir -p ../include
+	cp $(R3_LIB) ../lib 
+	rm -rf ../include/r3
+	cp -rf $(R3_DIR)/libr3/include/* ../include/r3
+# ============================================= c9s/r3 ===================================================
+
+
 # 下载
-download: $(HIREDIS_DIR)/download $(HTTPPARSER_DIR)/download $(LUA_DIR)/download $(PROTOBUF_DIR)/download $(GTEST_DIR)/download $(LIBUV_DIR)/download $(CCRONEXPR_DIR)/download $(BENCHMARK_DIR)/download $(INIPP_DIR)/download $(JSON_DIR)/download $(JSON11_DIR)/download $(CJSON_DIR)/download $(ARGPARSE_DIR)/download
+download: $(HIREDIS_DIR)/download $(HTTPPARSER_DIR)/download $(LUA_DIR)/download $(PROTOBUF_DIR)/download $(GTEST_DIR)/download $(LIBUV_DIR)/download $(CCRONEXPR_DIR)/download $(BENCHMARK_DIR)/download $(INIPP_DIR)/download $(JSON_DIR)/download $(JSON11_DIR)/download $(CJSON_DIR)/download $(ARGPARSE_DIR)/download $(R3_DIR)/download
 
 # 编译
-default: $(HIREDIS_LIB) $(HTTPPARSER_LIB) $(LUA_LIB) $(PROTOBUF_LIB) $(TOLUA_LIB) $(GTEST_LIB) $(LIBUV_LIB) $(CCRONEXPR_LIB) $(BENCHMARK_LIB) $(CJSON_LIB) $(JSON11_DIR) $(JSON_DIR) $(INIPP_DIR) $(MYSQL_LIB) $(ARGPARSE_DIR)
+default: $(HIREDIS_LIB) $(HTTPPARSER_LIB) $(LUA_LIB) $(PROTOBUF_LIB) $(TOLUA_LIB) $(GTEST_LIB) $(LIBUV_LIB) $(CCRONEXPR_LIB) $(BENCHMARK_LIB) $(CJSON_LIB) $(JSON11_DIR) $(JSON_DIR) $(INIPP_DIR) $(MYSQL_LIB) $(ARGPARSE_DIR) $(R3_LIB)
 
 # 安装
-install: $(HIREDIS_DIR)/install $(HTTPPARSER_DIR)/install $(LUA_DIR)/install $(PROTOBUF_DIR)/install $(TOLUA_DIR)/install $(GTEST_DIR)/install $(LIBUV_DIR)/install $(CCRONEXPR_DIR)/install $(BENCHMARK_DIR)/install $(JSON_DIR)/install $(MYSQL_DIR)/install $(INIPP_DIR)/install $(JSON11_DIR)/install $(CJSON_DIR)/install $(ARGPARSE_DIR)/install 
+install: $(HIREDIS_DIR)/install $(HTTPPARSER_DIR)/install $(LUA_DIR)/install $(PROTOBUF_DIR)/install $(TOLUA_DIR)/install $(GTEST_DIR)/install $(LIBUV_DIR)/install $(CCRONEXPR_DIR)/install $(BENCHMARK_DIR)/install $(JSON_DIR)/install $(MYSQL_DIR)/install $(INIPP_DIR)/install $(JSON11_DIR)/install $(CJSON_DIR)/install $(ARGPARSE_DIR)/install $(R3_DIR)/install
 
 # 清理
-clean: $(HIREDIS_DIR)/clean $(HTTPPARSER_DIR)/clean $(LUA_DIR)/clean $(PROTOBUF_DIR)/clean $(TOLUA_DIR)/clean $(GTEST_DIR)/clean $(LIBUV_DIR)/clean $(CCRONEXPR_DIR)/clean $(BENCHMARK_DIR)/clean $(CJSON_DIR)/clean 
+clean: $(HIREDIS_DIR)/clean $(HTTPPARSER_DIR)/clean $(LUA_DIR)/clean $(PROTOBUF_DIR)/clean $(TOLUA_DIR)/clean $(GTEST_DIR)/clean $(LIBUV_DIR)/clean $(CCRONEXPR_DIR)/clean $(BENCHMARK_DIR)/clean $(CJSON_DIR)/clean  $(R3_DIR)/clean
 
 # 删除
-remove: $(HIREDIS_DIR)/remove $(HTTPPARSER_DIR)/remove $(LUA_DIR)/remove $(PROTOBUF_DIR)/remove $(TOLUA_DIR)/remove $(GTEST_DIR)/remove $(LIBUV_DIR)/remove $(CCRONEXPR_DIR)/remove $(BENCHMARK_DIR)/remove $(CJSON_DIR)/remove $(ARGPARSE_DIR)/remove $(INIPP_DIR)/remove $(JSON_DIR)/remove $(JSON11_DIR)/remove $(MYSQL_DIR)/remove
+remove: $(HIREDIS_DIR)/remove $(HTTPPARSER_DIR)/remove $(LUA_DIR)/remove $(PROTOBUF_DIR)/remove $(TOLUA_DIR)/remove $(GTEST_DIR)/remove $(LIBUV_DIR)/remove $(CCRONEXPR_DIR)/remove $(BENCHMARK_DIR)/remove $(CJSON_DIR)/remove $(ARGPARSE_DIR)/remove $(INIPP_DIR)/remove $(JSON_DIR)/remove $(JSON11_DIR)/remove $(MYSQL_DIR)/remove $(RE_DIR)/remove
 
 .PYHON: default download clean remove install
 

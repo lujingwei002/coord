@@ -20,8 +20,8 @@ LoginSvr::LoginSvr(Coord* coord) {
 }
 
 LoginSvr::~LoginSvr() {
-    if (this->httpServer) {
-        delete this->httpServer;
+    if (nullptr != this->httpServer) {
+        this->coord->Destory(this->httpServer);
         this->httpServer = nullptr;
     }
     if (this->accountController) {
@@ -35,7 +35,7 @@ LoginSvr::~LoginSvr() {
 }
 
 int LoginSvr::main() {
-    this->httpServer = http::newHttpServer(this->coord);
+    this->httpServer = this->coord->NewHttpServer();
     http::HttpServerConfig* config = this->httpServer->DefaultConfig();
     config->Host = this->config.Host;
     config->Port = this->config.Port;

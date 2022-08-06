@@ -6,17 +6,23 @@
 #include "coord/web/web_config.h"
 #include <map>
 #include <string>
-namespace coord {//tolua_export
 
-class Coord;
-namespace http {
-    class HttpRequest;
-    class HttpResponse;
-    class HttpFrame;
-    class HttpServer;
+namespace coord {
+    class Coord;
+    namespace http {
+        class HttpRequest;
+        class HttpResponse;
+        class HttpFrame;
+        class HttpServer;
+        class HttpRouter;
+    }
+    namespace web {
+    }
 }
 
+namespace coord {//tolua_export
 namespace web {//tolua_export
+
 
 class IWebHandler {//tolua_export
 public:
@@ -25,22 +31,30 @@ public:
 
 class WebServer : public http::IHttpHandler {//tolua_export
 CC_CLASS(WebServer);
-public:
+friend Coord;
+private:
     WebServer(Coord* coord);
     virtual ~WebServer();
+private:
+    virtual void recvHttpRequest(http::HttpRequest* request);
+    virtual void recvHttpUpgrade(http::HttpAgent* agent, http::HttpRequest* request);
+private:
+    void get_debug_index(http::HttpRequest* request);
+private:
+    Coord*              coord;
+    WebConfig           Config;
+    IHttpHandler*       handler;
+    http::HttpServer*   httpServer;
+
 public:
     WebConfig* DefaultConfig();//tolua_export
-    bool Start();//tolua_export
-    virtual void recvHttpRequest(http::HttpRequest* request);
-    virtual void recvHttpFrame(http::HttpFrame* frame);
+    int Start();//tolua_export
 public:
-    Coord*              coord;
-    WebConfig           config;
-    IHttpHandler*       handler;
-    http::HttpServer*   listener;
+    /// 路由
+    http::HttpRouter*   Router;         //tolua_export
 };//tolua_export
 
-WebServer* newWebServer(Coord* coord);
+
 
 }//tolua_export
 }//tolua_export

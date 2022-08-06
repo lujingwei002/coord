@@ -11,6 +11,7 @@
 #include "coord/log/log_filelogger.h"
 #include "coord/builtin/slice.h"
 #include "coord/gate/gate.h"
+#include "coord/web/web_server.h"
 #include "coord/http/http_server.h"
 #include "coord/http/http_request.h"
 #include "coord/gate/gate_request.h"
@@ -431,7 +432,7 @@ namespace coord {
         this->RedisMgr = nullptr;
         this->Gate = nullptr;
         this->Login = nullptr;
-        this->HttpServer = nullptr;
+        this->WebServer = nullptr;
         this->Cluster = nullptr;
         this->Cache = nullptr;
         this->AsyncCache = nullptr;
@@ -503,9 +504,9 @@ namespace coord {
             delete this->Cluster;
             this->Cluster = nullptr;
         }
-        if(this->HttpServer) {
-            delete this->HttpServer;
-            this->HttpServer = nullptr;
+        if(this->WebServer) {
+            delete this->WebServer;
+            this->WebServer = nullptr;
         }
         if(this->sqlMgr) {
             delete this->sqlMgr;
@@ -705,18 +706,10 @@ namespace coord {
         } 
         //启动web服务
         if(this->Config->SectionExist("WEB")) {
-            this->HttpServer = http::newHttpServer(this);
-            http::HttpServerConfig* config = this->HttpServer->DefaultConfig();
-            config->Host = this->Config->Web.Host;
-            config->Port = this->Config->Web.Port;
-            config->Backlog = this->Config->Web.Backlog;
-            config->AssetDir = this->Config->Web.AssetDir;
-            config->RecvBufferSize = this->Config->Web.RecvBuffer;
-            config->SSLEncrypt = this->Config->Web.SSLEncrypt;
-            config->SSLPemFile = this->Config->Web.SSLPemFile;
-            config->SSLKeyFile = this->Config->Web.SSLKeyFile;
-            config->UseEtag = this->Config->Web.UseEtag;
-            int err = this->HttpServer->Start();
+            this->WebServer = new web::WebServer(this);
+            web::WebConfig* config = this->WebServer->DefaultConfig();
+            *config = this->Config->Web;
+            int err = this->WebServer->Start();
             if (err) {
                 return err;
             }
@@ -1430,7 +1423,7 @@ namespace coord {
     } 
 
     http::HttpServer* Coord::NewHttpServer() {
-        http::HttpServer* server = http::newHttpServer(this);
+        http::HttpServer* server = new http::HttpServer(this);
         return server;
     }
 

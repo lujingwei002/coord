@@ -92,7 +92,6 @@ private:
     std::map<uint64_t, byte_slice> payloadWaitingResponse;
     // ssl相关
     SSL*                ssl;
-    SSL_CTX*            ssl_ctx;
     BIO*                read_bio;
     BIO*                write_bio;  
 };//tolua_export

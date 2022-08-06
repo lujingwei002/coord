@@ -16,13 +16,23 @@ namespace coord {
         class HttpFrame;
         class HttpServer;
     }
+    namespace web {
+        class WebServer;
+    }
 }
 
 namespace coord {//tolua_export
 namespace http {//tolua_export
 
 ///
+///     * 
 ///
+///  /a/b/c
+///
+///  /a/:b/c
+///
+///
+///  /a/*b/c
 ///
 ///
 
@@ -30,12 +40,10 @@ typedef std::function<void (HttpRequest* request)> HttpRouter_RecvHttpRequest;
 
 
 
-
-
-class HttpRouter {//tolua_export
+class HttpRouter : public Destoryable {//tolua_export
 CC_CLASS(HttpRouter);
 friend HttpServer;
-
+friend web::WebServer;
 private:
 class http_router_handler {
 public:

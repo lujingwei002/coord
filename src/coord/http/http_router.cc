@@ -22,7 +22,7 @@ HttpRouter::http_router_handler::~http_router_handler() {
 }
 
 void HttpRouter::http_router_handler::recvHttpRequest(HttpRequest* request) {
-    if(this->recvHttpRequestFunc != NULL){
+    if(this->recvHttpRequestFunc != nullptr){
         this->recvHttpRequestFunc(request);
     } 
 } 
@@ -39,7 +39,7 @@ HttpRouter::~HttpRouter(){
 HttpRouter::http_router_node* HttpRouter::searchNode(HttpRouter::http_router_node* root, int i, int argc, const char** argv) {
     const char* word = argv[i];
     if (root->path[0] == ':' && *word != 0) {
-        if (root->nodeArr.size() <= 0 && i >= argc - 1 && root->handler != NULL) {
+        if (root->nodeArr.size() <= 0 && i >= argc - 1 && root->handler != nullptr) {
             return root;
         }
     } else if (root->path[0] == '*') {
@@ -47,15 +47,15 @@ HttpRouter::http_router_node* HttpRouter::searchNode(HttpRouter::http_router_nod
             return root;
         }
     } else if (strcmp(root->path.c_str(), argv[i]) == 0) {
-        if (i >= argc - 1 && root->handler != NULL) {
+        if (i >= argc - 1 && root->handler != nullptr) {
             return root;
         }
     } 
     if (i >= argc - 1) {
-        return NULL;
+        return nullptr;
     }
     word = argv[i + 1];
-    HttpRouter::http_router_node* node = NULL;
+    HttpRouter::http_router_node* node = nullptr;
     auto const it = root->nodeDict.find(word);
     if (it != root->nodeDict.end()) {
         node = this->searchNode(it->second, i + 1, argc, argv);
@@ -75,7 +75,7 @@ HttpRouter::http_router_node* HttpRouter::searchNode(HttpRouter::http_router_nod
             return node;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 HttpRouter::http_router_node* HttpRouter::searchNode(const char* method, const char* url) {
@@ -86,7 +86,7 @@ HttpRouter::http_router_node* HttpRouter::searchNode(const char* method, const c
     strncpy(buffer, url, sizeof(buffer) - 1);
     //非法的路径
     if (*buffer == 0 || buffer[0] != '/') {
-        return NULL;
+        return nullptr;
     }
     //  /a/b拆分成a和b  /a/b/拆分成a和b和空白
     argv[0] = buffer + 1;
@@ -97,12 +97,12 @@ HttpRouter::http_router_node* HttpRouter::searchNode(const char* method, const c
             argv[argc] = c + 1;
             argc++;
             if (argc >= 16) {
-                return NULL;
+                return nullptr;
             }
         } 
     }
     const char* word = argv[0];
-    HttpRouter::http_router_node* node = NULL;
+    HttpRouter::http_router_node* node = nullptr;
     HttpRouter::http_router_node* root = methodTree->root;
     auto const it = root->nodeDict.find(word);
     if (it != root->nodeDict.end()) {
@@ -129,7 +129,7 @@ HttpRouter::http_router_node* HttpRouter::searchNode(const char* method, const c
 HttpRouter::http_router_handler* HttpRouter::searchHandler(const char* group, const char* url) {
     HttpRouter::http_router_node* node = this->searchNode(group, url);
     if (!node) {
-        return NULL;
+        return nullptr;
     }
     return node->handler;
 }
@@ -140,7 +140,7 @@ void HttpRouter::recvHttpRequest(HttpRequest* request) {
         return;
     }
     HttpRouter::http_router_handler* handler = this->searchHandler(request->Method.c_str(), request->Path.c_str());
-    if(handler == NULL){
+    if(handler == nullptr){
         throw HttpPageNotFoundException(request->Path.c_str());
         return;
     }
@@ -159,10 +159,9 @@ void HttpRouter::Trace() {
 
 void HttpRouter::trace(const char* event, HttpRouter::http_router_node* node) {
     auto handler = node->handler;
-    if (handler != NULL){
+    if (handler != nullptr){
         uint64_t averageTime = handler->times <= 0 ? 0 : (handler->consumeTime/handler->times);
         this->coord->LogDebug("[HttpRouter] %10s | %10d | %10s | %s",  event, handler->times, date::FormatNano(averageTime), node->fullPath.c_str());
-
     }
     for(auto const it : node->nodeArr) {
         this->trace(event, it);
@@ -219,7 +218,7 @@ int HttpRouter::Get(lua_State* L) {
             lua_pushvalue(L, 4);
             int ref =  luaL_ref(L, LUA_REGISTRYINDEX);
             if (ref < 0) {
-                tolua_error(L, "error in function 'Get'.\nattempt to set a nil function", NULL);
+                tolua_error(L, "error in function 'Get'.\nattempt to set a nil function", nullptr);
                 return 0;
             }
             bool result = this->Get(route, object, ref);
@@ -233,11 +232,11 @@ int HttpRouter::Get(lua_State* L) {
             while (lua_next(L, 4) != 0) {
                 static thread_local char fullRoute[128];
                 snprintf(fullRoute, sizeof(fullRoute), "%s.%s", route, lua_tostring(L, -2));
-                char* c = NULL;
+                char* c = nullptr;
                 for(char* i = fullRoute; *i != 0; i++) {
                     if(*i == '.') {
                         c = i + 1;
-                    } else if (c != NULL) {
+                    } else if (c != nullptr) {
                         *i = tolower(*i);
                     }
                 }
@@ -287,7 +286,7 @@ int HttpRouter::Post(lua_State* L) {
             lua_pushvalue(L, 4);
             int ref =  luaL_ref(L, LUA_REGISTRYINDEX);
             if (ref < 0) {
-                tolua_error(L, "error in function 'Post'.\nattempt to set a nil function", NULL);
+                tolua_error(L, "error in function 'Post'.\nattempt to set a nil function", nullptr);
                 return 0;
             }
             bool result = this->Post(route, object, ref);
@@ -301,11 +300,11 @@ int HttpRouter::Post(lua_State* L) {
             while (lua_next(L, 4) != 0) {
                 static thread_local char fullRoute[128];
                 snprintf(fullRoute, sizeof(fullRoute), "%s.%s", route, lua_tostring(L, -2));
-                char* c = NULL;
+                char* c = nullptr;
                 for(char* i = fullRoute; *i != 0; i++) {
                     if(*i == '.') {
                         c = i + 1;
-                    } else if (c != NULL) {
+                    } else if (c != nullptr) {
                         *i = tolower(*i);
                     }
                 }

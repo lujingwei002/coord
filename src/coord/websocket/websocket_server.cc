@@ -33,18 +33,23 @@ Server* newWebSocketServer(Coord* coord) {
     return webSocketServer;
 }
 
-Server::Server(Coord* coord) : coord(coord) {
-    this->handler = NULL;
-    this->httpServer = http::newHttpServer(coord);
+Server::Server(Coord* coord) {
+    this->handler = nullptr;
+    this->coord = coord;
+    this->httpServer =  this->coord->NewHttpServer();
     this->httpServer->SetHandler(this);
     this->Router = newRouter(coord);
 }
 
 Server::~Server(){
-    delete this->Router;
-    this->Router = NULL;
-    delete this->httpServer;
-    this->httpServer = NULL;
+    if (nullptr != this->Router) {
+        delete this->Router;
+        this->Router = nullptr;
+    }
+    if (nullptr != this->httpServer) {
+        this->coord->Destory(this->httpServer);
+        this->httpServer = nullptr;
+    }
 } 
 
 WebSocketServerConfig* Server::DefaultConfig() {

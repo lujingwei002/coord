@@ -80,3 +80,4 @@ dep/mysql*
 dep/protobuf*
 dep/tolua*
 dep/argparse*
+dep/r3*

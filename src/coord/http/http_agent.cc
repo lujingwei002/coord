@@ -21,7 +21,7 @@ HttpAgent::HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) 
     this->coord->DontDestory(this->tcpAgent);
     //开启https 
     if (this->server->config.SSLEncrypt) {
-        this->ssl = SSL_new(this->server->sslCtx);
+        this->ssl = SSL_new(this->server->sslContext);
         this->read_bio = BIO_new(BIO_s_mem());
         this->write_bio = BIO_new(BIO_s_mem());
         SSL_set_bio(this->ssl, this->read_bio, this->write_bio);
@@ -44,11 +44,12 @@ HttpAgent::~HttpAgent() {
         this->coord->Destory(this->request);
         this->request = nullptr;
     }
-    if (this->server->config.SSLEncrypt) {
+    if (nullptr != this->ssl) {
        // BIO_free(this->read_bio);
        // BIO_free(this->write_bio);
        // SSL_shutdown(this->ssl);
         SSL_free(this->ssl);
+        this->ssl = nullptr;
     }
 }    
 
@@ -270,7 +271,8 @@ void HttpAgent::responseWaitQueueIfNeed() {
 
 int HttpAgent::response(uint64_t id, byte_slice& data) {
     if (id == this->minimumAlreadyResponseRequestId + 1) {
-         return this->send(data);
+        this->minimumAlreadyResponseRequestId = id;
+        return this->send(data);
     } else {
         this->requestIdWaitingResponse.push(id);
         this->payloadWaitingResponse[id] = data;

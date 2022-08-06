@@ -28,26 +28,25 @@ namespace coord {
 namespace http {
 CC_IMPLEMENT(HttpServer, "coord::http::HttpServer")
 
-HttpServer* newHttpServer(Coord* coord) {
-    HttpServer* httpServer = new HttpServer(coord);
-    return httpServer;
-}
-
 HttpServer::HttpServer(Coord* coord) : coord(coord) {
     this->handler = nullptr;
     this->listener = net::NewTcpListener(coord);
     this->Router = new HttpRouter(coord, this);
-    this->sslCtx = nullptr;
+    this->sslContext = nullptr;
 }
 
 HttpServer::~HttpServer(){
-    delete this->Router;
-    this->Router = nullptr;
-    delete this->listener;
-    this->listener = nullptr;
-    if(this->sslCtx) {
-        SSL_CTX_free(this->sslCtx);
-        this->sslCtx = nullptr;
+    if (nullptr != this->Router){
+        this->coord->Destory(this->Router);
+        this->Router = nullptr;
+    }
+    if (nullptr != this->listener) {
+        this->coord->Destory(this->listener);
+        this->listener = nullptr;
+    }
+    if(this->sslContext) {
+        SSL_CTX_free(this->sslContext);
+        this->sslContext = nullptr;
     }
 } 
 
@@ -59,23 +58,26 @@ int HttpServer::Start() {
     //this->coord->CoreLogDebug("[HttpServer] Listen, host=%s, port=%d, backlog=%d", host, port, backlog);
     this->listener->SetHandler(this);
     if (this->config.SSLEncrypt) {
-        SSL_CTX* sslCtx = SSL_CTX_new(SSLv23_server_method());
-        if (!SSL_CTX_use_certificate_file(sslCtx, this->config.SSLPemFile.c_str(), SSL_FILETYPE_PEM)) {
+        // 设置ssl
+        SSL_CTX* sslContext = SSL_CTX_new(SSLv23_server_method());
+        // 检查pem文件
+        if (!SSL_CTX_use_certificate_file(sslContext, this->config.SSLPemFile.c_str(), SSL_FILETYPE_PEM)) {
             this->coord->CoreLogError("[HttpServer] Listen failed, cert=%s, error='SSL_CTX_use_certificate_file'", this->config.SSLPemFile.c_str());
             ERR_print_errors_fp(stderr);
             return -1;
         }
-        if (!SSL_CTX_use_PrivateKey_file(sslCtx, this->config.SSLKeyFile.c_str(), SSL_FILETYPE_PEM )) {
+        // 检查key文件
+        if (!SSL_CTX_use_PrivateKey_file(sslContext, this->config.SSLKeyFile.c_str(), SSL_FILETYPE_PEM )) {
             this->coord->CoreLogError("[HttpServer] Listen failed, key=%s, error='SSL_CTX_use_PrivateKey_file'", this->config.SSLKeyFile.c_str());
             ERR_print_errors_fp(stderr);
             return -1;
         }
-        if (!SSL_CTX_check_private_key(sslCtx)) {
+        if (!SSL_CTX_check_private_key(sslContext)) {
             this->coord->CoreLogError("[HttpServer] Listen failed, error='SSL_CTX_check_private_key'");
             ERR_print_errors_fp(stderr);
             return -1;
         }
-        this->sslCtx = sslCtx;
+        this->sslContext = sslContext;
     }
     int err = this->listener->Listen(this->config.Host.c_str(), this->config.Port, this->config.Backlog);
     return err;

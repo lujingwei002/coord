@@ -1,7 +1,5 @@
 #pragma once 
 
-
-#include "coord/component/component.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/net/tcp_listener.h"
 #include "coord/builtin/slice.h"
@@ -10,20 +8,27 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/bio.h>
-namespace coord {//tolua_export
 
-class Coord;
-namespace net {
-class TcpListener;
-class TcpAgent;
+namespace coord {
+    class Coord;
+    namespace net {
+        class TcpListener;
+        class TcpAgent;
+    }
+    namespace http {
+        class HttpAgent;
+        class HttpRequest;
+        class HttpResponse;
+        class HttpRouter;
+    }
+    namespace login {
+        class LoginSvr;
+    }
 }
+
+namespace coord {//tolua_export
 namespace http {//tolua_export
 
-
-class HttpAgent;
-class HttpRequest;
-class HttpResponse;
-class HttpRouter;
 
 class IHttpHandler {//tolua_export
 public:
@@ -36,6 +41,7 @@ public:
     std::string     Host;               //tolua_export
     unsigned short  Port;               //tolua_export
     int             Backlog;            //tolua_export
+    /// 是否使用https, 如果设置为true, 还要设置SSLPemFile, SSLKeyFile
     bool            SSLEncrypt;         //tolua_export
     std::string     SSLPemFile;         //tolua_export
     std::string     SSLKeyFile;         //tolua_export
@@ -46,14 +52,19 @@ public:
 
 class HttpServer : public net::ITcpHandler, public Destoryable {//tolua_export
 CC_CLASS(HttpServer);
+friend Coord;
 friend HttpAgent;
 friend HttpRequest;
 friend HttpResponse;
 friend HttpRouter;
 private:
+    HttpServer(Coord* coord);
+    virtual ~HttpServer();
+private:
     // implement net::ITcpHandler
     virtual void recvTcpNew(net::TcpListener* listener, net::TcpAgent* agent);
-    //// implement net::ITcpHandler end
+    // implement net::ITcpHandler end
+
     // agent通知server准备关闭
     void recvAgentClose(HttpAgent* agent);
     // agent通知server协议升级
@@ -66,7 +77,7 @@ private:
     net::TcpListener*           listener;
     IHttpHandler*               handler;
     HttpServerConfig            config;
-    SSL_CTX*                    sslCtx;
+    SSL_CTX*                    sslContext;
 
 
 
@@ -74,21 +85,22 @@ private:
 
 
 public:
-    HttpServer(Coord* coord);
-    virtual ~HttpServer();
-public:
-    int Start();//tolua_export
+    /// 启动http server
+    int Start();                                //tolua_export
+    /// 设置handler
     void SetHandler(IHttpHandler* handler);
+    /// 关闭http server
     void Close();
-    HttpServerConfig* DefaultConfig();//tolua_export
+    /// 获取配置
+    HttpServerConfig* DefaultConfig();          //tolua_export
 public:
-    HttpRouter*                 Router;     //tolua_export
+    /// 路由
+    HttpRouter*                 Router;         //tolua_export
 
 
     
 };//tolua_export
 
-HttpServer* newHttpServer(Coord* coord);
 
 }//tolua_export
 }//tolua_export
