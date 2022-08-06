@@ -87,6 +87,8 @@ private:
 
 public:
     /// ##export method
+    bool IsMatch(const char* method, const char* path);
+    const char* Match(const char* method, const char* path);
     int Get(lua_State* L);  //tolua_export
     int Post(lua_State* L); //tolua_export
     bool Get(const char* path, ScriptComponent* object, int ref);

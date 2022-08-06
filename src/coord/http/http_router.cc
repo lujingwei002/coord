@@ -74,12 +74,25 @@ HttpRouter::http_router_handler* HttpRouter::searchHandler(const char* method, c
     return (http_router_handler*)node.data();
 }
 
+bool HttpRouter::IsMatch(const char* method, const char* path) {
+    auto handler = this->searchHandler(method, path);
+    return handler != nullptr;
+}
+const char* HttpRouter::Match(const char* method, const char* path) {
+    auto handler = this->searchHandler(method, path);
+    if (nullptr == handler) {
+        return nullptr;
+    } else {
+        return handler->path.c_str();
+    }
+}
+
 void HttpRouter::recvHttpRequest(HttpRequest* request) {
     if (strcmp(request->Method.c_str(), "OPTIONS") == 0) {
         request->GetResponse()->Allow();
         return;
     }
-    HttpRouter::http_router_handler* handler = this->searchHandler(request->Method.c_str(), request->Path.c_str());
+    http_router_handler* handler = this->searchHandler(request->Method.c_str(), request->Path.c_str());
     if(handler == nullptr){
         throw HttpPageNotFoundException(request->Path.c_str());
         return;
@@ -286,7 +299,6 @@ bool HttpRouter::addRoute(const char* method, const char* path, http_router_hand
     if (nullptr == tree) {
         return false;
     }
-    printf("aaaaaaaa1\n");
     const auto& it1 = this->methodDict.find(method);
     if (it1 == this->methodDict.end()) {
         return false;
@@ -323,7 +335,7 @@ bool HttpRouter::addRoute(const char* method, const char* path, http_router_hand
 } 
 
 r3::Tree* HttpRouter::getMethodTree(const char* method) {
-    const auto it = this->trees.find(method);
+    auto it = this->trees.find(method);
     if (it == this->trees.end()) {
         r3::Tree* tree = new r3::Tree(10);
         if (nullptr == tree) {
@@ -331,6 +343,7 @@ r3::Tree* HttpRouter::getMethodTree(const char* method) {
         }
         this->trees[method] = tree;
         this->methodDict[method] = std::map<std::string, http_router_handler*>();
+        return tree;
     } else {
         return it->second;
     }

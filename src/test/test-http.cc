@@ -42,8 +42,9 @@ TEST_F(TestHttp, TestRouter) {
     router->Get("/", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
     router->Get("/account/login", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
     router->Get("/account/index", std::bind(&TestHttp::HandleNull, this, std::placeholders::_1));
- 
-    //router->Trace();
+    router->Trace();
+    ASSERT_TRUE(router->Match("GET", "/"));
+    ASSERT_TRUE(router->Match("GET", "/account/index"));
 /*    auto node = router->searchNode("GET", "/");*/
     //ASSERT_TRUE(node);
     //ASSERT_STREQ(node->fullPath.c_str(), "/");
