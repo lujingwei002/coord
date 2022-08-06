@@ -104,5 +104,5 @@ TEST_F(TestHttp, TestRouter) {
     /*this->coord->Destory(httpServer);*/
 }
 
-// TEST_F(TestHttp, TestServer) {
-// }
+TEST_F(TestHttp, TestServer) {
+}

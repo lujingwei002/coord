@@ -109,7 +109,8 @@ int Protobuf::ImportDir(const char *dir) {
     this->coord->CoreLogDebug("[Proto] ImportDir, file=%s", dir);
     uv_fs_t req;
     uv_dirent_t ent;
-    uv_fs_scandir(&this->coord->loop, &req, dir, 0, NULL);
+    std::string realPath = coord::path::PathJoin(this->coord->Environment->ConfigDir, dir);
+    uv_fs_scandir(&this->coord->loop, &req, realPath.c_str(), 0, NULL);
     static thread_local char path[PATH_MAX];
     while(uv_fs_scandir_next(&req, &ent) != UV_EOF) {
         if (ent.type != UV_DIRENT_FILE) {
@@ -158,7 +159,7 @@ static int __newindex(lua_State* L) {
 }
 
 int Protobuf::main() {
-    this->sourceTree->MapPath("", this->coord->Environment->WorkingDir);
+    this->sourceTree->MapPath("", this->coord->Environment->ConfigDir);
     if(this->coord->Config->Basic.Proto.length() > 0) {
         int err = this->ImportDir(this->coord->Config->Basic.Proto.c_str());
         if (err) {

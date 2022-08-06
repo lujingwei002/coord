@@ -25,17 +25,17 @@ Running::~Running() {
 int Running::main() {
     // 环境初始化
     // 切换工作目录
-    int err = uv_chdir(this->coord->Environment->WorkingDir.c_str());
-    if (err) {
-        return err;
-    }
+    // int err = uv_chdir(this->coord->Environment->WorkingDir.c_str());
+    // if (err) {
+    //     return err;
+    // }
     if (!coord::path::Exists(this->coord->Environment->ProcDir)){
         return ErrorNoSuchFileOrDirectory;
     }
     if (coord::path::Exists(this->coord->Environment->RunDir)){
         return ErrorRunning;
     }
-    err = coord::path::MakeDir(this->coord->Environment->RunDir, 0755);
+    int err = coord::path::MakeDir(this->coord->Environment->RunDir, 0755);
     if (err) {
         return err;
     }
@@ -50,9 +50,12 @@ int Running::main() {
 }
 
 void Running::onDestory() {
-    int err = coord::path::RemoveDirRecursive(this->coord->Environment->RunDir);
-    if (err){
-        this->coord->CoreLogError("[%s] RemoveDir failed, error=%d", TAG, err);
+    auto environment = this->coord->Environment;
+    if (environment->RunDir.length() > 0) {
+        int err = coord::path::RemoveDirRecursive(environment->RunDir);
+        if (err){
+            this->coord->CoreLogError("[%s] RemoveDir failed, error=%d", TAG, err);
+        }
     }
 }
 
