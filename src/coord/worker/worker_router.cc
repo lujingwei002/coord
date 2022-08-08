@@ -203,7 +203,7 @@ int WorkerRouter::Notify(lua_State* L) {
 
 bool WorkerRouter::addRoute(const char* event, const char* route, worker_router_handler* handler) {
     worker_router_tree* tree = this->getTree(event);
-    //this->coord->CoreLogDebug("[WorkerRouter] addRoute, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
+    //this->coord->CoreLogDebug("[WorkerRouter] add route, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
     auto it = tree->handlerDict.find(route);
     if (it != tree->handlerDict.end()) {
         delete it->second;

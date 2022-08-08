@@ -6,7 +6,7 @@ set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set (LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #编译选项
-add_compile_options (-std=c++17 -Wall -O2 -fpermissive -g -Wno-deprecated-declarations) 
+add_compile_options (-std=c++17 -Wall -O2 -fpermissive -g -Wno-deprecated-declarations -Wno-unused-variable) 
 
 #头文件
 include_directories (src)

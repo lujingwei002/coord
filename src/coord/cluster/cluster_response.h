@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/base/base_response.h"
+#include "coord/base/internal_response.h"
 #include "coord/cluster/cluster_message.h"
 
 namespace coord {//tolua_export

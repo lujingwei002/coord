@@ -224,17 +224,17 @@ protected:
         handler->consumeTime += (this->coord->NanoTime() - t1);
     }
 private:
-    base_router_handler* searchHandler(const char* event, const char* route) {
-        base_router_tree* tree = this->getTree(event);
+    base_router_handler* searchHandler(const char* method, const char* route) {
+        base_router_tree* tree = this->getTree(method);
         auto it = tree->handlerDict.find(route);
         if (it == tree->handlerDict.end()){
             return nullptr;
         } 
         return it->second;
     }
-    bool addRoute(const char* event, const char* route, base_router_handler* handler) {
-        base_router_tree* tree = this->getTree(event);
-        this->coord->CoreLogDebug("[%s] addRoute, event=%-10s, route=%-64s, handler=0x%x", this->TypeName(), event, route, handler);
+    bool addRoute(const char* method, const char* route, base_router_handler* handler) {
+        base_router_tree* tree = this->getTree(method);
+        this->coord->CoreLogDebug("[%s] add route, method=%-10s, route=%-64s, handler=0x%x", this->TypeName(), method, route, handler);
         auto it = tree->handlerDict.find(route);
         if (it != tree->handlerDict.end()) {
             delete it->second;
@@ -245,11 +245,11 @@ private:
         }
         return true;
     }
-    base_router_tree* getTree(const char* event) {
-        const auto it = this->trees.find(event);
+    base_router_tree* getTree(const char* method) {
+        const auto it = this->trees.find(method);
         if (it == this->trees.end()){
             base_router_tree* tree = new base_router_tree();
-            this->trees[event] = tree;
+            this->trees[method] = tree;
             return tree;
         } else {
             return it->second;

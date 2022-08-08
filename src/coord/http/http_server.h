@@ -16,6 +16,7 @@ namespace coord {
         class TcpAgent;
     }
     namespace http {
+        class HttpServer;
         class HttpAgent;
         class HttpRequest;
         class HttpResponse;
@@ -31,7 +32,8 @@ namespace http {//tolua_export
 
 
 class IHttpHandler {//tolua_export
-public:
+friend HttpServer;
+protected:
     virtual void recvHttpRequest(HttpRequest* request) = 0;
     virtual void recvHttpUpgrade(HttpAgent* agent, HttpRequest* request) = 0;
 };//tolua_export

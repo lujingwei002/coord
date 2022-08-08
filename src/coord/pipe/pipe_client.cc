@@ -127,43 +127,43 @@ int PipeClient::Connect(const std::string& path, int ipc) {
 }
 
 void PipeClient::evShutdown() {
-    this->coord->CoreLogDebug("[PipeClient] evShutdown");
+    this->coord->CoreLogDebug("[%s] ev shutdown", this->TypeName());
     uv_close((uv_handle_t*)&this->handle, PipeClient::uv_close_cb);
 }
 
 void PipeClient::evError(int err) {
-    this->coord->CoreLogDebug("[PipeClient] evError");
+    this->coord->CoreLogDebug("[%s] ev error", this->TypeName());
     if(this->handler != nullptr) {this->handler->EvError(err);}
     this->internalClose(pipe_client_close_reason_error);
 }
 
 void PipeClient::evConnectError(int err) {
-    this->coord->CoreLogDebug("[PipeClient] evConnectError error='%s'", uv_strerror(err));
+    this->coord->CoreLogDebug("[%s] ev connect error. error='%s'", this->TypeName(), uv_strerror(err));
     if(this->handler != nullptr) {this->handler->EvConnectError(err);}
     // 当前只能是connecting 或者 closing
     if (this->status == pipe_client_status_connecting) {
         this->internalClose(pipe_client_close_reason_connect_error);
     } else if (this->status == pipe_client_status_closing) {
     } else {
-        this->coord->CoreLogDebug("[PipeClient] evConnectError, status=%d, error='invalid status'", this->status);
+        this->coord->CoreLogDebug("[%s] ev connect error. status=%d, error='invalid status'", this->TypeName(), this->status);
     }
 }
 
 void PipeClient::evConnect() {
-    this->coord->CoreLogDebug("[PipeClient] evConnect");
+    this->coord->CoreLogDebug("[%s] ev connect", this->TypeName());
     // 当前只能是connecting 
     if (this->status == pipe_client_status_connecting) {
         int err = uv_read_start((uv_stream_t*) &this->handle, PipeClient::uv_alloc_cb, PipeClient::uv_read_cb);
         if (err < 0) {
-            this->coord->CoreLogError("[PipeClient] evConnect uv_read_start failed, error='%s'", uv_strerror(err));
-            if(this->handler != nullptr) {this->handler->EvConnectError(uv_strerror(err));}
+            this->coord->CoreLogError("[%s] ev connect. uv_read_start fail, error='%s'", this->TypeName(), uv_strerror(err));
+            if(this->handler != nullptr) {this->handler->EvConnectError(err);}
             this->internalClose(pipe_client_close_reason_connect_error);
         } else {
             this->status = pipe_client_status_connected;
             if(this->handler != nullptr) {this->handler->EvConnect();}
         }
     } else {
-        this->coord->CoreLogDebug("[PipeClient] evConnect, status=%d, error='invalid status'", this->status);
+        this->coord->CoreLogDebug("[%s] ev connect, status=%d, error='invalid status'", this->TypeName(), this->status);
     }
 }
 
@@ -187,7 +187,7 @@ int PipeClient::Send(const char* data, size_t len) {
 }
 
 int PipeClient::Send(byte_slice& data) {
-    this->coord->CoreLogDebug("[PipeClient] Send, len=%d", data.Len());
+    this->coord->CoreLogDebug("[%s] send, len=%d", this->TypeName(), data.Len());
     if (this->status != pipe_client_status_connected) {
         return ErrorNotConnected;
     }
@@ -197,7 +197,7 @@ int PipeClient::Send(byte_slice& data) {
     coord::net::WriteReq* req = new coord::net::WriteReq(data);
     int err = uv_write(&req->req, (uv_stream_t *)&this->handle, buf, 1, PipeClient::uv_write_cb);
     if (err < 0){
-        this->coord->CoreLogError("[PipeClient] Send failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[%s] send fail, error='%s'", this->TypeName(), uv_strerror(err));
         return err;
     }
     return 0;
@@ -224,15 +224,15 @@ void PipeClient::Destory() {
 
 int PipeClient::Close() {
     if(uv_is_closing((uv_handle_t*)&this->handle)) {
-        this->coord->CoreLogDebug("[PipeClient] Close fail2, error='is closing'");
+        this->coord->CoreLogDebug("[%s] close fail2, error='is closing'", this->TypeName());
         return ErrorIsClosing;
     }
     // 状态判断
     if(this->status == pipe_client_status_closing) {
-        this->coord->CoreLogDebug("[PipeClient] Close fail, error='is closing'");
+        this->coord->CoreLogDebug("[%s] close fail, error='is closing'", this->TypeName());
         return ErrorIsClosing;
     } else if(this->status == pipe_client_status_closed) {
-        this->coord->CoreLogDebug("[PipeClient] Close fail, error='is closed'");
+        this->coord->CoreLogDebug("[%s] close fail, error='is closed'", this->TypeName());
         return ErrorIsClosed;
     } else if(this->status == pipe_client_status_connecting) {
         return this->internalClose(pipe_client_close_reason_connect_cancel);
@@ -262,7 +262,7 @@ int PipeClient::internalClose(int reason) {
 }
 
 void PipeClient::evClose() {
-    this->coord->CoreLogDebug("[PipeClient] evClose, reason=%d", this->closeReason);
+    this->coord->CoreLogDebug("[%s] ev close, reason=%d", this->TypeName(), this->closeReason);
     this->status = pipe_client_status_closed;
     if (this->handler)this->handler->EvClose();
     if (this->destoryDelay) {

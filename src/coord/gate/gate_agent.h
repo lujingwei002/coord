@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/component/component.h"
-#include "coord/base/base_agent.h"
+#include "coord/base/internal_agent.h"
 #include "coord/gate/gate_packet.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/protobuf/init.h"

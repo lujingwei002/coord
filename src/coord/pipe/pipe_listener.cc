@@ -46,7 +46,7 @@ PipeListener::~PipeListener() {
 
 void PipeListener::evConnection(int status) {
     if (status < 0) {
-        this->coord->CoreLogDebug("[PipeListener] evConnection failed, error='%s'", uv_strerror(status));
+        this->coord->CoreLogDebug("[%s] evConnection failed, error='%s'", this->TypeName(), uv_strerror(status));
         return;
     }
     PipeAgent *agent = new PipeAgent(this->coord, this);
@@ -55,14 +55,14 @@ void PipeListener::evConnection(int status) {
     err = uv_accept((uv_stream_t*)&this->server, (uv_stream_t*) &agent->handle);
     if (err < 0) {
         this->coord->Destory(agent);
-        this->coord->CoreLogDebug("[PipeListener] evConnection.uv_accept failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogDebug("[%s] evConnection.uv_accept failed, error='%s'", this->TypeName(), uv_strerror(err));
         return;
     }
     uv_os_sock_t sockfd;
     err = uv_fileno((uv_handle_t*)&agent->handle, &sockfd);
     if (err < 0) {
         this->coord->Destory(agent);
-        this->coord->CoreLogDebug("[PipeListener] evConnection.uv_fileno failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogDebug("[%s] evConnection.uv_fileno failed, error='%s'", this->TypeName(), uv_strerror(err));
         return;
     } 
     agent->sockfd = sockfd;
@@ -72,7 +72,7 @@ void PipeListener::evConnection(int status) {
     auto it = this->agentDict.find(sessionId);
     if (it != this->agentDict.end()){
         this->coord->Destory(agent);
-        this->coord->CoreLogDebug("[PipeListener] evConnection failed, sessionId=%d, error='sessionId conflict'", sessionId);
+        this->coord->CoreLogDebug("[%s] evConnection failed, sessionId=%d, error='sessionId conflict'", this->TypeName(), sessionId);
         return;
     }
     char remoteAddr[32];
@@ -82,23 +82,23 @@ void PipeListener::evConnection(int status) {
         agent->RemoteAddr = remoteAddr;
     }
     this->agentDict[sessionId] = agent;
-    this->coord->CoreLogDebug("[PipeListener] evConnection, sockfd=%d, sessionId=%d", sockfd, sessionId);
+    this->coord->CoreLogDebug("[%s] evConnection, sockfd=%d, sessionId=%d", this->TypeName(), sockfd, sessionId);
     if(this->handler)this->handler->EvConnection(this, agent);
     agent->evConnection();
 }
 
 int PipeListener::Listen(const std::string& path, int backlog){
-    this->coord->CoreLogDebug("[PipeListener] path='%s'", path.c_str());
+    this->coord->CoreLogDebug("[%s] listen, path='%s'", this->TypeName(), path.c_str());
     this->server.data = this;
     uv_pipe_init(&this->coord->loop, &this->server, 0);
     int err = uv_pipe_bind(&this->server, path.c_str());
     if (err) {
-        this->coord->CoreLogError("[PipeListener] Bind failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[%s] Bind failed, error='%s'", this->TypeName(), uv_strerror(err));
         return err;
     }
     err = uv_listen((uv_stream_t*) &this->server, backlog, uv_pipe_connection_cb);
     if (err) {
-        this->coord->CoreLogError("[PipeListener] Listen failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogError("[%s] Listen failed, error='%s'", this->TypeName(), uv_strerror(err));
         return -1;
     }
     this->status = pipe_listener_status_start;
@@ -114,10 +114,10 @@ void PipeListener::ifNotAgentDestoryMySelf() {
 }
 
 void PipeListener::recvAgentClose(PipeAgent* agent) {
-    this->coord->CoreLogDebug("[PipeListener] recvAgentClose");
+    this->coord->CoreLogDebug("[%s] recvAgentClose", this->TypeName());
     auto it = this->agentDict.find(agent->SessionId);
     if (it == this->agentDict.end()) {
-        this->coord->CoreLogDebug("[PipeListener] recvAgentClose failed, sessionid=%d, error='agent not found'", agent->SessionId);
+        this->coord->CoreLogDebug("[%s] recvAgentClose failed, sessionid=%d, error='agent not found'", this->TypeName(), agent->SessionId);
     } else {
         this->agentDict.erase(it);
         this->coord->Destory(agent);
@@ -128,7 +128,7 @@ void PipeListener::recvAgentClose(PipeAgent* agent) {
 }
 
 void PipeListener::evClose() {
-    this->coord->CoreLogDebug("[PipeListener] evClose");
+    this->coord->CoreLogDebug("[%s] evClose", this->TypeName());
     this->ifNotAgentDestoryMySelf();
 }
 

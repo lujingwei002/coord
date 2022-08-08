@@ -12,12 +12,12 @@ namespace coord {
     }
     
     void object_pool_mgr::createObjectPool(const char* name, IObjectPool* pool){
-        LOG_DEBUG("object_pool_mgr<%x>::CreateObjectPool %s", uv_thread_self(), name);
+        LOG_DEBUG("[object_pool_mgr<%x>] create object pool, name=%s", uv_thread_self(), name);
         this->poolDict[name] = pool;
     }
 
     void object_pool_mgr::destroyObjectPool(const char* name, IObjectPool* pool){
-        LOG_DEBUG("object_pool_mgr<%x>::DestroyObjectPool %s", uv_thread_self(), name);
+        LOG_DEBUG("[object_pool_mgr<%x>] destory object pool, name=%s", uv_thread_self(), name);
         auto it = this->poolDict.find(name);
         if(it == this->poolDict.end()){
             return;

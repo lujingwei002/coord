@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/base/base_response.h"
+#include "coord/base/internal_response.h"
 
 //declaration
 namespace coord {

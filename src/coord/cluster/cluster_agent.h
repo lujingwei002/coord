@@ -5,7 +5,7 @@
 //#include "protobuf/cluster.pb.h"
 #include "proto/coord.pb.h"
 #include "coord/cluster/cluster_packet.h"
-#include "coord/base/base_agent.h"
+#include "coord/base/internal_agent.h"
 #include "coord/net/tcp_agent.h"
 #include <vector>
 #include <iostream>

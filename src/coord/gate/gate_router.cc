@@ -636,7 +636,7 @@ int GateRouter::Auth(lua_State* L) {
 
 bool GateRouter::addRoute(const char* event, const char* route, gate_router_handler* handler) {
     gate_router_tree* tree = this->getTree(event);
-    //this->coord->CoreLogDebug("[GateRouter] addRoute, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
+    //this->coord->CoreLogDebug("[GateRouter] add route, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
     auto it = tree->handlerDict.find(route);
     if (it != tree->handlerDict.end()) {
         delete it->second;

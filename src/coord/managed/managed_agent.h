@@ -3,7 +3,7 @@
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/pipe/pipe_agent.h"
-#include "coord/base/base_agent.h"
+#include "coord/base/internal_agent.h"
 #include "proto/coord.pb.h"
 #include "coord/base/base_packet.h"
 #include "coord/base/base_message.h"

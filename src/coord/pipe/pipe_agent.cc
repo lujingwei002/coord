@@ -77,9 +77,9 @@ int PipeAgent::Send(const void* data, size_t len) {
 }
 
 int PipeAgent::Send(byte_slice& data) {
-    this->coord->CoreLogDebug("[PipeAgent] Send, sessionId=%d, len=%d", this->SessionId,  data.Len());
+    this->coord->CoreLogDebug("[PipeAgent] send, sessionId=%d, len=%d", this->SessionId,  data.Len());
     if( this->status != pipe_agent_status_connected) {
-        this->coord->CoreLogDebug("[PipeAgent] Send failed, sessionId=%d, len=%d, status=%d, error='status err'", this->SessionId,  data.Len(), this->status);
+        this->coord->CoreLogDebug("[PipeAgent] send fail, sessionId=%d, len=%d, status=%d, error='status err'", this->SessionId,  data.Len(), this->status);
         return -1;
     }
     uv_buf_t buf[] = {
@@ -88,14 +88,14 @@ int PipeAgent::Send(byte_slice& data) {
     net::WriteReq* req = new net::WriteReq(data);
     int err = uv_write(&req->req, (uv_stream_t *)&this->handle, buf, 1, PipeAgent::uv_write_cb);
     if (err < 0){
-        this->coord->CoreLogError("[PipeAgent] Send failed, sessionId=%d, error='%s'", this->SessionId, uv_strerror(err));
+        this->coord->CoreLogError("[PipeAgent] send fail, sessionId=%d, error='%s'", this->SessionId, uv_strerror(err));
         return err;
     }
     return 0;
 }
 
 void PipeAgent::evData() {
-    this->coord->CoreLogDebug("[PipeAgent] evData, len=%d", this->recvBuffer.Len());
+    this->coord->CoreLogDebug("[PipeAgent] ev data, len=%d", this->recvBuffer.Len());
     if (!this->handler){
         return;
     }
@@ -110,17 +110,16 @@ void PipeAgent::evData() {
 }
 
 void PipeAgent::evConnection() {
-    this->coord->CoreLogDebug("[PipeAgent] evConnection, sessionid=%d", this->SessionId);
-    int err = uv_read_start((uv_stream_t*) &this->handle, 
-            PipeAgent::uv_alloc_cb, uv_read_cb);
+    this->coord->CoreLogDebug("[PipeAgent] ev connection, sessionid=%d", this->SessionId);
+    int err = uv_read_start((uv_stream_t*) &this->handle, PipeAgent::uv_alloc_cb, uv_read_cb);
     if (err < 0) {
-        this->coord->CoreLogDebug("[PipeAgent] evConnection.uv_read_start failed, error='%s'", uv_strerror(err));
+        this->coord->CoreLogDebug("[PipeAgent] ev connection. uv_read_start fail, error='%s'", uv_strerror(err));
         return;
     }
 }
 
 void PipeAgent::evError(int status) {
-    this->coord->CoreLogDebug("[PipeAgent] evError, sessionid=%d, error='%s'", this->SessionId, uv_err_name(status));
+    this->coord->CoreLogDebug("[PipeAgent] ev error, sessionid=%d, error='%s'", this->SessionId, uv_err_name(status));
     if(status != UV_EOF){
         if(this->handler)this->handler->EvError(this);
     }
@@ -128,12 +127,12 @@ void PipeAgent::evError(int status) {
 }
 
 void PipeAgent::evShutdown() {
-    this->coord->CoreLogDebug("[PipeAgent] evShutdown");
+    this->coord->CoreLogDebug("[PipeAgent] ev shutdown");
     uv_close((uv_handle_t*)&this->handle, PipeAgent::uv_close_cb);
 }
 
 void PipeAgent::evClose() {
-    this->coord->CoreLogDebug("[PipeAgent] evClose, sessionid=%d", this->SessionId);
+    this->coord->CoreLogDebug("[PipeAgent] ev close, sessionid=%d", this->SessionId);
     this->status = pipe_agent_status_closed;
     if(this->handler)this->handler->EvClose(this);
     this->listener->recvAgentClose(this);

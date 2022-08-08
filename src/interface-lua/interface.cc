@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Fri Aug  5 15:12:28 2022.
+** Generated automatically by tolua++-1.0.92 on Mon Aug  8 11:37:03 2022.
 */
 
 #ifndef __cplusplus
@@ -25,6 +25,7 @@ TOLUA_API int  tolua_coord_open (lua_State* tolua_S);
 #include "coord/base/base_request.h"
 #include "coord/base/base_response.h"
 #include "coord/base/base_result.h"
+#include "coord/base/internal_response.h"
 #include "coord/builtin/promise.h"
 #include "coord/object/object.h"
 #include "coord/scene/scene.h"
@@ -4859,6 +4860,53 @@ static int tolua_set_coord__base_response_Code(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: Code of class  coord::base_result */
+#ifndef TOLUA_DISABLE_tolua_get_coord__base_result_Code
+static int tolua_get_coord__base_result_Code(lua_State* tolua_S)
+{
+  coord::base_result* self = (coord::base_result*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Code'",NULL);
+#endif
+  tolua_pushnumber(tolua_S,(lua_Number)self->Code);
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: Code of class  coord::base_result */
+#ifndef TOLUA_DISABLE_tolua_set_coord__base_result_Code
+static int tolua_set_coord__base_result_Code(lua_State* tolua_S)
+{
+  coord::base_result* self = (coord::base_result*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Code'",NULL);
+  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->Code = ((int)  tolua_tonumber(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: __base_reader__ of class  coord::base_result */
+#ifndef TOLUA_DISABLE_tolua_get_coord__base_result___base_reader__
+static int tolua_get_coord__base_result___base_reader__(lua_State* tolua_S)
+{
+  coord::base_result* self = (coord::base_result*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__base_reader__'",NULL);
+#endif
+#ifdef __cplusplus
+  tolua_pushusertype(tolua_S,(void*)static_cast<coord::base_reader*>(self), "coord::base_reader");
+#else
+  tolua_pushusertype(tolua_S,(void*)((coord::base_reader*)self), "coord::base_reader");
+#endif
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: Proto of class  coord::internal_response */
 #ifndef TOLUA_DISABLE_tolua_coord_coord_internal_response_Proto00
 static int tolua_coord_coord_internal_response_Proto00(lua_State* tolua_S)
@@ -5076,53 +5124,6 @@ return self->Table(L);
  tolua_error(tolua_S,"#ferror in function 'Table'.",&tolua_err);
  return 0;
 #endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* get function: Code of class  coord::base_result */
-#ifndef TOLUA_DISABLE_tolua_get_coord__base_result_Code
-static int tolua_get_coord__base_result_Code(lua_State* tolua_S)
-{
-  coord::base_result* self = (coord::base_result*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Code'",NULL);
-#endif
-  tolua_pushnumber(tolua_S,(lua_Number)self->Code);
- return 1;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* set function: Code of class  coord::base_result */
-#ifndef TOLUA_DISABLE_tolua_set_coord__base_result_Code
-static int tolua_set_coord__base_result_Code(lua_State* tolua_S)
-{
-  coord::base_result* self = (coord::base_result*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  tolua_Error tolua_err;
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Code'",NULL);
-  if (!tolua_isnumber(tolua_S,2,0,&tolua_err))
-   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
-#endif
-  self->Code = ((int)  tolua_tonumber(tolua_S,2,0))
-;
- return 0;
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* get function: __base_reader__ of class  coord::base_result */
-#ifndef TOLUA_DISABLE_tolua_get_coord__base_result___base_reader__
-static int tolua_get_coord__base_result___base_reader__(lua_State* tolua_S)
-{
-  coord::base_result* self = (coord::base_result*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__base_reader__'",NULL);
-#endif
-#ifdef __cplusplus
-  tolua_pushusertype(tolua_S,(void*)static_cast<coord::base_reader*>(self), "coord::base_reader");
-#else
-  tolua_pushusertype(tolua_S,(void*)((coord::base_reader*)self), "coord::base_reader");
-#endif
- return 1;
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -7314,13 +7315,13 @@ static int tolua_coord_coord_http_HttpRouter_Static00(lua_State* tolua_S)
 #endif
  {
   coord::http::HttpRouter* self = (coord::http::HttpRouter*)  tolua_tousertype(tolua_S,1,0);
-  const char* url = ((const char*)  tolua_tostring(tolua_S,2,0));
+  const char* path = ((const char*)  tolua_tostring(tolua_S,2,0));
   const char* dir = ((const char*)  tolua_tostring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Static'",NULL);
 #endif
   {
-   bool tolua_ret = (bool)  self->Static(url,dir);
+   bool tolua_ret = (bool)  self->Static(path,dir);
    tolua_pushboolean(tolua_S,(bool)tolua_ret);
   }
  }
@@ -7350,13 +7351,13 @@ static int tolua_coord_coord_http_HttpRouter_StaticFile00(lua_State* tolua_S)
 #endif
  {
   coord::http::HttpRouter* self = (coord::http::HttpRouter*)  tolua_tousertype(tolua_S,1,0);
-  const char* url = ((const char*)  tolua_tostring(tolua_S,2,0));
-  const char* path = ((const char*)  tolua_tostring(tolua_S,3,0));
+  const char* path = ((const char*)  tolua_tostring(tolua_S,2,0));
+  const char* filePath = ((const char*)  tolua_tostring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'StaticFile'",NULL);
 #endif
   {
-   bool tolua_ret = (bool)  self->StaticFile(url,path);
+   bool tolua_ret = (bool)  self->StaticFile(path,filePath);
    tolua_pushboolean(tolua_S,(bool)tolua_ret);
   }
  }
@@ -18694,6 +18695,17 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_function(tolua_S,"Reject",tolua_coord_coord_base_response_Reject00);
     tolua_variable(tolua_S,"Code",tolua_get_coord__base_response_Code,tolua_set_coord__base_response_Code);
    tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"coord",0);
+  tolua_beginmodule(tolua_S,"coord");
+   tolua_cclass(tolua_S,"base_result","coord::base_result","coord::Destoryable",NULL);
+   tolua_beginmodule(tolua_S,"base_result");
+    tolua_variable(tolua_S,"Code",tolua_get_coord__base_result_Code,tolua_set_coord__base_result_Code);
+    tolua_variable(tolua_S,"__base_reader__",tolua_get_coord__base_result___base_reader__,NULL);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"coord",0);
+  tolua_beginmodule(tolua_S,"coord");
    tolua_cclass(tolua_S,"internal_response","coord::internal_response","coord::base_response",NULL);
    tolua_beginmodule(tolua_S,"internal_response");
     tolua_function(tolua_S,"Proto",tolua_coord_coord_internal_response_Proto00);
@@ -18703,14 +18715,6 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_function(tolua_S,"Args",tolua_coord_coord_internal_response_Args00);
     tolua_function(tolua_S,"Pack",tolua_coord_coord_internal_response_Pack00);
     tolua_function(tolua_S,"Table",tolua_coord_coord_internal_response_Table00);
-   tolua_endmodule(tolua_S);
-  tolua_endmodule(tolua_S);
-  tolua_module(tolua_S,"coord",0);
-  tolua_beginmodule(tolua_S,"coord");
-   tolua_cclass(tolua_S,"base_result","coord::base_result","coord::Destoryable",NULL);
-   tolua_beginmodule(tolua_S,"base_result");
-    tolua_variable(tolua_S,"Code",tolua_get_coord__base_result_Code,tolua_set_coord__base_result_Code);
-    tolua_variable(tolua_S,"__base_reader__",tolua_get_coord__base_result___base_reader__,NULL);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"coord",0);

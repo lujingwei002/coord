@@ -204,7 +204,7 @@ int ClusterRouter::Notify(lua_State* L) {
 
 bool ClusterRouter::addRoute(const char* event, const char* route, cluster_router_handler* handler) {
     cluster_router_tree* tree = this->getTree(event);
-    //this->coord->CoreLogDebug("[ClusterRouter] addRoute, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
+    //this->coord->CoreLogDebug("[ClusterRouter] add route, event=%-10s, route=%-64s, handler=0x%x", event, route, handler);
     auto it = tree->handlerDict.find(route);
     if (it != tree->handlerDict.end()) {
         delete it->second;

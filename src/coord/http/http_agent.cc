@@ -13,7 +13,7 @@ HttpAgent::HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) 
     this->server = server;
     this->tcpAgent = tcpAgent;
     this->request = nullptr;
-    this->isUpgrade = false;
+    this->IsUpgrade = false;
     this->handler = nullptr;
     this->requestId = 0;
     this->minimumAlreadyResponseRequestId = 0;
@@ -45,8 +45,8 @@ HttpAgent::~HttpAgent() {
         this->request = nullptr;
     }
     if (nullptr != this->ssl) {
-       // BIO_free(this->read_bio);
-       // BIO_free(this->write_bio);
+        BIO_free(this->read_bio);
+        BIO_free(this->write_bio);
        // SSL_shutdown(this->ssl);
         SSL_free(this->ssl);
         this->ssl = nullptr;
@@ -106,7 +106,7 @@ int HttpAgent::recvEncryptData(char* data, size_t len) {
 }
 
 int HttpAgent::recvData(char* data, size_t len) {
-    if(this->isUpgrade){
+    if(this->IsUpgrade){
         if(nullptr == this->handler) {
             return len;
         }
@@ -194,7 +194,7 @@ void HttpAgent::recvHttpRequest(HttpRequest* request) {
         }
     }
     this->coord->Destory(request);
-    if(!this->isKeepAlive && !this->isUpgrade){
+    if(!this->isKeepAlive && !this->IsUpgrade){
         this->Close();
     }
 } 
@@ -215,7 +215,7 @@ void HttpAgent::recvHttpUpgrade(HttpRequest* request) {
         request->GetResponse()->PageNotFound();
         return;
     }
-    this->isUpgrade = true;
+    this->IsUpgrade = true;
     this->server->recvHttpUpgrade(this, request);
 }
 
