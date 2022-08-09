@@ -11,14 +11,12 @@ CC_IMPLEMENT(Reply, "coord::redis::Reply")
 Reply::Reply(std::nullptr_t) {
     this->coord = coorda;
     this->reply = nullptr;
-    this->owner = false;
 }
 
-Reply::Reply(Coord *coord, redisReply* reply, bool owner)  {
+Reply::Reply(Coord *coord, redisReply* reply)  {
     this->coord = coord;
     this->reply = reply;
-    this->owner = owner;
-    if(this->reply && this->owner) {
+    if(this->reply) {
         refManager.reference(this->reply);
     }
 }
@@ -26,14 +24,26 @@ Reply::Reply(Coord *coord, redisReply* reply, bool owner)  {
 Reply::Reply(const Reply& other) {
     this->coord = other.coord;
     this->reply = other.reply;
-    this->owner = other.owner;
-    if(this->reply && this->owner) {
+    if(this->reply) {
         refManager.reference(this->reply);
     }
 }
 
+Reply::Reply(const Reply* other) {
+    if (nullptr == other) {
+        this->coord = nullptr;
+        this->reply = nullptr;
+    } else {
+        this->coord = other->coord;
+        this->reply = other->reply;
+        if(this->reply) {
+            refManager.reference(this->reply);
+        }
+    }
+}
+
 Reply& Reply::operator=(const Reply& other) {
-    if(this->reply && this->owner) {
+    if(this->reply) {
         if (refManager.release(this->reply) == 0) {
             freeReplyObject(this->reply);
             this->reply = nullptr;
@@ -41,8 +51,7 @@ Reply& Reply::operator=(const Reply& other) {
     }
     this->coord = other.coord;
     this->reply = other.reply;
-    this->owner = other.owner;
-    if(this->reply && this->owner) {
+    if(this->reply) {
         refManager.reference(this->reply);
     }
     return *this;
@@ -57,11 +66,12 @@ bool Reply::operator!= (std::nullptr_t v) const  {
 }
 
 Reply::~Reply() {
-    if(this->reply && this->owner) {
+    if(this->reply) {
         if (refManager.release(this->reply) == 0) {
+            printf("freeReplyObject\n");
             freeReplyObject(this->reply);
-            this->reply = nullptr;
         }
+        this->reply = nullptr;
     }
 }
 

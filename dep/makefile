@@ -77,6 +77,8 @@ archive/hiredis-$(HIREDIS_VERSION).tar.gz:
 	curl "https://codeload.github.com/redis/hiredis/tar.gz/refs/tags/v$(HIREDIS_VERSION)" -o $@
 
 $(HIREDIS_LIB): $(HIREDIS_DIR)
+	rm -rf $(HIREDIS_DIR)/async.c
+	cp hiredis/async.c $(HIREDIS_DIR)/async.c
 	$(MAKE) -C $(HIREDIS_DIR) 
 	touch $@
 

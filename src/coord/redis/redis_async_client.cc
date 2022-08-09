@@ -43,7 +43,7 @@ void AsyncClient::getCallback(redisAsyncContext *c, void *data, void *privdata) 
     RedisPromise* promise = (RedisPromise*)privdata;
     redisReply* r = (redisReply*)data;
 
-    Reply reply(client->coord, r, false);
+    Reply* reply = new Reply(client->coord, r);
     client->recvGetCallback(promise, reply);
 }
 
@@ -124,7 +124,7 @@ void AsyncClient::recvConnect() {
         this->rejectConnect();
         return;
     }
-    promise->Then([this](AsyncClient* client, const Reply& reply){
+    promise->Then([this](auto client, auto reply){
         this->coord->CoreLogDebug("[RedisAsyncClient] authResolve");
         //密码验证成功
         if (this->config.DB.length() <= 0) {
@@ -136,32 +136,32 @@ void AsyncClient::recvConnect() {
             this->rejectConnect();
             return;
         }  
-        promise->Then([this](AsyncClient* client, const Reply& reply){
+        promise->Then([this](auto client, auto reply){
             this->resolveConnect();
             return;
         });        
-        promise->Else([this](AsyncClient* client, const Reply& reply){
+        promise->Else([this](auto client, auto reply){
             this->coord->CoreLogDebug("[RedisAsyncClient] recvConnect failed, error='SELECT'");
             //密码验证失败，断开链接
             this->rejectConnect();
         });
     });
-    promise->Else([this](AsyncClient* client, const Reply& reply){
+    promise->Else([this](auto client, auto reply){
         this->coord->CoreLogDebug("[RedisAsyncClient] recvConnect failed, error='AUTH'");
         //密码验证失败，断开链接
         this->rejectConnect();
     });
 }
 
-void AsyncClient::recvGetCallback(RedisPromise* promise, const Reply& reply) {
-    if (reply.Error()) {
+void AsyncClient::recvGetCallback(RedisPromise* promise, Reply* reply) {
+    if (reply->Error()) {
         promise->reject(this, reply);
     } else {
         promise->resolve(this, reply);
     }
     this->promiseDict.erase(promise);
     this->coord->Destory(promise);
-    //this->coord->Destory(reply);
+    this->coord->Destory((Reply* )reply);
 }
 
 void AsyncClient::recvDisconnectError(const char* error) {

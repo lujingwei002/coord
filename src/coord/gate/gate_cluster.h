@@ -44,16 +44,16 @@ public:
     void persistAgent(uint64_t userId);
     void persistSelf();
     void checkExpireGate();
-    void recvConnectCacheSucc(redis::AsyncClient* client, const redis::Reply& reply);
-    void recvConnectCacheErr(redis::AsyncClient* client, const redis::Reply& reply);
-    void recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::Reply& reply, const char* name);
-    void recvCacheScriptLoadError(redis::AsyncClient* client, const redis::Reply& reply);
-    void recvTryRegisterSucc(redis::AsyncClient* client, const redis::Reply& reply, uint64_t sessionId, uint64_t userId);
-    void recvTryRegisterError(redis::AsyncClient* client, const redis::Reply& reply, uint64_t sessionId, uint64_t userId);
-    void recvRegisterSucc(redis::AsyncClient* client, const redis::Reply& reply, uint64_t sessionId, uint64_t userId);
-    void recvRegisterError(redis::AsyncClient* client, const redis::Reply& reply, uint64_t sessionId, uint64_t userId);
-    void recvUnregisterSucc(redis::AsyncClient* client, const redis::Reply& reply, uint64_t sessionId, uint64_t userId);
-    void recvUnregisterError(redis::AsyncClient* client, const redis::Reply& reply, uint64_t sessionId, uint64_t userId);
+    void recvConnectCacheSucc(redis::AsyncClient* client, const redis::Reply* reply);
+    void recvConnectCacheErr(redis::AsyncClient* client, const redis::Reply* reply);
+    void recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::Reply* reply, const char* name);
+    void recvCacheScriptLoadError(redis::AsyncClient* client, const redis::Reply* reply);
+    void recvTryRegisterSucc(redis::AsyncClient* client, const redis::Reply* reply, uint64_t sessionId, uint64_t userId);
+    void recvTryRegisterError(redis::AsyncClient* client, const redis::Reply* reply, uint64_t sessionId, uint64_t userId);
+    void recvRegisterSucc(redis::AsyncClient* client, const redis::Reply* reply, uint64_t sessionId, uint64_t userId);
+    void recvRegisterError(redis::AsyncClient* client, const redis::Reply* reply, uint64_t sessionId, uint64_t userId);
+    void recvUnregisterSucc(redis::AsyncClient* client, const redis::Reply* reply, uint64_t sessionId, uint64_t userId);
+    void recvUnregisterError(redis::AsyncClient* client, const redis::Reply* reply, uint64_t sessionId, uint64_t userId);
     //中断上一个请求
     void abortRegisterOrInsteadRequest(uint64_t userId);
     //cluster

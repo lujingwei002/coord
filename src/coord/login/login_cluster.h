@@ -25,10 +25,10 @@ public:
     virtual ~login_cluster();
 public:
     int main();
-    void recvConnectCacheSucc(redis::AsyncClient* client, const redis::Reply& reply);
-    void recvConnectCacheErr(redis::AsyncClient* client, const redis::Reply& reply);
-    void recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::Reply& reply, const char* name);
-    void recvCacheScriptLoadError(redis::AsyncClient* client, const redis::Reply& reply);
+    void recvConnectCacheSucc(redis::AsyncClient* client, const redis::Reply* reply);
+    void recvConnectCacheErr(redis::AsyncClient* client, const redis::Reply* reply);
+    void recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::Reply* reply, const char* name);
+    void recvCacheScriptLoadError(redis::AsyncClient* client, const redis::Reply* reply);
     redis::RedisPromise* getRanomGate();
     redis::RedisPromise* getBalanceGate();
     redis::RedisPromise* listGate();

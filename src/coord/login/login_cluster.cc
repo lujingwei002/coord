@@ -93,8 +93,8 @@ int login_cluster::main() {
     return 0;
 }
 
-void login_cluster::recvConnectCacheSucc(redis::AsyncClient* client, const redis::Reply& reply) {
-    this->coord->CoreLogError("[login_cluster] recvConnectCacheSucc %s", reply.String());
+void login_cluster::recvConnectCacheSucc(redis::AsyncClient* client, const redis::Reply* reply) {
+    this->coord->CoreLogError("[login_cluster] recvConnectCacheSucc %s", reply->String());
 
     auto promise = this->asyncClient->SCRIPT_LOAD(R"(
         while true do
@@ -138,17 +138,17 @@ void login_cluster::recvConnectCacheSucc(redis::AsyncClient* client, const redis
     promise->Else(std::bind(&login_cluster::recvCacheScriptLoadError, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-void login_cluster::recvConnectCacheErr(redis::AsyncClient* client, const redis::Reply& reply) {
-    this->coord->CoreLogError("[login_cluster] recvConnectCacheErr, reply='%s'", reply.String());
+void login_cluster::recvConnectCacheErr(redis::AsyncClient* client, const redis::Reply* reply) {
+    this->coord->CoreLogError("[login_cluster] recvConnectCacheErr, reply='%s'", reply->String());
 }
 
-void login_cluster::recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::Reply& reply, const char* name) {
-    this->coord->CoreLogError("[login_cluster] recvCacheScriptLoadSucc, name=%s, reply='%s'", name, reply.String());
-    this->scriptShaDict[name] = reply.String();
+void login_cluster::recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::Reply* reply, const char* name) {
+    this->coord->CoreLogError("[login_cluster] recvCacheScriptLoadSucc, name=%s, reply='%s'", name, reply->String());
+    this->scriptShaDict[name] = reply->String();
 }
 
-void login_cluster::recvCacheScriptLoadError(redis::AsyncClient* client, const redis::Reply& reply) {
-    this->coord->CoreLogError("[login_cluster] recvCacheScriptLoadError, reply='%s'", reply.String());
+void login_cluster::recvCacheScriptLoadError(redis::AsyncClient* client, const redis::Reply* reply) {
+    this->coord->CoreLogError("[login_cluster] recvCacheScriptLoadError, reply='%s'", reply->String());
 }
 
 redis::RedisPromise* login_cluster::getBalanceGate() {

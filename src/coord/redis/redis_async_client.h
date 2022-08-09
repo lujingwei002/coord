@@ -43,7 +43,7 @@ private:
     void recvConnect();
     void recvDisconnectError(const char* error);
     void recvDisconnect();
-    void recvGetCallback(RedisPromise* promise, const Reply& reply);
+    void recvGetCallback(RedisPromise* promise, Reply* reply);
     void resolveConnect();
     void rejectConnect();
 private:

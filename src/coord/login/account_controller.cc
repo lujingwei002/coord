@@ -45,15 +45,15 @@ void account_controller::reqLogin(http::HttpRequest* request) {
         return;
     }
     this->coord->DontDestory(request);
-    promise->Then([this, request, response](auto client, auto& reply){
-        if (reply.Empty()) {
+    promise->Then([this, request, response](auto client, auto reply){
+        if (reply->Empty()) {
             auto result = this->coord->Json->NewObject();
             result.SetInteger("code", 1);
             response->Json(result);
             this->coord->Destory(request);
             return;
         }
-        if (!reply.Array() || reply.ArrayCount() < 3 || reply.Empty(0)) {
+        if (!reply->Array() || reply->ArrayCount() < 3 || reply->Empty(0)) {
             auto result = this->coord->Json->NewObject();
             result.SetInteger("code", 2);
             response->Json(result);
@@ -63,15 +63,15 @@ void account_controller::reqLogin(http::HttpRequest* request) {
         auto result = this->coord->Json->NewObject();
         result.SetInteger("code", 0);
         auto data = result.SetObject("data");
-        data.SetString("host", reply.String(0));
-        data.SetString("port", reply.String(2));
-        data.SetString("online", reply.String(3));
-        data.SetString("version", reply.String(4));
+        data.SetString("host", reply->String(0));
+        data.SetString("port", reply->String(2));
+        data.SetString("online", reply->String(3));
+        data.SetString("version", reply->String(4));
         response->Json(result);
         this->coord->Destory(request);
-        this->coord->CoreLogError("[login_cluster] test succ %s", reply.String());
+        this->coord->CoreLogError("[login_cluster] test succ %s", reply->String());
     });
-    promise->Else([this, request, response](auto client, auto& reply){
+    promise->Else([this, request, response](auto client, auto reply){
         this->coord->CoreLogError("[login_cluster] test error");
         auto result = this->coord->Json->NewObject();
         result.SetInteger("code", 4);
@@ -90,15 +90,15 @@ void account_controller::reqList(http::HttpRequest* request) {
         return;
     }
     this->coord->DontDestory(request);
-    promise->Then([this, request, response](auto client, auto& reply){
-        if (reply.Empty()) {
+    promise->Then([this, request, response](auto client, auto reply){
+        if (reply->Empty()) {
             auto result = this->coord->Json->NewObject();
             result.SetInteger("code", 1);
             response->Json(result);
             this->coord->Destory(request);
             return;
         }
-        if (!reply.Array() || reply.ArrayCount() % 5 != 0) {
+        if (!reply->Array() || reply->ArrayCount() % 5 != 0) {
             auto result = this->coord->Json->NewObject();
             result.SetInteger("code", 2);
             response->Json(result);
@@ -109,18 +109,18 @@ void account_controller::reqList(http::HttpRequest* request) {
         result.SetInteger("code", 0);
         auto data = result.SetArray("data");
 
-        for (int i = 0; i < reply.ArrayCount() / 5; i++) {
+        for (int i = 0; i < reply->ArrayCount() / 5; i++) {
             auto gate = data.AddObject();
-            gate.SetString("host", reply.String(0 + 5 * i));
-            gate.SetString("port", reply.String(2 + 5 * i));
-            gate.SetString("online", reply.String(3 + 5 * i));
-            gate.SetString("version", reply.String(4 + 5 * i));
+            gate.SetString("host", reply->String(0 + 5 * i));
+            gate.SetString("port", reply->String(2 + 5 * i));
+            gate.SetString("online", reply->String(3 + 5 * i));
+            gate.SetString("version", reply->String(4 + 5 * i));
         }
         response->Json(result);
         this->coord->Destory(request);
-        this->coord->CoreLogError("[login_cluster] test succ %s", reply.String());
+        this->coord->CoreLogError("[login_cluster] test succ %s", reply->String());
     });
-    promise->Else([this, request, response](auto client, auto& reply){
+    promise->Else([this, request, response](auto client, auto reply){
         this->coord->CoreLogError("[login_cluster] test error");
         auto result = this->coord->Json->NewObject();
         result.SetInteger("code", 4);

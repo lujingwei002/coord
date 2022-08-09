@@ -7,13 +7,17 @@ namespace coord {
 namespace cache {
 CC_IMPLEMENT(CacheReader, "coord::cache::CacheReader")
 
-CacheReader* newCacheReader(Coord* coord, const redis::Reply& reply) {
+CacheReader* newCacheReader(Coord* coord, const redis::Reply* reply) {
     auto self = new CacheReader(coord, reply);
     return self;
 }
 
 CacheReader::CacheReader(std::nullptr_t) : coord(coorda), reply(nullptr) {
     assert(coorda);
+}
+
+CacheReader::CacheReader(Coord *coord, const redis::Reply* reply) : 
+    coord(coord), reply(reply) {
 }
 
 CacheReader::CacheReader(Coord *coord, const redis::Reply& reply) : 

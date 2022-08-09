@@ -33,20 +33,17 @@ friend AsyncClient;
 private:
     Coord*      coord;
     redisReply* reply;
-    //在异步的情况下， hiredis负责释放reply
-    bool        owner;
 private:
-    Reply(Coord *coord, redisReply* reply, bool owner = true);
+    Reply(Coord *coord, redisReply* reply);
 
 
 
 public:
+    Reply(const Reply* other);
     Reply(const Reply& other);
     Reply(std::nullptr_t);
     virtual ~Reply();
 public:
-    const Reply* operator->() const {return this;}
-    operator void*() const { return (void*)this;}
     Reply& operator=(const Reply& other);
     bool operator== (std::nullptr_t v) const;
 	bool operator!= (std::nullptr_t v) const;

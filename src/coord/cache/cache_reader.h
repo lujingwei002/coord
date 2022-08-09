@@ -25,6 +25,7 @@ class CacheReader : public Destoryable {//tolua_export
 CC_CLASS(CacheReader);
 public:
     CacheReader(std::nullptr_t);
+    CacheReader(Coord *coord, const redis::Reply* reply);
     CacheReader(Coord *coord, const redis::Reply& reply);
     virtual ~CacheReader();
 public:
@@ -41,7 +42,7 @@ public:
 inline bool CacheReader::Empty() {return this->reply.Empty();}
 inline bool CacheReader::Error() {return this->reply.Error();}
 
-CacheReader* newCacheReader(Coord* coord, const redis::Reply& conn);
+CacheReader* newCacheReader(Coord* coord, const redis::Reply* conn);
 }//tolua_export
 }//tolua_export
 

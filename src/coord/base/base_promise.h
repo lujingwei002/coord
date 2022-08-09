@@ -245,7 +245,11 @@ void base_promise<TClient, TResult>::recvResult(TClient client, TResult result, 
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
     tolua_pushusertype(L, client, client->TypeName());
-    tolua_pushusertype(L, result, result->TypeName());
+    if (nullptr == result) {
+        lua_pushnil(L);
+    } else {
+        tolua_pushusertype(L, result, result->TypeName());
+    }
     if (lua_pcall(L, 2, 0, 0) != 0) {
         this->coord->CoreLogError("[%s] recvResult failed, error=%s", this->TypeName(), lua_tostring(L, -1));
         const char* error = lua_tostring(L, -1); 
