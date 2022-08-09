@@ -1,5 +1,6 @@
 #include "coord/gate/gate_message.h"
 #include "coord/builtin/error.h"
+#include <cstring>
 namespace coord {
 namespace gate {
 

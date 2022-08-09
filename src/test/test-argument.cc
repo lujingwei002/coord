@@ -1,6 +1,7 @@
 #include "coord/coord.h"
 #include "coord/builtin/argument.h"
 #include "coord/builtin/slice.h"
+#include "coord/log4cc/init.h"
 #include "gtest/gtest.h"
 #include <stdio.h>
 #include <string.h>
@@ -22,6 +23,7 @@ public:
         argv.ConfigPath = "test/test.ini";
         int err = coord->beforeTest(argv);
         ASSERT_EQ(err, 0);
+        coord->CoreLogSetPriority(coord::log4cc::INFO);
     }
 
     void TearDown() {

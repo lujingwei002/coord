@@ -1,4 +1,5 @@
 #include "coord/builtin/slice.h"
+#include <stdio.h>
 
 namespace coord {
 

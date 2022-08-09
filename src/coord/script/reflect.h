@@ -50,14 +50,14 @@ public:
     Reflect GetTable(const char* key);
 
     /// #table.set operation
-    int SetBool(const char* key, bool value);  //tolua_export
+    int SetBool(const char* key, bool value);           //tolua_export
     int SetString(const char* key, const char* value);  //tolua_export
     int SetNumber(const char* key, lua_Number value);   //tolua_export
     Reflect SetTable(const char* key);                  //tolua_export
     int SetTable(const char* key, Reflect& table);
 
     /// #array.set operation
-    int SetBool(int key, bool value);          //tolua_export
+    int SetBool(int key, bool value);                   //tolua_export
     int SetString(int key, const char* value);          //tolua_export
     int SetNumber(int key, lua_Number value);           //tolua_export
     Reflect SetTable(int key);                          //tolua_export

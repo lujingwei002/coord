@@ -60,7 +60,6 @@ int base_reader::Unpack(lua_State* L) {
 }
 
 Argument* base_reader::Args() {
-    printf("aaaaaaaa %d\n", this->dataType);
     if (this->argv != nullptr) {
         return this->argv;
     }

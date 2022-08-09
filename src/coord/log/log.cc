@@ -4,10 +4,6 @@
 namespace coord {
 namespace log  {
 
-base_logger logger;
-
-static int s_warn_counter = 0;
-static int s_error_counter = 0;
 
 void LogFatal(const char *fmt, ...){
     va_list args;
@@ -23,7 +19,6 @@ void LogFatal(const char *fmt, ...){
 }
 
 void LogError(const char *fmt, ...){
-    s_error_counter++;
     va_list args;
     va_start(args, fmt);
     if(coorda) {
@@ -37,7 +32,6 @@ void LogError(const char *fmt, ...){
 }
 
 void LogWarn(const char *fmt, ...){
-    s_warn_counter++;
     va_list args;
     va_start(args, fmt);
     if(coorda) {
@@ -89,29 +83,12 @@ void LogDebug(const char *fmt, ...){
     va_end(args);
 }
 
-void OpenLevel(int level) {
+void SetPriority(int priority) {
     if(coorda) {
-        coorda->coreLogOpenLevel(level);
-    } else {
-        logger.OpenLevel(level);
+        coorda->CoreLogSetPriority(priority);
     }
 }
 
-void SetLevel(int level) {
-    if(coorda) {
-        coorda->coreLogSetLevel(level);
-    } else {
-        logger.SetLevel(level);
-    }
-}
-
-void CloseLevel(int level) {
-    if(coorda) {
-        coorda->coreLogCloseLevel(level);
-    } else {
-        logger.CloseLevel(level);
-    }
-}
 
 }
 

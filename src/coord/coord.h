@@ -264,9 +264,7 @@ friend void coord::log::LogWarn(const char *fmt, ...);
 friend void coord::log::LogInfo(const char *fmt, ...);
 friend void coord::log::LogMsg(const char *fmt, ...);
 friend void coord::log::LogDebug(const char *fmt, ...);
-friend void coord::log::OpenLevel(int level);
-friend void coord::log::CloseLevel(int level);
-friend void coord::log::SetLevel(int level);
+friend void coord::log::SetPriority(int priority);
 friend uv_stat_t* coord::io::FileStat(const char* path);
 public:
     Coord();
@@ -274,9 +272,10 @@ public:
 public:
     
     int Reload();
-    void Destory(int code);//tolua_export
-    Scene* CreateScene(const char* sceneName);//tolua_expor
-    void Sleep(uint64_t msec);//tolua_export
+    void Destory(int code);                             //tolua_export
+    Scene* CreateScene(const char* sceneName);          //tolua_expor
+    /// 睡眠指定的毫秒数
+    void Sleep(uint64_t msec);                          //tolua_export
 
 
     //@xx 日志接口
@@ -319,9 +318,7 @@ public:
     void CoreLogInfo(const char* fmt, va_list args);
     void CoreLogDebug(const char* fmt, va_list args);
     void CoreLogMsg(const char* fmt, va_list args);
-    void coreLogCloseLevel(int level);                  
-    void coreLogOpenLevel(int level);                   
-    void coreLogSetLevel(int level);                    
+    void CoreLogSetPriority(int priority);                                     
     /// @core日志接口
 
     //@xx 组件接口

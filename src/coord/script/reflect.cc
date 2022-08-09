@@ -493,7 +493,7 @@ int Reflect::Decode(const char* data, size_t len) {
 
 int Reflect::Encode(byte_slice& buffer) {
     lua_State* L = this->coord->Script->L;
-    lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);// table
+    lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);       // table
     int err = this->coord->Script->Encode(-1, buffer);
     lua_pop(L, 1);
     return err;

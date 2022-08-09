@@ -1,5 +1,6 @@
 #include "coord/cluster/cluster_message.h"
 #include "coord/builtin/error.h"
+#include <cstring>
 namespace coord {
 namespace cluster {
 

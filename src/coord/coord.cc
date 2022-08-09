@@ -6,9 +6,6 @@
 #include "coord/object/object.h"
 #include "coord/script/script.h"
 #include "coord/config/config.h"
-#include "coord/log/log_logger.h"
-#include "coord/log/log_corelogger.h"
-#include "coord/log/log_filelogger.h"
 #include "coord/builtin/slice.h"
 #include "coord/gate/gate.h"
 #include "coord/web/web_server.h"
@@ -1394,19 +1391,11 @@ namespace coord {
         }
     }
 
-    void Coord::coreLogCloseLevel(int level) {
-        //log::CloseLevel(level);
-        //this->coreLogger->CloseLevel(level);
-    }
-
-    void Coord::coreLogOpenLevel(int level) {
-        //log::OpenLevel(level);
-        //this->coreLogger->OpenLevel(level);
-    }
-
-    void Coord::coreLogSetLevel(int level) {
-        //log::SetLevel(level);
-        //this->coreLogger->SetLevel(level);
+    void Coord::CoreLogSetPriority(int priority) {
+        if (nullptr == this->coreLogger) {
+            return;
+        }
+        this->coreLogger->SetPriority(priority);
     }
 
     uint64_t Coord::Now() {

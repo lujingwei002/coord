@@ -44,7 +44,6 @@ TEST_F(TestManaged, Basic) {
         argument.AddString("hello");
         auto promise1 = client->Request("status", &argument);
         promise1->Then([&self](auto client, auto result) {
-            printf("fffffffffffffff1\n");
             auto argument = result->Args();
             argument->DebugPrint();
             //self->coord->Managed->Close();

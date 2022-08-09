@@ -1,10 +1,8 @@
 #pragma once 
 
-#include "coord/log/log_logger.h"
-namespace coord {
 
+namespace coord {
 namespace log{
-    extern base_logger logger;
 
     void LogFatal(const char *fmt, ...);
     void LogError(const char *fmt, ...);
@@ -12,9 +10,8 @@ namespace log{
     void LogInfo(const char *fmt, ...);
     void LogDebug(const char *fmt, ...);
     void LogMsg(const char *fmt, ...);
-    void OpenLevel(int level);
-    void CloseLevel(int level);
-    void SetLevel(int level);
+    void SetPriority(int priority);
+    
 }
 }
 

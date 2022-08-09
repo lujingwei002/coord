@@ -12,7 +12,7 @@
 #include <openssl/modes.h>
 #include <openssl/des.h>
 #include <cstdio>
-
+#include <cstring>
 
 namespace coord {
 namespace encrypt {

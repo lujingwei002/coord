@@ -1,5 +1,5 @@
 #include "coord/net/recv_buffer.h"
-
+#include <cstring>
 
 
 namespace coord {
