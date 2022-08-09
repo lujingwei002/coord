@@ -3,6 +3,7 @@
 #include "coord/websocket/websocket_server.h"
 #include "coord/websocket/websocket_frame.h"
 #include "coord/component/script_component.h"
+#include "coord/script/script.h"
 #include "coord/coord.h"
 #include "util/date/date.h"
 

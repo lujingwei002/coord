@@ -1,6 +1,7 @@
 #include "coord/script/reflect.h"
 #include "coord/builtin/error.h"
 #include "coord/coord.h"
+#include "coord/script/script.h"
 #include <tolua++/tolua++.h>
 
 namespace coord {

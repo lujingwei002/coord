@@ -1,11 +1,4 @@
-#include "coord/coord.h"
-#include "coord/script/reflect.h"
-#include "coord/builtin/slice.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestBuildin : public testing::Test {
 public:

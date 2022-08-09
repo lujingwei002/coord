@@ -4,6 +4,7 @@
 #include "coord/config/config.h"
 #include "coord/builtin/error.h"
 #include "coord/builtin/environment.h"
+#include "coord/script/script.h"
 #include "coord/coord.h"
 
 namespace coord {

@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+
 #include "coord/base/base_result.h"
 
 namespace coord {//tolua_export

@@ -4,6 +4,7 @@
 #include "coord/worker/worker_response.h"
 #include "coord/worker/worker_notify.h"
 #include "coord/component/script_component.h"
+#include "coord/script/script.h"
 #include "util/date/date.h"
 #include "coord/coord.h"
 

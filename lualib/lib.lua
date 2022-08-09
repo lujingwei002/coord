@@ -185,11 +185,52 @@ function import(packagePath)
     end
 end
 
+-- 组件的日志接口
+local function ComponentLog(str)
+    local env = getfenv(2)
+    coorda:Log(string.format('[%s] %s', env.__COMPONENT, str or ''))
+end
+local function ComponentLogFatal(str)
+    local env = getfenv(2)
+    coorda:LogFatal(string.format('[%s] %s', env.__COMPONENT, str or ''))
+end
+local function ComponentLogError(str)
+    local env = getfenv(2)
+    coorda:LogError(string.format('[%s] %s', env.__COMPONENT, str or ''))
+end
+local function ComponentLogWarn(str)
+    local env = getfenv(2)
+    coorda:LogWarn(string.format('[%s] %s', env.__COMPONENT, str or ''))
+end
+local function ComponentLogInfo(str)
+    local env = getfenv(2)
+    coorda:LogInfo(string.format('[%s] %s', env.__COMPONENT, str or ''))
+end
+local function ComponentLogDebug(str)
+    local env = getfenv(2)
+    coorda:LogDebug(string.format('[%s] %s', env.__COMPONENT, str or ''))
+end
+local function ComponentLogMsg(str)
+    local env = getfenv(2)
+    coorda:LogMsg(string.format('[%s] %s', env.__COMPONENT, str or ''))
+end
+
 function component(name)
     local package = getfenv(2)
     local env = package[name]
     if not env then
-        env = {__COMPONENT = package.__PACKAGE..'.'..name, package = package, __INTERFACE = {}}
+        env = {
+            __COMPONENT = package.__PACKAGE..'.'..name, 
+            package = package, 
+            __INTERFACE = {},
+            Log = ComponentLog,
+            LogFatal = ComponentLogFatal,
+            LogError = ComponentLogError,
+            LogWarn = ComponentLogWarn,
+            LogInfo = ComponentLogInfo,
+            LogDebug = ComponentLogDebug,
+            LogMsg = ComponentLogMsg,
+        }
         setmetatable(env, {__index = _G})
         package[name] = env
     end

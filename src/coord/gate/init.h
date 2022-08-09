@@ -1,3 +1,4 @@
+#pragma once
 #include "coord/gate/gate.h"
 #include "coord/gate/gate_promise.h"
 #include "coord/gate/gate_request.h"

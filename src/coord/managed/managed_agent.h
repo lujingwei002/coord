@@ -1,29 +1,19 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
-#include "coord/pipe/pipe_agent.h"
+
 #include "coord/base/internal_agent.h"
 #include "proto/coord.pb.h"
 #include "coord/base/base_packet.h"
 #include "coord/base/base_message.h"
+#include "coord/pipe/pipe_agent.h"
+#include "coord/managed/declare.h"
+#include "coord/protobuf/declare.h"
 #include <vector>
 #include <iostream>
 #include <map>
 
 namespace coord {
     class Coord;
-    class base_packet;
-    namespace managed {
-        class managed_server;
-        class Managed;
-        class ManagedResponse;
-        class ManagedRequest;
-        class ManagedNotify;
-    }
-    namespace protobuf {
-        class Reflect;
-    }
 }
 
 namespace coord {//tolua_export

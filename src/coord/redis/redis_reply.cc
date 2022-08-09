@@ -1,6 +1,7 @@
 #include "coord/redis/redis_reply.h"
 #include "coord/coord.h"
 #include "coord/builtin/ref_manager.h"
+#include <cassert>
 
 namespace coord {
 namespace redis {
@@ -8,15 +9,12 @@ namespace redis {
 CC_IMPLEMENT(Reply, "coord::redis::Reply")
 
 Reply::Reply(std::nullptr_t) {
-    //printf("Reply::Reply(std::nullptr_t)\n");
-    assert(coorda);
     this->coord = coorda;
     this->reply = nullptr;
     this->owner = false;
 }
 
 Reply::Reply(Coord *coord, redisReply* reply, bool owner)  {
-    //printf("Reply::Reply(Coord *coord, redisReply* reply, bool owner)\n");
     this->coord = coord;
     this->reply = reply;
     this->owner = owner;
@@ -26,7 +24,6 @@ Reply::Reply(Coord *coord, redisReply* reply, bool owner)  {
 }
 
 Reply::Reply(const Reply& other) {
-    //printf("Reply::Reply(const Reply& other)\n");
     this->coord = other.coord;
     this->reply = other.reply;
     this->owner = other.owner;
@@ -36,7 +33,6 @@ Reply::Reply(const Reply& other) {
 }
 
 Reply& Reply::operator=(const Reply& other) {
-   // printf("Reply::operator=(const Reply& other)\n");
     if(this->reply && this->owner) {
         if (refManager.release(this->reply) == 0) {
             freeReplyObject(this->reply);
@@ -61,8 +57,6 @@ bool Reply::operator!= (std::nullptr_t v) const  {
 }
 
 Reply::~Reply() {
-    //printf("Reply::~Reply\n");
-    //this->coord->CoreLogDebug("[RedisReply] ~RedisReply");
     if(this->reply && this->owner) {
         if (refManager.release(this->reply) == 0) {
             freeReplyObject(this->reply);
@@ -71,7 +65,7 @@ Reply::~Reply() {
     }
 }
 
-bool Reply::Error() {
+bool Reply::Error() const {
     if (this->reply == nullptr){
         return true;
     }
@@ -81,7 +75,7 @@ bool Reply::Error() {
     return false;
 }
 
-bool Reply::Empty() {
+bool Reply::Empty() const {
     if (this->reply == nullptr){
         return true;
     }
@@ -91,7 +85,7 @@ bool Reply::Empty() {
     return false;
 }
 
-bool Reply::Array() {
+bool Reply::Array() const {
     if (this->reply == nullptr){
         return true;
     }
@@ -101,7 +95,7 @@ bool Reply::Array() {
     return false;
 }
 
-int Reply::ArrayCount() {
+int Reply::ArrayCount() const {
     if (this->reply == nullptr){
         return 0;
     }
@@ -111,7 +105,7 @@ int Reply::ArrayCount() {
     return this->reply->elements;
 }
 
-const char* Reply::String() {
+const char* Reply::String() const {
     if(this->reply == nullptr){
         return nullptr;
     }
@@ -121,7 +115,7 @@ const char* Reply::String() {
     return this->reply->str;
 }
 
-long long Reply::Integer() {
+long long Reply::Integer() const {
     if(this->reply == nullptr){
         return 0;
     }
@@ -131,7 +125,7 @@ long long Reply::Integer() {
     return this->reply->integer;
 }
 
-long long Reply::Integer(size_t index) {
+long long Reply::Integer(size_t index) const {
    if(this->reply == nullptr){
         return 0;
     }
@@ -148,7 +142,7 @@ long long Reply::Integer(size_t index) {
     return element->integer;
 }
 
-bool Reply::Empty(size_t index) {
+bool Reply::Empty(size_t index) const {
    if(this->reply == nullptr){
         return true;
     }
@@ -165,7 +159,7 @@ bool Reply::Empty(size_t index) {
     return false;
 }
 
-const char* Reply::String(size_t index) {
+const char* Reply::String(size_t index) const {
     if(this->reply == nullptr){
         return nullptr;
     }

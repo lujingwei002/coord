@@ -1,5 +1,6 @@
 #include "coord/timer/timer.h"
 #include "coord/builtin/error.h"
+#include "coord/script/script.h"
 #include "coord/coord.h"
 
 #include <stdio.h>

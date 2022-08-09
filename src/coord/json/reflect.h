@@ -2,6 +2,7 @@
 #include "coord/builtin/init.h"
 #include "coord/builtin/slice.h"
 #include "coord/builtin/error.h"
+#include "coord/json/declare.h"
 #include <json11/json11.hpp>
 #include <string>
 extern "C"
@@ -12,16 +13,27 @@ extern "C"
 #include <tolua++/tolua++.h>
 }
 
-namespace coord {//tolua_export
-class Coord;
+namespace coord {
+    class Coord;
+}
 
+namespace coord {//tolua_export
 namespace json {//tolua_export
 
 class Reflect {//tolua_export
 CC_CLASS(Reflect);
+friend coord::json::JsonMgr;
+private:
+    Reflect(Coord* coord);
+private:
+    Coord*          coord;
+    // json11:Json  本身有引用计算了
+    json11::Json    object;
+
+
+
 public:
     Reflect(Coord* coord, const json11::Json& object);
-    Reflect(Coord* coord);
     Reflect(const Reflect& other);
     virtual ~Reflect();
 public:
@@ -60,20 +72,20 @@ public:
 
     /// #array get
     const char* GetString(size_t index);   
-    double GetNumber(size_t index);         //tolua_export 
-    int GetInteger(size_t index);           //tolua_export 
-    bool GetBool(size_t index);             //tolua_export
+    double GetNumber(size_t index);                     //tolua_export 
+    int GetInteger(size_t index);                       //tolua_export 
+    bool GetBool(size_t index);                         //tolua_export
     Reflect GetObject(size_t index);
     Reflect GetArray(size_t index);
 
     /// #array.is
-    bool IsObject(size_t index);                      //tolua_export
-    bool IsArray(size_t index);                       //tolua_export
-    bool IsString(size_t index);                      //tolua_export
-    bool IsNumber(size_t index);                      //tolua_export
-    bool IsInteger(size_t index);                     //tolua_export
-    bool IsNull(size_t index);                        //tolua_export
-    bool IsBool(size_t index);                        //tolua_export
+    bool IsObject(size_t index);                        //tolua_export
+    bool IsArray(size_t index);                         //tolua_export
+    bool IsString(size_t index);                        //tolua_export
+    bool IsNumber(size_t index);                        //tolua_export
+    bool IsInteger(size_t index);                       //tolua_export
+    bool IsNull(size_t index);                          //tolua_export
+    bool IsBool(size_t index);                          //tolua_export
     
     /// #array
     int Count(); 
@@ -95,9 +107,6 @@ public:
     Reflect& operator=(const Reflect& other);
     bool operator== (std::nullptr_t v) const;
 	bool operator!= (std::nullptr_t v) const;  
-public:
-    Coord*          coord;
-    json11::Json    object;
 };//tolua_export
 
 inline bool Reflect::operator== (std::nullptr_t v) const  {

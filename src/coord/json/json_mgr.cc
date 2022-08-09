@@ -1,29 +1,14 @@
 #include "coord/json/json_mgr.h"
 #include "coord/json/reflect.h"
+#include "coord/script/script.h"
 #include "coord/coord.h"
 #include <json11/json11.hpp>
 
 namespace coord {
 namespace json {
+CC_IMPLEMENT(JsonMgr, "coord::json::JsonMgr")
 
-JsonMgr* newJsonMgr(Coord* coord) {
-    JsonMgr* self = new JsonMgr(coord);
-    return self;
-}
-
-JsonMgr::JsonMgr(Coord* coord) {
-    this->coord = coord;
-  
-}
-
-JsonMgr::~JsonMgr() {
-
-}
-
-int JsonMgr::main() {
-    return 0;
-}
-
+// 获取字段
 static int __index(lua_State* L) {
     lua_getmetatable(L, 1); //self key mt
     lua_pushvalue(L, 2); //self key mt key
@@ -39,14 +24,27 @@ static int __index(lua_State* L) {
     return 0;
 }
 
+// 设置字段
 static int __newindex(lua_State* L) {
     coord::json::Reflect* self = (coord::json::Reflect*)  tolua_tousertype(L,1,0);
     return self->Set(L);
 }
 
+JsonMgr::JsonMgr(Coord* coord) {
+    this->coord = coord;
+  
+}
+
+JsonMgr::~JsonMgr() {
+}
+
+int JsonMgr::main() {
+    return 0;
+}
+
 int JsonMgr::registerMetatable() {
     lua_State* L = this->coord->Script->L;
-    luaL_getmetatable (L, "coord::json::Reflect");
+    luaL_getmetatable (L, Reflect::_type->name);
     if(lua_isnil(L, -1)) {
         this->coord->CoreLogError("[coord::JsonMgr] registerMetatable failed, error='metatable not found'");
         return 1;
@@ -81,6 +79,16 @@ Reflect JsonMgr::NewNull(){
 }
 
 Reflect JsonMgr::NewBool(bool value){
+    json11::Json json = json11::Json(value);
+    return Reflect(this->coord, json);
+}
+
+Reflect JsonMgr::NewNumber(int value){
+    json11::Json json = json11::Json(value);
+    return Reflect(this->coord, json);
+}
+
+Reflect JsonMgr::NewNumber(double value){
     json11::Json json = json11::Json(value);
     return Reflect(this->coord, json);
 }

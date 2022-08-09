@@ -1,7 +1,5 @@
-#include "coord/coord.h"
-#include "coord/http/http_server.h"
-#include "coord/http/http_router.h"
-#include "gtest/gtest.h"
+#include "coord/init.h"
+#include <gtest/gtest.h>
 #include "test/test-http.cc"
 #include "test/test-argument.cc"
 #include "test/test-script.cc"
@@ -25,10 +23,7 @@
 #include "test/test-cluster.cc"
 #include "test/test-managed.cc"
 #include "test/test-r3.cc"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 /*int main(int argc, const char **argv) {
     if (argc < 2){

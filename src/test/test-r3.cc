@@ -1,11 +1,4 @@
-#include "coord/coord.h"
-#include "coord/redis/init.h"
-#include "coord/config/config.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 #include "r3/r3.hpp"
 

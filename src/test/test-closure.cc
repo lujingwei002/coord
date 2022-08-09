@@ -1,12 +1,4 @@
-#include "coord/coord.h"
-#include "coord/builtin/init.h"
-#include "coord/closure/init.h"
-#include "coord/builtin/slice.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestClosure : public testing::Test {
 public:

@@ -20,3 +20,6 @@
 #define ErrorIsClosing          -16
 #define ErrorInvalidStatus      -17
 #define ErrorDestory            -18
+#define ErrorConnect            -19
+#define ErrorInvalidPassword    -20
+#define ErrorInvalidDb          -21

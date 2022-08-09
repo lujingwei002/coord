@@ -1,10 +1,4 @@
-#include "coord/coord.h"
-#include "coord/cache/init.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestCache : public testing::Test {
 public:

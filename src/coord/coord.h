@@ -1,169 +1,55 @@
 #pragma once 
 
-#include "coord/timer/timer.h"
-#include "coord/script/script.h"
-#include "coord/closure/closure_mgr.h"
-#include "coord/io/io.h"
+
 #include <uv.h>
 #include <vector>
 #include <map>
+#include <string>
 extern "C" {
 #include <lua/lua.h>
 #include <lua/lualib.h>
 #include <lua/lauxlib.h>
 #include <tolua++/tolua++.h>
 }
+#include "coord/builtin/declare.h"
+#include "coord/closure/init.h"
+#include "coord/component/declare.h"
+#include "coord/object/declare.h"
+#include "coord/scene/declare.h"
+#include "coord/event/declare.h"
+#include "coord/base/declare.h"
+#include "coord/http/declare.h"
+#include "coord/websocket/declare.h"
+#include "coord/script/declare.h"
+#include "coord/web/declare.h"
+#include "coord/protobuf/declare.h"
+#include "coord/gate/declare.h"
+#include "coord/sql/declare.h"
+#include "coord/redis/declare.h"
+#include "coord/cache/declare.h"
+#include "coord/cluster/declare.h"
+#include "coord/net/declare.h"
+#include "coord/pipe/declare.h"
+#include "coord/managed/declare.h"
+#include "coord/worker/declare.h"
+#include "coord/timer/declare.h"
+#include "coord/action/declare.h"
+#include "coord/closure/declare.h"
+#include "coord/run/declare.h"
+#include "coord/login/declare.h"
+#include "coord/json/declare.h"
+#include "coord/log4cc/declare.h"
+#include "coord/config/declare.h"
 
 namespace coord { //tolua_export
 
 
-class SceneMgr;
-class Scene;
-class Config;
-class EventListener;
-class Component;
-class ScriptComponent;
-class EventArgs;
-class Destoryable;
-class BaseRequest;
-class BaseResponse;
-class RequestPipeline;
 
-namespace http {
-class HttpServer;
-class HttpRequest;
-class HttpAgent;
-class HttpRouter;
-}
-namespace websocket {
-class Server;
-class Agent;
-class Router;
-}
-namespace script {
-class Script;
-}
-namespace web {
-class WebServer;
-}
-namespace log {
-class base_logger;
-class core_logger;
-class file_logger;
-}
-namespace protobuf {
-class Protobuf;
-class Reflect;
-}
-namespace gate {
-class Gate;
-class GateRequest;
-class GateNotify;
-class GateAgent;
-class GateRouter;
-class GatePromise;
-class gate_cluster;
-}
-namespace sql {
-class SQLClient;
-class sql_mgr;
-}
-namespace redis {
-class RedisMgr;
-class Client;
-class AsyncClient;
-}
-namespace cache {
-class Client;
-class AsyncClient;
-class CacheReader;
-}
-namespace cluster {
-class Cluster;
-class cluster_redis_config;
-class cluster_client;
-class cluster_agent;
-class Promise;
-class ClusterRouter;
-class cluster_server;
-class Result;
-}
-namespace net {
-class TcpClient;
-class TcpAgent;
-class TcpListener;
-}
-namespace pipe {
-class PipeClient;
-class PipeAgent;
-class PipeListener;
-}
-namespace managed {
-class Managed;
-class ManagedServer;
-class ManagedAgent;
-class ManagedRequest;
-}
-namespace worker {
-class Worker;
-class WorkerSlave;
-class Request;
-class WorkerSlave;
-class WorkerRouter;
-class Promise;
-class worker_packet;
-class Notify;
-class Response;
-class Result;
-class Worker;
-}
-namespace timer {
-class TimerMgr;
-}
-namespace action {
-class ActionMgr;
-class Animation;
-class parallel_action;
-}
-namespace closure {
-class ClosureMgr;
-class Closure;
-}
-class Environment;
-namespace run {
-class Running;
-}
-namespace event {
-class BaseEvent;
-class EventMgr;
-class Listener;
-}
-namespace login {
-class LoginSvr;
-class account_controller;
-class login_cluster;
-}
-namespace json {
-class JsonMgr;
-}
-namespace log4cc {
-class LoggerMgr;
-class Category;
-}
 enum worker_role {
     worker_role_master = 1,
     worker_role_slave = 2,
 };
-namespace sql {
-class MySQLClient;
-class mysql_rows;
-class SQLClient;
-class sql_mgr;
-}
 
-namespace io {
-
-}
 
 class Argv {
 public:
@@ -233,7 +119,7 @@ friend class coord::cluster::ClusterRouter;
 friend class coord::cluster::cluster_server;
 friend class coord::cluster::Result;
 friend class coord::managed::ManagedAgent;
-friend class coord::managed::ManagedServer;
+friend class coord::managed::managed_server;
 friend class coord::managed::Managed;
 friend class coord::managed::ManagedRequest;
 friend class coord::worker::Request;
@@ -258,6 +144,7 @@ friend int coord::path::RemoveDir(const std::string& path);
 friend int coord::path::RemoveDirRecursive(const std::string& path);
 friend int coord::path::Unlink(const std::string& path);
 friend bool coord::path::Exists(const std::string& path);
+friend uv_stat_t* coord::path::FileStat(const char* path);
 friend void coord::log::LogFatal(const char *fmt, ...);
 friend void coord::log::LogError(const char *fmt, ...);
 friend void coord::log::LogWarn(const char *fmt, ...);
@@ -265,20 +152,19 @@ friend void coord::log::LogInfo(const char *fmt, ...);
 friend void coord::log::LogMsg(const char *fmt, ...);
 friend void coord::log::LogDebug(const char *fmt, ...);
 friend void coord::log::SetPriority(int priority);
-friend uv_stat_t* coord::io::FileStat(const char* path);
 public:
     Coord();
     ~Coord();
 public:
-    
+    /// 重载
     int Reload();
+    /// 销毁并退出
     void Destory(int code);                             //tolua_export
+    /// 创建场景
     Scene* CreateScene(const char* sceneName);          //tolua_expor
-    /// 睡眠指定的毫秒数
-    void Sleep(uint64_t msec);                          //tolua_export
 
 
-    //@xx 日志接口
+    /// 日志接口
     void Log(const char* fmt, ...);
     void LogFatal(const char* fmt, ...);
     void LogError(const char* fmt, ...);
@@ -287,19 +173,17 @@ public:
     void LogDebug(const char* fmt, ...);
     void LogMsg(const char* fmt, ...);
     /// Info级别日志，类似lua的print, 支持可变参数
-    int Log(lua_State* L);//tolua_export
-    void Log(const char* str) const;//tolua_export
-    void LogFatal(const char* str) const;//tolua_export
-    void LogError(const char* str) const;//tolua_export
-    void LogWarn(const char* str) const;//tolua_export
-    void LogInfo(const char* str) const;//tolua_export
-    void LogDebug(const char* str) const;//tolua_export
-    void LogMsg(const char* str) const;//tolua_export
-    void LogCloseLevel(int level);//tolua_export
-    void LogOpenLevel(int level);//tolua_export
-    void LogSetLevel(int level);//tolua_export
-    //@xx 日志接口
-    /// @core日志接口
+    int Log(lua_State* L);                      //tolua_export
+    void Log(const char* str) const;            //tolua_export
+    void LogFatal(const char* str) const;       //tolua_export
+    void LogError(const char* str) const;       //tolua_export
+    void LogWarn(const char* str) const;        //tolua_export
+    void LogInfo(const char* str) const;        //tolua_export
+    void LogDebug(const char* str) const;       //tolua_export
+    void LogMsg(const char* str) const;         //tolua_export
+    void LogSetPriority(int priority);          //tolua_export
+
+    /// 日志接口
     void CoreLogFatal(const char* fmt, ...);
     void CoreLogError(const char* fmt, ...);
     void CoreLogWarn(const char* fmt, ...);
@@ -319,59 +203,60 @@ public:
     void CoreLogDebug(const char* fmt, va_list args);
     void CoreLogMsg(const char* fmt, va_list args);
     void CoreLogSetPriority(int priority);                                     
-    /// @core日志接口
 
-    //@xx 组件接口
+    /// ##组件接口
     //ScriptComponent* AddScript(const char* scriptName);//tolua_export
-    int AddScript(lua_State* L);//tolua_export
-    int AddComponent(Component* component);//tolua_export
-    //@xx 组件接口
-
-
-    /// @定时器接口
+    /// 在默认场景中添加脚本组件
+    int AddScript(lua_State* L);                //tolua_export
+    /// 在默认场景中添加组件
+    int AddComponent(Component* component);     //tolua_export
+   
+    /// 睡眠指定的毫秒数
+    void Sleep(uint64_t msec);                                  //tolua_export
+    /// 当前时间
+    uint64_t Now();                                             //tolua_export
+    /// 当前时间
+    uint64_t Time();                                            //tolua_export
+    /// 当前时间
+    uint64_t NanoTime();                                        //tolua_export
+    /// ##定时器接口
     /// 设置超时回调
     int SetTimeout(uint64_t timeout, timer::TimeoutFunc func);
-    int SetTimeout(lua_State* L);//tolua_export
+    int SetTimeout(lua_State* L);                               //tolua_export
     void ClearTimeout(int id);
+
     /// 设置定时间隔回调
     int SetInterval(uint64_t repeat, timer::TimeoutFunc func);
-    int SetInterval(lua_State* L);//tolua_export
+    int SetInterval(lua_State* L);                              //tolua_export
     void ClearInterval(int id);
+
     /// 设置计划任务
     int SetCron(const char* expression, timer::CronFunc func);
     int SetCron(lua_State* L);//tolua_export
     void ClearCron(int id);
+
     uint64_t StopTimer();
+
     /// @定时器接口
 
-    /// @事件接口
+    /// ##事件接口
     void Emit(const char* name, event::BaseEvent* args);//tolua_export
-    /// @事件接口
-
+    
+    /// ##内存管理接口
     void Destory(Destoryable* object);//tolua_export
     void Destory(net::TcpClient* object);//tolua_export
     void DontDestory(Destoryable* object);//tolua_export
 
     /// 创建httpserver
     http::HttpServer* NewHttpServer();//tolua_export
-
-    /// 当前时间
-    uint64_t Now();//tolua_export
-
-    /// 当前时间
-    uint64_t Time();//tolua_export
-
-    /// 当前时间
-    uint64_t NanoTime();//tolua_export
-
     /// 根据配置创建 sql client
     sql::SQLClient* SQLConfig(const char* name = "DB");//tolua_export
-
+    redis::Client* NewRedisClient();//tolua_export
     /// 根据配置创建 redis client
     redis::Client* RedisConfig(const char* name = "REDIS");//tolua_export
-
+    redis::AsyncClient* NewAsyncRedisClient();
     /// 根据配置创建 async redis client
-    redis::AsyncClient* RedisAsyncConfig(const char* name = "REDIS");//tolua_export
+    redis::AsyncClient* AsyncRedisConfig(const char* name = "REDIS");//tolua_export
 
     //int Cache(const char* name, const char* data, size_t expiret);//tolua_export
     //cache::CacheReader Cache(const char* name);//tolua_export
@@ -380,7 +265,7 @@ public:
         return this->Closure->Function(args...);
     }
 
-    /// @入口函数
+    /// ##入口函数
     /// worker启动入口
     int Main(const Argv& argv);  
     int workerEntryPoint(worker::Worker* master, const std::string& configPath, int index);
@@ -393,7 +278,7 @@ public:
     int beforeTest(const Argv& argv); 
     void loopTest();   
     int afterTest();  
-    /// @入口函数
+
 private:
     int initLogger();
     int master();
@@ -455,6 +340,9 @@ private:
 public:
     static std::map<uv_thread_t*, Coord*> coordDict; 
 }; //tolua_export
+
+
+
 
 Coord *NewCoord();
 int Wait(); 

@@ -1,12 +1,5 @@
-#include "coord/coord.h"
-#include "coord/builtin/argument.h"
-#include "coord/builtin/slice.h"
-#include "coord/event/init.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
+
 
 class TestEvent : public testing::Test {
 public:

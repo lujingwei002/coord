@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Mon Aug  8 11:37:03 2022.
+** Generated automatically by tolua++-1.0.92 on Tue Aug  9 16:25:38 2022.
 */
 
 #ifndef __cplusplus
@@ -163,6 +163,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::sql::SQLResult");
  tolua_usertype(tolua_S,"coord::managed::ManagedConfig");
  tolua_usertype(tolua_S,"coord::http::HttpAgent");
+ tolua_usertype(tolua_S,"base_redis_promise");
  tolua_usertype(tolua_S,"coord::websocket::WebSocketServerConfig");
  tolua_usertype(tolua_S,"coord::websocket::Agent");
  tolua_usertype(tolua_S,"coord::web::WebServer");
@@ -197,7 +198,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"base_worker_promise");
  tolua_usertype(tolua_S,"coord::worker::Notify");
  tolua_usertype(tolua_S,"coord::worker::Result");
- tolua_usertype(tolua_S,"coord::cluster::ClusterConfig");
+ tolua_usertype(tolua_S,"coord::cluster::Cluster");
  tolua_usertype(tolua_S,"coord::internal_response");
  tolua_usertype(tolua_S,"coord::Coord");
  tolua_usertype(tolua_S,"coord::worker::WorkerRouter");
@@ -209,21 +210,21 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::cluster::Response");
  tolua_usertype(tolua_S,"coord::managed::ManagedAgent");
  tolua_usertype(tolua_S,"coord::sql::SQLClient");
- tolua_usertype(tolua_S,"coord::cache::Client");
+ tolua_usertype(tolua_S,"coord::redis::RedisPromise");
  tolua_usertype(tolua_S,"coord::Vector3");
- tolua_usertype(tolua_S,"coord::redis::Promise");
- tolua_usertype(tolua_S,"coord::cluster::GateNotify");
- tolua_usertype(tolua_S,"coord::redis::RedisMgr");
- tolua_usertype(tolua_S,"lua_Number");
- tolua_usertype(tolua_S,"coord::cluster::Promise");
- tolua_usertype(tolua_S,"coord::net::TcpClient");
  tolua_usertype(tolua_S,"coord::ScriptComponent");
+ tolua_usertype(tolua_S,"coord::redis::RedisMgr");
+ tolua_usertype(tolua_S,"coord::cluster::Promise");
+ tolua_usertype(tolua_S,"lua_Number");
+ tolua_usertype(tolua_S,"coord::cluster::GateNotify");
+ tolua_usertype(tolua_S,"coord::net::TcpClient");
+ tolua_usertype(tolua_S,"coord::cluster::ClusterConfig");
  tolua_usertype(tolua_S,"coord::http::HttpRequest");
  tolua_usertype(tolua_S,"coord::redis::Reply");
  tolua_usertype(tolua_S,"coord::worker::Response");
- tolua_usertype(tolua_S,"coord::cluster::Cluster");
- tolua_usertype(tolua_S,"coord::websocket::IWebSocketHandler");
  tolua_usertype(tolua_S,"coord::cache::AsyncClient");
+ tolua_usertype(tolua_S,"coord::websocket::IWebSocketHandler");
+ tolua_usertype(tolua_S,"coord::cache::Client");
  tolua_usertype(tolua_S,"coord::managed::Managed");
  tolua_usertype(tolua_S,"coord::redis::Client");
  tolua_usertype(tolua_S,"coord::redis::AsyncClient");
@@ -327,39 +328,6 @@ static int tolua_coord_coord_Coord_CreateScene00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'CreateScene'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: Sleep of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_Sleep00
-static int tolua_coord_coord_Coord_Sleep00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
-  uint64_t msec = ((uint64_t)  tolua_tonumber(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Sleep'",NULL);
-#endif
-  {
-   self->Sleep(msec);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'Sleep'.",&tolua_err);
  return 0;
 #endif
 }
@@ -623,9 +591,9 @@ static int tolua_coord_coord_Coord_LogMsg00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: LogCloseLevel of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_LogCloseLevel00
-static int tolua_coord_coord_Coord_LogCloseLevel00(lua_State* tolua_S)
+/* method: LogSetPriority of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_LogSetPriority00
+static int tolua_coord_coord_Coord_LogSetPriority00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -639,84 +607,18 @@ static int tolua_coord_coord_Coord_LogCloseLevel00(lua_State* tolua_S)
 #endif
  {
   coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
-  int level = ((int)  tolua_tonumber(tolua_S,2,0));
+  int priority = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'LogCloseLevel'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'LogSetPriority'",NULL);
 #endif
   {
-   self->LogCloseLevel(level);
+   self->LogSetPriority(priority);
   }
  }
  return 0;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'LogCloseLevel'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: LogOpenLevel of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_LogOpenLevel00
-static int tolua_coord_coord_Coord_LogOpenLevel00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
-  int level = ((int)  tolua_tonumber(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'LogOpenLevel'",NULL);
-#endif
-  {
-   self->LogOpenLevel(level);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'LogOpenLevel'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: LogSetLevel of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_LogSetLevel00
-static int tolua_coord_coord_Coord_LogSetLevel00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
-     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
-  int level = ((int)  tolua_tonumber(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'LogSetLevel'",NULL);
-#endif
-  {
-   self->LogSetLevel(level);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'LogSetLevel'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'LogSetPriority'.",&tolua_err);
  return 0;
 #endif
 }
@@ -986,6 +888,135 @@ static int tolua_coord_coord_Coord_AddComponent00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: Sleep of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_Sleep00
+static int tolua_coord_coord_Coord_Sleep00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
+  uint64_t msec = ((uint64_t)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Sleep'",NULL);
+#endif
+  {
+   self->Sleep(msec);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Sleep'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: Now of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_Now00
+static int tolua_coord_coord_Coord_Now00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Now'",NULL);
+#endif
+  {
+   uint64_t tolua_ret = (uint64_t)  self->Now();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Now'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: Time of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_Time00
+static int tolua_coord_coord_Coord_Time00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Time'",NULL);
+#endif
+  {
+   uint64_t tolua_ret = (uint64_t)  self->Time();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Time'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: NanoTime of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_NanoTime00
+static int tolua_coord_coord_Coord_NanoTime00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'NanoTime'",NULL);
+#endif
+  {
+   uint64_t tolua_ret = (uint64_t)  self->NanoTime();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'NanoTime'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: SetTimeout of class  coord::Coord */
 #ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_SetTimeout00
 static int tolua_coord_coord_Coord_SetTimeout00(lua_State* tolua_S)
@@ -1238,102 +1269,6 @@ static int tolua_coord_coord_Coord_NewHttpServer00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: Now of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_Now00
-static int tolua_coord_coord_Coord_Now00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Now'",NULL);
-#endif
-  {
-   uint64_t tolua_ret = (uint64_t)  self->Now();
-   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'Now'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: Time of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_Time00
-static int tolua_coord_coord_Coord_Time00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Time'",NULL);
-#endif
-  {
-   uint64_t tolua_ret = (uint64_t)  self->Time();
-   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'Time'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: NanoTime of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_NanoTime00
-static int tolua_coord_coord_Coord_NanoTime00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'NanoTime'",NULL);
-#endif
-  {
-   uint64_t tolua_ret = (uint64_t)  self->NanoTime();
-   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'NanoTime'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: SQLConfig of class  coord::Coord */
 #ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_SQLConfig00
 static int tolua_coord_coord_Coord_SQLConfig00(lua_State* tolua_S)
@@ -1363,6 +1298,38 @@ static int tolua_coord_coord_Coord_SQLConfig00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'SQLConfig'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: NewRedisClient of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_NewRedisClient00
+static int tolua_coord_coord_Coord_NewRedisClient00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::Coord",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'NewRedisClient'",NULL);
+#endif
+  {
+   coord::redis::Client* tolua_ret = (coord::redis::Client*)  self->NewRedisClient();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::Client");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'NewRedisClient'.",&tolua_err);
  return 0;
 #endif
 }
@@ -1402,9 +1369,9 @@ static int tolua_coord_coord_Coord_RedisConfig00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: RedisAsyncConfig of class  coord::Coord */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_RedisAsyncConfig00
-static int tolua_coord_coord_Coord_RedisAsyncConfig00(lua_State* tolua_S)
+/* method: AsyncRedisConfig of class  coord::Coord */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_Coord_AsyncRedisConfig00
+static int tolua_coord_coord_Coord_AsyncRedisConfig00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1420,17 +1387,17 @@ static int tolua_coord_coord_Coord_RedisAsyncConfig00(lua_State* tolua_S)
   coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
   const char* name = ((const char*)  tolua_tostring(tolua_S,2,"REDIS"));
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'RedisAsyncConfig'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'AsyncRedisConfig'",NULL);
 #endif
   {
-   coord::redis::AsyncClient* tolua_ret = (coord::redis::AsyncClient*)  self->RedisAsyncConfig(name);
+   coord::redis::AsyncClient* tolua_ret = (coord::redis::AsyncClient*)  self->AsyncRedisConfig(name);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::AsyncClient");
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'RedisAsyncConfig'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'AsyncRedisConfig'.",&tolua_err);
  return 0;
 #endif
 }
@@ -13828,8 +13795,8 @@ static int tolua_coord_coord_redis_AsyncClient_Connect00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Connect'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->Connect();
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->Connect();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -13925,8 +13892,8 @@ static int tolua_coord_coord_redis_AsyncClient_SELECT00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SELECT'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->SELECT(db);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->SELECT(db);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -13959,8 +13926,8 @@ static int tolua_coord_coord_redis_AsyncClient_AUTH00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'AUTH'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->AUTH(password);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->AUTH(password);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -13993,8 +13960,8 @@ static int tolua_coord_coord_redis_AsyncClient_DEL00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'DEL'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->DEL(key);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->DEL(key);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -14027,8 +13994,8 @@ static int tolua_coord_coord_redis_AsyncClient_GET00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GET'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->GET(key);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->GET(key);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -14063,8 +14030,8 @@ static int tolua_coord_coord_redis_AsyncClient_SET00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SET'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->SET(key,value);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->SET(key,value);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -14099,8 +14066,8 @@ static int tolua_coord_coord_redis_AsyncClient_EXPIRE00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'EXPIRE'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->EXPIRE(key,expire);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->EXPIRE(key,expire);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -14133,8 +14100,8 @@ static int tolua_coord_coord_redis_AsyncClient_HGETALL00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'HGETALL'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->HGETALL(key);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->HGETALL(key);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -14169,8 +14136,8 @@ static int tolua_coord_coord_redis_AsyncClient_HDEL00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'HDEL'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->HDEL(key,field);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->HDEL(key,field);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -14207,8 +14174,8 @@ static int tolua_coord_coord_redis_AsyncClient_HMSET00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'HMSET'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->HMSET(key,field,value);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->HMSET(key,field,value);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -14243,8 +14210,8 @@ static int tolua_coord_coord_redis_AsyncClient_HMSET01(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'HMSET'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->HMSET(key,field,value);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->HMSET(key,field,value);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -14274,8 +14241,8 @@ static int tolua_coord_coord_redis_AsyncClient_SCRIPT_LOAD00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SCRIPT_LOAD'",NULL);
 #endif
   {
-   coord::Promise* tolua_ret = (coord::Promise*)  self->SCRIPT_LOAD(str);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::Promise");
+   coord::redis::RedisPromise* tolua_ret = (coord::redis::RedisPromise*)  self->SCRIPT_LOAD(str);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"coord::redis::RedisPromise");
   }
  }
  return 1;
@@ -14827,21 +14794,38 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: Then of class  coord::redis::Promise */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Promise_Then00
-static int tolua_coord_coord_redis_Promise_Then00(lua_State* tolua_S)
+/* get function: __Destoryable__ of class  coord::redis::RedisPromise */
+#ifndef TOLUA_DISABLE_tolua_get_coord__redis__RedisPromise___Destoryable__
+static int tolua_get_coord__redis__RedisPromise___Destoryable__(lua_State* tolua_S)
+{
+  coord::redis::RedisPromise* self = (coord::redis::RedisPromise*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable '__Destoryable__'",NULL);
+#endif
+#ifdef __cplusplus
+  tolua_pushusertype(tolua_S,(void*)static_cast<coord::Destoryable*>(self), "coord::Destoryable");
+#else
+  tolua_pushusertype(tolua_S,(void*)((coord::Destoryable*)self), "coord::Destoryable");
+#endif
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: Then of class  coord::redis::RedisPromise */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisPromise_Then00
+static int tolua_coord_coord_redis_RedisPromise_Then00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Promise",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::redis::RedisPromise",0,&tolua_err) ||
      false
  )
   goto tolua_lerror;
  else
 #endif
  {
-  coord::redis::Promise* self = (coord::redis::Promise*)  tolua_tousertype(tolua_S,1,0);
+  coord::redis::RedisPromise* self = (coord::redis::RedisPromise*)  tolua_tousertype(tolua_S,1,0);
   lua_State* L =  tolua_S;
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Then'",NULL);
@@ -14859,21 +14843,21 @@ return self->Then(L);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: Else of class  coord::redis::Promise */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Promise_Else00
-static int tolua_coord_coord_redis_Promise_Else00(lua_State* tolua_S)
+/* method: Else of class  coord::redis::RedisPromise */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisPromise_Else00
+static int tolua_coord_coord_redis_RedisPromise_Else00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Promise",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::redis::RedisPromise",0,&tolua_err) ||
      false
  )
   goto tolua_lerror;
  else
 #endif
  {
-  coord::redis::Promise* self = (coord::redis::Promise*)  tolua_tousertype(tolua_S,1,0);
+  coord::redis::RedisPromise* self = (coord::redis::RedisPromise*)  tolua_tousertype(tolua_S,1,0);
   lua_State* L =  tolua_S;
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Else'",NULL);
@@ -14898,14 +14882,14 @@ static int tolua_coord_coord_redis_Reply_Error00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  coord::redis::Reply* self = (coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Error'",NULL);
 #endif
@@ -14930,14 +14914,14 @@ static int tolua_coord_coord_redis_Reply_Array00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  coord::redis::Reply* self = (coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Array'",NULL);
 #endif
@@ -14962,14 +14946,14 @@ static int tolua_coord_coord_redis_Reply_ArrayCount00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  coord::redis::Reply* self = (coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ArrayCount'",NULL);
 #endif
@@ -14994,14 +14978,14 @@ static int tolua_coord_coord_redis_Reply_Empty00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  coord::redis::Reply* self = (coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Empty'",NULL);
 #endif
@@ -15025,14 +15009,14 @@ static int tolua_coord_coord_redis_Reply_Empty01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  coord::redis::Reply* self = (coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
   size_t index = ((size_t)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Empty'",NULL);
@@ -15055,14 +15039,14 @@ static int tolua_coord_coord_redis_Reply_String00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  coord::redis::Reply* self = (coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'String'",NULL);
 #endif
@@ -15087,14 +15071,14 @@ static int tolua_coord_coord_redis_Reply_Integer00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  coord::redis::Reply* self = (coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Integer'",NULL);
 #endif
@@ -15118,14 +15102,14 @@ static int tolua_coord_coord_redis_Reply_Integer01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  coord::redis::Reply* self = (coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
   size_t index = ((size_t)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Integer'",NULL);
@@ -15147,14 +15131,14 @@ static int tolua_coord_coord_redis_Reply_String01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  coord::redis::Reply* self = (coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
   size_t index = ((size_t)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'String'",NULL);
@@ -18475,7 +18459,6 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
    tolua_beginmodule(tolua_S,"Coord");
     tolua_function(tolua_S,"Destory",tolua_coord_coord_Coord_Destory00);
     tolua_function(tolua_S,"CreateScene",tolua_coord_coord_Coord_CreateScene00);
-    tolua_function(tolua_S,"Sleep",tolua_coord_coord_Coord_Sleep00);
     tolua_function(tolua_S,"Log",tolua_coord_coord_Coord_Log00);
     tolua_function(tolua_S,"Log",tolua_coord_coord_Coord_Log01);
     tolua_function(tolua_S,"LogFatal",tolua_coord_coord_Coord_LogFatal00);
@@ -18484,9 +18467,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_function(tolua_S,"LogInfo",tolua_coord_coord_Coord_LogInfo00);
     tolua_function(tolua_S,"LogDebug",tolua_coord_coord_Coord_LogDebug00);
     tolua_function(tolua_S,"LogMsg",tolua_coord_coord_Coord_LogMsg00);
-    tolua_function(tolua_S,"LogCloseLevel",tolua_coord_coord_Coord_LogCloseLevel00);
-    tolua_function(tolua_S,"LogOpenLevel",tolua_coord_coord_Coord_LogOpenLevel00);
-    tolua_function(tolua_S,"LogSetLevel",tolua_coord_coord_Coord_LogSetLevel00);
+    tolua_function(tolua_S,"LogSetPriority",tolua_coord_coord_Coord_LogSetPriority00);
     tolua_function(tolua_S,"CoreLogFatal",tolua_coord_coord_Coord_CoreLogFatal00);
     tolua_function(tolua_S,"CoreLogError",tolua_coord_coord_Coord_CoreLogError00);
     tolua_function(tolua_S,"CoreLogWarn",tolua_coord_coord_Coord_CoreLogWarn00);
@@ -18495,6 +18476,10 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_function(tolua_S,"CoreLogMsg",tolua_coord_coord_Coord_CoreLogMsg00);
     tolua_function(tolua_S,"AddScript",tolua_coord_coord_Coord_AddScript00);
     tolua_function(tolua_S,"AddComponent",tolua_coord_coord_Coord_AddComponent00);
+    tolua_function(tolua_S,"Sleep",tolua_coord_coord_Coord_Sleep00);
+    tolua_function(tolua_S,"Now",tolua_coord_coord_Coord_Now00);
+    tolua_function(tolua_S,"Time",tolua_coord_coord_Coord_Time00);
+    tolua_function(tolua_S,"NanoTime",tolua_coord_coord_Coord_NanoTime00);
     tolua_function(tolua_S,"SetTimeout",tolua_coord_coord_Coord_SetTimeout00);
     tolua_function(tolua_S,"SetInterval",tolua_coord_coord_Coord_SetInterval00);
     tolua_function(tolua_S,"SetCron",tolua_coord_coord_Coord_SetCron00);
@@ -18503,12 +18488,10 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_function(tolua_S,"Destory",tolua_coord_coord_Coord_Destory02);
     tolua_function(tolua_S,"DontDestory",tolua_coord_coord_Coord_DontDestory00);
     tolua_function(tolua_S,"NewHttpServer",tolua_coord_coord_Coord_NewHttpServer00);
-    tolua_function(tolua_S,"Now",tolua_coord_coord_Coord_Now00);
-    tolua_function(tolua_S,"Time",tolua_coord_coord_Coord_Time00);
-    tolua_function(tolua_S,"NanoTime",tolua_coord_coord_Coord_NanoTime00);
     tolua_function(tolua_S,"SQLConfig",tolua_coord_coord_Coord_SQLConfig00);
+    tolua_function(tolua_S,"NewRedisClient",tolua_coord_coord_Coord_NewRedisClient00);
     tolua_function(tolua_S,"RedisConfig",tolua_coord_coord_Coord_RedisConfig00);
-    tolua_function(tolua_S,"RedisAsyncConfig",tolua_coord_coord_Coord_RedisAsyncConfig00);
+    tolua_function(tolua_S,"AsyncRedisConfig",tolua_coord_coord_Coord_AsyncRedisConfig00);
     tolua_variable(tolua_S,"Config",tolua_get_coord__Coord_Config_ptr,tolua_set_coord__Coord_Config_ptr);
     tolua_variable(tolua_S,"Script",tolua_get_coord__Coord_Script_ptr,tolua_set_coord__Coord_Script_ptr);
     tolua_variable(tolua_S,"Gate",tolua_get_coord__Coord_Gate_ptr,tolua_set_coord__Coord_Gate_ptr);
@@ -19429,7 +19412,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"coord");
    tolua_module(tolua_S,"redis",0);
    tolua_beginmodule(tolua_S,"redis");
-    tolua_cclass(tolua_S,"Client","coord::redis::Client","",NULL);
+    tolua_cclass(tolua_S,"Client","coord::redis::Client","coord::Destoryable",NULL);
     tolua_beginmodule(tolua_S,"Client");
      tolua_function(tolua_S,"Connect",tolua_coord_coord_redis_Client_Connect00);
      tolua_function(tolua_S,"DefaultConfig",tolua_coord_coord_redis_Client_DefaultConfig00);
@@ -19452,10 +19435,11 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"coord");
    tolua_module(tolua_S,"redis",0);
    tolua_beginmodule(tolua_S,"redis");
-    tolua_cclass(tolua_S,"Promise","coord::redis::Promise","coord::Destoryable",NULL);
-    tolua_beginmodule(tolua_S,"Promise");
-     tolua_function(tolua_S,"Then",tolua_coord_coord_redis_Promise_Then00);
-     tolua_function(tolua_S,"Else",tolua_coord_coord_redis_Promise_Else00);
+    tolua_cclass(tolua_S,"RedisPromise","coord::redis::RedisPromise","base_redis_promise",NULL);
+    tolua_beginmodule(tolua_S,"RedisPromise");
+     tolua_variable(tolua_S,"__Destoryable__",tolua_get_coord__redis__RedisPromise___Destoryable__,NULL);
+     tolua_function(tolua_S,"Then",tolua_coord_coord_redis_RedisPromise_Then00);
+     tolua_function(tolua_S,"Else",tolua_coord_coord_redis_RedisPromise_Else00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
@@ -19479,6 +19463,12 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
      tolua_function(tolua_S,"Integer",tolua_coord_coord_redis_Reply_Integer01);
      tolua_function(tolua_S,"String",tolua_coord_coord_redis_Reply_String01);
     tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"coord",0);
+  tolua_beginmodule(tolua_S,"coord");
+   tolua_module(tolua_S,"redis",0);
+   tolua_beginmodule(tolua_S,"redis");
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"coord",0);
@@ -20153,90 +20143,165 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     112, 97, 99,107, 97,103,101, 80, 97,116,104, 41, 10,105,102,
      32,112, 97, 99,107, 97,103,101, 32,116,104,101,110, 10,114,
     101,116,117,114,110, 32,112, 97, 99,107, 97,103,101, 10,101,
-    110,100, 10,101,110,100, 10,101,110,100, 10,102,117,110, 99,
-    116,105,111,110, 32, 99,111,109,112,111,110,101,110,116, 40,
-    110, 97,109,101, 41, 10,108,111, 99, 97,108, 32,112, 97, 99,
-    107, 97,103,101, 32, 61, 32,103,101,116,102,101,110,118, 40,
-     50, 41, 10,108,111, 99, 97,108, 32,101,110,118, 32, 61, 32,
-    112, 97, 99,107, 97,103,101, 91,110, 97,109,101, 93, 10,105,
-    102, 32,110,111,116, 32,101,110,118, 32,116,104,101,110, 10,
-    101,110,118, 32, 61, 32,123, 95, 95, 67, 79, 77, 80, 79, 78,
-     69, 78, 84, 32, 61, 32,112, 97, 99,107, 97,103,101, 46, 95,
-     95, 80, 65, 67, 75, 65, 71, 69, 46, 46, 39, 46, 39, 46, 46,
-    110, 97,109,101, 44, 32,112, 97, 99,107, 97,103,101, 32, 61,
-     32,112, 97, 99,107, 97,103,101, 44, 32, 95, 95, 73, 78, 84,
-     69, 82, 70, 65, 67, 69, 32, 61, 32,123,125,125, 10,115,101,
-    116,109,101,116, 97,116, 97, 98,108,101, 40,101,110,118, 44,
-     32,123, 95, 95,105,110,100,101,120, 32, 61, 32, 95, 71,125,
-     41, 10,112, 97, 99,107, 97,103,101, 91,110, 97,109,101, 93,
-     32, 61, 32,101,110,118, 10,101,110,100, 10,115,101,116,102,
-    101,110,118, 40, 50, 44, 32,101,110,118, 41, 10,101,110,100,
-     10,102,117,110, 99,116,105,111,110, 32,105,109,112,108,101,
-    109,101,110,116, 40,110, 97,109,101, 41, 10,108,111, 99, 97,
-    108, 32,101,110,118, 32, 61, 32,103,101,116,102,101,110,118,
-     40, 50, 41, 10,116, 97, 98,108,101, 46,105,110,115,101,114,
-    116, 40,101,110,118, 46, 95, 95, 73, 78, 84, 69, 82, 70, 65,
-     67, 69, 44, 32,110, 97,109,101, 41, 10,101,110,100, 10,108,
-    111, 99, 97,108, 32,102,117,110, 99,116,105,111,110, 32,116,
-    114, 97, 99,101, 71, 40, 41, 10,102,111,114, 32,107, 44, 32,
-    118, 32,105,110, 32,112, 97,105,114,115, 40, 95, 71, 41, 32,
-    100,111, 10,112,114,105,110,116, 40,107, 41, 10,101,110,100,
-     10,101,110,100, 10,108,111, 99, 97,108, 32,108, 97,115,116,
-     80,114,105,110,116, 32, 61, 32,112,114,105,110,116, 10,102,
-    117,110, 99,116,105,111,110, 32,112,114,105,110,116, 40, 46,
-     46, 46, 41, 10, 99,111,111,114,100, 97, 58, 76,111,103, 40,
-     46, 46, 46, 41, 10,101,110,100, 10,102,117,110, 99,116,105,
-    111,110, 32, 95,109, 97,105,110, 95, 40, 41, 10,115, 99,114,
-    105,112,116, 46,112, 97, 99,107, 97,103,101, 32, 61, 32,123,
-    125, 10,115, 99,114,105,112,116, 46,109, 97,105,110, 32, 61,
-     32,110,105,108, 10,101,110,100, 10,102,117,110, 99,116,105,
-    111,110, 32, 95,111,110, 65,119, 97,107,101, 95, 40, 41, 10,
+    110,100, 10,101,110,100, 10,101,110,100, 10,108,111, 99, 97,
+    108, 32,102,117,110, 99,116,105,111,110, 32, 67,111,109,112,
+    111,110,101,110,116, 76,111,103, 40,115,116,114, 41, 10,108,
+    111, 99, 97,108, 32,101,110,118, 32, 61, 32,103,101,116,102,
+    101,110,118, 40, 50, 41, 10, 99,111,111,114,100, 97, 58, 76,
+    111,103, 40,115,116,114,105,110,103, 46,102,111,114,109, 97,
+    116, 40, 39, 91, 37,115, 93, 32, 37,115, 39, 44, 32,101,110,
+    118, 46, 95, 95, 67, 79, 77, 80, 79, 78, 69, 78, 84, 44, 32,
+    115,116,114, 32,111,114, 32, 39, 39, 41, 41, 10,101,110,100,
+     10,108,111, 99, 97,108, 32,102,117,110, 99,116,105,111,110,
+     32, 67,111,109,112,111,110,101,110,116, 76,111,103, 70, 97,
+    116, 97,108, 40,115,116,114, 41, 10,108,111, 99, 97,108, 32,
+    101,110,118, 32, 61, 32,103,101,116,102,101,110,118, 40, 50,
+     41, 10, 99,111,111,114,100, 97, 58, 76,111,103, 70, 97,116,
+     97,108, 40,115,116,114,105,110,103, 46,102,111,114,109, 97,
+    116, 40, 39, 91, 37,115, 93, 32, 37,115, 39, 44, 32,101,110,
+    118, 46, 95, 95, 67, 79, 77, 80, 79, 78, 69, 78, 84, 44, 32,
+    115,116,114, 32,111,114, 32, 39, 39, 41, 41, 10,101,110,100,
+     10,108,111, 99, 97,108, 32,102,117,110, 99,116,105,111,110,
+     32, 67,111,109,112,111,110,101,110,116, 76,111,103, 69,114,
+    114,111,114, 40,115,116,114, 41, 10,108,111, 99, 97,108, 32,
+    101,110,118, 32, 61, 32,103,101,116,102,101,110,118, 40, 50,
+     41, 10, 99,111,111,114,100, 97, 58, 76,111,103, 69,114,114,
+    111,114, 40,115,116,114,105,110,103, 46,102,111,114,109, 97,
+    116, 40, 39, 91, 37,115, 93, 32, 37,115, 39, 44, 32,101,110,
+    118, 46, 95, 95, 67, 79, 77, 80, 79, 78, 69, 78, 84, 44, 32,
+    115,116,114, 32,111,114, 32, 39, 39, 41, 41, 10,101,110,100,
+     10,108,111, 99, 97,108, 32,102,117,110, 99,116,105,111,110,
+     32, 67,111,109,112,111,110,101,110,116, 76,111,103, 87, 97,
+    114,110, 40,115,116,114, 41, 10,108,111, 99, 97,108, 32,101,
+    110,118, 32, 61, 32,103,101,116,102,101,110,118, 40, 50, 41,
+     10, 99,111,111,114,100, 97, 58, 76,111,103, 87, 97,114,110,
+     40,115,116,114,105,110,103, 46,102,111,114,109, 97,116, 40,
+     39, 91, 37,115, 93, 32, 37,115, 39, 44, 32,101,110,118, 46,
+     95, 95, 67, 79, 77, 80, 79, 78, 69, 78, 84, 44, 32,115,116,
+    114, 32,111,114, 32, 39, 39, 41, 41, 10,101,110,100, 10,108,
+    111, 99, 97,108, 32,102,117,110, 99,116,105,111,110, 32, 67,
+    111,109,112,111,110,101,110,116, 76,111,103, 73,110,102,111,
+     40,115,116,114, 41, 10,108,111, 99, 97,108, 32,101,110,118,
+     32, 61, 32,103,101,116,102,101,110,118, 40, 50, 41, 10, 99,
+    111,111,114,100, 97, 58, 76,111,103, 73,110,102,111, 40,115,
+    116,114,105,110,103, 46,102,111,114,109, 97,116, 40, 39, 91,
+     37,115, 93, 32, 37,115, 39, 44, 32,101,110,118, 46, 95, 95,
+     67, 79, 77, 80, 79, 78, 69, 78, 84, 44, 32,115,116,114, 32,
+    111,114, 32, 39, 39, 41, 41, 10,101,110,100, 10,108,111, 99,
+     97,108, 32,102,117,110, 99,116,105,111,110, 32, 67,111,109,
+    112,111,110,101,110,116, 76,111,103, 68,101, 98,117,103, 40,
+    115,116,114, 41, 10,108,111, 99, 97,108, 32,101,110,118, 32,
+     61, 32,103,101,116,102,101,110,118, 40, 50, 41, 10, 99,111,
+    111,114,100, 97, 58, 76,111,103, 68,101, 98,117,103, 40,115,
+    116,114,105,110,103, 46,102,111,114,109, 97,116, 40, 39, 91,
+     37,115, 93, 32, 37,115, 39, 44, 32,101,110,118, 46, 95, 95,
+     67, 79, 77, 80, 79, 78, 69, 78, 84, 44, 32,115,116,114, 32,
+    111,114, 32, 39, 39, 41, 41, 10,101,110,100, 10,108,111, 99,
+     97,108, 32,102,117,110, 99,116,105,111,110, 32, 67,111,109,
+    112,111,110,101,110,116, 76,111,103, 77,115,103, 40,115,116,
+    114, 41, 10,108,111, 99, 97,108, 32,101,110,118, 32, 61, 32,
+    103,101,116,102,101,110,118, 40, 50, 41, 10, 99,111,111,114,
+    100, 97, 58, 76,111,103, 77,115,103, 40,115,116,114,105,110,
+    103, 46,102,111,114,109, 97,116, 40, 39, 91, 37,115, 93, 32,
+     37,115, 39, 44, 32,101,110,118, 46, 95, 95, 67, 79, 77, 80,
+     79, 78, 69, 78, 84, 44, 32,115,116,114, 32,111,114, 32, 39,
+     39, 41, 41, 10,101,110,100, 10,102,117,110, 99,116,105,111,
+    110, 32, 99,111,109,112,111,110,101,110,116, 40,110, 97,109,
+    101, 41, 10,108,111, 99, 97,108, 32,112, 97, 99,107, 97,103,
+    101, 32, 61, 32,103,101,116,102,101,110,118, 40, 50, 41, 10,
+    108,111, 99, 97,108, 32,101,110,118, 32, 61, 32,112, 97, 99,
+    107, 97,103,101, 91,110, 97,109,101, 93, 10,105,102, 32,110,
+    111,116, 32,101,110,118, 32,116,104,101,110, 10,101,110,118,
+     32, 61, 32,123, 10, 95, 95, 67, 79, 77, 80, 79, 78, 69, 78,
+     84, 32, 61, 32,112, 97, 99,107, 97,103,101, 46, 95, 95, 80,
+     65, 67, 75, 65, 71, 69, 46, 46, 39, 46, 39, 46, 46,110, 97,
+    109,101, 44, 10,112, 97, 99,107, 97,103,101, 32, 61, 32,112,
+     97, 99,107, 97,103,101, 44, 10, 95, 95, 73, 78, 84, 69, 82,
+     70, 65, 67, 69, 32, 61, 32,123,125, 44, 10, 76,111,103, 32,
+     61, 32, 67,111,109,112,111,110,101,110,116, 76,111,103, 44,
+     10, 76,111,103, 70, 97,116, 97,108, 32, 61, 32, 67,111,109,
+    112,111,110,101,110,116, 76,111,103, 70, 97,116, 97,108, 44,
+     10, 76,111,103, 69,114,114,111,114, 32, 61, 32, 67,111,109,
+    112,111,110,101,110,116, 76,111,103, 69,114,114,111,114, 44,
+     10, 76,111,103, 87, 97,114,110, 32, 61, 32, 67,111,109,112,
+    111,110,101,110,116, 76,111,103, 87, 97,114,110, 44, 10, 76,
+    111,103, 73,110,102,111, 32, 61, 32, 67,111,109,112,111,110,
+    101,110,116, 76,111,103, 73,110,102,111, 44, 10, 76,111,103,
+     68,101, 98,117,103, 32, 61, 32, 67,111,109,112,111,110,101,
+    110,116, 76,111,103, 68,101, 98,117,103, 44, 10, 76,111,103,
+     77,115,103, 32, 61, 32, 67,111,109,112,111,110,101,110,116,
+     76,111,103, 77,115,103, 44, 10,125, 10,115,101,116,109,101,
+    116, 97,116, 97, 98,108,101, 40,101,110,118, 44, 32,123, 95,
+     95,105,110,100,101,120, 32, 61, 32, 95, 71,125, 41, 10,112,
+     97, 99,107, 97,103,101, 91,110, 97,109,101, 93, 32, 61, 32,
+    101,110,118, 10,101,110,100, 10,115,101,116,102,101,110,118,
+     40, 50, 44, 32,101,110,118, 41, 10,101,110,100, 10,102,117,
+    110, 99,116,105,111,110, 32,105,109,112,108,101,109,101,110,
+    116, 40,110, 97,109,101, 41, 10,108,111, 99, 97,108, 32,101,
+    110,118, 32, 61, 32,103,101,116,102,101,110,118, 40, 50, 41,
+     10,116, 97, 98,108,101, 46,105,110,115,101,114,116, 40,101,
+    110,118, 46, 95, 95, 73, 78, 84, 69, 82, 70, 65, 67, 69, 44,
+     32,110, 97,109,101, 41, 10,101,110,100, 10,108,111, 99, 97,
+    108, 32,102,117,110, 99,116,105,111,110, 32,116,114, 97, 99,
+    101, 71, 40, 41, 10,102,111,114, 32,107, 44, 32,118, 32,105,
+    110, 32,112, 97,105,114,115, 40, 95, 71, 41, 32,100,111, 10,
+    112,114,105,110,116, 40,107, 41, 10,101,110,100, 10,101,110,
+    100, 10,108,111, 99, 97,108, 32,108, 97,115,116, 80,114,105,
+    110,116, 32, 61, 32,112,114,105,110,116, 10,102,117,110, 99,
+    116,105,111,110, 32,112,114,105,110,116, 40, 46, 46, 46, 41,
+     10, 99,111,111,114,100, 97, 58, 76,111,103, 40, 46, 46, 46,
+     41, 10,101,110,100, 10,102,117,110, 99,116,105,111,110, 32,
+     95,109, 97,105,110, 95, 40, 41, 10,115, 99,114,105,112,116,
+     46,112, 97, 99,107, 97,103,101, 32, 61, 32,123,125, 10,115,
+     99,114,105,112,116, 46,109, 97,105,110, 32, 61, 32,110,105,
+    108, 10,101,110,100, 10,102,117,110, 99,116,105,111,110, 32,
+     95,111,110, 65,119, 97,107,101, 95, 40, 41, 10,108,111, 99,
+     97,108, 32,112, 97, 99,107, 97,103,101, 32, 61, 32,105,109,
+    112,111,114,116, 40, 99,111,111,114,100, 97, 46, 83, 99,114,
+    105,112,116, 46, 77, 97,105,110, 44, 32, 39,109, 97,105,110,
+     39, 41, 10,105,102, 32,110,111,116, 32,112, 97, 99,107, 97,
+    103,101, 32,116,104,101,110, 10,101,114,114,111,114, 40, 34,
+    105,109,112,111,114,116, 32,109, 97,105,110, 32,112, 97, 99,
+    107, 97,103,101, 32,102, 97,105,108,101,100, 34, 41, 10,101,
+    110,100, 10,115, 99,114,105,112,116, 46,109, 97,105,110, 32,
+     61, 32,112, 97, 99,107, 97,103,101, 10,101,110,100, 10,102,
+    117,110, 99,116,105,111,110, 32, 95,111,110, 68,101,115,116,
+    111,114,121, 95, 40, 41, 10,105,102, 32,110,111,116, 32, 99,
+    111,111,114,100, 97, 32,116,104,101,110, 10,114,101,116,117,
+    114,110, 10,101,110,100, 10,105,102, 32,110,111,116, 32,115,
+     99,114,105,112,116, 46,109, 97,105,110, 32,116,104,101,110,
+     10,114,101,116,117,114,110, 10,101,110,100, 10,115, 99,114,
+    105,112,116, 46,109, 97,105,110, 46,111,110, 68,101,115,116,
+    111,114,121, 40, 41, 10,101,110,100, 10,102,117,110, 99,116,
+    105,111,110, 32, 95,111,110, 82,101,108,111, 97,100, 95, 40,
+     41, 10,115, 99,114,105,112,116, 46,114,101,108,111, 97,100,
+    105,110,103, 32, 61, 32,116,114,117,101, 10,115, 99,114,105,
+    112,116, 46,114,101,108,111, 97,100, 32, 61, 32,123,125, 10,
     108,111, 99, 97,108, 32,112, 97, 99,107, 97,103,101, 32, 61,
      32,105,109,112,111,114,116, 40, 99,111,111,114,100, 97, 46,
      83, 99,114,105,112,116, 46, 77, 97,105,110, 44, 32, 39,109,
-     97,105,110, 39, 41, 10,105,102, 32,110,111,116, 32,112, 97,
-     99,107, 97,103,101, 32,116,104,101,110, 10,101,114,114,111,
-    114, 40, 34,105,109,112,111,114,116, 32,109, 97,105,110, 32,
-    112, 97, 99,107, 97,103,101, 32,102, 97,105,108,101,100, 34,
-     41, 10,101,110,100, 10,115, 99,114,105,112,116, 46,109, 97,
-    105,110, 32, 61, 32,112, 97, 99,107, 97,103,101, 10,101,110,
-    100, 10,102,117,110, 99,116,105,111,110, 32, 95,111,110, 68,
-    101,115,116,111,114,121, 95, 40, 41, 10,105,102, 32,110,111,
-    116, 32, 99,111,111,114,100, 97, 32,116,104,101,110, 10,114,
-    101,116,117,114,110, 10,101,110,100, 10,105,102, 32,110,111,
-    116, 32,115, 99,114,105,112,116, 46,109, 97,105,110, 32,116,
-    104,101,110, 10,114,101,116,117,114,110, 10,101,110,100, 10,
-    115, 99,114,105,112,116, 46,109, 97,105,110, 46,111,110, 68,
-    101,115,116,111,114,121, 40, 41, 10,101,110,100, 10,102,117,
-    110, 99,116,105,111,110, 32, 95,111,110, 82,101,108,111, 97,
-    100, 95, 40, 41, 10,115, 99,114,105,112,116, 46,114,101,108,
-    111, 97,100,105,110,103, 32, 61, 32,116,114,117,101, 10,115,
-     99,114,105,112,116, 46,114,101,108,111, 97,100, 32, 61, 32,
-    123,125, 10,108,111, 99, 97,108, 32,112, 97, 99,107, 97,103,
-    101, 32, 61, 32,105,109,112,111,114,116, 40, 99,111,111,114,
-    100, 97, 46, 83, 99,114,105,112,116, 46, 77, 97,105,110, 44,
-     32, 39,109, 97,105,110, 39, 41, 10,115, 99,114,105,112,116,
-     46,114,101,108,111, 97,100,105,110,103, 32, 61, 32,102, 97,
-    108,115,101, 10,115, 99,114,105,112,116, 46,114,101,108,111,
-     97,100, 32, 61, 32,123,125, 10,105,102, 32,110,111,116, 32,
-    112, 97, 99,107, 97,103,101, 32,116,104,101,110, 10,101,114,
-    114,111,114, 40, 34,105,109,112,111,114,116, 32,109, 97,105,
-    110, 32,112, 97, 99,107, 97,103,101, 32,102, 97,105,108,101,
-    100, 34, 41, 10,101,110,100, 10,101,110,100, 10,102,117,110,
-     99,116,105,111,110, 32,114,101,108,111, 97,100, 40,112, 97,
-     99,107, 97,103,101, 80, 97,116,104, 41, 10,115, 99,114,105,
-    112,116, 46,114,101,108,111, 97,100,105,110,103, 32, 61, 32,
-    116,114,117,101, 10,115, 99,114,105,112,116, 46,114,101,108,
-    111, 97,100, 32, 61, 32,123,125, 10,108,111, 99, 97,108, 32,
-    112, 97, 99,107, 97,103,101, 32, 61, 32,105,109,112,111,114,
-    116, 40,112, 97, 99,107, 97,103,101, 80, 97,116,104, 41, 10,
-    115, 99,114,105,112,116, 46,114,101,108,111, 97,100,105,110,
-    103, 32, 61, 32,102, 97,108,115,101, 10,115, 99,114,105,112,
-    116, 46,114,101,108,111, 97,100, 32, 61, 32,123,125, 10,114,
-    101,116,117,114,110, 32,112, 97, 99,107, 97,103,101, 10,101,
-    110,100, 10,102,117,110, 99,116,105,111,110, 32, 95, 82, 69,
-     81, 85, 69, 83, 84, 40,115,101,108,102, 44, 32, 97,114,103,
-    115, 41, 10,101,110,100,32
+     97,105,110, 39, 41, 10,115, 99,114,105,112,116, 46,114,101,
+    108,111, 97,100,105,110,103, 32, 61, 32,102, 97,108,115,101,
+     10,115, 99,114,105,112,116, 46,114,101,108,111, 97,100, 32,
+     61, 32,123,125, 10,105,102, 32,110,111,116, 32,112, 97, 99,
+    107, 97,103,101, 32,116,104,101,110, 10,101,114,114,111,114,
+     40, 34,105,109,112,111,114,116, 32,109, 97,105,110, 32,112,
+     97, 99,107, 97,103,101, 32,102, 97,105,108,101,100, 34, 41,
+     10,101,110,100, 10,101,110,100, 10,102,117,110, 99,116,105,
+    111,110, 32,114,101,108,111, 97,100, 40,112, 97, 99,107, 97,
+    103,101, 80, 97,116,104, 41, 10,115, 99,114,105,112,116, 46,
+    114,101,108,111, 97,100,105,110,103, 32, 61, 32,116,114,117,
+    101, 10,115, 99,114,105,112,116, 46,114,101,108,111, 97,100,
+     32, 61, 32,123,125, 10,108,111, 99, 97,108, 32,112, 97, 99,
+    107, 97,103,101, 32, 61, 32,105,109,112,111,114,116, 40,112,
+     97, 99,107, 97,103,101, 80, 97,116,104, 41, 10,115, 99,114,
+    105,112,116, 46,114,101,108,111, 97,100,105,110,103, 32, 61,
+     32,102, 97,108,115,101, 10,115, 99,114,105,112,116, 46,114,
+    101,108,111, 97,100, 32, 61, 32,123,125, 10,114,101,116,117,
+    114,110, 32,112, 97, 99,107, 97,103,101, 10,101,110,100, 10,
+    102,117,110, 99,116,105,111,110, 32, 95, 82, 69, 81, 85, 69,
+     83, 84, 40,115,101,108,102, 44, 32, 97,114,103,115, 41, 10,
+    101,110,100,32
    };
    tolua_dobuffer(tolua_S,(char*)B,sizeof(B),"tolua embedded: ../lualib/lib.lua");
    lua_settop(tolua_S, top);

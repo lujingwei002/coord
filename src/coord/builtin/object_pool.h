@@ -87,8 +87,11 @@ public:
     }
 
     virtual void trace() {
-        LOG_DEBUG("ObjectPool<%s> freeList:%d allocateList:%d", 
-            this->name.c_str(), this->freeList.size(), this->allocateList.size());
+        if (this->allocateList.size() != 0) {
+            LOG_DEBUG("ObjectPool<%50s> freeList:%02d allocateList:%02d!!!!!", this->name.c_str(), this->freeList.size(), this->allocateList.size());
+        } else {
+            LOG_DEBUG("ObjectPool<%50s> freeList:%02d allocateList:%02d", this->name.c_str(), this->freeList.size(), this->allocateList.size());
+        }
     }
 
 private:
@@ -101,10 +104,10 @@ private:
         }
     }
 private:
-    std::string name;
-    Allocator allocator;
-    std::list<pointer> freeList;
-    std::set<pointer> allocateList;
+    std::string         name;
+    Allocator           allocator;
+    std::list<pointer>  freeList;
+    std::set<pointer>   allocateList;
 };
 
 }

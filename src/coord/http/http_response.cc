@@ -5,7 +5,6 @@
 #include "coord/http/http_server.h"
 #include "coord/encrypt/sha1.h"
 #include "coord/encrypt/base64.h"
-#include "coord/io/io.h"
 #include "coord/json/init.h"
 #include "util/os/path.h"
 #include <map>
@@ -98,7 +97,7 @@ bool HttpResponse::Allow() {
 
 bool HttpResponse::File(const char* path) {
     this->coord->CoreLogDebug("[HttpResponse] File, path=%s", path);
-    int err = io::ReadFile(path, this->Payload);
+    int err = coord::path::ReadFile(path, this->Payload);
     if (err) {
         this->PageNotFound();
         return false;
@@ -125,7 +124,7 @@ bool HttpResponse::File(const char* path) {
     }
     //Last-Modified和If-Modifyed-Since控制缓存
     if (this->server->config.UseEtag) {
-        uv_stat_t* stat = io::FileStat(path);
+        uv_stat_t* stat = coord::path::FileStat(path);
         if (stat) {
         }
         const char* ifModifySince = this->request->GetHeader("if-modified-since");

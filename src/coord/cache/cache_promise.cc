@@ -3,6 +3,7 @@
 #include "coord/cache/cache_reader.h"
 #include "coord/component/script_component.h"
 #include "coord/builtin/exception.h"
+#include "coord/script/script.h"
 #include "coord/coord.h"
 
 namespace coord {

@@ -6,7 +6,6 @@ namespace json {
 CC_IMPLEMENT(Reflect, "coord::json::Reflect")
 
 
-
 Reflect::Reflect(Coord* coord) {
     this->coord = coord;
 }
@@ -26,7 +25,6 @@ Reflect& Reflect::operator=(const Reflect& other) {
 }
 
 Reflect::~Reflect() {
-    
 }
 
 int Reflect::Encode(byte_slice& buffer) {
@@ -72,11 +70,11 @@ int Reflect::Get(lua_State* L) {
             return 1;
         } else if (json.is_object()) {
             Reflect* ret = new Reflect(this->coord, json);
-            tolua_pushusertype_and_takeownership(L, ret, "coord::json::Reflect");
+            tolua_pushusertype_and_takeownership(L, ret, this->TypeName());
             return 1;
         } else if (json.is_array()) {
             Reflect* ret = new Reflect(this->coord, json);
-            tolua_pushusertype_and_takeownership(L, ret, "coord::json::Reflect");
+            tolua_pushusertype_and_takeownership(L, ret, this->TypeName());
             return 1;
         }  
     } else if(lua_type(L, 2) == LUA_TSTRING) {
@@ -104,11 +102,11 @@ int Reflect::Get(lua_State* L) {
             return 1;
         } else if (json.is_object()) {
             Reflect* ret = new Reflect(this->coord, json);
-            tolua_pushusertype_and_takeownership(L, ret, "coord::json::Reflect");
+            tolua_pushusertype_and_takeownership(L, ret, this->TypeName());
             return 1;
         } else if (json.is_array()) {
             Reflect* ret = new Reflect(this->coord, json);
-            tolua_pushusertype_and_takeownership(L, ret, "coord::json::Reflect");
+            tolua_pushusertype_and_takeownership(L, ret, this->TypeName());
             return 1;
         }  
     }

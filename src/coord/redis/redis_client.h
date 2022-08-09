@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
+#include "coord/builtin/destoryable.h"
 #include "coord/redis/redis_config.h"
 #include <uv.h>
 #include <vector>
@@ -9,9 +10,6 @@
 #include <map>
 #include <hiredis/hiredis.h>
 #include <hiredis/async.h>
-namespace coord {//tolua_export
-    
-class Coord;
 
 ///
 /// #example
@@ -25,18 +23,36 @@ class Coord;
 /// client->Connect();
 /// ```
 ///
-///
-///
-///
+
+namespace coord {
+    class Coord;
+    namespace redis {
+        class Reply;
+        class RedisMgr;
+    }
+}
+
+namespace coord {//tolua_export
 namespace redis {//tolua_export
 
-class Reply;
 
-class Client {//tolua_export
+class Client : public Destoryable {//tolua_export
 CC_CLASS(Client);
-public:
-    Client(Coord *coord);
+friend Coord;
+friend RedisMgr;
+private:
+    Client(Coord *coord, RedisMgr* redisMgr);
     virtual ~Client();
+private:
+    RedisMgr*       redisMgr;
+    std::string     name;
+    RedisConfig     config;
+    Coord*          coord;
+    redisContext*   context;
+protected:
+    virtual void onDestory();
+
+
 public:
     int Connect();                              //tolua_export
     RedisConfig* DefaultConfig();               //tolua_export
@@ -65,13 +81,9 @@ public:
     /// #set
     Reply SADD(const char* key, const char* value);
     Reply SREM(const char* key, const char* value);
-public:
-    RedisConfig     config;
-    Coord*          coord;
-    redisContext*   context;
 };//tolua_export
 
-Client* newClient(Coord *coord);
+
 
 }//tolua_export
 }//tolua_export

@@ -1,10 +1,9 @@
-#include "coord/coord.h"
+#include "coord/init.h"
 #include <benchmark/benchmark.h>
 #include "benchmark/benchmark-map.cc"
 #include "benchmark/benchmark-json.cc"
 #include "benchmark/benchmark-table.cc"
 #include "benchmark/benchmark-protobuf.cc"
-#include <array>
 
 
 int onAwake(coord::Coord* coord) {

@@ -7,32 +7,67 @@ namespace coord {
 namespace redis {
 
 
-RedisMgr* newRedisMgr(Coord* coord) {
-    auto mgr = new RedisMgr(coord);
-    return mgr;
-}
 
 RedisMgr::RedisMgr(Coord *coord) {
     this->coord = coord;
 }
 
 RedisMgr::~RedisMgr() {
-    for(auto it = this->clientDict.begin(); it != this->clientDict.end();) {
-        Client* client = it->second;
-        delete client;
-        ++it;
+    // 清理client
+    std::vector<Client*> clientArr;
+    for(auto it : this->clientSet) {
+        clientArr.push_back(it);
     }
+    for(auto it : clientArr) {
+        this->coord->Destory(it);
+    }
+    clientArr.clear();
     this->clientDict.clear();
-    for(auto it = this->asyncClientDict.begin(); it != this->asyncClientDict.end();) {
-        AsyncClient* client = it->second;
-        delete client;
-        ++it;
+    this->clientSet.clear();
+
+    // 清理async client
+    std::vector<AsyncClient*> asyncClientArr;
+    for(auto it : this->asyncClientSet) {
+        asyncClientArr.push_back(it);
     }
+    for(auto it : asyncClientArr) {
+        this->coord->Destory(it);
+    }
+    asyncClientArr.clear();
     this->asyncClientDict.clear();
+    this->asyncClientSet.clear();
 }
 
-void RedisMgr::Free(Client* conn) {
-    delete conn;
+void RedisMgr::free(Client* client) {
+    auto it = this->clientSet.find(client);
+    if (it == this->clientSet.end()) {
+        return;
+    }
+    this->clientSet.erase(it);
+
+    auto it2 = this->clientDict.find(client->name);
+    if (it2 != this->clientDict.end()) {
+        this->clientDict.erase(it2);;
+    }
+}
+
+void RedisMgr::free(AsyncClient* client) {
+   auto it = this->asyncClientSet.find(client);
+    if (it == this->asyncClientSet.end()) {
+        return;
+    }
+    this->asyncClientSet.erase(it);
+
+    auto it2 = this->asyncClientDict.find(client->name);
+    if (it2 != this->asyncClientDict.end()) {
+        this->asyncClientDict.erase(it2);
+    }
+}
+
+Client* RedisMgr::NewClient() {
+    Client* client = new redis::Client(this->coord, this);
+    this->clientSet.insert(client);
+    return client;
 }
 
 Client* RedisMgr::GetClient(const char* name) {
@@ -44,11 +79,18 @@ Client* RedisMgr::GetClient(const char* name) {
     int err = this->coord->Config->RedisConfig(name, &config);
     if (err != 0) {
         this->coord->CoreLogError("[coord::RedisMgr] GetClient.RedisConfig failed, error=%d", err);
-        return NULL; 
+        return nullptr; 
     }
-    Client* client = newClient(this->coord);
+    Client* client = this->NewClient();
+    client->name = name;
     *(client->DefaultConfig()) = config;
     this->clientDict[name] = client;
+    return client;
+}
+
+AsyncClient* RedisMgr::NewAsyncClient() {
+    AsyncClient* client = new redis::AsyncClient(this->coord, this);
+    this->asyncClientSet.insert(client);
     return client;
 }
 
@@ -63,7 +105,8 @@ AsyncClient* RedisMgr::GetAsyncClient(const char* name) {
         this->coord->CoreLogError("[coord::RedisMgr] GetAsyncClient.RedisConfig failed, error=%d", err);
         return NULL;
     }
-    AsyncClient* client = newAsyncClient(this->coord);
+    AsyncClient* client = this->NewAsyncClient();
+    client->name = name;
     *(client->DefaultConfig()) = config;
     this->asyncClientDict[name] = client;
     return client;

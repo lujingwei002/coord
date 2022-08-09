@@ -18,6 +18,7 @@
 #include "coord/base/base_notify.h"
 #include "coord/builtin/exception.h"
 #include "coord/event/init.h"
+#include "coord/script/script.h"
 #include "coord/coord.h"
 #include <string.h>
 #include <typeinfo>       // operator typeid
@@ -723,7 +724,7 @@ void ScriptComponent::recvWorkerResult(worker::Result* result, base_request* req
     lua_pop(L, lua_gettop(L));
 }*/
 
-void ScriptComponent::recvRedisReply(redis::AsyncClient* client, redis::Reply& reply, const char* script, int ref) {
+void ScriptComponent::recvRedisReply(redis::AsyncClient* const client, const redis::Reply& reply, const char* script, int ref) {
     this->coord->CoreLogDebug("[ScriptComponent] recvRedisReply");
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);

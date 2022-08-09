@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <functional>
+
 namespace coord {//tolua_export
 
 class Coord;

@@ -1,11 +1,4 @@
-#include "coord/coord.h"
-#include "coord/builtin/slice.h"
-#include "coord/cluster/init.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestCluster : public testing::Test {
 public:

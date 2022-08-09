@@ -1,12 +1,4 @@
-#include "coord/coord.h"
-#include "coord/redis/init.h"
-#include "gtest/gtest.h"
-#include "coord/action/init.h"
-#include "coord/config/config.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestAsyncRedis : public testing::Test {
 public:
@@ -32,11 +24,12 @@ public:
         delete this->coord;
     } 
 public:
-    coord::Coord*               coord;
+    coord::Coord*   coord;
 };
 
+// db错误
 TEST_F(TestAsyncRedis, DbError) {
-    auto client = coord::redis::newAsyncClient(coord);
+    auto client = this->coord->NewAsyncRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
@@ -44,35 +37,40 @@ TEST_F(TestAsyncRedis, DbError) {
     client->DefaultConfig()->DB = "aa";
     auto promise = client->Connect();
     ASSERT_NE(promise, nullptr);
-    promise->Then([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
         ASSERT_TRUE(false);
-    });
-    promise->Else([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+        this->coord->Destory(0);
+    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
         ASSERT_TRUE(true);
+        this->coord->Destory(0);
     });
     this->coord->loopTest();
 }
 
+// host错误
+/*
 TEST_F(TestAsyncRedis, hostError) {
-    auto client = coord::redis::newAsyncClient(coord);
+    auto client = this->coord->NewAsyncRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
-    client->DefaultConfig()->Host = "127.0.0.11";
+    client->DefaultConfig()->Port = 3000;
     auto promise = client->Connect();
     ASSERT_NE(promise, nullptr);
-    promise->Then([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
         ASSERT_TRUE(false);
-    });
-    promise->Else([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+        this->coord->Destory(0);
+    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
         ASSERT_TRUE(true);
+        this->coord->Destory(0);
     });
     this->coord->loopTest();
-}
+}*/
 
+// password错误
 TEST_F(TestAsyncRedis, passwordError) {
-    auto client = coord::redis::newAsyncClient(coord);
+    auto client = this->coord->NewAsyncRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
@@ -80,18 +78,18 @@ TEST_F(TestAsyncRedis, passwordError) {
     client->DefaultConfig()->Password = "11";
     auto promise = client->Connect();
     ASSERT_NE(promise, nullptr);
-    promise->Then([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
         ASSERT_TRUE(false);
-    });
-    promise->Else([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+        this->coord->Destory(0);
+    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
         ASSERT_TRUE(true);
+        this->coord->Destory(0);
     });
-
     this->coord->loopTest();
 }
 
 TEST_F(TestAsyncRedis, Action) {
-    auto client = coord::redis::newAsyncClient(coord);
+    auto client = this->coord->NewAsyncRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
@@ -100,65 +98,69 @@ TEST_F(TestAsyncRedis, Action) {
     auto anim = this->coord->Action->Begin();
     anim->Run(anim->Sequence(
         anim->Call([this, client](coord::action::Action* action){
+            //连接
             auto promise = client->Connect();
-            promise->Then([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            ASSERT_TRUE(promise);
+            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
+                ASSERT_TRUE(true);
                 action->Next();
-            });
-            promise->Else([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
-                action->Next();
+            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
+                ASSERT_TRUE(false);
+                this->coord->Destory(0);
             });
         }),
         anim->Call([this, client](coord::action::Action* action){
+            // del aa
             auto promise = client->DEL("aa");
             ASSERT_TRUE(promise);
-            promise->Then([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
+                ASSERT_TRUE(true);
                 ASSERT_FALSE(reply.Error());
                 ASSERT_FALSE(reply.Empty());
                 action->Next();
-            });
-            promise->Else([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                 ASSERT_TRUE(false);
                 action->Next();
             });
         }),
         anim->Call([this, client](coord::action::Action* action){
+            // get aa
             auto promise = client->GET("aa");
             ASSERT_TRUE(promise);
-            promise->Then([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                 ASSERT_FALSE(reply.Error());
                 ASSERT_TRUE(reply.Empty());
                 action->Next();
-            });
-            promise->Else([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                 ASSERT_TRUE(false);
                 action->Next();
             });
         }),
         anim->Call([this, client](coord::action::Action* action){
+            // set aa bb
             auto promise = client->SET("aa", "bb");
             ASSERT_TRUE(promise);
-            promise->Then([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                 ASSERT_FALSE(reply.Error());
                 ASSERT_FALSE(reply.Empty());
                 ASSERT_STREQ(reply.String(), "OK");
                 action->Next();
-            });
-            promise->Else([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                 ASSERT_TRUE(false);
                 action->Next();
             });
         }),
         anim->Call([this, client](coord::action::Action* action){
+            // del aa
             auto promise = client->DEL("aa");
             ASSERT_TRUE(promise);
-            promise->Then([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                 ASSERT_FALSE(reply.Error());
                 ASSERT_FALSE(reply.Empty());
                 ASSERT_EQ(reply.Integer(), 1);
                 action->Next();
                 this->coord->Destory(0);
-            });
-            promise->Else([this, action](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                 ASSERT_TRUE(false);
                 action->Next();
             });
@@ -169,63 +171,57 @@ TEST_F(TestAsyncRedis, Action) {
 }
 
 TEST_F(TestAsyncRedis, setGet) {
-    auto client = coord::redis::newAsyncClient(coord);
+    auto client = this->coord->NewAsyncRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
     *(client->DefaultConfig()) = config;
     auto promise = client->Connect();
     ASSERT_NE(promise, nullptr);
-    promise->Then([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
         auto promise = client->DEL("aa");
         ASSERT_NE(promise, nullptr);
-        promise->Then([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+        promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
             auto promise = client->GET("aa");
             ASSERT_TRUE(promise);
-            promise->Then([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                 ASSERT_FALSE(reply.Error());
                 ASSERT_TRUE(reply.Empty());
                 auto promise = client->SET("aa", "bb");
                 ASSERT_TRUE(promise);
-                promise->Then([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+                promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                     ASSERT_FALSE(reply.Error());
                     ASSERT_FALSE(reply.Empty());
                     ASSERT_STREQ(reply.String(), "OK");
                     auto promise = client->GET("aa");
                     ASSERT_TRUE(promise);
-                    promise->Then([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+                    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                         ASSERT_FALSE(reply.Error());
                         ASSERT_FALSE(reply.Empty());
                         ASSERT_STREQ(reply.String(), "bb");
                         auto promise = client->DEL("aa");
                         ASSERT_TRUE(promise);
-                        promise->Then([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+                        promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                             ASSERT_FALSE(reply.Error());
                             ASSERT_FALSE(reply.Empty());
                             ASSERT_EQ(reply.Integer(), 1);
                             this->coord->Destory(0);
-                        });
-                        promise->Else([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+                        })->Else([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                             ASSERT_TRUE(false);
                         });
-                    });
-                    promise->Else([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+                    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                         ASSERT_TRUE(false);
                     });
-                });
-                promise->Else([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+                })->Else([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                     ASSERT_TRUE(false);
                 });
-            });
-            promise->Else([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+            })->Else([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
                 ASSERT_TRUE(false);
             });
-        });
-        promise->Else([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+        })->Else([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
             ASSERT_TRUE(false);
         });
-    }); 
-    promise->Else([this](coord::redis::AsyncClient* client, coord::redis::Reply& reply) {
+    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::Reply& reply) {
         ASSERT_TRUE(false);
     });
 

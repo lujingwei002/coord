@@ -52,7 +52,6 @@ void Managed::recvRequest_stop(ManagedRequest* request) {
 void Managed::recvRequest_status(ManagedRequest* request) {
     auto argument = request->Args();
     argument->DebugPrint();
-    printf("status status status %s\n", argument->GetString(0));
     auto response = request->GetResponse();
     response->Args()->AddString("alive");
 }

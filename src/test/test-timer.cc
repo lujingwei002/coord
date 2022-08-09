@@ -1,11 +1,4 @@
-#include "coord/coord.h"
-#include "coord/builtin/slice.h"
-#include "coord/timer/timer.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestTimer : public testing::Test {
 public:

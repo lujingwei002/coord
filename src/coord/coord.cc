@@ -1,41 +1,31 @@
 #include "coord/coord.h"
-#include "coord/scene/scene_mgr.h"
-#include "coord/builtin/destoryable.h"
+#include "coord/scene/init.h"
+#include "coord/builtin/init.h"
 #include "coord/event/init.h"
-#include "coord/component/script_component.h"
-#include "coord/object/object.h"
-#include "coord/script/script.h"
-#include "coord/config/config.h"
-#include "coord/builtin/slice.h"
-#include "coord/gate/gate.h"
-#include "coord/web/web_server.h"
-#include "coord/http/http_server.h"
-#include "coord/http/http_request.h"
-#include "coord/gate/gate_request.h"
-#include "coord/gate/gate_notify.h"
-#include "coord/web/web_server.h"
-#include "coord/protobuf/protobuf.h"
-#include "coord/timer/timer.h"
-#include "coord/sql/sql_mgr.h"
-#include "coord/sql/sql_client.h"
-#include "coord/redis/redis_mgr.h"
-#include "coord/redis/redis_client.h"
-#include "coord/cache/cache_client.h"
-#include "coord/cache/cache_reader.h"
-#include "coord/cache/cache_promise.h"
-#include "coord/cache/cache_async_client.h"
-#include "coord/cluster/cluster.h"
-#include "coord/net/tcp_client.h"
-#include "coord/managed/managed.h"
-#include "coord/worker/worker.h"
-#include "coord/worker/worker_slave.h"
-#include "coord/builtin/environment.h"
-#include "coord/run/running.h"
-#include "coord/action/action_mgr.h"
+#include "coord/component/init.h"
+#include "coord/object/init.h"
+#include "coord/script/init.h"
+#include "coord/config/init.h"
+#include "coord/gate/init.h"
+#include "coord/web/init.h"
+#include "coord/http/init.h"
+#include "coord/gate/init.h"
+#include "coord/protobuf/init.h"
+#include "coord/timer/init.h"
+#include "coord/sql/init.h"
+#include "coord/redis/init.h"
+#include "coord/cache/init.h"
+#include "coord/cluster/init.h"
+#include "coord/net/init.h"
+#include "coord/managed/init.h"
+#include "coord/worker/init.h"
+#include "coord/run/init.h"
+#include "coord/action/init.h"
 #include "coord/closure/init.h"
 #include "coord/login/init.h"
-#include "coord/json/json_mgr.h"
-#include "coord/log4cc/log4cc.h"
+#include "coord/json/init.h"
+#include "coord/log4cc/init.h"
+
 #include "util/os/os.h"
 #include "util/os/path.h"
 #include <uv.h>
@@ -172,6 +162,7 @@ namespace coord {
         argv.ConfigPath = configPath;
         Coord* coord = NewCoord();
         err = coord->Main(argv);
+        delete coord;
         coord::Destory(); 
         return err;
     }
@@ -459,16 +450,16 @@ namespace coord {
         this->Proto = protobuf::newProtobuf(this);
         this->Timer = timer::newTimerMgr(this);
         this->sqlMgr = sql::newSQLMgr(this);
-        this->RedisMgr = redis::newRedisMgr(this);
+        this->RedisMgr = new redis::RedisMgr(this);
         this->Script = script::newScript(this); 
         this->Action = action::newActionMgr(this);
         this->Closure = closure::newClosureMgr(this);
-        this->Json = json::newJsonMgr(this);
+        this->Json = new json::JsonMgr(this);
         this->Managed = new managed::Managed(this);
     }
 
     Coord::~Coord() {
-        this->CoreLogDebug("[Coord] ~Coord");
+        printf("~Coord\n");
         if(this->sceneMgr) {
             delete this->sceneMgr;
             this->sceneMgr = nullptr;
@@ -670,22 +661,27 @@ namespace coord {
         this->Config->DebugString();
         return 0;
     }
-
+    
     int Coord::Main(const Argv& argv) {
         this->ConfigPath = argv.ConfigPath;
+        // 初始化环境
         int err = this->Environment->main(argv);
         if (err) {
             return err;
         }
+        // 初始配置
         err = this->Config->parse(argv.ConfigPath);
         if (err) {
             return err;
         }
+        // 初始化运行时
         err = this->Running->main();
         if (err) {
             return err;
         }
+        // 初始化日志
         err = this->initLogger();
+        // 初始化信号
         uv_signal_init(&this->loop, &this->sigInt);
         this->sigInt.data = this;
         uv_signal_start(&this->sigInt, coord_sigint_handler, SIGINT);
@@ -696,11 +692,13 @@ namespace coord {
         if (err) {
             return err;
         }
-        // managed
+        // 开启managed模块
         err = this->Managed->main();
         if (err) {
             return err;
         } 
+
+        // 开启可选的模块
         //启动web服务
         if(this->Config->SectionExist("WEB")) {
             this->WebServer = new web::WebServer(this);
@@ -755,17 +753,6 @@ namespace coord {
             }
         }
          ;
-        //启动managed服务
-        /*
-        if(this->Config->SectionExist("MANAGED")) {
-            this->Managed = managed::newManaged(this);
-            managed::ManagedConfig* config = this->Managed->DefaultConfig();
-            *config = this->Config->Managed;
-            int err = this->Managed->start();
-            if (err) {
-                return err;
-            } 
-        }*/
         //启动worker服务
         if(this->Config->Basic.WorkerNum > 0) {
             std::string workerConfigPath = coord::path::DirName(argv.ConfigPath);
@@ -1187,16 +1174,11 @@ namespace coord {
         }
     }
 
-    void Coord::LogCloseLevel(int level) {
-        //this->logger->CloseLevel(level);
-    }
-
-    void Coord::LogOpenLevel(int level) {
-        //this->logger->OpenLevel(level);
-    }
-
-    void Coord::LogSetLevel(int level) {
-        //this->logger->SetLevel(level);
+    void Coord::LogSetPriority(int priority) {
+        if (nullptr == this->logger) {
+            return;
+        }
+        this->logger->SetPriority(priority);
     }
 
     void Coord::CoreLogFatal(const char* str) const{;
@@ -1491,11 +1473,16 @@ namespace coord {
         return this->sqlMgr->getClient(name);
     }
 
+    redis::Client* Coord::NewRedisClient() {
+        return this->RedisMgr->NewClient();
+    }
     redis::Client* Coord::RedisConfig(const char* name) {
         return this->RedisMgr->GetClient(name);
     }
-
-    redis::AsyncClient* Coord::RedisAsyncConfig(const char* name) {
+    redis::AsyncClient* Coord::NewAsyncRedisClient() {
+        return this->RedisMgr->NewAsyncClient();
+    }
+    redis::AsyncClient* Coord::AsyncRedisConfig(const char* name) {
         return this->RedisMgr->GetAsyncClient(name);
     }
     

@@ -112,7 +112,7 @@ public:
     // for worker end
     //
     // for redis begin
-    void recvRedisReply(redis::AsyncClient* client, redis::Reply& reply, const char* script, int ref);
+    void recvRedisReply(redis::AsyncClient* client, const redis::Reply& reply, const char* script, int ref);
     // for redis end
 
     // for redis begin

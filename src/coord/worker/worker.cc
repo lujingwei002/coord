@@ -7,6 +7,7 @@
 #include "coord/worker/worker_packet.h"
 #include "coord/config/config.h"
 #include "coord/builtin/exception.h"
+#include "coord/script/script.h"
 #include "coord/coord.h"
 
 

@@ -5,10 +5,18 @@
 
 namespace coord {
 
+    ///
+    /// 对象池管理器
+    /// 每个线程有一个管理器实例， 线程退出时自动销毁
+    /// 
+    ///
+    ///
+
+
     class IObjectPool {
     public:
         virtual ~IObjectPool(){}
-        virtual void Trace() {}
+        virtual void trace() {}
     };
 
     class object_pool_mgr {

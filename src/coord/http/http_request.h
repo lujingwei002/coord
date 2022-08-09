@@ -75,7 +75,7 @@ public:
     std::string                         Url;                //tolua_export
     /// 路径 如: /account/login
     std::string                         Path;               //tolua_export
-    /// 查询字符串 如: ?username=xx
+    /// 查询字符串,不包含?号 如: username=xx
     std::string                         Query;              //tolua_export
     std::string                         Schema;             //tolua_export
     /// 域名

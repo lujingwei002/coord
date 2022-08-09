@@ -2,6 +2,7 @@
 #include "coord/builtin/init.h"
 #include "coord/builtin/slice.h"
 #include "coord/builtin/error.h"
+#include "coord/script/declare.h"
 #include "coord/json/reflect.h"
 #include <string>
 extern "C"
@@ -22,34 +23,101 @@ extern "C"
 ///
 ///
 ///
+namespace coord {
+    class Coord;
+}
 
 namespace coord {//tolua_export
-class Coord;
 namespace json {//tolua_export
 
 class JsonMgr {
-public:
+CC_CLASS(JsonMgr);
+friend class coord::Coord;
+friend class coord::script::Script;
+private:
     JsonMgr(Coord* coord);
     virtual ~JsonMgr();
-public:
-    Reflect NewString(const char* data = nullptr);
-    Reflect NewObject();
-    Reflect NewArray();
-    Reflect NewNull();
-    Reflect NewBool(bool value);
-    
-    Reflect Decode(const char* data);
-    Reflect Decode(std::string& data);
-    int Encode(Reflect& json, byte_slice& buffer);
-    int Encode(Reflect& json, std::string& buffer);
-public:
+private:
     int main();
+    /// 将coord::json::Reflect注册到lua中
     int registerMetatable();
-public:
+private:
     Coord*    coord;
+
+
+
+
+
+public:
+    /// 创建JSON字符串 
+    ///
+    /// ```
+    /// "test"
+    /// ```
+    ///
+    Reflect NewString(const char* data = nullptr);
+
+    /// 创建JSON对象
+    ///
+    /// ```
+    /// {"name": "coord"}
+    /// ```
+    ///
+    Reflect NewObject();
+
+    /// 创建JSON数组
+    ///
+    /// ```
+    /// [1, 2, "3"]
+    /// ```
+    ///
+    Reflect NewArray();
+
+    /// 创建JSON空值
+    ///
+    /// ```
+    /// null
+    /// ```
+    ///
+    Reflect NewNull();
+
+    /// 创建JSON布尔值
+    ///
+    /// ```
+    /// true
+    /// ```
+    ///
+    Reflect NewBool(bool value);
+
+    /// 创建JSON Number值
+    ///
+    /// ```
+    /// true
+    /// ```
+    ///
+    Reflect NewNumber(int value);
+    
+    /// 创建JSON Number值
+    ///
+    /// ```
+    /// true
+    /// ```
+    ///
+    Reflect NewNumber(double value);
+
+    /// 将字节流中解析成JSON对象
+    Reflect Decode(const char* data);
+
+    /// 将字节流中解析成JSON对象
+    Reflect Decode(std::string& data);
+
+    /// 将JSON对象序列化成字节流
+    int Encode(Reflect& json, byte_slice& buffer);
+
+    /// 将JSON对象序列化成字节流
+    int Encode(Reflect& json, std::string& buffer);
 };//tolua_export
 
-JsonMgr* newJsonMgr(Coord* coord);
 
 }//tolua_export
 }//tolua_export

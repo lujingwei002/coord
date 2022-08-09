@@ -1,14 +1,4 @@
-#include "coord/coord.h"
-#include "coord/builtin/slice.h"
-#include "coord/encrypt/base64.h"
-#include "coord/encrypt/md5.h"
-#include "coord/encrypt/des.h"
-#include "coord/encrypt/hex.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestEncrypt : public testing::Test {
 public:

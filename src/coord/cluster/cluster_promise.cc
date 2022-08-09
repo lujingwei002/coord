@@ -5,6 +5,7 @@
 #include "coord/cluster/cluster_server.h"
 #include "coord/component/script_component.h"
 #include "coord/builtin/exception.h"
+#include "coord/script/script.h"
 
 namespace coord {
 

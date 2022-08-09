@@ -5,6 +5,7 @@
 #include "coord/cluster/cluster_response.h"
 #include "coord/component/script_component.h"
 #include "util/date/date.h"
+#include "coord/script/script.h"
 #include "coord/coord.h"
 
 namespace coord {

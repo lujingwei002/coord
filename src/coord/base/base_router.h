@@ -4,6 +4,7 @@
 #include "coord/component/script_component.h"
 #include "coord/builtin/slice.h"
 #include "util/date/date.h"
+#include "coord/script/script.h"
 #include "coord/coord.h"
 #include <map>
 #include <string>

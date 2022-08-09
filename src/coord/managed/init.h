@@ -1,3 +1,5 @@
+
+#pragma once
 #include "coord/managed/managed.h"
 #include "coord/managed/managed_client.h"
 #include "coord/managed/managed_promise.h"

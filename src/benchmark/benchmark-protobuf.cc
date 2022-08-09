@@ -1,9 +1,3 @@
-#include "coord/coord.h"
-
-#include "coord/protobuf/protobuf.h"
-#include "coord/protobuf/reflect.h"
-#include <benchmark/benchmark.h>
-
 
 
 static void bench_protobuf_set_string(benchmark::State& state) {

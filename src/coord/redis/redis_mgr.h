@@ -8,31 +8,52 @@
 #include <stdint.h>
 #include <map>
 
-namespace coord {//tolua_export
-    
-class Coord;
+namespace coord {
+    class Coord;
+    namespace redis {
+        class Client;
+        class AsyncClient;
+    }
+}
 
+namespace coord {//tolua_export
 namespace redis {//tolua_export
 
-class Client;
-class AsyncClient;
-
 class RedisMgr {//tolua_export
-public:
+friend Coord;
+friend Client;
+friend AsyncClient;
+private:
     RedisMgr(Coord *coord);
     virtual ~RedisMgr();
-public:
-    Client* GetClient(const char* name);
-    AsyncClient* GetAsyncClient(const char* name);
-    void Free(Client* conn);
-    void Free(AsyncClient* conn);
-public:
+private:
+    // 释放redis client
+    void free(Client* conn);
+
+    // 释放redis client
+    void free(AsyncClient* conn);
+private:
     std::map<std::string, Client*>      clientDict;
+    std::set<Client*>                   clientSet;
     std::map<std::string, AsyncClient*> asyncClientDict;
+    std::set<AsyncClient*>              asyncClientSet;
     Coord*                              coord;
+
+
+
+
+public:
+    /// 创建redis client
+    Client* NewClient();
+    /// 根据配置创建redis client
+    Client* GetClient(const char* name);
+    /// 创建async redis client
+    AsyncClient* NewAsyncClient();
+    /// 根据配置创建async redis client
+    AsyncClient* GetAsyncClient(const char* name);
 };//tolua_export
 
-RedisMgr* newRedisMgr(Coord* coord);
+
 }//tolua_export
 }//tolua_export
 

@@ -1,16 +1,6 @@
-#include "coord/coord.h"
-#include "coord/cache/init.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
 
 class TestAsyncCache : public testing::Test {
 public:
-    static void SetUpTestCase() {
-       // std::cout<<"[TestHttp] SetUpTestCase()"<<std::endl;;
-    }
     static void TearDownTestCase() {
         //std::cout<<"[TestHttp] TearDownTestCase()"<<std::endl;
     }

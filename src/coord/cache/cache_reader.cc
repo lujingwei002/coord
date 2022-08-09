@@ -1,6 +1,7 @@
 #include "coord/cache/cache_reader.h"
 #include "coord/redis/redis_reply.h"
 #include "coord/coord.h"
+#include <cassert>
 
 namespace coord {
 namespace cache {

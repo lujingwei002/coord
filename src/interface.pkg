@@ -61,6 +61,14 @@ $cfile "coord/redis/redis_async_client.h"
 $cfile "coord/redis/redis_client.h"
 $cfile "coord/redis/redis_promise.h"
 $cfile "coord/redis/redis_reply.h"
+namespace coord {
+    namespace redis {
+        class RedisPromise {
+            int Then(lua_State* L);
+            int Else(lua_State* L);
+        };
+    }
+}
 $cfile "coord/cache/cache.h"
 $cfile "coord/cache/cache_config.h"
 $cfile "coord/cache/cache_client.h"

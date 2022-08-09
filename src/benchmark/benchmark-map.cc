@@ -1,8 +1,3 @@
-#include "coord/coord.h"
-
-#include <benchmark/benchmark.h>
-#include <map>
-
 
 
 static void bench_map_set_string(benchmark::State& state) {

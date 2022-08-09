@@ -4,6 +4,7 @@
 #include "coord/http/http_response.h"
 #include "coord/component/script_component.h"
 #include "coord/coord.h"
+#include "coord/script/script.h"
 #include "util/os/path.h"
 #include "util/date/date.h"
 

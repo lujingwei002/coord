@@ -1,12 +1,4 @@
-#include "coord/coord.h"
-#include "coord/builtin/argument.h"
-#include "coord/builtin/slice.h"
-#include "coord/json/init.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestJson : public testing::Test {
 public:
@@ -16,6 +8,7 @@ public:
     }
 
     void SetUp() {
+        printf("aaaaaaaaaaaaaaaaaaaaaaa1\n");
         coord::Coord* coord = coord::NewCoord();
         this->coord = coord;
         coord::Argv argv;
@@ -26,6 +19,7 @@ public:
     }
 
     void TearDown() {
+        printf("aaaaaaaaaaaaaaaaaaaaaaa2\n");
         int err = this->coord->afterTest();
         ASSERT_EQ(err, 0);
         delete this->coord;
@@ -35,25 +29,43 @@ public:
 };
 
 TEST_F(TestJson, Basic) {
+    // {}
     auto json = this->coord->Json->NewObject();  
+    // 获取不存在的字段
     ASSERT_EQ(json.GetString("version"), nullptr);
+    // {"version": "1.0.0"}
     json.SetString("version", "1.0.0");
+    // 获取字符串字段
     ASSERT_STREQ(json.GetString("version"), "1.0.0");
+    // {"version": "1.0.0", "score": 1.23}
     json.SetNumber("score", 1.23);
+
+    // {"version": "1.0.0", "score": 1.23, "user": {}}
     auto user = json.SetObject("user");
+    // {"version": "1.0.0", "score": 1.23, "user": {"name": "ljw"}}
     user.SetString("name", "ljw");
+
+    // 获取不存在的字段
     auto dd = json.GetObject("dd");
     ASSERT_TRUE(dd == nullptr);
+    // 获取object字段
     user = json.GetObject("user");
     ASSERT_TRUE(user != nullptr);
+    // 获取字符串字段
     ASSERT_STREQ(user.GetString("name"), "ljw");
 
+    // 设置数组字段
+    // {"version": "1.0.0", "score": 1.23, "user": {"name": "ljw"}, "gameArr": []}
     auto gameArr = json.SetArray("gameArr");
+    // {"version": "1.0.0", "score": 1.23, "user": {"name": "ljw"}, "gameArr": [{}]}
     auto game1 = gameArr.AddObject();
+    // {"version": "1.0.0", "score": 1.23, "user": {"name": "ljw"}, "gameArr": [{"name": "game1"}]}
     game1.SetString("name", "game1");
 
+    // 序列化 -》 反序列化
     std::string str1 = json.ToString();
     auto json2 = this->coord->Json->Decode(str1);
+    // 序列化
     std::string str2 = json2.ToString();
     ASSERT_STREQ(str2.c_str(), R"({"gameArr": [{"name": "game1"}], "score": 1.23, "user": {"name": "ljw"}, "version": "1.0.0"})");
     ASSERT_STREQ(str1.c_str(), str2.c_str());

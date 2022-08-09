@@ -1,5 +1,6 @@
 #include "coord/redis/redis_client.h"
 #include "coord/redis/redis_reply.h"
+#include "coord/redis/redis_mgr.h"
 #include "coord/builtin/error.h"
 #include "coord/coord.h"
 
@@ -8,23 +9,23 @@ namespace redis {
 
 CC_IMPLEMENT(Client, "coord::redis::Client")
 
-Client* newClient(Coord *coord) {
-    auto client = new Client(coord);
-    return client;
-}
 
-Client::Client(Coord *coord) {
+Client::Client(Coord *coord, RedisMgr* redisMgr) {
     this->coord = coord;
+    this->redisMgr = redisMgr;
     this->context = nullptr;
 }   
 
 Client::~Client() {
-    this->coord->CoreLogDebug("[RedisClient] ~RedisClient");
-    if(this->context) {
-        return;
+    if(nullptr != this->context) {
+        redisFree(this->context);
+        this->context = nullptr;
     }
-    redisFree(this->context);
-    this->context = nullptr;
+    this->redisMgr->free(this);
+}
+
+void Client::onDestory() {
+    this->Close();
 }
 
 RedisConfig* Client::DefaultConfig() {
@@ -43,17 +44,17 @@ int Client::Connect() {
     redisContext* c = redisConnect(this->config.Host.c_str(), this->config.Port);
     if(c == nullptr) {
         this->coord->CoreLogError("[%s] Connect failed", this->TypeName());
-        return -1;
+        return ErrorConnect;
     }
     if (c->err != 0) {
         redisFree(c);
         this->coord->CoreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, ""/*c->errstr */);
-        return -1;
+        return ErrorConnect;
     }
     if(!(c->flags & REDIS_CONNECTED)){
         redisFree(c);
         this->coord->CoreLogError("[%s] Connect failed, host='%s', port=%d, error='%s'", this->TypeName(), this->config.Host.c_str(), this->config.Port, ""/* c->errstr */);
-        return -1;
+        return ErrorConnect;
     }
     this->context = c;
     if (this->config.Password.length() > 0) {
@@ -61,7 +62,7 @@ int Client::Connect() {
         if(reply.Error()) {
             this->coord->CoreLogError("[%s] Connect failed, function='AUTH', password='%s', error='%s'", this->TypeName(), this->config.Password.c_str(), ""/* c->errstr */);
             this->Close();
-            return -1;
+            return ErrorInvalidPassword;
         }
     }
     if (this->config.DB.length() > 0) {
@@ -69,7 +70,7 @@ int Client::Connect() {
         if(reply.Error()) {
             this->coord->CoreLogError("[%s] Connect failed, function='SELECT', db='%s', error='%s'", this->TypeName(), this->config.DB.c_str(), ""/* c->errstr */);
             this->Close();
-            return -1;
+            return ErrorInvalidDb;
         }
     }
     return 0;
@@ -141,7 +142,7 @@ Reply Client::HGETALL(const char* key) {
 
 int Client::HDEL(const char* key, const char* field) {
     if (!this->context) {
-        return -1;
+        return ErrorNotConnected;
     }
     redisReply * reply = (redisReply *)redisCommand(this->context, "HDEL %s %s", key, field);
     if(reply == nullptr){

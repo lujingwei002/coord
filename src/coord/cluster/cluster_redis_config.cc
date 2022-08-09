@@ -22,11 +22,11 @@ cluster_redis_config::cluster_redis_config(Coord *coord, Cluster* cluster) : clu
 
 cluster_redis_config::~cluster_redis_config() {
     if(this->asyncClient != nullptr) {
-        delete this->asyncClient;
+        this->coord->Destory(this->asyncClient);
         this->asyncClient = nullptr;
     }
     if(this->syncClient != nullptr) {
-        delete this->syncClient;
+        this->coord->Destory(this->syncClient);
         this->syncClient = nullptr;
     }
 }
@@ -54,13 +54,13 @@ int cluster_redis_config::heartbeat() {
         this->coord->CoreLogError("[cluster_redis_config] heartbeat failed, function='asyncClient->EXPIRE'");
         return -1;
     }
-    promise->Then([this](redis::AsyncClient* client, redis::Reply& reply){
+    promise->Then([this](redis::AsyncClient* client, const redis::Reply& reply){
         this->coord->CoreLogDebug("[cluster_redis_config] heartbeat, reply=%d", reply.Integer());    
         if (reply.Integer() != 1) {
             this->coord->CoreLogError("[cluster_redis_config] heartbeat failed, reply=%d", reply.Integer());    
         }
     });
-    promise->Else([this](redis::AsyncClient* client, redis::Reply& reply){
+    promise->Else([this](redis::AsyncClient* client, const redis::Reply& reply){
         this->coord->CoreLogError("[cluster_redis_config] heartbeat failed, reply='%s'", reply.String());    
     });
     return 0;
@@ -89,7 +89,7 @@ int cluster_redis_config::checkNodeStatusAsync(std::string nodeName, uint64_t ve
             this->group.c_str(), nodeName.c_str(), version);
         return -1;
     }
-    promise->Then([this, nodeName, version](redis::AsyncClient* client, redis::Reply& reply) {
+    promise->Then([this, nodeName, version](redis::AsyncClient* client, const redis::Reply& reply) {
         if (reply.Empty()) {
             auto it = this->nodeDict.find(nodeName);
             if (it != this->nodeDict.end()) {
@@ -102,9 +102,9 @@ int cluster_redis_config::checkNodeStatusAsync(std::string nodeName, uint64_t ve
                     this->group.c_str(), nodeName.c_str(), version);
                 return;
             }  
-            promise->Then([this, nodeName, version](redis::AsyncClient* client, redis::Reply& reply) {
+            promise->Then([this, nodeName, version](redis::AsyncClient* client, const redis::Reply& reply) {
             });   
-            promise->Else([this, nodeName, version](redis::AsyncClient* client, redis::Reply& reply) {
+            promise->Else([this, nodeName, version](redis::AsyncClient* client, const redis::Reply& reply) {
                 this->coord->CoreLogError("[cluster_redis_config] checkNodeStatusAsync failed, function='this->asyncClient->HDEL', group=%s, node=%s, version=%ld", 
                 this->group.c_str(), nodeName.c_str(), version);
             });       
@@ -122,7 +122,7 @@ int cluster_redis_config::checkNodeStatusAsync(std::string nodeName, uint64_t ve
             }
         }      
     });
-    promise->Else([this, nodeName, version](redis::AsyncClient* client, redis::Reply& reply) {
+    promise->Else([this, nodeName, version](redis::AsyncClient* client, const redis::Reply& reply) {
         this->coord->CoreLogError("[cluster_redis_config] checkNodeStatusAsync failed, function='this->asyncClient->GET', group=%s, node=%s, version=%ld", 
             this->group.c_str(), nodeName.c_str(), version);
     });
@@ -135,7 +135,7 @@ int cluster_redis_config::checkNodeStatusAsync() {
         this->coord->CoreLogError("[cluster_redis_config] checkNodeStatusAsync failed, function='asyncClient->HGETALL'");
         return -1;
     }
-    promise->Then([this](redis::AsyncClient* client, redis::Reply& reply){
+    promise->Then([this](redis::AsyncClient* client, const redis::Reply& reply){
         this->coord->CoreLogDebug("[cluster_redis_config] checkNodeStatusAsync");    
         //1.检查新增或者过期的节点
         for (int i = 0; i < reply.ArrayCount() / 2; i++){
@@ -158,7 +158,7 @@ int cluster_redis_config::checkNodeStatusAsync() {
             }
         }
     });
-    promise->Else([this](redis::AsyncClient* client, redis::Reply& reply){
+    promise->Else([this](redis::AsyncClient* client, const redis::Reply& reply){
         this->coord->CoreLogError("[cluster_redis_config] checkNodeStatusAsync failed, reply='%s'", reply.String());
     });
     return 0;
@@ -252,7 +252,7 @@ int cluster_redis_config::connect() {
             this->coord->CoreLogError("[cluster_redis_config] start.http_parser_parse_url failed, error=%d", err);
             return err;
         }
-        redis::Client* client = redis::newClient(this->coord);
+        redis::Client* client = this->coord->NewRedisClient();
         auto redis = client->DefaultConfig();
         redis->Host = url.Host;
         redis->Port = url.Port;
@@ -261,21 +261,21 @@ int cluster_redis_config::connect() {
         if (dbIndex == std::string::npos) {
             this->coord->CoreLogError("[cluster_redis_config] start.http_parser_parse_url failed, driver=%s, error='driver format err'", 
                 this->cluster->config.Driver.c_str());
-            delete client;
+            this->coord->Destory(client);
             return -1;
         }
         size_t keyIndex = url.Path.find("/", dbIndex + 1);
         if (keyIndex == std::string::npos) {
             this->coord->CoreLogError("[cluster_redis_config] start.http_parser_parse_url failed, driver=%s, error='driver format err'", 
                 this->cluster->config.Driver.c_str());
-            delete client;
+            this->coord->Destory(client);
             return -1;
         }
         redis->DB = url.Path.substr(dbIndex + 1, keyIndex - dbIndex - 1);
         this->group = url.Path.substr(keyIndex + 1);
         err = client->Connect();
         if (err < 0){
-            delete client;
+            this->coord->Destory(client);
             this->coord->CoreLogError("[cluster_redis_config] start, driver->Connect failed, error='%d'", err);
             return err;
         }
@@ -285,18 +285,18 @@ int cluster_redis_config::connect() {
     }    
     //异步链接
     {
-        redis::AsyncClient* client = redis::newAsyncClient(this->coord);
+        redis::AsyncClient* client = this->coord->NewAsyncRedisClient();
         *(client->DefaultConfig()) = *(this->syncClient->DefaultConfig());
         auto promise = client->Connect();
         if (promise == NULL) {
-            delete client;
+            this->coord->Destory(client);
             this->coord->CoreLogError("[GateCluster] start failed, func='client->Connect'");
             return -1;
         }
-        promise->Then([this](redis::AsyncClient* client, redis::Reply& reply) {
+        promise->Then([this](redis::AsyncClient* client, const redis::Reply& reply) {
             this->coord->CoreLogDebug("[cluster_redis_config] connect success, reply='%s'", reply.String());
         });
-        promise->Else([this](redis::AsyncClient* client, redis::Reply& reply) {
+        promise->Else([this](redis::AsyncClient* client, const redis::Reply& reply) {
             this->coord->CoreLogError("[cluster_redis_config] connect failed, reply='%s'", reply.String());
         });
         this->asyncClient = client;

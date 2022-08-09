@@ -1,6 +1,7 @@
 #include "coord/builtin/argument.h"
 #include "coord/coord.h"
 #include "coord/protobuf/init.h"
+#include "coord/script/script.h"
 #include <tolua++/tolua++.h>
 
 namespace coord {

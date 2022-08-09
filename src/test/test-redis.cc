@@ -1,11 +1,4 @@
-#include "coord/coord.h"
-#include "coord/redis/init.h"
-#include "coord/config/config.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestRedis : public testing::Test {
 public:
@@ -34,8 +27,9 @@ public:
     coord::Coord*           coord;
 };
 
+// host错误
 TEST_F(TestRedis, hostError) {
-    auto client = coord::redis::newClient(coord);
+    auto client = this->coord->NewRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
@@ -44,8 +38,9 @@ TEST_F(TestRedis, hostError) {
     ASSERT_NE(client->Connect(), 0);
 }
 
+// 密码错误
 TEST_F(TestRedis, passwordError) {
-    auto client = coord::redis::newClient(coord);
+    auto client = this->coord->NewRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
@@ -54,8 +49,9 @@ TEST_F(TestRedis, passwordError) {
     ASSERT_NE(client->Connect(), 0);
 }
 
+// db错误
 TEST_F(TestRedis, DbError) {
-    auto client = coord::redis::newClient(coord);
+    auto client = this->coord->NewRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
@@ -64,8 +60,9 @@ TEST_F(TestRedis, DbError) {
     ASSERT_NE(client->Connect(), 0);
 }
 
+// 空值判断
 TEST_F(TestRedis, TestReplyNull) {
-    auto client = coord::redis::newClient(coord);
+    auto client = this->coord->NewRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);
@@ -78,7 +75,7 @@ TEST_F(TestRedis, TestReplyNull) {
 }
 
 TEST_F(TestRedis, TestSetGet) {
-    auto client = coord::redis::newClient(coord);
+    auto client = this->coord->NewRedisClient();
     coord::redis::RedisConfig config;
     int err = this->coord->Config->RedisConfig("REDIS", &config);
     ASSERT_EQ(err, 0);

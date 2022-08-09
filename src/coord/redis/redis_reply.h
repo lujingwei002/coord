@@ -14,40 +14,55 @@ extern "C" {
 }
 #include <hiredis/hiredis.h>
 #include <hiredis/async.h>
-namespace coord {//tolua_export
-    
-class Coord;
+namespace coord {
+    class Coord;
+    namespace redis {
+        class Client;
+        class AsyncClient;
+    }
+}
 
+namespace coord {//tolua_export
 namespace redis {//tolua_export
 
 class Reply : public Destoryable {//tolua_export
 CC_CLASS(Reply);
-public:
-    Reply(std::nullptr_t);
+friend Client;
+friend AsyncClient;
+    
+private:
+    Coord*      coord;
+    redisReply* reply;
+    //在异步的情况下， hiredis负责释放reply
+    bool        owner;
+private:
     Reply(Coord *coord, redisReply* reply, bool owner = true);
+
+
+
+public:
     Reply(const Reply& other);
+    Reply(std::nullptr_t);
     virtual ~Reply();
 public:
+    const Reply* operator->() const {return this;}
+    operator void*() const { return (void*)this;}
     Reply& operator=(const Reply& other);
     bool operator== (std::nullptr_t v) const;
 	bool operator!= (std::nullptr_t v) const;
     /// 是否错误
-    bool Error();                       //tolua_export
+    bool Error() const;                       //tolua_export
     /// 是否数组
-    bool Array();                       //tolua_export
+    bool Array() const;                       //tolua_export
     /// 如果是数组，返回数组的大小
-    int ArrayCount();                   //tolua_export
+    int ArrayCount() const;                   //tolua_export
     /// 是否空值
-    bool Empty();                       //tolua_export
-    bool Empty(size_t index);           //tolua_export
-    const char* String();               //tolua_export
-    long long Integer();                //tolua_export
-    long long Integer(size_t index);    //tolua_export
-    const char* String(size_t index);   //tolua_export
-public:
-    Coord*      coord;
-    redisReply* reply;
-    bool        owner;
+    bool Empty() const;                       //tolua_export
+    bool Empty(size_t index) const;           //tolua_export
+    const char* String() const;               //tolua_export
+    long long Integer() const;                //tolua_export
+    long long Integer(size_t index) const;    //tolua_export
+    const char* String(size_t index) const;   //tolua_export
 };//tolua_export
 
 }//tolua_export

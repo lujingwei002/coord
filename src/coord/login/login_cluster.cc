@@ -25,11 +25,11 @@ login_cluster::login_cluster(Coord* coord, LoginSvr* loginSvr) {
 
 login_cluster::~login_cluster() {
     if(this->asyncClient != NULL) {
-        delete this->asyncClient;
+        this->coord->Destory(this->asyncClient);
         this->asyncClient = NULL;
     }
     if(this->syncClient != NULL) {
-        delete this->syncClient;
+        this->coord->Destory(syncClient);
         this->syncClient = NULL;
     }
 }
@@ -47,7 +47,7 @@ int login_cluster::main() {
             this->coord->CoreLogError("[login_cluster] main.http_parser_parse_url failed, error=%d", err);
             return err;
         }
-        redis::Client* client = redis::newClient(this->coord);
+        redis::Client* client = this->coord->NewRedisClient();
         auto config = client->DefaultConfig();
         config->Host = url.Host;
         config->Port = url.Port;
@@ -55,20 +55,20 @@ int login_cluster::main() {
         size_t dbIndex = url.Path.find("/");
         if (dbIndex == std::string::npos) {
             this->coord->CoreLogError("[login_cluster] main failed, func='http_parser_parse_url', url=%s, error='url format err'", loginConfig->Cluster.c_str());
-            delete client;
+            this->coord->Destory(client);
             return -1;
         }
         size_t keyIndex = url.Path.find("/", dbIndex + 1);
         if (keyIndex == std::string::npos) {
             this->coord->CoreLogError("[login_cluster] main failed, func='http_parser_parse_url', url=%s, error='url format err'", loginConfig->Cluster.c_str());
-            delete client;
+            this->coord->Destory(client);
             return -1;
         }
         config->DB = url.Path.substr(dbIndex + 1, keyIndex - dbIndex - 1);
         this->group = url.Path.substr(keyIndex + 1);
         err = client->Connect();
         if (err < 0){
-            delete client;
+            this->coord->Destory(client);
             this->coord->CoreLogError("[login_cluster] main failed, func='client->Connect' failed, error='%d'", err);
             return err;
         }
@@ -77,11 +77,11 @@ int login_cluster::main() {
     }
     //异步链接
     {
-        redis::AsyncClient* client = redis::newAsyncClient(this->coord);
+        redis::AsyncClient* client = this->coord->NewAsyncRedisClient();
         *(client->DefaultConfig()) = *(this->syncClient->DefaultConfig());
         auto promise = client->Connect();
         if (promise == NULL) {
-            delete client;
+            this->coord->Destory(client);
             this->coord->CoreLogError("[login_cluster] main failed, func='client->Connect'");
             return -1;
         }
@@ -93,7 +93,7 @@ int login_cluster::main() {
     return 0;
 }
 
-void login_cluster::recvConnectCacheSucc(redis::AsyncClient* client, redis::Reply& reply) {
+void login_cluster::recvConnectCacheSucc(redis::AsyncClient* client, const redis::Reply& reply) {
     this->coord->CoreLogError("[login_cluster] recvConnectCacheSucc %s", reply.String());
 
     auto promise = this->asyncClient->SCRIPT_LOAD(R"(
@@ -138,20 +138,20 @@ void login_cluster::recvConnectCacheSucc(redis::AsyncClient* client, redis::Repl
     promise->Else(std::bind(&login_cluster::recvCacheScriptLoadError, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-void login_cluster::recvConnectCacheErr(redis::AsyncClient* client, redis::Reply& reply) {
+void login_cluster::recvConnectCacheErr(redis::AsyncClient* client, const redis::Reply& reply) {
     this->coord->CoreLogError("[login_cluster] recvConnectCacheErr, reply='%s'", reply.String());
 }
 
-void login_cluster::recvCacheScriptLoadSucc(redis::AsyncClient* client, redis::Reply& reply, const char* name) {
+void login_cluster::recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::Reply& reply, const char* name) {
     this->coord->CoreLogError("[login_cluster] recvCacheScriptLoadSucc, name=%s, reply='%s'", name, reply.String());
     this->scriptShaDict[name] = reply.String();
 }
 
-void login_cluster::recvCacheScriptLoadError(redis::AsyncClient* client, redis::Reply& reply) {
+void login_cluster::recvCacheScriptLoadError(redis::AsyncClient* client, const redis::Reply& reply) {
     this->coord->CoreLogError("[login_cluster] recvCacheScriptLoadError, reply='%s'", reply.String());
 }
 
-redis::Promise* login_cluster::getBalanceGate() {
+redis::RedisPromise* login_cluster::getBalanceGate() {
     auto it = this->scriptShaDict.find("balance");
     if (it == this->scriptShaDict.end()) {
         return nullptr;
@@ -164,7 +164,7 @@ redis::Promise* login_cluster::getBalanceGate() {
     return promise;
 }
 
-redis::Promise* login_cluster::getRanomGate() {
+redis::RedisPromise* login_cluster::getRanomGate() {
     auto it = this->scriptShaDict.find("random");
     if (it == this->scriptShaDict.end()) {
         return nullptr;
@@ -177,7 +177,7 @@ redis::Promise* login_cluster::getRanomGate() {
     return promise;
 }
 
-redis::Promise* login_cluster::listGate() {
+redis::RedisPromise* login_cluster::listGate() {
     auto it = this->scriptShaDict.find("list");
     if (it == this->scriptShaDict.end()) {
         return nullptr;

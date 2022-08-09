@@ -1,11 +1,4 @@
-#include "coord/coord.h"
-#include "coord/builtin/slice.h"
-#include "coord/managed/init.h"
-#include "gtest/gtest.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestManaged: public testing::Test {
 public:
@@ -39,7 +32,6 @@ TEST_F(TestManaged, Basic) {
     auto promise = client->Connect();
     auto self = this;
     promise->Then([&self](auto client, auto result) {
-        printf("connect succeed\n");
         coord::Argument argument(self->coord);
         argument.AddString("hello");
         auto promise1 = client->Request("status", &argument);

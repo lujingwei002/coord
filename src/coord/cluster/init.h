@@ -1,4 +1,5 @@
 
+#pragma once
 #include "coord/cluster/cluster_notify.h"
 #include "coord/cluster/cluster_promise.h"
 #include "coord/cluster/cluster_request.h"

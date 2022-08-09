@@ -10,6 +10,7 @@ public:
     virtual const char* TypeName() const = 0;
 };
 
+
 class Type {//tolua_export
 public:
     Type(const char* name);
@@ -17,25 +18,23 @@ public:
 };//tolua_export
 }//tolua_export
 
-#define CC_TEMPLATE(ClassName) \
+#define TYPE_CLASS(ClassName) \
     public:\
-    static thread_local ::coord::object_pool<ClassName>* allocator;\
-    static void MemTrace() {\
-        ClassName::allocator->trace();\
-    }\
-    void operator delete(void *ptr) {\
-        ClassName::allocator->free((ClassName*)ptr);\
-    }\
-    void* operator new(size_t size) {\
-        return ClassName::allocator->alloc();\
-    }\
-    virtual ::coord::Type* GetType() {\
+    virtual ::coord::Type* GetType();\
+    virtual const char* TypeName() const;\
+    static ::coord::Type* _type;
+
+
+#define TYPE_IMPLEMENT(ClassName, FullName) \
+    ::coord::Type* ClassName::_type = new ::coord::Type(FullName);\
+    ::coord::Type* ClassName::GetType()\
+    {\
         return ClassName::_type;\
     }\
-    virtual const char* TypeName() const {\
+    const char* ClassName::TypeName() const \
+    {\
         return ClassName::_type->name;\
-    }\
-    static ::coord::Type* _type;
+    }
 
 #define CC_CLASS(ClassName) \
     public:\

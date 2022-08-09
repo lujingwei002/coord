@@ -1,3 +1,4 @@
+#pragma once
 #include "coord/cache/cache_client.h"
 #include "coord/cache/cache_async_client.h"
 #include "coord/cache/cache_reader.h"

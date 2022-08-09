@@ -1,18 +1,17 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
 #include "coord/base/base_request.h"
 #include "coord/worker/worker_response.h"
 
-namespace coord {//tolua_export
-class Coord;
+#include "coord/worker/declare.h"
+#include "coord/protobuf/declare.h"
 
-namespace protobuf{
-class Reflect;
+namespace coord {
+class Coord;
 }
+
+namespace coord {//tolua_export
 namespace worker {//tolua_export
-class Worker;
-class Result;
 
 class Request : public base_request  { //tolua_export
 CC_CLASS(Request);

@@ -1,13 +1,4 @@
-#include "coord/coord.h"
-#include "gtest/gtest.h"
-#include "coord/builtin/slice.h"
-#include "coord/sql/init.h"
-#include "coord/sql/mysql/init.h"
-#include "coord/config/config.h"
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-#include <cstdlib>
+
 
 class TestMySQL : public testing::Test {
 public:

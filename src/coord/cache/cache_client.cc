@@ -22,7 +22,7 @@ Client::Client(Coord *coord) {
 Client::~Client() {
     if(this->client){
         this->client->Close();
-        delete this->client;
+        this->coord->Destory(this->client);
         this->client = nullptr;
     }
 }
@@ -34,7 +34,7 @@ CacheConfig* Client::DefaultConfig() {
 void Client::destory() {
     if(this->client){
         this->client->Close();
-        delete this->client;
+        this->coord->Destory(this->client);
         this->client = nullptr;
     }
 }
@@ -43,7 +43,7 @@ int Client::main() {
     if(this->client != nullptr){
         return -1;
     }
-    auto client = redis::newClient(this->coord);
+    auto client = this->coord->NewRedisClient();
     auto config = client->DefaultConfig();
     config->Host = this->config.Host;
     config->Port = this->config.Port;
@@ -51,7 +51,7 @@ int Client::main() {
     config->DB = this->config.DB;
     int err = client->Connect();
     if (err < 0) {
-        delete client;
+        this->coord->Destory(client);
         return err;
     }
     this->client = client;
