@@ -10,6 +10,7 @@ extern "C" {
 #include <tolua++/tolua++.h>
 }
 #include <map>
+#include <set>
 #include <string>
 #include "coord/script/reflect.h"
 namespace coord {//tolua_export
@@ -43,6 +44,8 @@ public:
     bool GetBool(const char *path);
     /// 获取全局变量, 放在栈顶
     int GetFunction(const char *path);
+    int GetFunction(lua_State* L, const char *path);
+    int GetValue(const char *path);
     /// 获取全局变量, 放在栈顶
     int GetTable(const char *path);
     /// 获取全局变量
@@ -138,7 +141,7 @@ public:
 public:
     void regLib(int (*p)(lua_State* L));
     const char* getTableAndKey(const char *path);
-    int getValue(const char *path);
+    int getValue(lua_State* L, const char *path);
     int encode(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& field);
     int tostring(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);
     int tojson(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);
@@ -149,6 +152,8 @@ public:
     void onDestory();
     void gc();
     int onReload();
+    lua_State* getThread(); 
+    void freeThread(lua_State* L); 
 public:
     char            Path[PACKAGE_MAX+1];  //tolua_export
     char            Main[PACKAGE_MAX+1];  //tolua_export
@@ -156,6 +161,11 @@ public:
     Coord*          coord;
     std::string     lastError;
     void*           jsonParser;
+
+private:
+    // 协程
+    std::vector<lua_State*> threadArr;
+    std::set<lua_State*>    runningThreadSet;
 }; //tolua_export
 
 Script* newScript(Coord *coord);

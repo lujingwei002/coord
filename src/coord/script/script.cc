@@ -177,7 +177,7 @@ int Script::Set(const char* path, int index) {
 
 lua_Number Script::GetNumber(const char *name) {
     lua_State* L = this->L;
-    if(this->getValue(name)) {
+    if(this->getValue(L, name)) {
         return 0;
     }
     if(lua_type(L, -1) != LUA_TNUMBER) {
@@ -196,7 +196,7 @@ void Script::regLib(int (*p)(lua_State* L)) {
 
 const char* Script::GetString(const char *name) {
     lua_State* L = this->L;
-    if(this->getValue(name)) {
+    if(this->getValue(L, name)) {
         return nullptr;
     }
     if(lua_type(L, -1) != LUA_TSTRING) {
@@ -210,7 +210,7 @@ const char* Script::GetString(const char *name) {
 
 bool Script::GetBool(const char *name) {
     lua_State* L = this->L;
-    if(this->getValue(name)) {
+    if(this->getValue(L, name)) {
         return false;
     }
     if(lua_type(L, -1) != LUA_TBOOLEAN) {
@@ -224,7 +224,7 @@ bool Script::GetBool(const char *name) {
 
 bool Script::IsBool(const char* path) {
     lua_State* L = this->L;
-    if(this->getValue(path)) {
+    if(this->getValue(L, path)) {
         return false;
     }
     bool result = lua_type(L, -1) == LUA_TBOOLEAN;
@@ -234,7 +234,7 @@ bool Script::IsBool(const char* path) {
 
 bool Script::IsString(const char* path) {
     lua_State* L = this->L;
-    if(this->getValue(path)) {
+    if(this->getValue(L, path)) {
         return false;
     }
     bool result = lua_type(L, -1) == LUA_TSTRING;
@@ -244,7 +244,7 @@ bool Script::IsString(const char* path) {
 
 bool Script::IsNumber(const char* path) {
     lua_State* L = this->L;
-    if(this->getValue(path)) {
+    if(this->getValue(L, path)) {
         return false;
     }
     bool result = lua_type(L, -1) == LUA_TNUMBER;
@@ -254,7 +254,7 @@ bool Script::IsNumber(const char* path) {
 
 bool Script::IsTable(const char* path) {
     lua_State* L = this->L;
-    if(this->getValue(path)) {
+    if(this->getValue(L, path)) {
         return false;
     }
     bool result = lua_type(L, -1) == LUA_TTABLE;
@@ -264,7 +264,7 @@ bool Script::IsTable(const char* path) {
 
 bool Script::IsFunction(const char* path) {
     lua_State* L = this->L;
-    if(this->getValue(path)) {
+    if(this->getValue(L, path)) {
         return false;
     }
     bool result = lua_type(L, -1) == LUA_TFUNCTION;
@@ -274,7 +274,7 @@ bool Script::IsFunction(const char* path) {
 
 bool Script::IsNil(const char* path) {
     lua_State* L = this->L;
-    if(this->getValue(path)) {
+    if(this->getValue(L, path)) {
         return true;
     }
     bool result = lua_type(L, -1) == LUA_TNIL;
@@ -284,7 +284,7 @@ bool Script::IsNil(const char* path) {
 
 Reflect Script::Get(const char *fieldName) {
     lua_State* L = this->L;
-    if(this->getValue(fieldName)) {
+    if(this->getValue(L, fieldName)) {
         return Reflect(this->coord);
     }
     int type = lua_type(L, -1);
@@ -332,8 +332,7 @@ const char* Script::getTableAndKey(const char *path) {
     return varBegin;
 }
 
-int Script::getValue(const char *fieldName) {;
-    lua_State* L = this->L;
+int Script::getValue(lua_State* L, const char *fieldName) {;
     char *begin = (char *)fieldName;
     char *varBegin = begin;
     char *it = begin;
@@ -386,7 +385,23 @@ int Script::getValue(const char *fieldName) {;
 
 int Script::GetFunction(const char *path) {
     lua_State* L = this->L;
-    if(this->getValue(path)) {
+    if(this->getValue(L, path)) {
+        return -1;
+    }
+    if(lua_type(L, -1) != LUA_TFUNCTION) {
+        lua_pop(L, 1);
+        return -1;
+    }
+    return 0;
+}
+
+int Script::GetValue(const char *path) {
+    lua_State* L = this->L;
+    return this->getValue(L, path);
+}
+
+int Script::GetFunction(lua_State* L, const char *path) {
+    if(this->getValue(L, path)) {
         return -1;
     }
     if(lua_type(L, -1) != LUA_TFUNCTION) {
@@ -398,7 +413,7 @@ int Script::GetFunction(const char *path) {
 
 int Script::GetTable(const char *path) {
     lua_State* L = this->L;
-    if(this->getValue(path)) {
+    if(this->getValue(L, path)) {
         return -1;
     }
     if(lua_type(L, -1) != LUA_TTABLE) {
@@ -419,17 +434,35 @@ int Script::TraceStack()  {
 }
 
 int Script::onAwake() {
-    if(this->GetFunction("_onAwake_")){
+    printf("aaaaaaaaa1\n");
+    lua_State* L = this->getThread();
+    if (nullptr == L) {
+        return ErrorOutOfMemory;
+    }
+    printf("aaaaaaaaa2\n");
+    int err = this->GetFunction(L, "_onAwake_");
+    if(err){
         this->coord->CoreLogError("[script] onAwake not found");
         lua_pop(L, lua_gettop(L));
-        return 1;
+        return ErrorScript;
     }
-    if (lua_pcall(L, 0, 0, 0) != 0){
-        this->coord->CoreLogError("[script] onAwake failed, error='%s'", lua_tostring(L, -1));
+    printf("aaaaaaaaa2\n");
+    err = lua_resume(L, 0);
+    if (err == LUA_YIELD) {
+        printf("yield %d\n", lua_gettop(L));
+        lua_pop(L, lua_gettop(L));
+        return 0;
+    } else if (err) {
+        this->coord->CoreLogError("[script] onAwake fail, error='%s'", lua_tostring(L, -1));
         this->TraceStack();
-        return 1;
+        lua_pop(L, lua_gettop(L));
+        return ErrorScript;
+    } else {
+        printf("finished %d\n", lua_gettop(L));
+        lua_pop(L, lua_gettop(L));
+        this->freeThread(L);
+        return 0;
     }
-    lua_pop(L, lua_gettop(L));
     return 0;
 }
 
@@ -522,7 +555,7 @@ int Script::registerLibs() {
 }
 
 const char* Script::ToString(const char* path) {
-    if (this->getValue(path)) {
+    if (this->getValue(L, path)) {
         return nullptr;
     }
     const char* result = this->ToString(-1);
@@ -531,7 +564,7 @@ const char* Script::ToString(const char* path) {
 }
 
 const char* Script::ToString(int index, const char* path) {
-    if (this->getValue(path)) {
+    if (this->getValue(L, path)) {
         return nullptr;
     }
     const char* result = this->ToString(index);
@@ -570,7 +603,7 @@ int Script::ToString(int index, byte_slice& buffer) {
 }
 
 const char* Script::ToShortString(const char* path) {
-    if (this->getValue(path)) {
+    if (this->getValue(L, path)) {
         return nullptr;
     }
     const char* result = this->ToShortString(-1);
@@ -579,7 +612,7 @@ const char* Script::ToShortString(const char* path) {
 }
 
 const char* Script::ToShortString(int index, const char* path) {
-    if (this->getValue(path)) {
+    if (this->getValue(L, path)) {
         return nullptr;
     }
     const char* result = this->ToShortString(index);
@@ -693,7 +726,7 @@ int Script::tostring(byte_slice& buffer, lua_State* L, int index, std::map<const
 }
 
 int Script::Encode(const char* path, byte_slice& buffer) {
-    if (this->getValue(path)) {
+    if (this->getValue(L, path)) {
         return -1;
     }
     int err = this->Encode(-1, buffer);
@@ -1058,7 +1091,7 @@ const char* Script::GetLastError() {
 
 const char* Script::ToJson(const char* path) {
     static thread_local byte_slice buffer;buffer.Resize(0);
-    if (this->getValue(path)) {
+    if (this->getValue(L, path)) {
         return nullptr;
     }
     size_t len;
@@ -1181,6 +1214,33 @@ int Script::FromJson(const char* path, const char* str) {
     err = this->Set(path, -1);
     lua_pop(L, 1);
     return err;
+}
+
+
+lua_State* Script::getThread() {
+    if (this->threadArr.size() > 0) {
+        lua_State* L = this->threadArr.back();
+        this->threadArr.pop_back();
+        return L;
+    } else {
+        lua_State* L = lua_newthread(this->L);
+        if (nullptr == L) {
+            this->coord->CoreLogError("[Script] getThread failed, error='lua_newthread'");
+            return nullptr;
+        }
+        this->runningThreadSet.insert(L);
+        return L;
+    }
+}
+
+void Script::freeThread(lua_State* L) {
+    auto it = this->runningThreadSet.find(L);
+    if (it == this->runningThreadSet.end()) {
+        this->coord->CoreLogError("[Script] freeThread failed, error='thread not found'");
+        return;
+    }
+    this->runningThreadSet.erase(it);
+    this->threadArr.push_back(L);
 }
 
 }

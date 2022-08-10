@@ -66,6 +66,7 @@ namespace coord {
         class RedisPromise {
             int Then(lua_State* L);
             int Else(lua_State* L);
+            int Await(lua_State* L);
         };
     }
 }

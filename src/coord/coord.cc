@@ -459,7 +459,6 @@ namespace coord {
     }
 
     Coord::~Coord() {
-        printf("~Coord\n");
         if(this->sceneMgr) {
             delete this->sceneMgr;
             this->sceneMgr = nullptr;

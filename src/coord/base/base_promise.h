@@ -32,6 +32,7 @@ public:
     virtual ~base_promise();
 public:
     virtual const char* TypeName() const { return nullptr;}
+    int Await(lua_State* L);
     int Then(lua_State* L);
     int Else(lua_State* L);
     base_promise* Then(ResolveFunc func);
@@ -47,6 +48,7 @@ public:
     void resolve(TClient client, TResult result);
 private:
     void recvResult(TClient client, TResult result, int ref);
+    void recvResume(TClient client, TResult result, bool ok);
     int componentThen(lua_State* L);
     int packageThen(lua_State* L);
     int componentElse(lua_State* L);
@@ -57,6 +59,7 @@ protected:
     int                 rejectRef;
     ResolveFunc         resolveFunc;
     RejectFunc          rejectFunc;
+    lua_State*          L;
 public:
     std::string         route;
     uint64_t            reqTime; 
@@ -70,6 +73,7 @@ base_promise<TClient, TResult>::base_promise(Coord* coord) {
     this->reqTime = uv_hrtime();
     this->resolveRef = 0;
     this->rejectRef = 0;
+    this->L = nullptr;
 }
 
 template<typename TClient, typename TResult>
@@ -79,6 +83,9 @@ base_promise<TClient, TResult>::~base_promise() {
     }
     if(this->rejectRef) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->rejectRef);
+    }
+    if(nullptr != this->L) {
+        this->L = nullptr;
     }
 }
 
@@ -261,6 +268,53 @@ void base_promise<TClient, TResult>::recvResult(TClient client, TResult result, 
 }
 
 template<typename TClient, typename TResult>
+void base_promise<TClient, TResult>::recvResume(TClient client, TResult result, bool ok) {
+    lua_State* L = this->L;
+    this->coord->CoreLogDebug("[%s] recvResume, %s", this->TypeName(), ok ? "resolve" : "reject");
+    lua_pushboolean(L, ok and 1 or 0);
+    if (nullptr == result) {
+        lua_pushnil(L);
+    } else {
+        tolua_pushusertype(L, result, result->TypeName());
+    }
+    int err = lua_resume(L, 2);
+    if (err == LUA_YIELD) {
+        printf("promise yield\n");
+        lua_pop(L, lua_gettop(L));
+        return;
+    } else if (err) {
+        this->coord->CoreLogError("[%s] recvResume failed, error=%s", this->TypeName(), lua_tostring(L, -1));
+        const char* error = lua_tostring(L, -1); 
+        lua_pop(L, lua_gettop(L));
+        return;
+    } else {
+        printf("promise finished\n");
+        printf("free thread\n");
+        this->coord->Script->freeThread(this->L);
+        this->L = nullptr;
+        return;
+    }   
+    /*
+    lua_State* L = this->coord->Script->L;
+    lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
+    tolua_pushusertype(L, client, client->TypeName());
+    if (nullptr == result) {
+        lua_pushnil(L);
+    } else {
+        tolua_pushusertype(L, result, result->TypeName());
+    }
+    if (lua_pcall(L, 2, 0, 0) != 0) {
+        this->coord->CoreLogError("[%s] recvResult failed, error=%s", this->TypeName(), lua_tostring(L, -1));
+        const char* error = lua_tostring(L, -1); 
+        lua_pop(L, lua_gettop(L));
+        throw ScriptException(error);
+        return;
+    }
+    lua_pop(L, lua_gettop(L));
+    */
+}
+
+template<typename TClient, typename TResult>
 base_promise<TClient, TResult>* base_promise<TClient, TResult>::Then(ScriptComponent* object, int ref) {
     if(this->resolveRef) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->resolveRef);
@@ -293,7 +347,6 @@ base_promise<TClient, TResult>* base_promise<TClient, TResult>::Then(int ref) {
     this->resolveFunc = std::bind(&base_promise<TClient, TResult>::recvResult, this, std::placeholders::_1, std::placeholders::_2, ref);
     return this;
 }
-
 
 template<typename TClient, typename TResult>
 base_promise<TClient, TResult>* base_promise<TClient, TResult>::Else(int ref) {
@@ -330,6 +383,31 @@ void base_promise<TClient, TResult>::resolve(TClient client, TResult result) {
         this->resolveFunc(client, result);
     } catch(ScriptException& e){
     }
+}
+
+
+template<typename TClient, typename TResult>
+int base_promise<TClient, TResult>::Await(lua_State* L) {
+#ifndef TOLUA_RELEASE
+    tolua_Error tolua_err;
+    if (
+        !tolua_isusertype(L, 1, this->TypeName(), 0, &tolua_err) ||
+        !tolua_isnoobj(L, 2, &tolua_err)
+    )
+        goto tolua_lerror;
+    else 
+#endif
+    {
+        this->L = L;
+        this->resolveFunc = std::bind(&base_promise<TClient, TResult>::recvResume, this, std::placeholders::_1, std::placeholders::_2, true);
+        this->rejectFunc = std::bind(&base_promise<TClient, TResult>::recvResume, this, std::placeholders::_1, std::placeholders::_2, false);
+        return lua_yield(L, 0);
+    }
+#ifndef TOLUA_RELEASE
+    tolua_lerror:
+    tolua_error(L,"#ferror in function 'Else'.",&tolua_err);
+    return 0;
+#endif
 }
 
 }//tolua_export

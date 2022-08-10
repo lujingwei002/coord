@@ -253,6 +253,14 @@ function print(...)
     coorda:Log(...)
 end
 
+function await(promise)
+    if not promise then
+        return false, nil
+    end
+    local ok, result = promise:Await()
+    return ok, result
+end
+
 function _main_()
     --coorda:CoreLogDebug(coorda.Script.Path)
     --环境初始化
@@ -262,6 +270,7 @@ function _main_()
 end
 
 function _onAwake_() 
+    print("ffffffffffff")
     --导入启动包
     local package = import(coorda.Script.Main, 'main')
     if not package then

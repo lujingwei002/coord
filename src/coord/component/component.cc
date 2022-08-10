@@ -74,7 +74,7 @@ bool Component::getValue(const char *fieldName){
     if (!this->coord){
         return 0;
     }
-    return this->coord->Script->getValue(fieldName);
+    return this->coord->Script->GetValue(fieldName);
 }
 
 int Component::TraceStack(){
