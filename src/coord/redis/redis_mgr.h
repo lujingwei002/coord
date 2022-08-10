@@ -29,7 +29,6 @@ private:
 private:
     // 释放redis client
     void free(Client* conn);
-
     // 释放redis client
     void free(AsyncClient* conn);
 private:
@@ -45,10 +44,12 @@ private:
 public:
     /// 创建redis client
     Client* NewClient();
-    /// 根据配置创建redis client
-    Client* GetClient(const char* name);
     /// 创建async redis client
     AsyncClient* NewAsyncClient();
+
+    /// 根据配置创建redis client
+    Client* GetClient(const char* name);
+
     /// 根据配置创建async redis client
     AsyncClient* GetAsyncClient(const char* name);
 };//tolua_export

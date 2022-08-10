@@ -3,7 +3,7 @@
 #include "coord/login/login_cluster.h"
 #include "coord/http/init.h"
 #include "coord/redis/redis_promise.h"
-#include "coord/redis/redis_reply.h"
+#include "coord/redis/redis_result.h"
 #include "coord/json/json_mgr.h"
 #include "coord/http/http_router.h"
 #include "coord/coord.h"

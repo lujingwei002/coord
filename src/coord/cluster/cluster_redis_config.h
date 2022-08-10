@@ -12,7 +12,7 @@ class Coord;
 namespace redis {
 class AsyncClient;
 class Client;
-class Reply;
+class RedisResult;
 }
 
 ///

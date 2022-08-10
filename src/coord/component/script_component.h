@@ -43,7 +43,7 @@ class Notify;
 
 namespace redis {
 class AsyncClient;
-class Reply;
+class RedisResult;
 }
 
 namespace cache {
@@ -112,7 +112,7 @@ public:
     // for worker end
     //
     // for redis begin
-    void recvRedisReply(redis::AsyncClient* client, const redis::Reply* reply, const char* script, int ref);
+    void recvRedisReply(redis::AsyncClient* client, const redis::RedisResult* reply, const char* script, int ref);
     // for redis end
 
     // for redis begin

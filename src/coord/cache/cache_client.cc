@@ -1,7 +1,7 @@
 #include "coord/cache/cache_client.h"
 #include "coord/cache/cache_reader.h"
 #include "coord/redis/redis_client.h"
-#include "coord/redis/redis_reply.h"
+#include "coord/redis/redis_result.h"
 #include "coord/coord.h"
 #include "coord/builtin/exception.h"
 namespace coord {

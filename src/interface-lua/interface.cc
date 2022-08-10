@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Wed Aug 10 11:55:27 2022.
+** Generated automatically by tolua++-1.0.92 on Wed Aug 10 12:44:07 2022.
 */
 
 #ifndef __cplusplus
@@ -74,7 +74,7 @@ TOLUA_API int  tolua_coord_open (lua_State* tolua_S);
 #include "coord/redis/redis_async_client.h"
 #include "coord/redis/redis_client.h"
 #include "coord/redis/redis_promise.h"
-#include "coord/redis/redis_reply.h"
+#include "coord/redis/redis_result.h"
 #include "coord/cache/cache.h"
 #include "coord/cache/cache_config.h"
 #include "coord/cache/cache_client.h"
@@ -134,16 +134,16 @@ static int tolua_collect_coord__protobuf__Array (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_coord__redis__Reply (lua_State* tolua_S)
+static int tolua_collect_coord__protobuf__Reflect (lua_State* tolua_S)
 {
- coord::redis::Reply* self = (coord::redis::Reply*) tolua_tousertype(tolua_S,1,0);
+ coord::protobuf::Reflect* self = (coord::protobuf::Reflect*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
 
-static int tolua_collect_coord__protobuf__Reflect (lua_State* tolua_S)
+static int tolua_collect_coord__redis__RedisResult (lua_State* tolua_S)
 {
- coord::protobuf::Reflect* self = (coord::protobuf::Reflect*) tolua_tousertype(tolua_S,1,0);
+ coord::redis::RedisResult* self = (coord::redis::RedisResult*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -198,7 +198,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"base_worker_promise");
  tolua_usertype(tolua_S,"coord::worker::Notify");
  tolua_usertype(tolua_S,"coord::worker::Result");
- tolua_usertype(tolua_S,"coord::cluster::Cluster");
+ tolua_usertype(tolua_S,"coord::cache::AsyncClient");
  tolua_usertype(tolua_S,"coord::internal_response");
  tolua_usertype(tolua_S,"coord::Coord");
  tolua_usertype(tolua_S,"coord::worker::WorkerRouter");
@@ -220,11 +220,11 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::net::TcpClient");
  tolua_usertype(tolua_S,"coord::cluster::ClusterConfig");
  tolua_usertype(tolua_S,"coord::http::HttpRequest");
- tolua_usertype(tolua_S,"coord::redis::Reply");
+ tolua_usertype(tolua_S,"coord::cluster::Cluster");
  tolua_usertype(tolua_S,"coord::worker::Response");
- tolua_usertype(tolua_S,"coord::cache::AsyncClient");
- tolua_usertype(tolua_S,"coord::websocket::IWebSocketHandler");
  tolua_usertype(tolua_S,"coord::cache::Client");
+ tolua_usertype(tolua_S,"coord::websocket::IWebSocketHandler");
+ tolua_usertype(tolua_S,"coord::redis::RedisResult");
  tolua_usertype(tolua_S,"coord::managed::Managed");
  tolua_usertype(tolua_S,"coord::redis::Client");
  tolua_usertype(tolua_S,"coord::redis::AsyncClient");
@@ -14370,14 +14370,14 @@ static int tolua_coord_coord_redis_Client_SELECT00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SELECT'",NULL);
 #endif
   {
-   coord::redis::Reply tolua_ret = (coord::redis::Reply)  self->SELECT(db);
+   coord::redis::RedisResult tolua_ret = (coord::redis::RedisResult)  self->SELECT(db);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::redis::Reply(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = new coord::redis::RedisResult(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::Reply));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::RedisResult));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #endif
    }
   }
@@ -14412,14 +14412,14 @@ static int tolua_coord_coord_redis_Client_AUTH00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'AUTH'",NULL);
 #endif
   {
-   coord::redis::Reply tolua_ret = (coord::redis::Reply)  self->AUTH(password);
+   coord::redis::RedisResult tolua_ret = (coord::redis::RedisResult)  self->AUTH(password);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::redis::Reply(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = new coord::redis::RedisResult(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::Reply));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::RedisResult));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #endif
    }
   }
@@ -14486,14 +14486,14 @@ static int tolua_coord_coord_redis_Client_DEL00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'DEL'",NULL);
 #endif
   {
-   coord::redis::Reply tolua_ret = (coord::redis::Reply)  self->DEL(key);
+   coord::redis::RedisResult tolua_ret = (coord::redis::RedisResult)  self->DEL(key);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::redis::Reply(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = new coord::redis::RedisResult(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::Reply));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::RedisResult));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #endif
    }
   }
@@ -14528,14 +14528,14 @@ static int tolua_coord_coord_redis_Client_GET00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GET'",NULL);
 #endif
   {
-   coord::redis::Reply tolua_ret = (coord::redis::Reply)  self->GET(key);
+   coord::redis::RedisResult tolua_ret = (coord::redis::RedisResult)  self->GET(key);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::redis::Reply(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = new coord::redis::RedisResult(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::Reply));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::RedisResult));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #endif
    }
   }
@@ -14572,14 +14572,14 @@ static int tolua_coord_coord_redis_Client_SET00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SET'",NULL);
 #endif
   {
-   coord::redis::Reply tolua_ret = (coord::redis::Reply)  self->SET(key,value);
+   coord::redis::RedisResult tolua_ret = (coord::redis::RedisResult)  self->SET(key,value);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::redis::Reply(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = new coord::redis::RedisResult(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::Reply));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::RedisResult));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #endif
    }
   }
@@ -14650,14 +14650,14 @@ static int tolua_coord_coord_redis_Client_HGETALL00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'HGETALL'",NULL);
 #endif
   {
-   coord::redis::Reply tolua_ret = (coord::redis::Reply)  self->HGETALL(key);
+   coord::redis::RedisResult tolua_ret = (coord::redis::RedisResult)  self->HGETALL(key);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::redis::Reply(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = new coord::redis::RedisResult(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::Reply));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::RedisResult));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #endif
    }
   }
@@ -14732,14 +14732,14 @@ static int tolua_coord_coord_redis_Client_HMSET00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'HMSET'",NULL);
 #endif
   {
-   coord::redis::Reply tolua_ret = (coord::redis::Reply)  self->HMSET(key,field,value);
+   coord::redis::RedisResult tolua_ret = (coord::redis::RedisResult)  self->HMSET(key,field,value);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::redis::Reply(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = new coord::redis::RedisResult(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::Reply));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::RedisResult));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #endif
    }
   }
@@ -14776,14 +14776,14 @@ static int tolua_coord_coord_redis_Client_HMSET01(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'HMSET'",NULL);
 #endif
   {
-   coord::redis::Reply tolua_ret = (coord::redis::Reply)  self->HMSET(key,field,value);
+   coord::redis::RedisResult tolua_ret = (coord::redis::RedisResult)  self->HMSET(key,field,value);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::redis::Reply(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = new coord::redis::RedisResult(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::Reply));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::Reply");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::redis::RedisResult));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #endif
    }
   }
@@ -14907,21 +14907,50 @@ return self->Await(L);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: Error of class  coord::redis::Reply */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Reply_Error00
-static int tolua_coord_coord_redis_Reply_Error00(lua_State* tolua_S)
+/* method: delete of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_delete00
+static int tolua_coord_coord_redis_RedisResult_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::redis::RedisResult",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  coord::redis::RedisResult* self = (coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: Error of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_Error00
+static int tolua_coord_coord_redis_RedisResult_Error00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const coord::redis::RedisResult",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const coord::redis::RedisResult* self = (const coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Error'",NULL);
 #endif
@@ -14939,21 +14968,21 @@ static int tolua_coord_coord_redis_Reply_Error00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: Array of class  coord::redis::Reply */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Reply_Array00
-static int tolua_coord_coord_redis_Reply_Array00(lua_State* tolua_S)
+/* method: Array of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_Array00
+static int tolua_coord_coord_redis_RedisResult_Array00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::RedisResult",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::RedisResult* self = (const coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Array'",NULL);
 #endif
@@ -14971,21 +15000,21 @@ static int tolua_coord_coord_redis_Reply_Array00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: ArrayCount of class  coord::redis::Reply */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Reply_ArrayCount00
-static int tolua_coord_coord_redis_Reply_ArrayCount00(lua_State* tolua_S)
+/* method: ArrayCount of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_ArrayCount00
+static int tolua_coord_coord_redis_RedisResult_ArrayCount00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::RedisResult",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::RedisResult* self = (const coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ArrayCount'",NULL);
 #endif
@@ -15003,21 +15032,21 @@ static int tolua_coord_coord_redis_Reply_ArrayCount00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: Empty of class  coord::redis::Reply */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Reply_Empty00
-static int tolua_coord_coord_redis_Reply_Empty00(lua_State* tolua_S)
+/* method: Empty of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_Empty00
+static int tolua_coord_coord_redis_RedisResult_Empty00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::RedisResult",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::RedisResult* self = (const coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Empty'",NULL);
 #endif
@@ -15035,20 +15064,20 @@ static int tolua_coord_coord_redis_Reply_Empty00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: Empty of class  coord::redis::Reply */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Reply_Empty01
-static int tolua_coord_coord_redis_Reply_Empty01(lua_State* tolua_S)
+/* method: Empty of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_Empty01
+static int tolua_coord_coord_redis_RedisResult_Empty01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::RedisResult",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::RedisResult* self = (const coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
   size_t index = ((size_t)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Empty'",NULL);
@@ -15060,25 +15089,25 @@ static int tolua_coord_coord_redis_Reply_Empty01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua_coord_coord_redis_Reply_Empty00(tolua_S);
+ return tolua_coord_coord_redis_RedisResult_Empty00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: String of class  coord::redis::Reply */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Reply_String00
-static int tolua_coord_coord_redis_Reply_String00(lua_State* tolua_S)
+/* method: String of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_String00
+static int tolua_coord_coord_redis_RedisResult_String00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::RedisResult",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::RedisResult* self = (const coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'String'",NULL);
 #endif
@@ -15096,21 +15125,21 @@ static int tolua_coord_coord_redis_Reply_String00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: Integer of class  coord::redis::Reply */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Reply_Integer00
-static int tolua_coord_coord_redis_Reply_Integer00(lua_State* tolua_S)
+/* method: Integer of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_Integer00
+static int tolua_coord_coord_redis_RedisResult_Integer00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::RedisResult",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::RedisResult* self = (const coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Integer'",NULL);
 #endif
@@ -15128,20 +15157,20 @@ static int tolua_coord_coord_redis_Reply_Integer00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: Integer of class  coord::redis::Reply */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Reply_Integer01
-static int tolua_coord_coord_redis_Reply_Integer01(lua_State* tolua_S)
+/* method: Integer of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_Integer01
+static int tolua_coord_coord_redis_RedisResult_Integer01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::RedisResult",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::RedisResult* self = (const coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
   size_t index = ((size_t)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Integer'",NULL);
@@ -15153,24 +15182,24 @@ static int tolua_coord_coord_redis_Reply_Integer01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua_coord_coord_redis_Reply_Integer00(tolua_S);
+ return tolua_coord_coord_redis_RedisResult_Integer00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: String of class  coord::redis::Reply */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Reply_String01
-static int tolua_coord_coord_redis_Reply_String01(lua_State* tolua_S)
+/* method: String of class  coord::redis::RedisResult */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_RedisResult_String01
+static int tolua_coord_coord_redis_RedisResult_String01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"const coord::redis::Reply",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"const coord::redis::RedisResult",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  const coord::redis::Reply* self = (const coord::redis::Reply*)  tolua_tousertype(tolua_S,1,0);
+  const coord::redis::RedisResult* self = (const coord::redis::RedisResult*)  tolua_tousertype(tolua_S,1,0);
   size_t index = ((size_t)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'String'",NULL);
@@ -15182,7 +15211,7 @@ static int tolua_coord_coord_redis_Reply_String01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua_coord_coord_redis_Reply_String00(tolua_S);
+ return tolua_coord_coord_redis_RedisResult_String00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -19481,20 +19510,21 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
    tolua_module(tolua_S,"redis",0);
    tolua_beginmodule(tolua_S,"redis");
     #ifdef __cplusplus
-    tolua_cclass(tolua_S,"Reply","coord::redis::Reply","coord::Destoryable",tolua_collect_coord__redis__Reply);
+    tolua_cclass(tolua_S,"RedisResult","coord::redis::RedisResult","coord::Destoryable",tolua_collect_coord__redis__RedisResult);
     #else
-    tolua_cclass(tolua_S,"Reply","coord::redis::Reply","coord::Destoryable",NULL);
+    tolua_cclass(tolua_S,"RedisResult","coord::redis::RedisResult","coord::Destoryable",NULL);
     #endif
-    tolua_beginmodule(tolua_S,"Reply");
-     tolua_function(tolua_S,"Error",tolua_coord_coord_redis_Reply_Error00);
-     tolua_function(tolua_S,"Array",tolua_coord_coord_redis_Reply_Array00);
-     tolua_function(tolua_S,"ArrayCount",tolua_coord_coord_redis_Reply_ArrayCount00);
-     tolua_function(tolua_S,"Empty",tolua_coord_coord_redis_Reply_Empty00);
-     tolua_function(tolua_S,"Empty",tolua_coord_coord_redis_Reply_Empty01);
-     tolua_function(tolua_S,"String",tolua_coord_coord_redis_Reply_String00);
-     tolua_function(tolua_S,"Integer",tolua_coord_coord_redis_Reply_Integer00);
-     tolua_function(tolua_S,"Integer",tolua_coord_coord_redis_Reply_Integer01);
-     tolua_function(tolua_S,"String",tolua_coord_coord_redis_Reply_String01);
+    tolua_beginmodule(tolua_S,"RedisResult");
+     tolua_function(tolua_S,"delete",tolua_coord_coord_redis_RedisResult_delete00);
+     tolua_function(tolua_S,"Error",tolua_coord_coord_redis_RedisResult_Error00);
+     tolua_function(tolua_S,"Array",tolua_coord_coord_redis_RedisResult_Array00);
+     tolua_function(tolua_S,"ArrayCount",tolua_coord_coord_redis_RedisResult_ArrayCount00);
+     tolua_function(tolua_S,"Empty",tolua_coord_coord_redis_RedisResult_Empty00);
+     tolua_function(tolua_S,"Empty",tolua_coord_coord_redis_RedisResult_Empty01);
+     tolua_function(tolua_S,"String",tolua_coord_coord_redis_RedisResult_String00);
+     tolua_function(tolua_S,"Integer",tolua_coord_coord_redis_RedisResult_Integer00);
+     tolua_function(tolua_S,"Integer",tolua_coord_coord_redis_RedisResult_Integer01);
+     tolua_function(tolua_S,"String",tolua_coord_coord_redis_RedisResult_String01);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

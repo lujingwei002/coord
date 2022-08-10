@@ -1,5 +1,5 @@
 #include "coord/redis/redis_client.h"
-#include "coord/redis/redis_reply.h"
+#include "coord/redis/redis_result.h"
 #include "coord/redis/redis_mgr.h"
 #include "coord/builtin/error.h"
 #include "coord/coord.h"
@@ -58,16 +58,16 @@ int Client::Connect() {
     }
     this->context = c;
     if (this->config.Password.length() > 0) {
-        Reply reply = this->AUTH(this->config.Password.c_str());
-        if(reply.Error()) {
+        RedisResult result = this->AUTH(this->config.Password.c_str());
+        if(result.Error()) {
             this->coord->CoreLogError("[%s] Connect failed, function='AUTH', password='%s', error='%s'", this->TypeName(), this->config.Password.c_str(), ""/* c->errstr */);
             this->Close();
             return ErrorInvalidPassword;
         }
     }
     if (this->config.DB.length() > 0) {
-        Reply reply = this->SELECT(this->config.DB.c_str());
-        if(reply.Error()) {
+        RedisResult result = this->SELECT(this->config.DB.c_str());
+        if(result.Error()) {
             this->coord->CoreLogError("[%s] Connect failed, function='SELECT', db='%s', error='%s'", this->TypeName(), this->config.DB.c_str(), ""/* c->errstr */);
             this->Close();
             return ErrorInvalidDb;
@@ -76,28 +76,28 @@ int Client::Connect() {
     return 0;
 }
 
-Reply Client::SELECT(const char* db) {
+RedisResult Client::SELECT(const char* db) {
     if (!this->context) {
         return nullptr;
     }
-    redisReply * reply = (redisReply *)redisCommand(this->context, "SELECT %s", db);
+    redisReply* reply = (redisReply *)redisCommand(this->context, "SELECT %s", db);
     if(reply == nullptr){
         this->coord->CoreLogError("[%s] SELECT failed, error='%s'", this->TypeName(), this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
-Reply Client::AUTH(const char* password) {
+RedisResult Client::AUTH(const char* password) {
     if (!this->context) {
         return nullptr;
     }
-    redisReply * reply = (redisReply *)redisCommand(this->context, "AUTH %s", password);
+    redisReply* reply = (redisReply *)redisCommand(this->context, "AUTH %s", password);
     if(reply == nullptr){
         this->coord->CoreLogError("[%s] AUTH failed, error='%s'", this->TypeName(), this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
 int Client::EXPIRE(const char* key, uint64_t expire) {
@@ -116,7 +116,7 @@ int Client::EXPIRE(const char* key, uint64_t expire) {
     return 0;
 }
 
-Reply Client::GET(const char* key) {
+RedisResult Client::GET(const char* key) {
     if (!this->context) {
         return nullptr;
     }
@@ -125,10 +125,10 @@ Reply Client::GET(const char* key) {
         this->coord->CoreLogError("[%s] Get failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
-Reply Client::HGETALL(const char* key) {
+RedisResult Client::HGETALL(const char* key) {
     if (!this->context) {
         return nullptr;
     }
@@ -137,7 +137,7 @@ Reply Client::HGETALL(const char* key) {
         this->coord->CoreLogError("[%s] HGETALL failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
 int Client::HDEL(const char* key, const char* field) {
@@ -160,7 +160,7 @@ int Client::HDEL(const char* key, const char* field) {
     return count;
 }
 
-Reply Client::HMSET(const char* key, const char* field, const char* value) {
+RedisResult Client::HMSET(const char* key, const char* field, const char* value) {
     if (!this->context) {
         return nullptr;
     }
@@ -169,10 +169,10 @@ Reply Client::HMSET(const char* key, const char* field, const char* value) {
         this->coord->CoreLogError("[%s] HMSET failed, key='%s', error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
-Reply Client::HMSET(const char* key, const char* field, uint64_t value) {
+RedisResult Client::HMSET(const char* key, const char* field, uint64_t value) {
     if (!this->context) {
         return nullptr;
     }
@@ -181,7 +181,7 @@ Reply Client::HMSET(const char* key, const char* field, uint64_t value) {
     return this->HMSET(key, field, buffer);
 }
 
-Reply Client::SET(const char* key, const char* value) {
+RedisResult Client::SET(const char* key, const char* value) {
     if (!this->context) {
         return nullptr;
     }
@@ -190,10 +190,10 @@ Reply Client::SET(const char* key, const char* value) {
         this->coord->CoreLogError("[%s] SET failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
-Reply Client::SET(const char* key, const char* data, size_t len) {
+RedisResult Client::SET(const char* key, const char* data, size_t len) {
     if (!this->context) {
         return nullptr;
     }
@@ -204,10 +204,10 @@ Reply Client::SET(const char* key, const char* data, size_t len) {
         this->coord->CoreLogError("[%s] SET failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
-Reply Client::SETEX(const char* key, const char* data, size_t len, size_t expire) {
+RedisResult Client::SETEX(const char* key, const char* data, size_t len, size_t expire) {
     if (!this->context) {
         return nullptr;
     }
@@ -220,17 +220,17 @@ Reply Client::SETEX(const char* key, const char* data, size_t len, size_t expire
         this->coord->CoreLogError("[%s] SETEX failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
-Reply Client::SETEX(const char* key, const char* data, size_t expire) {
+RedisResult Client::SETEX(const char* key, const char* data, size_t expire) {
     if (!this->context) {
         return nullptr;
     }
     return this->SETEX(key, data, strlen(data), expire);
 }
 
-Reply Client::DEL(const char* key) {
+RedisResult Client::DEL(const char* key) {
     if (!this->context) {
         return nullptr;
     }
@@ -239,7 +239,7 @@ Reply Client::DEL(const char* key) {
         this->coord->CoreLogError("[%s] SETEX failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
 uint64_t Client::TIME() {
@@ -266,7 +266,7 @@ uint64_t Client::TIME() {
     return second * 1000000 + microsecond;
 }
 
-Reply Client::SADD(const char* key, const char* value) {
+RedisResult Client::SADD(const char* key, const char* value) {
     if (!this->context) {
         return nullptr;
     }
@@ -275,10 +275,10 @@ Reply Client::SADD(const char* key, const char* value) {
         this->coord->CoreLogError("[%s] SADD failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
-Reply Client::SREM(const char* key, const char* value) {
+RedisResult Client::SREM(const char* key, const char* value) {
     if (!this->context) {
         return nullptr;
     }
@@ -287,7 +287,7 @@ Reply Client::SREM(const char* key, const char* value) {
         this->coord->CoreLogError("[%s] SREM failed, key=%s, error='%s'", this->TypeName(), key, this->context->errstr);
         return nullptr;
     }
-    return Reply(this->coord, reply);
+    return RedisResult(this->coord, reply);
 }
 
 }

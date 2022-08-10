@@ -724,13 +724,13 @@ void ScriptComponent::recvWorkerResult(worker::Result* result, base_request* req
     lua_pop(L, lua_gettop(L));
 }*/
 
-void ScriptComponent::recvRedisReply(redis::AsyncClient* const client, const redis::Reply* reply, const char* script, int ref) {
+void ScriptComponent::recvRedisReply(redis::AsyncClient* const client, const redis::RedisResult* reply, const char* script, int ref) {
     this->coord->CoreLogDebug("[ScriptComponent] recvRedisReply");
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
     tolua_pushusertype(L, this, "coord::ScriptComponent");
     tolua_pushusertype(L, client, "coord::redis::AsyncClient");
-    tolua_pushusertype(L, &reply, "coord::redis::Reply");
+    tolua_pushusertype(L, &reply, "coord::redis::RedisResult");
     if (lua_pcall(L, 3, 0, 0) != 0) {
         this->coord->CoreLogError("[ScriptComponent] recvRedisReply %s %s failed, error=%s", this->scriptName, script, lua_tostring(L, -1));
         const char* error = lua_tostring(L, -1); 

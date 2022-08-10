@@ -26,7 +26,7 @@ class Frame;
 }
 namespace redis {
 class AsyncClient;
-class Reply;
+class RedisResult;
 }
 
 class Coord;

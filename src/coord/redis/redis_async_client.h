@@ -12,7 +12,7 @@
 namespace coord {
     class Coord;
     namespace redis {
-        class Reply;
+        class RedisResult;
         class RedisPromise;
         class RedisMgr;
     }
@@ -43,24 +43,24 @@ private:
     void recvConnect();
     void recvDisconnectError(const char* error);
     void recvDisconnect();
-    void recvGetCallback(RedisPromise* promise, Reply* reply);
+    void recvGetCallback(RedisPromise* promise, RedisResult* reply);
     void resolveConnect();
     void rejectConnect();
 private:
-    RedisMgr*                           redisMgr;
-    std::string                         name;
-    RedisConfig                         config;
-    Coord*                              coord;
-    redisAsyncContext*                  context;
-    RedisPromise*                       connectPromise;
-    int                                 status;
-    std::map<RedisPromise*, RedisPromise*>        promiseDict;
+    RedisMgr*                                   redisMgr;
+    std::string                                 name;
+    RedisConfig                                 config;
+    Coord*                                      coord;
+    redisAsyncContext*                          context;
+    RedisPromise*                               connectPromise;
+    int                                         status;
+    std::map<RedisPromise*, RedisPromise*>      promiseDict;
 
 
 
 
 public:
-    RedisPromise* Connect();                                                            //tolua_export
+    RedisPromise* Connect();                                                        //tolua_export
     RedisConfig* DefaultConfig();                                                  //tolua_export
     void Close();                                                                  //tolua_export
 

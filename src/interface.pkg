@@ -60,7 +60,7 @@ $cfile "coord/redis/redis_config.h"
 $cfile "coord/redis/redis_async_client.h"
 $cfile "coord/redis/redis_client.h"
 $cfile "coord/redis/redis_promise.h"
-$cfile "coord/redis/redis_reply.h"
+$cfile "coord/redis/redis_result.h"
 namespace coord {
     namespace redis {
         class RedisPromise {

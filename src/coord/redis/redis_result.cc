@@ -1,4 +1,4 @@
-#include "coord/redis/redis_reply.h"
+#include "coord/redis/redis_result.h"
 #include "coord/coord.h"
 #include "coord/builtin/ref_manager.h"
 #include <cassert>
@@ -6,14 +6,14 @@
 namespace coord {
 namespace redis {
 
-CC_IMPLEMENT(Reply, "coord::redis::Reply")
+CC_IMPLEMENT(RedisResult, "coord::redis::RedisResult")
 
-Reply::Reply(std::nullptr_t) {
+RedisResult::RedisResult(std::nullptr_t) {
     this->coord = coorda;
     this->reply = nullptr;
 }
 
-Reply::Reply(Coord *coord, redisReply* reply)  {
+RedisResult::RedisResult(Coord *coord, redisReply* reply)  {
     this->coord = coord;
     this->reply = reply;
     if(this->reply) {
@@ -21,7 +21,7 @@ Reply::Reply(Coord *coord, redisReply* reply)  {
     }
 }
 
-Reply::Reply(const Reply& other) {
+RedisResult::RedisResult(const RedisResult& other) {
     this->coord = other.coord;
     this->reply = other.reply;
     if(this->reply) {
@@ -29,7 +29,7 @@ Reply::Reply(const Reply& other) {
     }
 }
 
-Reply::Reply(const Reply* other) {
+RedisResult::RedisResult(const RedisResult* other) {
     if (nullptr == other) {
         this->coord = nullptr;
         this->reply = nullptr;
@@ -42,7 +42,7 @@ Reply::Reply(const Reply* other) {
     }
 }
 
-Reply& Reply::operator=(const Reply& other) {
+RedisResult& RedisResult::operator=(const RedisResult& other) {
     if(this->reply) {
         if (refManager.release(this->reply) == 0) {
             freeReplyObject(this->reply);
@@ -57,15 +57,15 @@ Reply& Reply::operator=(const Reply& other) {
     return *this;
 }
 
-bool Reply::operator== (std::nullptr_t v) const  {
+bool RedisResult::operator== (std::nullptr_t v) const  {
     return this->reply == nullptr;
 }
 
-bool Reply::operator!= (std::nullptr_t v) const  {
+bool RedisResult::operator!= (std::nullptr_t v) const  {
     return this->reply != nullptr;
 }
 
-Reply::~Reply() {
+RedisResult::~RedisResult() {
     if(this->reply) {
         if (refManager.release(this->reply) == 0) {
             printf("freeReplyObject\n");
@@ -75,7 +75,7 @@ Reply::~Reply() {
     }
 }
 
-bool Reply::Error() const {
+bool RedisResult::Error() const {
     if (this->reply == nullptr){
         return true;
     }
@@ -85,7 +85,7 @@ bool Reply::Error() const {
     return false;
 }
 
-bool Reply::Empty() const {
+bool RedisResult::Empty() const {
     if (this->reply == nullptr){
         return true;
     }
@@ -95,7 +95,7 @@ bool Reply::Empty() const {
     return false;
 }
 
-bool Reply::Array() const {
+bool RedisResult::Array() const {
     if (this->reply == nullptr){
         return true;
     }
@@ -105,7 +105,7 @@ bool Reply::Array() const {
     return false;
 }
 
-int Reply::ArrayCount() const {
+int RedisResult::ArrayCount() const {
     if (this->reply == nullptr){
         return 0;
     }
@@ -115,7 +115,7 @@ int Reply::ArrayCount() const {
     return this->reply->elements;
 }
 
-const char* Reply::String() const {
+const char* RedisResult::String() const {
     if(this->reply == nullptr){
         return nullptr;
     }
@@ -125,7 +125,7 @@ const char* Reply::String() const {
     return this->reply->str;
 }
 
-long long Reply::Integer() const {
+long long RedisResult::Integer() const {
     if(this->reply == nullptr){
         return 0;
     }
@@ -135,7 +135,7 @@ long long Reply::Integer() const {
     return this->reply->integer;
 }
 
-long long Reply::Integer(size_t index) const {
+long long RedisResult::Integer(size_t index) const {
    if(this->reply == nullptr){
         return 0;
     }
@@ -152,7 +152,7 @@ long long Reply::Integer(size_t index) const {
     return element->integer;
 }
 
-bool Reply::Empty(size_t index) const {
+bool RedisResult::Empty(size_t index) const {
    if(this->reply == nullptr){
         return true;
     }
@@ -169,7 +169,7 @@ bool Reply::Empty(size_t index) const {
     return false;
 }
 
-const char* Reply::String(size_t index) const {
+const char* RedisResult::String(size_t index) const {
     if(this->reply == nullptr){
         return nullptr;
     }

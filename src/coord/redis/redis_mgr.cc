@@ -52,7 +52,7 @@ void RedisMgr::free(Client* client) {
 }
 
 void RedisMgr::free(AsyncClient* client) {
-   auto it = this->asyncClientSet.find(client);
+    auto it = this->asyncClientSet.find(client);
     if (it == this->asyncClientSet.end()) {
         return;
     }
@@ -103,7 +103,7 @@ AsyncClient* RedisMgr::GetAsyncClient(const char* name) {
     int err = this->coord->Config->RedisConfig(name, &config);
     if (err != 0) {
         this->coord->CoreLogError("[coord::RedisMgr] GetAsyncClient.RedisConfig failed, error=%d", err);
-        return NULL;
+        return nullptr;
     }
     AsyncClient* client = this->NewAsyncClient();
     client->name = name;

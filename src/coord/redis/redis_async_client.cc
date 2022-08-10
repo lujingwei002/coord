@@ -1,5 +1,5 @@
 #include "coord/redis/redis_async_client.h"
-#include "coord/redis/redis_reply.h"
+#include "coord/redis/redis_result.h"
 #include "coord/redis/redis_promise.h"
 #include "coord/builtin/slice.h"
 #include "coord/redis/redis_mgr.h"
@@ -20,6 +20,7 @@ enum redis_client_status {
     redis_client_status_closed = 5,
 };
 
+// 连接的回调
 void AsyncClient::connectCallback(const redisAsyncContext* c, int status) {
     AsyncClient* client = (AsyncClient*)c->data;
     if (status != REDIS_OK) {
@@ -29,22 +30,22 @@ void AsyncClient::connectCallback(const redisAsyncContext* c, int status) {
     client->recvConnect();
 }
 
+// 断开连接的回调
 void AsyncClient::disconnectCallback(const redisAsyncContext* c, int status) {
     AsyncClient* client = (AsyncClient*)c->data;
     if (status != REDIS_OK) {
         client->recvDisconnectError(c->errstr);
-        return;
+    } else {
+        client->recvDisconnect();
     }
-    client->recvDisconnect();
 }
 
 void AsyncClient::getCallback(redisAsyncContext *c, void *data, void *privdata) {
     AsyncClient* client = (AsyncClient*)c->data;
     RedisPromise* promise = (RedisPromise*)privdata;
     redisReply* r = (redisReply*)data;
-
-    Reply* reply = new Reply(client->coord, r);
-    client->recvGetCallback(promise, reply);
+    RedisResult* result = new RedisResult(client->coord, r);
+    client->recvGetCallback(promise, result);
 }
 
 AsyncClient::AsyncClient(Coord *coord, RedisMgr* redisMgr) {
@@ -59,17 +60,20 @@ AsyncClient::~AsyncClient() {
         redisAsyncFree(this->context);
         this->context = nullptr;
     }
+    // 连接的回调
     if(this->connectPromise != nullptr) {
         this->connectPromise->reject(this, nullptr);
-        delete this->connectPromise;
+        this->coord->Destory(this->connectPromise);
         this->connectPromise = nullptr;
     }
     auto it = this->promiseDict.begin();
     for(; it != this->promiseDict.end(); ){
-        delete it->second;
+        it->second->reject(this, nullptr);
+        this->coord->Destory(it->second);
         this->promiseDict.erase(it++);
     }
     this->promiseDict.clear();
+    // 从管理器释放自己
     this->redisMgr->free(this);
 }
 
@@ -91,24 +95,29 @@ void AsyncClient::Close() {
 void AsyncClient::recvConnectError(const char* error) {
     this->coord->CoreLogError("[RedisAsyncClient] recvConnectError, error='%s'", error);
     this->status = redis_client_status_error;
-    this->connectPromise->reject(this, nullptr);
-    delete this->connectPromise;
-    this->connectPromise = nullptr;
+    if (this->connectPromise) {
+        this->connectPromise->reject(this, nullptr);
+        this->coord->Destory(this->connectPromise);
+        this->connectPromise = nullptr;
+    }
 }
 
 void AsyncClient::resolveConnect() {
     this->status = redis_client_status_connected;
-    this->connectPromise->resolve(this, nullptr);
-    delete this->connectPromise;
-    this->connectPromise = nullptr;
-    return;
+    if (this->connectPromise) {
+        this->connectPromise->resolve(this, nullptr);
+        this->coord->Destory(this->connectPromise);
+        this->connectPromise = nullptr;
+    }
 }
 
 void AsyncClient::rejectConnect() {
     this->status = redis_client_status_error;
-    this->connectPromise->reject(this, nullptr);
-    delete this->connectPromise;
-    this->connectPromise = nullptr;
+    if (this->connectPromise) {
+        this->connectPromise->reject(this, nullptr);
+        this->coord->Destory(this->connectPromise);
+        this->connectPromise = nullptr;
+    }
     this->Close();
 }
 
@@ -153,15 +162,15 @@ void AsyncClient::recvConnect() {
     });
 }
 
-void AsyncClient::recvGetCallback(RedisPromise* promise, Reply* reply) {
-    if (reply->Error()) {
-        promise->reject(this, reply);
+void AsyncClient::recvGetCallback(RedisPromise* promise, RedisResult* result) {
+    if (result->Error()) {
+        promise->reject(this, result);
     } else {
-        promise->resolve(this, reply);
+        promise->resolve(this, result);
     }
     this->promiseDict.erase(promise);
     this->coord->Destory(promise);
-    this->coord->Destory((Reply* )reply);
+    this->coord->Destory((RedisResult* )result);
 }
 
 void AsyncClient::recvDisconnectError(const char* error) {
@@ -178,7 +187,11 @@ RedisPromise* AsyncClient::Connect() {
     if(this->status != redis_client_status_nil) {
         return nullptr;
     }
-    redisAsyncContext* c = redisAsyncConnect(this->config.Host.c_str(), this->config.Port);
+    redisOptions options = {0};
+    REDIS_OPTIONS_SET_TCP(&options, this->config.Host.c_str(), this->config.Port);
+    // 不自动释放context
+    options.options = options.options | REDIS_OPT_NOAUTOFREE;
+    redisAsyncContext* c = redisAsyncConnectWithOptions(&options);
     if(c == nullptr) {
         this->coord->CoreLogError("[RedisAsyncClient] connect failed, error='out of memory'");
         return nullptr;

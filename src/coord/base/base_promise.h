@@ -271,7 +271,7 @@ template<typename TClient, typename TResult>
 void base_promise<TClient, TResult>::recvResume(TClient client, TResult result, bool ok) {
     lua_State* L = this->L;
     this->coord->CoreLogDebug("[%s] recvResume, %s", this->TypeName(), ok ? "resolve" : "reject");
-    lua_pushboolean(L, ok and 1 or 0);
+    lua_pushboolean(L, ok ? 1 : 0);
     if (nullptr == result) {
         lua_pushnil(L);
     } else {

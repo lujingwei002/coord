@@ -10,6 +10,21 @@ public:
     virtual const char* TypeName() const = 0;
 };
 
+/// 存在于堆中的对象，有内存池，有引用计数
+/// 
+///
+/// 管理堆中的对象，C++中是存在于栈中，离开作用域后释放。LUA中是存在于堆中，LUA的GC负责释放。
+/// 
+///
+///
+///
+///
+///
+///
+///
+///
+
+
 
 class Type {//tolua_export
 public:
@@ -18,23 +33,6 @@ public:
 };//tolua_export
 }//tolua_export
 
-#define TYPE_CLASS(ClassName) \
-    public:\
-    virtual ::coord::Type* GetType();\
-    virtual const char* TypeName() const;\
-    static ::coord::Type* _type;
-
-
-#define TYPE_IMPLEMENT(ClassName, FullName) \
-    ::coord::Type* ClassName::_type = new ::coord::Type(FullName);\
-    ::coord::Type* ClassName::GetType()\
-    {\
-        return ClassName::_type;\
-    }\
-    const char* ClassName::TypeName() const \
-    {\
-        return ClassName::_type->name;\
-    }
 
 #define CC_CLASS(ClassName) \
     public:\

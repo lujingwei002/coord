@@ -7,7 +7,7 @@
 namespace coord {
     class Coord;
     namespace redis {
-        class Reply;
+        class RedisResult;
         class AsyncClient;
     }
 }
@@ -16,7 +16,7 @@ namespace coord {
 namespace coord {//tolua_export
 namespace redis {//tolua_export
 
-typedef base_promise<AsyncClient*, const Reply*> base_redis_promise;
+typedef base_promise<AsyncClient*, RedisResult*> base_redis_promise;
 class RedisPromise: public base_redis_promise, public Destoryable { //tolua_export
 CC_CLASS(RedisPromise);
 friend AsyncClient;

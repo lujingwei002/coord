@@ -8,6 +8,6 @@ namespace coord {
         class Client;
         class AsyncClient;
         class RedisPromise;
-        class Reply;
+        class RedisResult;
     }
 } 

@@ -25,8 +25,8 @@ namespace coord {
 namespace coord {//tolua_export
 namespace redis {//tolua_export
 
-class Reply : public Destoryable {//tolua_export
-CC_CLASS(Reply);
+class RedisResult : public Destoryable {//tolua_export
+CC_CLASS(RedisResult);
 friend Client;
 friend AsyncClient;
     
@@ -34,17 +34,17 @@ private:
     Coord*      coord;
     redisReply* reply;
 private:
-    Reply(Coord *coord, redisReply* reply);
+    RedisResult(Coord *coord, redisReply* reply);
 
 
 
 public:
-    Reply(const Reply* other);
-    Reply(const Reply& other);
-    Reply(std::nullptr_t);
-    virtual ~Reply();
+    RedisResult(const RedisResult* other);
+    RedisResult(const RedisResult& other);
+    RedisResult(std::nullptr_t);
+    virtual ~RedisResult();                 //tolua_export
 public:
-    Reply& operator=(const Reply& other);
+    RedisResult& operator=(const RedisResult& other);
     bool operator== (std::nullptr_t v) const;
 	bool operator!= (std::nullptr_t v) const;
     /// 是否错误
