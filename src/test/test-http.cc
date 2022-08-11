@@ -23,7 +23,7 @@ public:
         ASSERT_EQ(err, 0);
         delete this->coord;
     } 
-    void HandleNull(coord::http::HttpRequest* request) {
+    void HandleNull(const coord::http::HttpRequestPtr& request) {
 
     }
 public:

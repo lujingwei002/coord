@@ -83,7 +83,7 @@ void LogDebug(const char *fmt, ...){
     va_end(args);
 }
 
-void SetPriority(int priority) {
+void SetPriority(log4cc::PriorityLevel priority) {
     if(coorda) {
         coorda->CoreLogSetPriority(priority);
     }

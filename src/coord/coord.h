@@ -152,7 +152,7 @@ friend void coord::log::LogWarn(const char *fmt, ...);
 friend void coord::log::LogInfo(const char *fmt, ...);
 friend void coord::log::LogMsg(const char *fmt, ...);
 friend void coord::log::LogDebug(const char *fmt, ...);
-friend void coord::log::SetPriority(int priority);
+friend void coord::log::SetPriority(log4cc::PriorityLevel priority);
 public:
     Coord();
     ~Coord();
@@ -182,7 +182,7 @@ public:
     void LogInfo(const char* str) const;        //tolua_export
     void LogDebug(const char* str) const;       //tolua_export
     void LogMsg(const char* str) const;         //tolua_export
-    void LogSetPriority(int priority);          //tolua_export
+    void LogSetPriority(log4cc::PriorityLevel priority);          //tolua_export
 
     /// 日志接口
     void CoreLogFatal(const char* fmt, ...);
@@ -203,7 +203,7 @@ public:
     void CoreLogInfo(const char* fmt, va_list args);
     void CoreLogDebug(const char* fmt, va_list args);
     void CoreLogMsg(const char* fmt, va_list args);
-    void CoreLogSetPriority(int priority);                                     
+    void CoreLogSetPriority(log4cc::PriorityLevel priority);                                     
 
     /// ##组件接口
     //ScriptComponent* AddScript(const char* scriptName);//tolua_export

@@ -283,13 +283,13 @@ int HttpRouter::Post(lua_State* L) {
 #endif
 }
 
-void HttpRouter::recvStaticRequest(HttpRequest* request, const char* dir) {
+void HttpRouter::recvStaticRequest(const HttpRequestPtr& request, const char* dir) {
     std::string realPath = coord::path::PathJoin(dir, request->Path);
     realPath = coord::path::PathJoin(this->server->config.AssetDir, realPath);
     request->GetResponse()->File(realPath.c_str());
 }
 
-void HttpRouter::recvStaticFileRequest(HttpRequest* request, const char* filePath) {
+void HttpRouter::recvStaticFileRequest(const HttpRequestPtr& request, const char* filePath) {
     std::string realPath = coord::path::PathJoin(this->server->config.AssetDir, filePath);
     request->GetResponse()->File(realPath.c_str());
 }

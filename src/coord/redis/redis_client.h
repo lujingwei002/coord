@@ -45,10 +45,10 @@ private:
     Client(Coord *coord, RedisMgr* redisMgr);
     virtual ~Client();
 private:
+    Coord*          coord;
     RedisMgr*       redisMgr;
     std::string     name;
     RedisConfig     config;
-    Coord*          coord;
     redisContext*   context;
 protected:
     virtual void onDestory();
@@ -60,28 +60,28 @@ public:
     void Close();                               //tolua_export
 
     /// #connection
-    RedisResultPtr SELECT(const char* db);               //tolua_export
-    RedisResultPtr AUTH(const char* password);           //tolua_export
+    RedisResultPtr SELECT(const char* db);      //tolua_export
+    RedisResultPtr AUTH(const char* password);  //tolua_export
     uint64_t TIME();                            //tolua_export
 
     /// #string 
-    RedisResultPtr DEL(const char* key);                                            //tolua_export
-    RedisResultPtr GET(const char* key);                                            //tolua_export
-    RedisResultPtr SET(const char* key, const char* value);                         //tolua_export
+    RedisResultPtr DEL(const char* key);                                                //tolua_export
+    RedisResultPtr GET(const char* key);                                                //tolua_export
+    RedisResultPtr SET(const char* key, const char* value);                             //tolua_export
     RedisResultPtr SET(const char* key, const char* data, size_t len);
-    int EXPIRE(const char* key, uint64_t expire);//tolua_export
-    RedisResultPtr SETEX(const char* key, const char* data, size_t len, size_t expire);
-    RedisResultPtr SETEX(const char* key, const char* data, size_t expire);
+    int EXPIRE(const char* key, uint64_t expire);                                       //tolua_export
+    RedisResultPtr SETEX(const char* key, const char* data, size_t len, size_t expire); //tolua_export
+    RedisResultPtr SETEX(const char* key, const char* data, size_t expire);             //tolua_export
 
     /// #hash
     RedisResultPtr HGETALL(const char* key);                                        //tolua_export
-    int HDEL(const char* key, const char* field);                          //tolua_export
+    int HDEL(const char* key, const char* field);                                   //tolua_export
     RedisResultPtr HMSET(const char* key, const char* field, const char* value);    //tolua_export
     RedisResultPtr HMSET(const char* key, const char* field, uint64_t value);       //tolua_export
 
     /// #set
-    RedisResultPtr SADD(const char* key, const char* value);
-    RedisResultPtr SREM(const char* key, const char* value);
+    RedisResultPtr SADD(const char* key, const char* value);                        //tolua_export
+    RedisResultPtr SREM(const char* key, const char* value);                        //tolua_export
 };//tolua_export
 
 

@@ -1,5 +1,6 @@
 #pragma once 
 
+#include "coord/log4cc/declare.h"
 
 namespace coord {
 namespace log{
@@ -10,7 +11,7 @@ namespace log{
     void LogInfo(const char *fmt, ...);
     void LogDebug(const char *fmt, ...);
     void LogMsg(const char *fmt, ...);
-    void SetPriority(int priority);
+    void SetPriority(log4cc::PriorityLevel priority);
     
 }
 }

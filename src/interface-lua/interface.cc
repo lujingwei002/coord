@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Thu Aug 11 17:10:10 2022.
+** Generated automatically by tolua++-1.0.92 on Thu Aug 11 23:39:20 2022.
 */
 
 #ifndef __cplusplus
@@ -14,6 +14,7 @@
 TOLUA_API int  tolua_coord_open (lua_State* tolua_S);
 
 #include "coord/coord.h"
+#include "coord/log4cc/declare.h"
 #include "coord/config/config.h"
 #include "coord/script/script.h"
 #include "coord/script/reflect.h"
@@ -609,7 +610,7 @@ static int tolua_coord_coord_Coord_LogSetPriority00(lua_State* tolua_S)
 #endif
  {
   coord::Coord* self = (coord::Coord*)  tolua_tousertype(tolua_S,1,0);
-  int priority = ((int)  tolua_tonumber(tolua_S,2,0));
+  coord::log4cc::PriorityLevel priority = ((coord::log4cc::PriorityLevel) (int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'LogSetPriority'",NULL);
 #endif
@@ -14718,6 +14719,93 @@ static int tolua_coord_coord_redis_Client_EXPIRE00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: SETEX of class  coord::redis::Client */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Client_SETEX00
+static int tolua_coord_coord_redis_Client_SETEX00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::redis::Client",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::redis::Client* self = (coord::redis::Client*)  tolua_tousertype(tolua_S,1,0);
+  const char* key = ((const char*)  tolua_tostring(tolua_S,2,0));
+  const char* data = ((const char*)  tolua_tostring(tolua_S,3,0));
+  size_t len = ((size_t)  tolua_tonumber(tolua_S,4,0));
+  size_t expire = ((size_t)  tolua_tonumber(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SETEX'",NULL);
+#endif
+  {
+   coord::redis::RedisResultPtr tolua_ret = (coord::redis::RedisResultPtr)  self->SETEX(key,data,len,expire);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = tolua_ret.Borrow();
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
+#else
+    not support
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SETEX'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: SETEX of class  coord::redis::Client */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Client_SETEX01
+static int tolua_coord_coord_redis_Client_SETEX01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::redis::Client",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  coord::redis::Client* self = (coord::redis::Client*)  tolua_tousertype(tolua_S,1,0);
+  const char* key = ((const char*)  tolua_tostring(tolua_S,2,0));
+  const char* data = ((const char*)  tolua_tostring(tolua_S,3,0));
+  size_t expire = ((size_t)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SETEX'",NULL);
+#endif
+  {
+   coord::redis::RedisResultPtr tolua_ret = (coord::redis::RedisResultPtr)  self->SETEX(key,data,expire);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = tolua_ret.Borrow();
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
+#else
+    not support
+#endif
+   }
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_coord_coord_redis_Client_SETEX00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: HGETALL of class  coord::redis::Client */
 #ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Client_HGETALL00
 static int tolua_coord_coord_redis_Client_HGETALL00(lua_State* tolua_S)
@@ -14877,6 +14965,92 @@ static int tolua_coord_coord_redis_Client_HMSET01(lua_State* tolua_S)
  return 1;
 tolua_lerror:
  return tolua_coord_coord_redis_Client_HMSET00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: SADD of class  coord::redis::Client */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Client_SADD00
+static int tolua_coord_coord_redis_Client_SADD00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::redis::Client",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::redis::Client* self = (coord::redis::Client*)  tolua_tousertype(tolua_S,1,0);
+  const char* key = ((const char*)  tolua_tostring(tolua_S,2,0));
+  const char* value = ((const char*)  tolua_tostring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SADD'",NULL);
+#endif
+  {
+   coord::redis::RedisResultPtr tolua_ret = (coord::redis::RedisResultPtr)  self->SADD(key,value);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = tolua_ret.Borrow();
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
+#else
+    not support
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SADD'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: SREM of class  coord::redis::Client */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_redis_Client_SREM00
+static int tolua_coord_coord_redis_Client_SREM00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coord::redis::Client",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coord::redis::Client* self = (coord::redis::Client*)  tolua_tousertype(tolua_S,1,0);
+  const char* key = ((const char*)  tolua_tostring(tolua_S,2,0));
+  const char* value = ((const char*)  tolua_tostring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SREM'",NULL);
+#endif
+  {
+   coord::redis::RedisResultPtr tolua_ret = (coord::redis::RedisResultPtr)  self->SREM(key,value);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = tolua_ret.Borrow();
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
+#else
+    not support
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SREM'.",&tolua_err);
+ return 0;
+#endif
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -19036,6 +19210,23 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"coord",0);
   tolua_beginmodule(tolua_S,"coord");
+   tolua_module(tolua_S,"log4cc",0);
+   tolua_beginmodule(tolua_S,"log4cc");
+    tolua_constant(tolua_S,"EMERG",coord::log4cc::EMERG);
+    tolua_constant(tolua_S,"FATAL",coord::log4cc::FATAL);
+    tolua_constant(tolua_S,"ALERT",coord::log4cc::ALERT);
+    tolua_constant(tolua_S,"CRIT",coord::log4cc::CRIT);
+    tolua_constant(tolua_S,"ERROR",coord::log4cc::ERROR);
+    tolua_constant(tolua_S,"WARN",coord::log4cc::WARN);
+    tolua_constant(tolua_S,"NOTICE",coord::log4cc::NOTICE);
+    tolua_constant(tolua_S,"INFO",coord::log4cc::INFO);
+    tolua_constant(tolua_S,"DEBUG",coord::log4cc::DEBUG);
+    tolua_constant(tolua_S,"NOTSET",coord::log4cc::NOTSET);
+    tolua_constant(tolua_S,"ALL",coord::log4cc::ALL);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"coord",0);
+  tolua_beginmodule(tolua_S,"coord");
    tolua_cclass(tolua_S,"BasicConfig","coord::BasicConfig","",NULL);
    tolua_beginmodule(tolua_S,"BasicConfig");
     tolua_variable(tolua_S,"Env",tolua_get_coord__BasicConfig_Env,tolua_set_coord__BasicConfig_Env);
@@ -19947,10 +20138,14 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
      tolua_function(tolua_S,"GET",tolua_coord_coord_redis_Client_GET00);
      tolua_function(tolua_S,"SET",tolua_coord_coord_redis_Client_SET00);
      tolua_function(tolua_S,"EXPIRE",tolua_coord_coord_redis_Client_EXPIRE00);
+     tolua_function(tolua_S,"SETEX",tolua_coord_coord_redis_Client_SETEX00);
+     tolua_function(tolua_S,"SETEX",tolua_coord_coord_redis_Client_SETEX01);
      tolua_function(tolua_S,"HGETALL",tolua_coord_coord_redis_Client_HGETALL00);
      tolua_function(tolua_S,"HDEL",tolua_coord_coord_redis_Client_HDEL00);
      tolua_function(tolua_S,"HMSET",tolua_coord_coord_redis_Client_HMSET00);
      tolua_function(tolua_S,"HMSET",tolua_coord_coord_redis_Client_HMSET01);
+     tolua_function(tolua_S,"SADD",tolua_coord_coord_redis_Client_SADD00);
+     tolua_function(tolua_S,"SREM",tolua_coord_coord_redis_Client_SREM00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

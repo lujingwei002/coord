@@ -86,6 +86,8 @@ public:
 
 };//tolua_export
 
+typedef DestoryablePtr<HttpRequest> HttpRequestPtr;//tolua_export
+
 
 }//tolua_export
 }//tolua_export

@@ -32,7 +32,7 @@ int account_controller::main() {
     return 0;
 }
 
-void account_controller::reqLogin(http::HttpRequest* request) {
+void account_controller::reqLogin(const http::HttpRequestPtr& request) {
     auto args = request->Json();
     printf("gggg %s\n", request->payload.Data());
     printf("gggg %s\n", args.GetString("nickname"));
@@ -44,20 +44,17 @@ void account_controller::reqLogin(http::HttpRequest* request) {
         response->Json(result);
         return;
     }
-    this->coord->DontDestory(request);
     promise->Then([this, request, response](auto client, auto reply){
         if (reply->Empty()) {
             auto result = this->coord->Json->NewObject();
             result.SetInteger("code", 1);
             response->Json(result);
-            this->coord->Destory(request);
             return;
         }
         if (!reply->Array() || reply->ArrayCount() < 3 || reply->Empty(0)) {
             auto result = this->coord->Json->NewObject();
             result.SetInteger("code", 2);
             response->Json(result);
-            this->coord->Destory(request);
             return;
         }
         auto result = this->coord->Json->NewObject();
@@ -68,7 +65,6 @@ void account_controller::reqLogin(http::HttpRequest* request) {
         data.SetString("online", reply->String(3));
         data.SetString("version", reply->String(4));
         response->Json(result);
-        this->coord->Destory(request);
         this->coord->CoreLogError("[login_cluster] test succ %s", reply->String());
     });
     promise->Else([this, request, response](auto client, auto reply){
@@ -76,11 +72,10 @@ void account_controller::reqLogin(http::HttpRequest* request) {
         auto result = this->coord->Json->NewObject();
         result.SetInteger("code", 4);
         response->Json(result);
-        this->coord->Destory(request);
     });
 }
 
-void account_controller::reqList(http::HttpRequest* request) {
+void account_controller::reqList(const http::HttpRequestPtr& request) {
     auto response = request->GetResponse();
     auto promise = this->loginSvr->loginCluster->getBalanceGate();
     if (promise == nullptr) {
@@ -89,20 +84,17 @@ void account_controller::reqList(http::HttpRequest* request) {
         response->Json(result);
         return;
     }
-    this->coord->DontDestory(request);
     promise->Then([this, request, response](auto client, auto reply){
         if (reply->Empty()) {
             auto result = this->coord->Json->NewObject();
             result.SetInteger("code", 1);
             response->Json(result);
-            this->coord->Destory(request);
             return;
         }
         if (!reply->Array() || reply->ArrayCount() % 5 != 0) {
             auto result = this->coord->Json->NewObject();
             result.SetInteger("code", 2);
             response->Json(result);
-            this->coord->Destory(request);
             return;
         }
         auto result = this->coord->Json->NewObject();
@@ -117,7 +109,6 @@ void account_controller::reqList(http::HttpRequest* request) {
             gate.SetString("version", reply->String(4 + 5 * i));
         }
         response->Json(result);
-        this->coord->Destory(request);
         this->coord->CoreLogError("[login_cluster] test succ %s", reply->String());
     });
     promise->Else([this, request, response](auto client, auto reply){
@@ -125,7 +116,6 @@ void account_controller::reqList(http::HttpRequest* request) {
         auto result = this->coord->Json->NewObject();
         result.SetInteger("code", 4);
         response->Json(result);
-        this->coord->Destory(request);
     });
 }
 }

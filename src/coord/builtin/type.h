@@ -35,30 +35,30 @@ public:
 };
 
 template<typename TSelf>
-class DestoryableRef {
+class DestoryablePtr {
 public:
-    DestoryableRef(TSelf* ptr) { 
+    DestoryablePtr(TSelf* ptr) { 
         this->_ptr = ptr;
         if (nullptr != this->_ptr) {
             //this->_ptr->AddRef();
         }
     }
-    DestoryableRef(std::nullptr_t) {
+    DestoryablePtr(std::nullptr_t) {
         this->_ptr = nullptr;
     }
-    DestoryableRef(const DestoryableRef& other) {
+    DestoryablePtr(const DestoryablePtr& other) {
         this->_ptr = other._ptr;
         if (nullptr != this->_ptr) {
             this->_ptr->AddRef();
         }
     }
-    virtual ~DestoryableRef() {
+    virtual ~DestoryablePtr() {
         if (nullptr != this->_ptr) {
             this->_ptr->DecRef();
             this->_ptr = nullptr;
         }
     }
-    DestoryableRef& operator=(const DestoryableRef& other) {
+    DestoryablePtr& operator=(const DestoryablePtr& other) {
         if (nullptr != this->_ptr) {
             this->_ptr->DecRef();
             this->_ptr = nullptr;
@@ -85,9 +85,9 @@ private:
 };
 
 template<typename T>
-DestoryableRef<T> owner_move(T* ptr) {
+DestoryablePtr<T> owner_move(T* ptr) {
     if (nullptr) return nullptr;
-    return DestoryableRef<T>(ptr);
+    return DestoryablePtr<T>(ptr);
 }
 
 class Destoryable {//tolua_export

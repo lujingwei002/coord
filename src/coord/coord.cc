@@ -167,6 +167,7 @@ namespace coord {
         return err;
     }
 
+    /* 
     static int action_fork(argparse::ArgumentParser& parser) {
         int err;
         if (parser.get<bool>("-d")) {
@@ -190,7 +191,7 @@ namespace coord {
         err = coord::Wait();
         coord::Destory(); 
         return err;
-    }
+    }*/
 
     static int action_help(argparse::ArgumentParser& parser) {
         printf("help.......\n");
@@ -359,6 +360,7 @@ namespace coord {
             {"start", action_start},
             {"stop", action_stop},
             {"status", action_status},
+            {"help", action_help},
             {"help", [&](argparse::ArgumentParser& parser) -> int {
                 std::string command = parser.get<std::string>("command");
                 auto it = parsers.find(command);
@@ -1173,7 +1175,7 @@ namespace coord {
         }
     }
 
-    void Coord::LogSetPriority(int priority) {
+    void Coord::LogSetPriority(log4cc::PriorityLevel priority) {
         if (nullptr == this->logger) {
             return;
         }
@@ -1372,7 +1374,7 @@ namespace coord {
         }
     }
 
-    void Coord::CoreLogSetPriority(int priority) {
+    void Coord::CoreLogSetPriority(log4cc::PriorityLevel priority) {
         if (nullptr == this->coreLogger) {
             return;
         }

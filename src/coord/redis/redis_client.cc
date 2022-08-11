@@ -33,7 +33,7 @@ RedisConfig* Client::DefaultConfig() {
 }
 
 void Client::Close() {
-    if(!this->context) {
+    if(nullptr == this->context) {
         return;
     }
     redisFree(this->context);

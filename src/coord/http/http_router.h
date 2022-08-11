@@ -4,6 +4,7 @@
 #include "coord/http/http_server.h"
 #include "coord/builtin/slice.h"
 #include "coord/http/http_base.h"
+#include "coord/http/http_request.h"
 #include <map>
 #include <string>
 #include <functional>
@@ -37,7 +38,7 @@ namespace http {//tolua_export
 ///
 ///
 
-typedef std::function<void (HttpRequest* request)> HttpRouter_RecvHttpRequest; 
+typedef std::function<void (const HttpRequestPtr& request)> HttpRouter_RecvHttpRequest; 
 
 
 
@@ -69,8 +70,8 @@ private:
     virtual ~HttpRouter();
 private:
     void trace(const char* method, http_router_handler* handler);
-    void recvStaticRequest(HttpRequest* request, const char* dir);
-    void recvStaticFileRequest(HttpRequest* request, const char* path);
+    void recvStaticRequest(const HttpRequestPtr& request, const char* dir);
+    void recvStaticFileRequest(const HttpRequestPtr& request, const char* path);
     void recvHttpRequest(HttpRequest* request);
 private:
     http_router_handler* searchHandler(const char* method, const char* path);

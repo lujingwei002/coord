@@ -62,7 +62,7 @@ void WebServer::recvHttpUpgrade(http::HttpAgent* agent, http::HttpRequest* reque
 }
 
 
-void WebServer::get_debug_index(http::HttpRequest* request) {
+void WebServer::get_debug_index(const http::HttpRequestPtr& request) {
     http::HttpResponse* response = request->GetResponse();
     response->Text("debug");
 }

@@ -2,6 +2,7 @@
 #include "coord/builtin/type.h"
 #include "coord/component/component.h"
 #include "coord/redis/redis_result.h"
+#include "coord/http/http_request.h"
 #include <map>
 #include <string>
 #include <cstdint>
@@ -79,7 +80,7 @@ public:
     void recvPromise(const char* script, int ref);
 
     // for http begin
-    void recvHttpRequest(http::HttpRequest* request, int ref);
+    void recvHttpRequest(const http::HttpRequestPtr& request, int ref);
     // for http end
 
     // for websocket begin

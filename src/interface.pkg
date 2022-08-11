@@ -10,6 +10,7 @@
 //
 
 $cfile "coord/coord.h"
+$cfile "coord/log4cc/declare.h"
 $cfile "coord/config/config.h"
 $cfile "coord/script/script.h"
 $cfile "coord/script/reflect.h"

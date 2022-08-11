@@ -12,6 +12,12 @@ namespace coord {
     }
 }
 
+///
+///
+/// 回调结束后，promise就释放
+/// promise生命周期由client管理 
+///
+///
 
 namespace coord {//tolua_export
 namespace redis {//tolua_export

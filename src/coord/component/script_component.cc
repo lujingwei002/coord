@@ -266,11 +266,16 @@ void ScriptComponent::onDestory() {
     lua_pop(L, lua_gettop(L));
 }
 
-void ScriptComponent::recvHttpRequest(http::HttpRequest* request, int ref) {
+void ScriptComponent::recvHttpRequest(const http::HttpRequestPtr& request, int ref) {
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
+    auto requestRc = request.Borrow();
     tolua_pushusertype(L, this, "coord::ScriptComponent");
-    tolua_pushusertype(L, request, "coord::http::HttpRequest");
+    if (requestRc) {
+        tolua_pushusertype(L, requestRc, requestRc->TypeName());
+    } else {
+        lua_pushnil(L);
+    }
     if (lua_pcall(L, 2, 0, 0) != 0) {
         this->coord->CoreLogError("[ScriptComponent] %s.recvHttpRequest failed, error=%s", this->scriptName, lua_tostring(L, -1));
         lua_pop(L, lua_gettop(L));
@@ -730,9 +735,14 @@ void ScriptComponent::recvRedisReply(redis::AsyncClient* const client, const red
     this->coord->CoreLogDebug("[ScriptComponent] recvRedisReply");
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
+    auto resultRc = result.Borrow();
     tolua_pushusertype(L, this, "coord::ScriptComponent");
     tolua_pushusertype(L, client, "coord::redis::AsyncClient");
-    tolua_pushusertype(L, result, "coord::redis::RedisResult");
+    if (resultRc) {
+        tolua_pushusertype(L, resultRc, resultRc->TypeName());
+    } else {
+        lua_pushnil(L);
+    }
     if (lua_pcall(L, 3, 0, 0) != 0) {
         this->coord->CoreLogError("[ScriptComponent] recvRedisReply %s %s failed, error=%s", this->scriptName, script, lua_tostring(L, -1));
         const char* error = lua_tostring(L, -1); 
