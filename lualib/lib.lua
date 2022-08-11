@@ -261,6 +261,13 @@ function await(promise)
     return ok, result
 end
 
+-- 将所有权交给lua
+function owner_move(ptr)
+    if not ptr then return end
+    tolua.takeownership(ptr)
+    return ptr
+end
+
 function _main_()
     --coorda:CoreLogDebug(coorda.Script.Path)
     --环境初始化

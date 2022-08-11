@@ -37,10 +37,10 @@ TEST_F(TestAsyncRedis, DbError) {
     client->DefaultConfig()->DB = "aa";
     auto promise = client->Connect();
     ASSERT_NE(promise, nullptr);
-    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+    promise->Then([this](auto client, auto reply) {
         ASSERT_TRUE(false);
         this->coord->Destory(0);
-    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+    })->Else([this](auto client, auto reply) {
         ASSERT_TRUE(true);
         this->coord->Destory(0);
     });
@@ -58,10 +58,10 @@ TEST_F(TestAsyncRedis, hostError) {
     client->DefaultConfig()->Port = 3000;
     auto promise = client->Connect();
     ASSERT_NE(promise, nullptr);
-    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+    promise->Then([this](auto client, auto reply) {
         ASSERT_TRUE(false);
         this->coord->Destory(0);
-    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+    })->Else([this](auto client, auto reply) {
         ASSERT_TRUE(true);
         this->coord->Destory(0);
     });
@@ -78,10 +78,10 @@ TEST_F(TestAsyncRedis, passwordError) {
     client->DefaultConfig()->Password = "11";
     auto promise = client->Connect();
     ASSERT_NE(promise, nullptr);
-    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+    promise->Then([this](auto client, auto reply) {
         ASSERT_TRUE(false);
         this->coord->Destory(0);
-    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+    })->Else([this](auto client, auto reply) {
         ASSERT_TRUE(true);
         this->coord->Destory(0);
     });
@@ -101,10 +101,10 @@ TEST_F(TestAsyncRedis, Action) {
             //连接
             auto promise = client->Connect();
             ASSERT_TRUE(promise);
-            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            promise->Then([this, action](auto client, auto reply) {
                 ASSERT_TRUE(true);
                 action->Next();
-            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            })->Else([this, action](auto client, auto reply) {
                 ASSERT_TRUE(false);
                 this->coord->Destory(0);
             });
@@ -113,12 +113,12 @@ TEST_F(TestAsyncRedis, Action) {
             // del aa
             auto promise = client->DEL("aa");
             ASSERT_TRUE(promise);
-            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            promise->Then([this, action](auto client, auto reply) {
                 ASSERT_TRUE(true);
                 ASSERT_FALSE(reply->Error());
                 ASSERT_FALSE(reply->Empty());
                 action->Next();
-            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            })->Else([this, action](auto client, auto reply) {
                 ASSERT_TRUE(false);
                 action->Next();
             });
@@ -127,11 +127,11 @@ TEST_F(TestAsyncRedis, Action) {
             // get aa
             auto promise = client->GET("aa");
             ASSERT_TRUE(promise);
-            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            promise->Then([this, action](auto client, auto reply) {
                 ASSERT_FALSE(reply->Error());
                 ASSERT_TRUE(reply->Empty());
                 action->Next();
-            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            })->Else([this, action](auto client, auto reply) {
                 ASSERT_TRUE(false);
                 action->Next();
             });
@@ -140,12 +140,12 @@ TEST_F(TestAsyncRedis, Action) {
             // set aa bb
             auto promise = client->SET("aa", "bb");
             ASSERT_TRUE(promise);
-            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            promise->Then([this, action](auto client, auto reply) {
                 ASSERT_FALSE(reply->Error());
                 ASSERT_FALSE(reply->Empty());
                 ASSERT_STREQ(reply->String(), "OK");
                 action->Next();
-            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            })->Else([this, action](auto client, auto reply) {
                 ASSERT_TRUE(false);
                 action->Next();
             });
@@ -154,13 +154,13 @@ TEST_F(TestAsyncRedis, Action) {
             // del aa
             auto promise = client->DEL("aa");
             ASSERT_TRUE(promise);
-            promise->Then([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            promise->Then([this, action](auto client, auto reply) {
                 ASSERT_FALSE(reply->Error());
                 ASSERT_FALSE(reply->Empty());
                 ASSERT_EQ(reply->Integer(), 1);
                 action->Next();
                 this->coord->Destory(0);
-            })->Else([this, action](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            })->Else([this, action](auto client, auto reply) {
                 ASSERT_TRUE(false);
                 action->Next();
             });
@@ -178,50 +178,50 @@ TEST_F(TestAsyncRedis, setGet) {
     *(client->DefaultConfig()) = config;
     auto promise = client->Connect();
     ASSERT_NE(promise, nullptr);
-    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+    promise->Then([this](auto client, auto reply) {
         auto promise = client->DEL("aa");
         ASSERT_NE(promise, nullptr);
-        promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+        promise->Then([this](auto client, auto reply) {
             auto promise = client->GET("aa");
             ASSERT_TRUE(promise);
-            promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            promise->Then([this](auto client, auto reply) {
                 ASSERT_FALSE(reply->Error());
                 ASSERT_TRUE(reply->Empty());
                 auto promise = client->SET("aa", "bb");
                 ASSERT_TRUE(promise);
-                promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+                promise->Then([this](auto client, auto reply) {
                     ASSERT_FALSE(reply->Error());
                     ASSERT_FALSE(reply->Empty());
                     ASSERT_STREQ(reply->String(), "OK");
                     auto promise = client->GET("aa");
                     ASSERT_TRUE(promise);
-                    promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+                    promise->Then([this](auto client, auto reply) {
                         ASSERT_FALSE(reply->Error());
                         ASSERT_FALSE(reply->Empty());
                         ASSERT_STREQ(reply->String(), "bb");
                         auto promise = client->DEL("aa");
                         ASSERT_TRUE(promise);
-                        promise->Then([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+                        promise->Then([this](auto client, auto reply) {
                             ASSERT_FALSE(reply->Error());
                             ASSERT_FALSE(reply->Empty());
                             ASSERT_EQ(reply->Integer(), 1);
                             this->coord->Destory(0);
-                        })->Else([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+                        })->Else([this](auto client, auto reply) {
                             ASSERT_TRUE(false);
                         });
-                    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+                    })->Else([this](auto client, auto reply) {
                         ASSERT_TRUE(false);
                     });
-                })->Else([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+                })->Else([this](auto client, auto reply) {
                     ASSERT_TRUE(false);
                 });
-            })->Else([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+            })->Else([this](auto client, auto reply) {
                 ASSERT_TRUE(false);
             });
-        })->Else([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+        })->Else([this](auto client, auto reply) {
             ASSERT_TRUE(false);
         });
-    })->Else([this](coord::redis::AsyncClient* client, const coord::redis::RedisResult* reply) {
+    })->Else([this](auto client, auto reply) {
         ASSERT_TRUE(false);
     });
 

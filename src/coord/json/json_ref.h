@@ -13,6 +13,16 @@ extern "C"
 #include <tolua++/tolua++.h>
 }
 
+///
+///
+/// 内存, C++是在栈中， 由作用域管理内存。LUA是在堆中，由GC管理内存。
+/// json11::Json本身有引用计算。
+///  
+/// 栈中 c++ ref1 ---> json11:Json
+///
+/// 堆中 lua ref2----------↑
+///
+
 namespace coord {
     class Coord;
 }
@@ -20,11 +30,14 @@ namespace coord {
 namespace coord {//tolua_export
 namespace json {//tolua_export
 
-class Reflect {//tolua_export
-CC_CLASS(Reflect);
+class JsonRef : public Destoryable {//tolua_export
+CC_CLASS(JsonRef);
 friend coord::json::JsonMgr;
 private:
-    Reflect(Coord* coord);
+    JsonRef(Coord* coord, const json11::Json& object);
+    JsonRef(Coord* coord);
+     int set(lua_State* L, json11::Json& object, int index);
+    json11::Json lua_toobject(lua_State* L, int index);
 private:
     Coord*          coord;
     // json11:Json  本身有引用计算了
@@ -33,25 +46,27 @@ private:
 
 
 public:
-    Reflect(Coord* coord, const json11::Json& object);
-    Reflect(const Reflect& other);
-    virtual ~Reflect();
+    JsonRef(const JsonRef& other);
+    virtual ~JsonRef();                                    //tolua_export 
+    JsonRef& operator=(const JsonRef& other);
+    bool operator== (std::nullptr_t v) const;
+	bool operator!= (std::nullptr_t v) const;  
 public:
     /// #object.set
     int SetString(const char* key, const char* value);  //tolua_export 
     int SetNumber(const char* key, double value);       //tolua_export 
     int SetInteger(const char* key, int value);         //tolua_export 
     int SetBool(const char* key, bool value);           //tolua_export 
-    Reflect SetObject(const char* key);                 //tolua_export   
-    Reflect SetArray(const char* key);                  //tolua_export 
+    JsonRef SetObject(const char* key);                 //tolua_export   
+    JsonRef SetArray(const char* key);                  //tolua_export 
 
     /// #object.get
     const char* GetString(const char* key);             //tolua_export 
     double GetNumber(const char* key);                  //tolua_export 
     int GetInteger(const char* key);                    //tolua_export 
     bool GetBool(const char* key);                      //tolua_export 
-    Reflect GetObject(const char* key);                 //tolua_export
-    Reflect GetArray(const char* key);                  //tolua_export
+    JsonRef GetObject(const char* key);                 //tolua_export
+    JsonRef GetArray(const char* key);                  //tolua_export
     
     /// #object.is
     bool IsObject(const char* key);                      //tolua_export
@@ -63,8 +78,8 @@ public:
     bool IsBool(const char* key);                        //tolua_export
 
     /// #array add   
-    Reflect AddObject();
-    Reflect AddArray();                 
+    JsonRef AddObject();
+    JsonRef AddArray();                 
     int AddNumber(double value);                        //tolua_export
     int AddInteger(int value);                          //tolua_export
     int AddBool(bool value);                            //tolua_export
@@ -75,8 +90,8 @@ public:
     double GetNumber(size_t index);                     //tolua_export 
     int GetInteger(size_t index);                       //tolua_export 
     bool GetBool(size_t index);                         //tolua_export
-    Reflect GetObject(size_t index);
-    Reflect GetArray(size_t index);
+    JsonRef GetObject(size_t index);
+    JsonRef GetArray(size_t index);
 
     /// #array.is
     bool IsObject(size_t index);                        //tolua_export
@@ -98,50 +113,57 @@ public:
     bool isNull();                                      //tolua_export
     bool isBool();                                      //tolua_export
     
-    int Get(lua_State* L);
-    int Set(lua_State* L);
+    int Get(lua_State* L);                              //tolua_export
+
+    /// 
+    /// 支持number, boolean, string, jsonref, table, array类型
+    /// 支持在数组，字典里嵌套其他类型
+    ///
+    /// {1, a = b} 数组和字典都有的情况下，会忽略字典部分
+    /// 如果self是数组的情况下， 下标从0开始， 如果下标超过数组的大小，数组大小会扩展，值为null
+    ///
+    int Set(lua_State* L);                              //tolua_export
+
+   
 
     int Encode(byte_slice& buffer);
     int Encode(std::string& buffer);
-    const char* ToString();                         //tolua_export    
-    Reflect& operator=(const Reflect& other);
-    bool operator== (std::nullptr_t v) const;
-	bool operator!= (std::nullptr_t v) const;  
+    const char* ToString();                             //tolua_export    
 };//tolua_export
 
-inline bool Reflect::operator== (std::nullptr_t v) const  {
+inline bool JsonRef::operator== (std::nullptr_t v) const  {
     return this->object.is_null();
 }
 
-inline bool Reflect::operator!= (std::nullptr_t v) const  {
+inline bool JsonRef::operator!= (std::nullptr_t v) const  {
     return !this->object.is_null();
 }
 
-inline bool Reflect::isObject() {
+inline bool JsonRef::isObject() {
     return this->object.is_object();
 }  
 
-inline bool Reflect::isArray(){
+inline bool JsonRef::isArray(){
     return this->object.is_array();
 }  
 
-inline bool Reflect::isString(){
+inline bool JsonRef::isString(){
     return this->object.is_string();
 }  
 
-inline bool Reflect::isNumber(){
+inline bool JsonRef::isNumber(){
     return this->object.is_number();
 }   
 
-inline bool Reflect::isNull(){
+inline bool JsonRef::isNull(){
     return this->object.is_null();
 }                                                                    
 
-inline bool Reflect::isBool(){
+inline bool JsonRef::isBool(){
     return this->object.is_bool();
 }  
 
-inline int Reflect::SetNumber(const char* key, double value) {
+inline int JsonRef::SetNumber(const char* key, double value) {
     if (!this->object.is_object()) {
         return ErrorType;
     }
@@ -150,7 +172,7 @@ inline int Reflect::SetNumber(const char* key, double value) {
     return 0;
 }
 
-inline double Reflect::GetNumber(const char* key) {
+inline double JsonRef::GetNumber(const char* key) {
     if (!this->object.is_object()) {
         return 0;
     }
@@ -165,7 +187,7 @@ inline double Reflect::GetNumber(const char* key) {
     return it->second.number_value();
 }
 
-inline int Reflect::SetInteger(const char* key, int value) {
+inline int JsonRef::SetInteger(const char* key, int value) {
     if (!this->object.is_object()) {
         return ErrorType;
     }
@@ -174,7 +196,7 @@ inline int Reflect::SetInteger(const char* key, int value) {
     return 0;
 }
 
-inline int Reflect::SetBool(const char* key, bool value) {
+inline int JsonRef::SetBool(const char* key, bool value) {
     if (!this->object.is_object()) {
         return ErrorType;
     }
@@ -183,7 +205,7 @@ inline int Reflect::SetBool(const char* key, bool value) {
     return 0;
 }
 
-inline int Reflect::GetInteger(const char* key) {
+inline int JsonRef::GetInteger(const char* key) {
     if (!this->object.is_object()) {
         return 0;
     }
@@ -198,7 +220,7 @@ inline int Reflect::GetInteger(const char* key) {
     return it->second.int_value();
 }
 
-inline bool Reflect::GetBool(const char* key) {
+inline bool JsonRef::GetBool(const char* key) {
     if (!this->object.is_object()) {
         return 0;
     }
@@ -213,7 +235,7 @@ inline bool Reflect::GetBool(const char* key) {
     return it->second.bool_value();
 }
 
-inline int Reflect::SetString(const char* key, const char* value) {
+inline int JsonRef::SetString(const char* key, const char* value) {
     if (!this->object.is_object()) {
         return ErrorType;
     }
@@ -222,7 +244,7 @@ inline int Reflect::SetString(const char* key, const char* value) {
     return 0;
 }
 
-inline bool Reflect::IsNull(const char* key) {
+inline bool JsonRef::IsNull(const char* key) {
     if (!this->object.is_object()) {
         return false;
     }
@@ -234,7 +256,7 @@ inline bool Reflect::IsNull(const char* key) {
     return it->second.is_null();
 }
 
-inline bool Reflect::IsBool(const char* key) {
+inline bool JsonRef::IsBool(const char* key) {
     if (!this->object.is_object()) {
         return false;
     }
@@ -246,7 +268,7 @@ inline bool Reflect::IsBool(const char* key) {
     return it->second.is_bool();
 }
 
-inline bool Reflect::IsNumber(const char* key) {
+inline bool JsonRef::IsNumber(const char* key) {
     if (!this->object.is_object()) {
         return false;
     }
@@ -258,7 +280,7 @@ inline bool Reflect::IsNumber(const char* key) {
     return it->second.is_number();
 }
 
-inline bool Reflect::IsObject(const char* key) {
+inline bool JsonRef::IsObject(const char* key) {
     if (!this->object.is_object()) {
         return false;
     }
@@ -270,7 +292,7 @@ inline bool Reflect::IsObject(const char* key) {
     return it->second.is_object();
 }
 
-inline bool Reflect::IsArray(const char* key) {
+inline bool JsonRef::IsArray(const char* key) {
     if (!this->object.is_object()) {
         return false;
     }
@@ -282,7 +304,7 @@ inline bool Reflect::IsArray(const char* key) {
     return it->second.is_array();
 }
 
-inline bool Reflect::IsString(const char* key) {
+inline bool JsonRef::IsString(const char* key) {
     if (!this->object.is_object()) {
         return false;
     }
@@ -294,7 +316,7 @@ inline bool Reflect::IsString(const char* key) {
     return it->second.is_string();
 }
 
-inline bool Reflect::IsInteger(const char* key) {
+inline bool JsonRef::IsInteger(const char* key) {
     if (!this->object.is_object()) {
         return false;
     }
@@ -306,7 +328,7 @@ inline bool Reflect::IsInteger(const char* key) {
     return it->second.is_number();
 }
 
-inline const char* Reflect::GetString(const char* key) {
+inline const char* JsonRef::GetString(const char* key) {
     if (!this->object.is_object()) {
         return nullptr;
     }
@@ -321,77 +343,77 @@ inline const char* Reflect::GetString(const char* key) {
     return it->second.string_value().c_str();
 }
 
-inline Reflect Reflect::GetObject(const char* key) {
+inline JsonRef JsonRef::GetObject(const char* key) {
     if (!this->object.is_object()) {
         return nullptr;
     }
     const auto& dict = this->object.object_items();
     const auto it = dict.find(key);
     if (it == dict.end()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     if (!it->second.is_object()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
-    return Reflect(this->coord, it->second);
+    return JsonRef(this->coord, it->second);
 }
 
-inline Reflect Reflect::GetArray(const char* key) {
+inline JsonRef JsonRef::GetArray(const char* key) {
     if (!this->object.is_object()) {
         return nullptr;
     }
     const auto& dict = this->object.object_items();
     const auto it = dict.find(key);
     if (it == dict.end()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     if (!it->second.is_array()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
-    return Reflect(this->coord, it->second);
+    return JsonRef(this->coord, it->second);
 }
 
-inline Reflect Reflect::SetObject(const char* key) {
+inline JsonRef JsonRef::SetObject(const char* key) {
     if (!this->object.is_object()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     auto& dict = (json11::Json::object&)this->object.object_items();
     json11::Json json = json11::Json(json11::Json::object());
     dict[key] = json;
-    return Reflect(this->coord, json);
+    return JsonRef(this->coord, json);
 }
 
-inline Reflect Reflect::SetArray(const char* key) {
+inline JsonRef JsonRef::SetArray(const char* key) {
     if (!this->object.is_object()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     auto& dict = (json11::Json::object&)this->object.object_items();
     json11::Json json = json11::Json(json11::Json::array());
     dict[key] = json;
-    return Reflect(this->coord, json);
+    return JsonRef(this->coord, json);
 }
 
-inline Reflect Reflect::AddObject() {
+inline JsonRef JsonRef::AddObject() {
     if (!this->object.is_array()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     auto& arr = (json11::Json::array&)this->object.array_items();
     json11::Json json = json11::Json(json11::Json::object());
     arr.push_back(json);
-    return Reflect(this->coord, json);
+    return JsonRef(this->coord, json);
 }
 
-inline Reflect Reflect::AddArray() {
+inline JsonRef JsonRef::AddArray() {
     if (!this->object.is_array()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     auto& arr = (json11::Json::array&)this->object.array_items();
     json11::Json json = json11::Json(json11::Json::array());
     arr.push_back(json);
-    return Reflect(this->coord, json);
+    return JsonRef(this->coord, json);
 }
 
-inline int Reflect::AddNumber(double value) {
+inline int JsonRef::AddNumber(double value) {
     if (!this->object.is_array()) {
         return ErrorType;
     }
@@ -401,7 +423,7 @@ inline int Reflect::AddNumber(double value) {
     return 0;
 }
 
-inline int Reflect::AddString(const char* value) {
+inline int JsonRef::AddString(const char* value) {
     if (!this->object.is_array()) {
         return ErrorType;
     }
@@ -411,7 +433,7 @@ inline int Reflect::AddString(const char* value) {
     return 0;
 }
 
-inline int Reflect::AddBool(bool value) {
+inline int JsonRef::AddBool(bool value) {
     if (!this->object.is_array()) {
         return ErrorType;
     }
@@ -421,7 +443,7 @@ inline int Reflect::AddBool(bool value) {
     return 0;
 }
 
-inline int Reflect::AddInteger(int value) {
+inline int JsonRef::AddInteger(int value) {
     if (!this->object.is_array()) {
         return ErrorType;
     }
@@ -431,7 +453,7 @@ inline int Reflect::AddInteger(int value) {
     return 0;
 }
 
-inline int Reflect::Count() {
+inline int JsonRef::Count() {
     if (this->object.is_array()) {
         auto& arr = (json11::Json::array&)this->object.array_items();
         return arr.size();
@@ -442,7 +464,7 @@ inline int Reflect::Count() {
     return 0;
 }
 
-inline bool Reflect::IsObject(size_t index) {
+inline bool JsonRef::IsObject(size_t index) {
     if (!this->object.is_array()) {
         return false;
     }
@@ -454,7 +476,7 @@ inline bool Reflect::IsObject(size_t index) {
     return json.is_object();
 }
 
-inline bool Reflect::IsArray(size_t index){
+inline bool JsonRef::IsArray(size_t index){
     if (!this->object.is_array()) {
         return false;
     }
@@ -466,7 +488,7 @@ inline bool Reflect::IsArray(size_t index){
     return json.is_array();
 }   
 
-inline bool Reflect::IsString(size_t index){
+inline bool JsonRef::IsString(size_t index){
     if (!this->object.is_array()) {
         return false;
     }
@@ -478,7 +500,7 @@ inline bool Reflect::IsString(size_t index){
     return json.is_string();
 }   
 
-inline bool Reflect::IsNumber(size_t index){
+inline bool JsonRef::IsNumber(size_t index){
     if (!this->object.is_array()) {
         return false;
     }
@@ -490,7 +512,7 @@ inline bool Reflect::IsNumber(size_t index){
     return json.is_number();
 }
 
-inline bool Reflect::IsInteger(size_t index){
+inline bool JsonRef::IsInteger(size_t index){
     if (!this->object.is_array()) {
         return false;
     }
@@ -502,7 +524,7 @@ inline bool Reflect::IsInteger(size_t index){
     return json.is_number();
 }
 
-inline bool Reflect::IsNull(size_t index){
+inline bool JsonRef::IsNull(size_t index){
     if (!this->object.is_array()) {
         return false;
     }
@@ -514,7 +536,7 @@ inline bool Reflect::IsNull(size_t index){
     return json.is_null();
 }    
 
-inline bool Reflect::IsBool(size_t index){
+inline bool JsonRef::IsBool(size_t index){
     if (!this->object.is_array()) {
         return false;
     }
@@ -526,37 +548,37 @@ inline bool Reflect::IsBool(size_t index){
     return json.is_bool();
 }                        
 
-inline Reflect Reflect::GetObject(size_t index) {
+inline JsonRef JsonRef::GetObject(size_t index) {
     if (!this->object.is_array()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     auto& arr = (json11::Json::array&)this->object.array_items();
     if (index < 0 || index >= arr.size()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     auto& json = arr.at(index);
     if (!json.is_object()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
-    return Reflect(this->coord, json);
+    return JsonRef(this->coord, json);
 }
 
-inline Reflect Reflect::GetArray(size_t index) {
+inline JsonRef JsonRef::GetArray(size_t index) {
     if (!this->object.is_array()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     auto& arr = (json11::Json::array&)this->object.array_items();
     if (index < 0 || index >= arr.size()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
     auto& json = arr.at(index);
     if (!json.is_array()) {
-        return Reflect(this->coord);
+        return JsonRef(this->coord);
     }
-    return Reflect(this->coord, json);
+    return JsonRef(this->coord, json);
 }
 
-inline const char* Reflect::GetString(size_t index) {
+inline const char* JsonRef::GetString(size_t index) {
     if (!this->object.is_array()) {
         return nullptr;
     }
@@ -571,7 +593,7 @@ inline const char* Reflect::GetString(size_t index) {
     return json.string_value().c_str();
 }
 
-inline double Reflect::GetNumber(size_t index) {
+inline double JsonRef::GetNumber(size_t index) {
     if (!this->object.is_array()) {
         return 0;
     }
@@ -586,7 +608,7 @@ inline double Reflect::GetNumber(size_t index) {
     return json.number_value();
 }
 
-inline int Reflect::GetInteger(size_t index) {
+inline int JsonRef::GetInteger(size_t index) {
     if (!this->object.is_array()) {
         return 0;
     }
@@ -601,7 +623,7 @@ inline int Reflect::GetInteger(size_t index) {
     return json.int_value();
 }
 
-inline bool Reflect::GetBool(size_t index) {
+inline bool JsonRef::GetBool(size_t index) {
     if (!this->object.is_array()) {
         return false;
     }

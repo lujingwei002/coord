@@ -34,38 +34,38 @@ TEST_F(TestAsyncCache, TestSetGet) {
     config->ExpireTime = 0;
     auto promise = client->main();
     ASSERT_TRUE(promise);
-    promise->Then([this](coord::cache::AsyncClient* client, coord::cache::CacheReader& reader) {
+    promise->Then([this](auto client, auto reader) {
         ASSERT_TRUE(true);
         auto promise = client->Delete("aa");
         ASSERT_TRUE(promise);
-        promise->Then([this](coord::cache::AsyncClient* client, coord::cache::CacheReader& reader) {
-            ASSERT_FALSE(reader.Error());
+        promise->Then([this](auto client, auto reader) {
+            ASSERT_FALSE(reader->Error());
             auto promise = client->Set("aa", "bb", 60);
             ASSERT_TRUE(promise);
-            promise->Then([this](coord::cache::AsyncClient* client, coord::cache::CacheReader& reader) {
-                ASSERT_FALSE(reader.Error());
-                ASSERT_STREQ(reader.String(), "OK");
+            promise->Then([this](auto client, auto reader) {
+                ASSERT_FALSE(reader->Error());
+                ASSERT_STREQ(reader->String(), "OK");
                 auto promise = client->Get("aa");
                 ASSERT_TRUE(promise);
-                promise->Then([this](coord::cache::AsyncClient* client, coord::cache::CacheReader& reader) {
-                    ASSERT_FALSE(reader.Error());
-                    ASSERT_STREQ(reader.String(), "bb");
+                promise->Then([this](auto client, auto reader) {
+                    ASSERT_FALSE(reader->Error());
+                    ASSERT_STREQ(reader->String(), "bb");
                     this->coord->Destory(0);
                 });
-                promise->Else([this](coord::cache::AsyncClient* client, coord::cache::CacheReader& reader) {
+                promise->Else([this](auto client, auto reader) {
                     ASSERT_TRUE(false);
                 });
             });
-            promise->Else([this](coord::cache::AsyncClient* client, coord::cache::CacheReader& reader) {
+            promise->Else([this](auto client, auto reader) {
                 ASSERT_TRUE(false);
             });
         });
-        promise->Else([this](coord::cache::AsyncClient* client, coord::cache::CacheReader& reader) {
+        promise->Else([this](auto client, auto reader) {
             ASSERT_TRUE(false);
         });
         
     });
-    promise->Else([this](coord::cache::AsyncClient* client, coord::cache::CacheReader& reader) {
+    promise->Else([this](auto client, auto reader) {
         ASSERT_TRUE(false);
     });
     this->coord->loopTest();

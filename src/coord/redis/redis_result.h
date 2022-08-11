@@ -29,7 +29,6 @@ class RedisResult : public Destoryable {//tolua_export
 CC_CLASS(RedisResult);
 friend Client;
 friend AsyncClient;
-    
 private:
     Coord*      coord;
     redisReply* reply;
@@ -39,14 +38,11 @@ private:
 
 
 public:
-    RedisResult(const RedisResult* other);
-    RedisResult(const RedisResult& other);
-    RedisResult(std::nullptr_t);
-    virtual ~RedisResult();                 //tolua_export
+    virtual ~RedisResult();                     //tolua_export            
 public:
-    RedisResult& operator=(const RedisResult& other);
-    bool operator== (std::nullptr_t v) const;
-	bool operator!= (std::nullptr_t v) const;
+    virtual DestoryableRef<RedisResult> ref() {
+        return DestoryableRef<RedisResult>(this);
+    }
     /// 是否错误
     bool Error() const;                       //tolua_export
     /// 是否数组

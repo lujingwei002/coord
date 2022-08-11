@@ -19,6 +19,8 @@
 #include "coord/builtin/exception.h"
 #include "coord/event/init.h"
 #include "coord/script/script.h"
+#include "coord/cache/cache_result.h"
+#include "coord/cache/cache_async_client.h"
 #include "coord/coord.h"
 #include <string.h>
 #include <typeinfo>       // operator typeid
@@ -741,13 +743,13 @@ void ScriptComponent::recvRedisReply(redis::AsyncClient* const client, const red
     lua_pop(L, lua_gettop(L));
 }
 
-void ScriptComponent::recvCacheReply(cache::AsyncClient* client, cache::CacheReader& reply, const char* script, int ref) {
+void ScriptComponent::recvCacheReply(cache::AsyncClient* client, cache::CacheResult* result, const char* script, int ref) {
     this->coord->CoreLogDebug("[ScriptComponent] recvCacheReply");
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
     tolua_pushusertype(L, this, "coord::ScriptComponent");
-    tolua_pushusertype(L, client, "coord::cache::AsyncClient");
-    tolua_pushusertype(L, &reply, "coord::cache::CacheReader");
+    tolua_pushusertype(L, client, client->TypeName());
+    tolua_pushusertype(L, &result, result->TypeName());
     if (lua_pcall(L, 3, 0, 0) != 0) {
         this->coord->CoreLogError("[ScriptComponent] recvCacheReply %s %s failed, error=%s", this->scriptName, script, lua_tostring(L, -1));
         const char* error = lua_tostring(L, -1); 

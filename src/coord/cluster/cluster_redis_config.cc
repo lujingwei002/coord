@@ -36,12 +36,12 @@ int cluster_redis_config::registerSelf() {
         return -1;
     }
     auto reply = this->syncClient->HMSET(this->group.c_str(), this->name.c_str(), this->version);
-    if(reply.Error()){
-        this->coord->CoreLogError("[cluster_redis_config] registerSelf failed, error=%s", reply.String());
+    if(reply->Error()){
+        this->coord->CoreLogError("[cluster_redis_config] registerSelf failed, error=%s", reply->String());
         return -1;
     }
     reply = this->syncClient->SETEX(this->rkey.c_str(), this->address.c_str(),  this->cluster->config.Expire);
-    if(reply.Error()){
+    if(reply->Error()){
         return -2;
     }
     return 0;
@@ -173,10 +173,10 @@ int cluster_redis_config::checkNodeStatus(const char* nodeName, uint64_t version
         return -1;
     }
     auto reply = this->syncClient->GET(rkey);
-    if (reply.Error()) {
+    if (reply->Error()) {
         return -1;
     }
-    if (reply.Empty()) {
+    if (reply->Empty()) {
         auto it = this->nodeDict.find(nodeName);
         if (it != this->nodeDict.end()) {
             this->nodeDict.erase(it);
@@ -184,7 +184,7 @@ int cluster_redis_config::checkNodeStatus(const char* nodeName, uint64_t version
         }
         this->syncClient->HDEL(this->group.c_str(), nodeName);
     } else {
-        const char* address = reply.String();
+        const char* address = reply->String();
         auto it = this->nodeDict.find(nodeName);
         if (it == this->nodeDict.end()) {
             cluster_node* node = new cluster_node(nodeName, address, version);
@@ -201,20 +201,20 @@ int cluster_redis_config::checkNodeStatus(const char* nodeName, uint64_t version
 
 int cluster_redis_config::checkNodeStatus() {
     auto reply = this->syncClient->HGETALL(this->group.c_str());
-    if (reply.Error()) {
+    if (reply->Error()) {
         this->coord->CoreLogError("[cluster_redis_config] checkNodeStatus, HGETALL failed");
         return -1;
     }
     //1.检查新增或者过期的节点
-    for (int i = 0; i < reply.ArrayCount() / 2; i++){
-        const char* nodeName = reply.String(i*2);
-        uint64_t version = atol(reply.String(i*2+1));
+    for (int i = 0; i < reply->ArrayCount() / 2; i++){
+        const char* nodeName = reply->String(i*2);
+        uint64_t version = atol(reply->String(i*2+1));
         this->checkNodeStatus(nodeName, version);
     }
     //2.检查删除的节点
     std::map<std::string, bool> lastNodeDict;
-    for (int i = 0; i < reply.ArrayCount() / 2; i++){
-        const char* nodeName = reply.String(i*2);
+    for (int i = 0; i < reply->ArrayCount() / 2; i++){
+        const char* nodeName = reply->String(i*2);
         lastNodeDict[nodeName] = true;
     }
     for(auto it = this->nodeDict.begin(); it != this->nodeDict.end();) {

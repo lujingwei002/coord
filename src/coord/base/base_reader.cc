@@ -92,7 +92,7 @@ script::Reflect& base_reader::Table() {
     return this->table;
 }
 
-json::Reflect base_reader::Json() {
+json::JsonRef base_reader::Json() {
     return this->coord->Json->Decode(this->payload.Data());
 }
 

@@ -8,69 +8,14 @@ namespace redis {
 
 CC_IMPLEMENT(RedisResult, "coord::redis::RedisResult")
 
-RedisResult::RedisResult(std::nullptr_t) {
-    this->coord = coorda;
-    this->reply = nullptr;
-}
-
 RedisResult::RedisResult(Coord *coord, redisReply* reply)  {
     this->coord = coord;
     this->reply = reply;
-    if(this->reply) {
-        refManager.reference(this->reply);
-    }
-}
-
-RedisResult::RedisResult(const RedisResult& other) {
-    this->coord = other.coord;
-    this->reply = other.reply;
-    if(this->reply) {
-        refManager.reference(this->reply);
-    }
-}
-
-RedisResult::RedisResult(const RedisResult* other) {
-    if (nullptr == other) {
-        this->coord = nullptr;
-        this->reply = nullptr;
-    } else {
-        this->coord = other->coord;
-        this->reply = other->reply;
-        if(this->reply) {
-            refManager.reference(this->reply);
-        }
-    }
-}
-
-RedisResult& RedisResult::operator=(const RedisResult& other) {
-    if(this->reply) {
-        if (refManager.release(this->reply) == 0) {
-            freeReplyObject(this->reply);
-            this->reply = nullptr;
-        }
-    }
-    this->coord = other.coord;
-    this->reply = other.reply;
-    if(this->reply) {
-        refManager.reference(this->reply);
-    }
-    return *this;
-}
-
-bool RedisResult::operator== (std::nullptr_t v) const  {
-    return this->reply == nullptr;
-}
-
-bool RedisResult::operator!= (std::nullptr_t v) const  {
-    return this->reply != nullptr;
 }
 
 RedisResult::~RedisResult() {
     if(this->reply) {
-        if (refManager.release(this->reply) == 0) {
-            printf("freeReplyObject\n");
-            freeReplyObject(this->reply);
-        }
+        freeReplyObject(this->reply);
         this->reply = nullptr;
     }
 }

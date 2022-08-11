@@ -48,7 +48,7 @@ class RedisResult;
 
 namespace cache {
 class AsyncClient;
-class CacheReader;
+class CacheResult;
 }
 namespace event {
 class BaseEvent;
@@ -112,11 +112,11 @@ public:
     // for worker end
     //
     // for redis begin
-    void recvRedisReply(redis::AsyncClient* client, const redis::RedisResult* reply, const char* script, int ref);
+    void recvRedisReply(redis::AsyncClient* client, const redis::RedisResult* result, const char* script, int ref);
     // for redis end
 
     // for redis begin
-    void recvCacheReply(cache::AsyncClient* client, cache::CacheReader& reply, const char* script, int ref);
+    void recvCacheReply(cache::AsyncClient* client, cache::CacheResult* result, const char* script, int ref);
     // for redis end
 
     // for timer begin

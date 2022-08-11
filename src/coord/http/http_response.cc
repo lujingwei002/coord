@@ -80,7 +80,7 @@ bool HttpResponse::Text(const char* content) {
     return true;
 }
 
-bool HttpResponse::Json(json::Reflect& json) {
+bool HttpResponse::Json(json::JsonRef& json) {
     this->coord->CoreLogDebug("[HttpResponse] JSON, content=%s", json.ToString());
     if(json.Encode(this->Payload)){
         return false;

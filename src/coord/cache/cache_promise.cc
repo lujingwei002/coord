@@ -1,6 +1,6 @@
 #include "coord/cache/cache_promise.h"
 #include "coord/cache/cache_async_client.h"
-#include "coord/cache/cache_reader.h"
+#include "coord/cache/cache_result.h"
 #include "coord/component/script_component.h"
 #include "coord/builtin/exception.h"
 #include "coord/script/script.h"
@@ -115,26 +115,26 @@ int Promise::Else(lua_State* L) {
     return 0;
 }
 
-void Promise::resolve(AsyncClient* client, CacheReader& reader) {
+void Promise::resolve(AsyncClient* client, CacheResult* result) {
     //this->coord->CoreLogDebug("[CachePromise] resolve");
     if(this->resolveFunc == NULL) {
         return;
     }
     try{
         //传递到逻辑层
-        this->resolveFunc(client, reader);
+        this->resolveFunc(client, result);
     } catch(ScriptException& e){
     }
 }
 
-void Promise::reject(AsyncClient* client, CacheReader& reader){
+void Promise::reject(AsyncClient* client, CacheResult* result){
     //this->coord->CoreLogDebug("[CachePromise] reject");
     if(this->rejectFunc == NULL) {
         return;
     }
     try{
         //传递到逻辑层
-        this->rejectFunc(client, reader);
+        this->rejectFunc(client, result);
     } catch(ScriptException& e){
     }
 }
@@ -143,10 +143,9 @@ void Promise::reject(AsyncClient* client, std::nullptr_t) {
     if(this->rejectFunc == nullptr) {
         return;
     }
-    static thread_local CacheReader reader(nullptr);
     try{
         //传递到逻辑层
-        this->rejectFunc(client, reader);
+        this->rejectFunc(client, nullptr);
     } catch(ScriptException& e){
     }
 }
@@ -155,10 +154,9 @@ void Promise::resolve(AsyncClient* client, std::nullptr_t) {
     if(this->resolveFunc == nullptr) {
         return;
     }
-    static thread_local CacheReader reader(nullptr);
     try{
         //传递到逻辑层
-        this->resolveFunc(client, reader);
+        this->resolveFunc(client, nullptr);
     } catch(ScriptException& e){
     }
 }

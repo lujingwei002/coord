@@ -60,28 +60,28 @@ void gate_cluster::onDestory() {
 int gate_cluster::registerSelf() {
     this->coord->CoreLogDebug("[gate_cluster] registerSelf");
     {
-        auto reply = this->syncClient->HMSET(this->selfKey.c_str(), "version", this->coord->Config->Basic.ShortVersion.c_str());
-        if (reply.Error()){
+        auto result = this->syncClient->HMSET(this->selfKey.c_str(), "version", this->coord->Config->Basic.ShortVersion.c_str());
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
-        reply = this->syncClient->HMSET(this->selfKey.c_str(), "address", this->gate->address.c_str());
-        if (reply.Error()){
+        result = this->syncClient->HMSET(this->selfKey.c_str(), "address", this->gate->address.c_str());
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
-        reply = this->syncClient->HMSET(this->selfKey.c_str(), "host", this->coord->Config->Gate.Host.c_str());
-        if (reply.Error()){
+        result = this->syncClient->HMSET(this->selfKey.c_str(), "host", this->coord->Config->Gate.Host.c_str());
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
-        reply = this->syncClient->HMSET(this->selfKey.c_str(), "port", std::to_string(this->coord->Config->Gate.Port).c_str());
-        if (reply.Error()){
+        result = this->syncClient->HMSET(this->selfKey.c_str(), "port", std::to_string(this->coord->Config->Gate.Port).c_str());
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
-        reply = this->syncClient->HMSET(this->selfKey.c_str(), "online", "0");
-        if (reply.Error()){
+        result = this->syncClient->HMSET(this->selfKey.c_str(), "online", "0");
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='HMSET err'");
             return -1;
         }
@@ -92,15 +92,15 @@ int gate_cluster::registerSelf() {
         }
     }
     {
-        auto reply = this->syncClient->SADD(this->gateSetKey.c_str(), this->coord->Config->Basic.Name.c_str());
-        if (reply.Error()){
+        auto result = this->syncClient->SADD(this->gateSetKey.c_str(), this->coord->Config->Basic.Name.c_str());
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='SADD err'");
             return -1;
         }
     }
     {
-        auto reply = this->syncClient->SADD(this->gateSetVersionKey.c_str(), this->coord->Config->Basic.Name.c_str());
-        if (reply.Error()){
+        auto result = this->syncClient->SADD(this->gateSetVersionKey.c_str(), this->coord->Config->Basic.Name.c_str());
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] registerSelf failed, error='SADD err'");
             return -1;
         }
@@ -111,22 +111,22 @@ int gate_cluster::registerSelf() {
 int gate_cluster::clearSelf() {
     this->coord->CoreLogError("[gate_cluster] clearSelf");
     {
-        auto reply = this->syncClient->DEL(this->selfKey.c_str());
-        if (reply.Error()){
+        auto result = this->syncClient->DEL(this->selfKey.c_str());
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] clearSelf failed, error='DEL err'");
             return -1;
         }
     }
     {
-        auto reply = this->syncClient->SREM(this->gateSetKey.c_str(), this->coord->Config->Basic.Name.c_str());
-        if (reply.Error()){
+        auto result = this->syncClient->SREM(this->gateSetKey.c_str(), this->coord->Config->Basic.Name.c_str());
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] clearSelf failed, error='SREM err'");
             return -1;
         }
     }
     {
-        auto reply = this->syncClient->SREM(this->gateSetVersionKey.c_str(), this->coord->Config->Basic.Name.c_str());
-        if (reply.Error()){
+        auto result = this->syncClient->SREM(this->gateSetVersionKey.c_str(), this->coord->Config->Basic.Name.c_str());
+        if (result->Error()){
             this->coord->CoreLogError("[gate_cluster] clearSelf failed, error='SREM err'");
             return -1;
         }
@@ -136,37 +136,37 @@ int gate_cluster::clearSelf() {
 
 int gate_cluster::clearUser() {
     this->coord->CoreLogError("[gate_cluster] clearUser");
-    auto reply = this->syncClient->HGETALL(this->userHashKey.c_str());
-    if (reply.Error()){
+    auto result = this->syncClient->HGETALL(this->userHashKey.c_str());
+    if (result->Error()){
         this->coord->CoreLogError("[gate_cluster] clearUser failed, error='HGETALL err'");
         return -1;
     }
     std::map<std::string, bool> lastNodeDict;
-    for (int i = 0; i < reply.ArrayCount() / 2; i++){
-        const char* userId = reply.String(i*2);
+    for (int i = 0; i < result->ArrayCount() / 2; i++){
+        const char* userId = result->String(i*2);
         std::string userKey = this->group + ":" + userId;
-        auto reply1 = this->syncClient->GET(userKey.c_str());
-        if (reply1.Error()) {
+        auto result1 = this->syncClient->GET(userKey.c_str());
+        if (result1->Error()) {
             this->coord->CoreLogError("[gate_cluster] clearUser failed, user key=%s, error='GET err'", userKey.c_str());
             continue;
         }
-        if (reply1.Empty()) {
+        if (result1->Empty()) {
             this->coord->CoreLogError("[gate_cluster] clearUser failed, user key=%s, error='GET empty'", userKey.c_str());
             continue;
         }
-        if (strcmp(reply1.String(), this->coord->Config->Basic.Name.c_str()) != 0) {
-           this->coord->CoreLogError("[gate_cluster] clear failed, local='%s', other='%s'", this->coord->Config->Basic.Name.c_str(), reply1.String());
+        if (strcmp(result1->String(), this->coord->Config->Basic.Name.c_str()) != 0) {
+           this->coord->CoreLogError("[gate_cluster] clear failed, local='%s', other='%s'", this->coord->Config->Basic.Name.c_str(), result1->String());
             continue;
         }
-        this->coord->CoreLogDebug("[gate_cluster] clearUser, user key=%s, gate=%s\n", userKey.c_str(), reply1.String());
-        auto reply2 = this->syncClient->DEL(userKey.c_str());
-        if (reply2.Error()) {
+        this->coord->CoreLogDebug("[gate_cluster] clearUser, user key=%s, gate=%s\n", userKey.c_str(), result1->String());
+        auto result2 = this->syncClient->DEL(userKey.c_str());
+        if (result2->Error()) {
             this->coord->CoreLogError("[gate_cluster] clearUser failed, error='DEL err'");
             continue;
         }
     }
-    reply = this->syncClient->DEL(this->userHashKey.c_str());
-    if (reply.Error()){
+    result = this->syncClient->DEL(this->userHashKey.c_str());
+    if (result->Error()){
         this->coord->CoreLogError("[gate_cluster] clearUser failed, error='DEL err'");
         return -1;
     }

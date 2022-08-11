@@ -3,6 +3,6 @@
 namespace coord {
     namespace json {
         class JsonMgr;
-        class Reflect;
+        class JsonRef;
     }
 } 

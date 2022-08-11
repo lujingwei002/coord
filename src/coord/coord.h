@@ -61,6 +61,7 @@ class Coord { //tolua_export
 
 friend class worker::Worker;
 friend class Argument;
+friend class Destoryable;
 friend class coord::Config;
 friend class coord::Environment;
 friend class coord::run::Running;
@@ -294,6 +295,8 @@ private:
     uint64_t onGC();        
     int onAwake(); 
     uint64_t onUpdate(); 
+    void insertHeapObject(Destoryable* object);
+    void removeHeapObject(Destoryable* object);
 public:
     coord::Config*          Config;         //tolua_export
     script::Script*         Script;         //tolua_export   
@@ -315,26 +318,27 @@ public:
     action::ActionMgr*      Action;         
     closure::ClosureMgr*    Closure;        //tolua_export
     login::LoginSvr*        Login;          //tolua_export
-    json::JsonMgr*          Json;           
+    json::JsonMgr*          Json;           //tolua_export   
     log4cc::LoggerMgr*      LoggerMgr;   
     int                     ExitCode;   
     std::string             ProcDir;        
 private:
-    uint64_t            frame;
-    sql::sql_mgr*       sqlMgr;         
-    timer::TimerMgr*    Timer;
-    SceneMgr*           sceneMgr;
-    uv_loop_t           loop;
-    log4cc::Category*   logger;
-    log4cc::Category*   coreLogger;
-    uv_signal_t         sigInt;
-    uv_signal_t         sigUsr1;
-    uv_signal_t         sigUsr2;
-    worker_role         workerRole;
-    uv_pid_t            pid;
-    bool                isAwake;
-    uint64_t            time;
-    uint64_t            nowRecord;
+    uint64_t                    frame;
+    sql::sql_mgr*               sqlMgr;         
+    timer::TimerMgr*            Timer;
+    SceneMgr*                   sceneMgr;
+    uv_loop_t                   loop;
+    log4cc::Category*           logger;
+    log4cc::Category*           coreLogger;
+    uv_signal_t                 sigInt;
+    uv_signal_t                 sigUsr1;
+    uv_signal_t                 sigUsr2;
+    worker_role                 workerRole;
+    uv_pid_t                    pid;
+    bool                        isAwake;
+    uint64_t                    time;
+    uint64_t                    nowRecord;
+    std::set<Destoryable*>      heapObjectSet;
 private:
     
 public:

@@ -1,5 +1,5 @@
 #include "coord/cache/cache_client.h"
-#include "coord/cache/cache_reader.h"
+#include "coord/cache/cache_result.h"
 #include "coord/redis/redis_client.h"
 #include "coord/redis/redis_result.h"
 #include "coord/coord.h"
@@ -70,33 +70,33 @@ int Client::Set(const char* key, const char* data, size_t len, size_t expire){
         expire = this->config.ExpireTime;
     }
     if (expire > 0){
-        auto reply = this->client->SETEX(key, data, len, expire);
-        if (reply.Error()) {
+        auto result = this->client->SETEX(key, data, len, expire);
+        if (result->Error()) {
             return -1;
         }
     } else {
-        auto reply = this->client->SET(key, data, len);
-        if (reply.Error()) {
+        auto result = this->client->SET(key, data, len);
+        if (result->Error()) {
             return -1;
         }
     }
     return 0;
 }
 
-CacheReader Client::Get(const char* key) {
+CacheResult* Client::Get(const char* key) {
     if(this->client == nullptr){
         throw NotConfigException("cache");
     }
-    auto reply = this->client->GET(key);
-    return CacheReader(this->coord, reply);
+    auto result = this->client->GET(key);
+    return new CacheResult(this->coord, result);
 }
 
 int Client::Delete(const char* key) {
     if(this->client == nullptr){
         throw NotConfigException("cache");
     }
-    auto reply = this->client->DEL(key);
-    if (reply.Error()) {
+    auto result = this->client->DEL(key);
+    if (result->Error()) {
         return -1;
     }
     return 0;

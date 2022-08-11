@@ -70,8 +70,8 @@ TEST_F(TestRedis, TestReplyNull) {
     client->DefaultConfig()->DB = "aa";
     err = client->Connect();
     ASSERT_NE(err, 0);
-    auto reply = client->AUTH("hello");
-    ASSERT_TRUE(reply == nullptr);
+    auto result = owner_move(client->AUTH("hello"));
+    ASSERT_TRUE(result == nullptr);
 }
 
 TEST_F(TestRedis, TestSetGet) {
@@ -83,29 +83,29 @@ TEST_F(TestRedis, TestSetGet) {
     err = client->Connect();
     ASSERT_EQ(err, 0);
     {
-       auto reply = client->SELECT("aa");
-       ASSERT_TRUE(reply.Error());
-       reply = client->SELECT("3");
-       ASSERT_FALSE(reply.Error());
-       ASSERT_STREQ(reply.String(), "OK");
+       auto result = owner_move(client->SELECT("aa"));
+       ASSERT_TRUE(result->Error());
+       result = owner_move(client->SELECT("3"));
+       ASSERT_FALSE(result->Error());
+       ASSERT_STREQ(result->String(), "OK");
     }
     {
-        auto reply = client->SET("aa", "bb");
-        ASSERT_FALSE(reply.Error());
-        ASSERT_STREQ(reply.String(), "OK");
+        auto result = owner_move(client->SET("aa", "bb"));
+        ASSERT_FALSE(result->Error());
+        ASSERT_STREQ(result->String(), "OK");
 
-        reply = client->GET("aa");
-        ASSERT_FALSE(reply.Error());
-        ASSERT_FALSE(reply.Empty());
-        ASSERT_STREQ(reply.String(), "bb");
+        result = owner_move(client->GET("aa"));
+        ASSERT_FALSE(result->Error());
+        ASSERT_FALSE(result->Empty());
+        ASSERT_STREQ(result->String(), "bb");
 
-        reply = client->DEL("aa");
-        ASSERT_FALSE(reply.Error());
-        ASSERT_EQ(reply.Integer(), 1);
+        result = owner_move(client->DEL("aa"));
+        ASSERT_FALSE(result->Error());
+        ASSERT_EQ(result->Integer(), 1);
 
-        reply = client->GET("aa");
-        ASSERT_FALSE(reply.Error());
-        ASSERT_TRUE(reply.Empty());
+        result = owner_move(client->GET("aa"));
+        ASSERT_FALSE(result->Error());
+        ASSERT_TRUE(result->Empty());
     }
     //printf("%s\n", this->cache->get("coord-cache").String());
 }

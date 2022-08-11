@@ -59,28 +59,28 @@ public:
     void Close();                               //tolua_export
 
     /// #connection
-    RedisResult SELECT(const char* db);               //tolua_export
-    RedisResult AUTH(const char* password);           //tolua_export
+    RedisResult* SELECT(const char* db);               //tolua_export
+    RedisResult* AUTH(const char* password);           //tolua_export
     uint64_t TIME();                            //tolua_export
 
     /// #string 
-    RedisResult DEL(const char* key);                                            //tolua_export
-    RedisResult GET(const char* key);                                            //tolua_export
-    RedisResult SET(const char* key, const char* value);                         //tolua_export
-    RedisResult SET(const char* key, const char* data, size_t len);
+    RedisResult* DEL(const char* key);                                            //tolua_export
+    RedisResult* GET(const char* key);                                            //tolua_export
+    RedisResult* SET(const char* key, const char* value);                         //tolua_export
+    RedisResult* SET(const char* key, const char* data, size_t len);
     int EXPIRE(const char* key, uint64_t expire);//tolua_export
-    RedisResult SETEX(const char* key, const char* data, size_t len, size_t expire);
-    RedisResult SETEX(const char* key, const char* data, size_t expire);
+    RedisResult* SETEX(const char* key, const char* data, size_t len, size_t expire);
+    RedisResult* SETEX(const char* key, const char* data, size_t expire);
 
     /// #hash
-    RedisResult HGETALL(const char* key);                                        //tolua_export
+    RedisResult* HGETALL(const char* key);                                        //tolua_export
     int HDEL(const char* key, const char* field);                          //tolua_export
-    RedisResult HMSET(const char* key, const char* field, const char* value);    //tolua_export
-    RedisResult HMSET(const char* key, const char* field, uint64_t value);       //tolua_export
+    RedisResult* HMSET(const char* key, const char* field, const char* value);    //tolua_export
+    RedisResult* HMSET(const char* key, const char* field, uint64_t value);       //tolua_export
 
     /// #set
-    RedisResult SADD(const char* key, const char* value);
-    RedisResult SREM(const char* key, const char* value);
+    RedisResult* SADD(const char* key, const char* value);
+    RedisResult* SREM(const char* key, const char* value);
 };//tolua_export
 
 

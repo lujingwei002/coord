@@ -49,7 +49,7 @@ private:
 public:
     int Text(lua_State* L);             //tolua_export
     bool Text(const char* content);     //tolua_export
-    bool Json(json::Reflect& json);     //tolua_export
+    bool Json(json::JsonRef& json);     //tolua_export
     int Upgrade();                      //tolua_export
     void PageNotFound();                //tolua_export
     void Exception(const char* msg);    //tolua_export

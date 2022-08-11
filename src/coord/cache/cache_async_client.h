@@ -18,7 +18,7 @@ class AsyncClient;
 namespace cache {//tolua_export
 
 
-class CacheReader;
+class CacheResult;
 class Promise;
 
 class AsyncClient : public Destoryable {//tolua_export

@@ -1,5 +1,5 @@
 #include "coord/cache/cache_async_client.h"
-#include "coord/cache/cache_reader.h"
+#include "coord/cache/cache_result.h"
 #include "coord/cache/cache_promise.h"
 #include "coord/redis/redis_async_client.h"
 #include "coord/redis/redis_result.h"
@@ -63,13 +63,13 @@ Promise* AsyncClient::main() {
         this->coord->Destory(promise);
         return nullptr;
     }
-    p->Then([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply){
-        CacheReader reader(this->coord, nullptr);
+    p->Then([this, promise](auto client, auto reply){
+       // CacheResult result = new CacheResult(this->coord, nullptr);
         promise->resolve(this, nullptr);
         this->coord->Destory(promise);
     });
-    p->Else([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply){
-        CacheReader reader(this->coord, nullptr);
+    p->Else([this, promise](auto client, auto reply){
+       // CacheResult result = new CacheResult(this->coord, nullptr);
         promise->reject(this, nullptr);
         this->coord->Destory(promise);
     });
@@ -94,15 +94,17 @@ Promise* AsyncClient::Set(const char* key, const char* data, size_t len, size_t 
             return nullptr;
         }
         Promise* promise = cache::newPromise(this->coord, this);
-        p->Then([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply){
-            CacheReader reader(this->coord, reply);
-            promise->resolve(this, reader);
+        p->Then([this, promise](auto client, auto reply){
+            auto result = new CacheResult(this->coord, reply);
+            promise->resolve(this, result);
             this->coord->Destory(promise);
+            this->coord->Destory(result);
         });
-        p->Else([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply) {
-            CacheReader reader(this->coord, reply);
-            promise->reject(this, reader);
+        p->Else([this, promise](auto client, auto reply) {
+            auto result = new CacheResult(this->coord, reply);
+            promise->reject(this, result);
             this->coord->Destory(promise);
+            this->coord->Destory(result);
         });
         return promise;
     } else {
@@ -111,15 +113,17 @@ Promise* AsyncClient::Set(const char* key, const char* data, size_t len, size_t 
             return nullptr;
         }
         Promise* promise = cache::newPromise(this->coord, this);
-        p->Then([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply){
-            CacheReader reader(this->coord, reply);
-            promise->resolve(this, reader);
+        p->Then([this, promise](auto client, auto reply){
+            auto result = new CacheResult(this->coord, reply);
+            promise->resolve(this, result);
             this->coord->Destory(promise);
+            this->coord->Destory(result);
         });
-        p->Else([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply) {
-            CacheReader reader(this->coord, reply);
-            promise->reject(this, reader);
+        p->Else([this, promise](auto client, auto reply) {
+            auto result = new CacheResult(this->coord, reply);
+            promise->reject(this, result);
             this->coord->Destory(promise);
+            this->coord->Destory(result);
         });
         return promise;
     }
@@ -135,15 +139,17 @@ Promise* AsyncClient::Get(const char* key) {
         return nullptr;
     }
     Promise* promise = cache::newPromise(this->coord, this);
-    p->Then([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply){
-        CacheReader reader(this->coord, reply);
-        promise->resolve(this, reader);
+    p->Then([this, promise](auto client, auto reply){
+        auto result = new CacheResult(this->coord, reply);
+        promise->resolve(this, result);
         this->coord->Destory(promise);
+        this->coord->Destory(result);
     });
-    p->Else([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply) {
-        CacheReader reader(this->coord, reply);
-        promise->reject(this, reader);
+    p->Else([this, promise](auto client, auto reply) {
+        auto result = new CacheResult(this->coord, reply);
+        promise->reject(this, result);
         this->coord->Destory(promise);
+        this->coord->Destory(result);
     });
     return promise;
 }
@@ -157,15 +163,17 @@ Promise* AsyncClient::Delete(const char* key) {
         return nullptr;
     }
     Promise* promise = cache::newPromise(this->coord, this);
-    p->Then([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply){
-        CacheReader reader(this->coord, reply);
-        promise->resolve(this, reader);
+    p->Then([this, promise](auto client, auto reply){
+        auto result = new CacheResult(this->coord, reply);
+        promise->resolve(this, result);
         this->coord->Destory(promise);
+        this->coord->Destory(result);
     });
-    p->Else([this, promise](redis::AsyncClient* client, const redis::RedisResult* reply) {
-        CacheReader reader(this->coord, reply);
-        promise->reject(this, reader);
+    p->Else([this, promise](auto client, auto reply) {
+        auto result = new CacheResult(this->coord, reply);
+        promise->reject(this, result);
         this->coord->Destory(promise);
+        this->coord->Destory(result);
     });
     return promise;
 }

@@ -22,11 +22,11 @@ class ScriptComponent;
 
 namespace cache {//tolua_export
 
-class CacheReader;
+class CacheResult;
 class AsyncClient;
 
-typedef std::function<void (AsyncClient* client, CacheReader& reader)> PromiseResolveFunction; 
-typedef std::function<void (AsyncClient* client, CacheReader& reader)> PromiseRejectFunction; 
+typedef std::function<void (AsyncClient* client, CacheResult* result)> PromiseResolveFunction; 
+typedef std::function<void (AsyncClient* client, CacheResult* result)> PromiseRejectFunction; 
 
 class Promise: public Destoryable {//tolua_export
 CC_CLASS(Promise);
@@ -41,8 +41,8 @@ public:
 public:
     Promise* then(ScriptComponent* object, int ref);
     Promise* else_(ScriptComponent* object, int ref);
-    void reject(AsyncClient* client, CacheReader& reader);
-    void resolve(AsyncClient* client, CacheReader& reader);
+    void reject(AsyncClient* client, CacheResult* result);
+    void resolve(AsyncClient* client, CacheResult* result);
     void reject(AsyncClient* client, std::nullptr_t);
     void resolve(AsyncClient* client, std::nullptr_t);
 public:

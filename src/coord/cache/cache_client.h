@@ -19,16 +19,22 @@
 ///     coorda->LogDebug("Value is %s", reader.String());
 /// ```    
 
-namespace coord {//tolua_export
+namespace coord {
     
 class Coord;
-namespace redis {
-class Client;
+    namespace redis {
+        class Client;
+    }
+    namespace cache {
+        class CacheResult;
+        class Promise;
+    }
 }
+
+namespace coord {//tolua_export
 namespace cache {//tolua_export
 
-class CacheReader;
-class Promise;
+
 
 class Client {//tolua_export
 CC_CLASS(Client);
@@ -39,7 +45,7 @@ public:
     /// 获取配置对象                               
     CacheConfig* DefaultConfig(); 
     /// 读取key         
-    CacheReader Get(const char* key);       
+    CacheResult* Get(const char* key);       
     /// 设置key=value, 过期时间为expire                               
     int Set(const char* key, const char* value, size_t expire);     
     /// 设置key=value, 过期时间为expire              

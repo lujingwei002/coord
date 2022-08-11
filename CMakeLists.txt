@@ -190,6 +190,7 @@ target_link_libraries (benchmark pcre)
 add_custom_target(tolua
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src
     COMMAND ${PROJECT_SOURCE_DIR}/bin/tolua++/tolua++ -n coord -o interface-lua/interface.cc interface.pkg
+    COMMAND sed -i -e 's/delete self/self->DecRef\(\)/g' ${PROJECT_SOURCE_DIR}/src/interface-lua/interface.cc
 )
 
 add_custom_target(protoc

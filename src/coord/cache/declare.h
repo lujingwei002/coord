@@ -6,6 +6,7 @@ namespace coord {
     namespace cache {
         class Client;
         class AsyncClient;
-        class CacheReader;
+        class CacheResult;
+        class CacheResultRef;
     }
 } 

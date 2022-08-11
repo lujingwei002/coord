@@ -1241,6 +1241,7 @@ void Script::freeThread(lua_State* L) {
     }
     this->runningThreadSet.erase(it);
     this->threadArr.push_back(L);
+    lua_gc(L, LUA_GCCOLLECT, 0);
 }
 
 }

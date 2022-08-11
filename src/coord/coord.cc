@@ -802,10 +802,10 @@ namespace coord {
                 config->ExpireTime = this->Config->Cache.ExpireTime;
                 this->AsyncCache = cache;
                 auto p = cache->main();
-                p->Then([this, self, promise](auto client, auto& reader) {
+                p->Then([this, self, promise](auto client, auto reader) {
                     promise->Reslove();
                 });
-                p->Else([this, self, promise](auto client, auto& reader) {
+                p->Else([this, self, promise](auto client, auto reader) {
                     promise->Reject();
                 });
             })
@@ -1410,11 +1410,7 @@ namespace coord {
     }
 
     void Coord::Destory(Destoryable* object) {
-        object->_ref--;
-        if(object->_ref != 0){ //避免循环删除，要用!=0判断。 a删除b, b删除a, 导致一直循环
-            return;
-        }
-        object->Destory();
+        object->DecRef();
     }
 
     void Coord::Destory(net::TcpClient* object) {
@@ -1422,10 +1418,7 @@ namespace coord {
     } 
 
     void Coord::DontDestory(Destoryable* object) {
-        if(object->_ref <= 0) { //避免在destory里，又被操作ref
-            return;
-        }
-        object->_ref++;
+        object->AddRef();
     }
 
     int Coord::SetTimeout(uint64_t timeout, timer::TimeoutFunc func) {
@@ -1485,6 +1478,14 @@ namespace coord {
         return this->RedisMgr->GetAsyncClient(name);
     }
     
+    void Coord::insertHeapObject(Destoryable* object) {
+        this->heapObjectSet.insert(object);
+    }
+
+    void Coord::removeHeapObject(Destoryable* object) {
+
+    }
+
     /*int Coord::Cache(const char* name, const char* data, size_t expire) {
         if (data == NULL){
             int err = this->cache->Delete(name);

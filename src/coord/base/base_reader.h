@@ -62,7 +62,7 @@ public:
     /// # @return script::Reflect
     ///
     virtual script::Reflect& Table() = 0;
-    virtual json::Reflect Json() = 0;   //tolua_export
+    virtual json::JsonRef Json() = 0;   //tolua_export
 };//tolua_export
 
 class base_reader { //tolua_export
@@ -109,7 +109,7 @@ public:
     /// # @return script::Reflect
     ///
     virtual script::Reflect& Table();
-    virtual json::Reflect Json();   //tolua_export
+    virtual json::JsonRef Json();   //tolua_export
 public:
     Coord*                      coord;
     int                         dataType;
