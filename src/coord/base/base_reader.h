@@ -82,7 +82,7 @@ public:
     ///
     ///  # 返回字符串
     ///
-    virtual const char* String();//tolua_export
+    virtual const char* String() const;//tolua_export
     ///
     ///  # 返回负载长度
     ///
@@ -94,7 +94,7 @@ public:
     ///
     ///  # 返回字符串
     ///
-    virtual int String(lua_State* L);//tolua_export 
+    virtual int String(lua_State* L) const;//tolua_export 
     ///
     ///  # 返回argument格式类型的数据,并用unpack展开
     ///

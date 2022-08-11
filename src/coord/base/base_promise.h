@@ -247,15 +247,15 @@ int base_promise<TClient, TResult>::componentElse(lua_State* L) {
 
 template<typename TClient, typename TResult>
 void base_promise<TClient, TResult>::recvResult(TClient client, TResult result, int ref) {
-
     this->coord->CoreLogDebug("[%s] recvResult ref=%d", this->TypeName(), ref);
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
     tolua_pushusertype(L, client, client->TypeName());
-    if (nullptr == result) {
+    const auto resultRc = result.Borrow();
+    if (nullptr == resultRc) {
         lua_pushnil(L);
     } else {
-        tolua_pushusertype(L, result, result->TypeName());
+        tolua_pushusertype(L, resultRc, resultRc->TypeName());
     }
     if (lua_pcall(L, 2, 0, 0) != 0) {
         this->coord->CoreLogError("[%s] recvResult failed, error=%s", this->TypeName(), lua_tostring(L, -1));
@@ -272,10 +272,11 @@ void base_promise<TClient, TResult>::recvResume(TClient client, TResult result, 
     lua_State* L = this->L;
     this->coord->CoreLogDebug("[%s] recvResume, %s", this->TypeName(), ok ? "resolve" : "reject");
     lua_pushboolean(L, ok ? 1 : 0);
-    if (nullptr == result) {
+    const auto resultRc = result.Borrow();
+    if (nullptr == resultRc) {
         lua_pushnil(L);
     } else {
-        tolua_pushusertype(L, result, result->TypeName());
+        tolua_pushusertype(L, resultRc, resultRc->TypeName());
     }
     int err = lua_resume(L, 2);
     if (err == LUA_YIELD) {

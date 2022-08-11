@@ -9,7 +9,7 @@ CC_IMPLEMENT(CacheResult, "coord::cache::CacheResult")
 
 
 
-CacheResult::CacheResult(Coord *coord, redis::RedisResult* result) : 
+CacheResult::CacheResult(Coord *coord, const redis::RedisResultPtr& result) : 
     coord(coord), result(result) {
 }
 

@@ -8,6 +8,13 @@
 #include <stdint.h>
 #include <map>
 
+///
+///
+/// RedisMgr负责管理Client的内存
+///
+///
+///
+
 namespace coord {
     class Coord;
     namespace redis {

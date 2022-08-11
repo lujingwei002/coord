@@ -14,6 +14,20 @@ extern "C" {
 }
 #include <hiredis/hiredis.h>
 #include <hiredis/async.h>
+
+///
+///
+/// 内存 RedisResult在堆中, lua用RedisResultPtr来管理RedisResult, lua是RedisResult的指针，用本身的gc来管理 
+/// 
+///
+/// c++ RedisResultPtr -----------> RedisResult*
+///
+/// lua ownership-----------------------↑
+///
+///
+
+
+
 namespace coord {
     class Coord;
     namespace redis {
@@ -36,7 +50,6 @@ private:
     RedisResult(Coord *coord, redisReply* reply);
 
 
-
 public:
     virtual ~RedisResult();                     //tolua_export            
 public:
@@ -57,6 +70,8 @@ public:
     long long Integer(size_t index) const;    //tolua_export
     const char* String(size_t index) const;   //tolua_export
 };//tolua_export
+
+typedef DestoryableRef<RedisResult> RedisResultPtr;//tolua_export
 
 }//tolua_export
 }//tolua_export

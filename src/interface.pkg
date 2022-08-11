@@ -1,4 +1,14 @@
 
+//
+//
+// Ptr类型特殊处理
+// RedisResultPtr 不导出到lua中，只导出RedisResult*, lua用gc管理RedisResult*
+//
+//
+//
+//
+//
+
 $cfile "coord/coord.h"
 $cfile "coord/config/config.h"
 $cfile "coord/script/script.h"
@@ -67,7 +77,7 @@ namespace coord {
             int Then(lua_State* L);
             int Else(lua_State* L);
             int Await(lua_State* L);
-        };
+        };   
     }
 }
 $cfile "coord/cache/cache.h"

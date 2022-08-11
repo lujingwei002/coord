@@ -7,14 +7,21 @@
 ///
 ///
 ///
-/// 1.存在于堆中的对象，有内存池，有引用计数。除非明确调用DontDestory,否则都集中在下一帧中由coord释放。调用DontDestory后，就是调用者管理对象的生命周期
+/// 1.Rc对象
+/// 类型存在于堆中的对象，有内存池，有引用计数。
 /// CC_CLASS
 /// CC_IMPLEMENT
 /// Destoryable
 ///
-/// 
+/// 2.Ptr对象
+/// 负责管理Rc对象
+/// C++时，对象存在于栈中，用作用域管理Rc,
+/// lua时，lua指定的是Rc对象， 用lua的gc管理Rc, 释放时调用Rc的DecRef
 ///
-///
+/// 3.Ref对象
+/// 负责管理非Rc对象
+/// C++时，对象存在于栈中，用作用域管理,
+/// lua时，lua指定的是Ref对象指针，用lua的gc管理, 释放时调用其DecRef
 ///
 ///
 
@@ -62,8 +69,15 @@ public:
         }
         return *this;
     }
-    TSelf* operator->() { return this->_ptr;}
+    TSelf* operator->() const { return this->_ptr;}
     TSelf* Self() {return this->_ptr;}
+    TSelf* Borrow() const {
+        if (nullptr == this->_ptr) {
+            return nullptr;
+        }
+        this->_ptr->AddRef();
+        return this->_ptr;
+    }
     bool operator== (std::nullptr_t v) const {return this->_ptr == nullptr;}
     bool operator!= (std::nullptr_t v) const {return this->_ptr != nullptr;}
 private:

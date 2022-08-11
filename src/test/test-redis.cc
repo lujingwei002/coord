@@ -70,7 +70,7 @@ TEST_F(TestRedis, TestReplyNull) {
     client->DefaultConfig()->DB = "aa";
     err = client->Connect();
     ASSERT_NE(err, 0);
-    auto result = owner_move(client->AUTH("hello"));
+    auto result = client->AUTH("hello");
     ASSERT_TRUE(result == nullptr);
 }
 
@@ -83,27 +83,27 @@ TEST_F(TestRedis, TestSetGet) {
     err = client->Connect();
     ASSERT_EQ(err, 0);
     {
-       auto result = owner_move(client->SELECT("aa"));
+       auto result = client->SELECT("aa");
        ASSERT_TRUE(result->Error());
-       result = owner_move(client->SELECT("3"));
+       result = client->SELECT("3");
        ASSERT_FALSE(result->Error());
        ASSERT_STREQ(result->String(), "OK");
     }
     {
-        auto result = owner_move(client->SET("aa", "bb"));
+        auto result = client->SET("aa", "bb");
         ASSERT_FALSE(result->Error());
         ASSERT_STREQ(result->String(), "OK");
 
-        result = owner_move(client->GET("aa"));
+        result = client->GET("aa");
         ASSERT_FALSE(result->Error());
         ASSERT_FALSE(result->Empty());
         ASSERT_STREQ(result->String(), "bb");
 
-        result = owner_move(client->DEL("aa"));
+        result = client->DEL("aa");
         ASSERT_FALSE(result->Error());
         ASSERT_EQ(result->Integer(), 1);
 
-        result = owner_move(client->GET("aa"));
+        result = client->GET("aa");
         ASSERT_FALSE(result->Error());
         ASSERT_TRUE(result->Empty());
     }

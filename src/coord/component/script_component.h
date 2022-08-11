@@ -1,6 +1,7 @@
 #pragma once 
 #include "coord/builtin/type.h"
 #include "coord/component/component.h"
+#include "coord/redis/redis_result.h"
 #include <map>
 #include <string>
 #include <cstdint>
@@ -112,7 +113,7 @@ public:
     // for worker end
     //
     // for redis begin
-    void recvRedisReply(redis::AsyncClient* client, const redis::RedisResult* result, const char* script, int ref);
+    void recvRedisReply(redis::AsyncClient* client, const redis::RedisResultPtr& result, const char* script, int ref);
     // for redis end
 
     // for redis begin

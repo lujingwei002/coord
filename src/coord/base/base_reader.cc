@@ -38,7 +38,7 @@ protobuf::Reflect& base_reader::Proto(const char* name){
     return this->proto;
 }
 
-const char* base_reader::String() {
+const char* base_reader::String() const{
     return this->payload.Data();
 }
 
@@ -46,7 +46,7 @@ size_t base_reader::Len(){
     return this->payload.Len();
 }
 
-int base_reader::String(lua_State* L){
+int base_reader::String(lua_State* L) const {
     lua_pushlstring(L, this->payload.Data(), this->payload.Len());
     return 1;
 }
