@@ -27,17 +27,17 @@ public:
 };
 
 TEST_F(TestProtobuf, Basic) {
-    auto user = this->coord->Proto->NewReflect("test.User");
-    user.SetString("nickname", "ljw");
+    auto user = this->coord->Proto->NewMessage1("test.User");
+    user->SetString("nickname", "ljw");
     ASSERT_NE(user, nullptr);
-    auto itemArr = user.GetRepeat("itemArr");
+    auto itemArr = user->GetRepeat("itemArr");
     ASSERT_NE(itemArr, nullptr);
-    auto item1 = itemArr.AddMessage();
-    item1.SetNumber("id", 100);
-    auto item2 = itemArr.AddMessage();
-    item2.SetNumber("count", 333);
-    ASSERT_EQ(itemArr.Count(), 2);
-    ASSERT_STREQ(user.ShortDebugString(), R"(nickname: "ljw" itemArr { id: 100 } itemArr { count: 333 })");
+    auto item1 = itemArr->AddMessage();
+    item1->SetNumber("id", 100);
+    auto item2 = itemArr->AddMessage();
+    item2->SetNumber("count", 333);
+    ASSERT_EQ(itemArr->Count(), 2);
+    ASSERT_STREQ(user->ShortDebugString(), R"(nickname: "ljw" itemArr { id: 100 } itemArr { count: 333 })");
 }
 
 TEST_F(TestProtobuf, Import) {

@@ -131,6 +131,14 @@ int Protobuf::ImportDir(const char *dir) {
     return 0;
 }
 
+MessagePtr Protobuf::NewMessage1(const char *name) {
+    google::protobuf::Message* message = this->NewMessage(name);
+    if(message == nullptr){
+        return nullptr;
+    }
+    return new Message(this->coord, message, true);
+} 
+
 Reflect Protobuf::NewReflect(const char *name) {
     google::protobuf::Message* message = this->NewMessage(name);
     if(message == nullptr){
@@ -189,6 +197,10 @@ int Protobuf::registerMetatable() {
 
 Reflect Protobuf::NewReflect(google::protobuf::Message* message) {
     return Reflect(this->coord, message, false);
+} 
+
+MessagePtr Protobuf::NewMessage(google::protobuf::Message* message) {
+    return new Message(this->coord, message, false);
 } 
 
 google::protobuf::Message* Protobuf::NewMessage(const char* name) {

@@ -1,15 +1,8 @@
 #pragma once 
 #include "coord/builtin/type.h"
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/descriptor_database.h>
-#include <google/protobuf/message.h>
-#include <google/protobuf/repeated_field.h>
-#include <google/protobuf/dynamic_message.h>
-#include <google/protobuf/stubs/common.h>
-#include <google/protobuf/compiler/importer.h>
-#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 #include <iostream>
 #include "coord/builtin/slice.h"
+#include "coord/protobuf/declare.h"
 extern "C"
 {
 #include <lua/lua.h> 
@@ -68,6 +61,13 @@ public:
     Reflect NewReflect(google::protobuf::Message* message);
     /// 创建message
     Reflect NewReflect(const char* name);               //tolua_export
+
+    /// 创建message
+    MessagePtr NewMessage(google::protobuf::Message* message);
+    /// 创建message
+    MessagePtr NewMessage1(const char* name);               //tolua_export
+
+
     /// 创建message
     google::protobuf::Message* NewMessage(const char* name);
 public:
