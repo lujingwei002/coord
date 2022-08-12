@@ -23,7 +23,7 @@ protected:
     virtual void EvClose(PipeListener* listener) = 0;
 };//tolua_export
 
-class PipeListener : public Destoryable {//tolua_export
+class PipeListener : public RcObject {//tolua_export
 CC_CLASS(PipeListener);
 friend PipeAgent;
 friend void uv_pipe_connection_cb(uv_stream_t *server, int status);
@@ -38,9 +38,9 @@ public:
     /// 设置handler
     void SetHandler(IPipeHandler* handler);
 protected:
-    // implement Destoryable
+    // implement RcObject
     virtual void Destory();
-    // implement Destoryable
+    // implement RcObject
 private:
     static void uv_close_cb(uv_handle_t* req);
     static void uv_pipe_connection_cb(uv_stream_t *server, int status);

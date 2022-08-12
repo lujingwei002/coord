@@ -26,8 +26,8 @@ public:
     virtual ~account_controller();
 public:
     int main();
-    void reqLogin(const http::HttpRequestPtr& request);
-    void reqList(const http::HttpRequestPtr& request);
+    void reqLogin(const http::HttpRequestRef& request);
+    void reqList(const http::HttpRequestRef& request);
 public:
     Coord*              coord;
     LoginSvr*           loginSvr;

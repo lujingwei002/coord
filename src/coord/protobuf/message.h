@@ -12,7 +12,9 @@ extern "C"
 namespace coord {//tolua_export
 namespace protobuf {//tolua_export
 
-class Message: public Destoryable {//tolua_export
+
+
+class Message: public RcObject {//tolua_export
 CC_CLASS(Message);
 public:
     Message(Coord* coord, google::protobuf::Message* message, bool owner);
@@ -21,8 +23,8 @@ public:
 public:
     /// get
     int Get(lua_State* L);                          //tolua_export
-    MessagePtr GetMessage(const char* fieldName);
-    RepeatMessagePtr GetRepeat(const char* fieldName); //tolua_export
+    MessageRef GetMessage(const char* fieldName);
+    RepeatMessageRef GetRepeat(const char* fieldName); //tolua_export
     const char* GetString(const char* fieldName);   //tolua_export
     int32_t GetInt32(const char* fieldName);        //tolua_export
     int64_t GetInt64(const char* fieldName);        //tolua_export
@@ -74,6 +76,7 @@ public:
     bool                                owner;
     bool                                dirty;
 };//tolua_export 
+
 
 
 }//tolua_export

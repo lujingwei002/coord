@@ -1,5 +1,5 @@
 #include "coord/cache/cache_result.h"
-#include "coord/redis/redis_result.h"
+#include "coord/redis/init.h"
 #include "coord/coord.h"
 #include <cassert>
 
@@ -9,7 +9,7 @@ CC_IMPLEMENT(CacheResult, "coord::cache::CacheResult")
 
 
 
-CacheResult::CacheResult(Coord *coord, const redis::RedisResultPtr& result) : 
+CacheResult::CacheResult(Coord *coord, const redis::RedisResultRef& result) : 
     coord(coord), result(result) {
 }
 

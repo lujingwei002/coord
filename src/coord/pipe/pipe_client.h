@@ -25,7 +25,7 @@ public:
     virtual void EvClose() = 0;
 };//tolua_export
 
-class PipeClient : public Destoryable {//tolua_export
+class PipeClient : public RcObject {//tolua_export
 CC_CLASS(PipeClient);
 public:
     PipeClient(Coord* coord);
@@ -50,9 +50,9 @@ public:
     /// 发送数据
     int Send(byte_slice& data);
 protected:
-    // implement Destoryable
+    // implement RcObject
     virtual void Destory();
-    // implement Destoryable
+    // implement RcObject
 private:
     static void uv_connect_cb(uv_connect_t* req, int status);
     static void uv_close_cb(uv_handle_t* req);

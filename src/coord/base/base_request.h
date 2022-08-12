@@ -17,7 +17,7 @@ class base_reader;
 class base_response;
 class base_agent;
 
-class base_request : public Destoryable, public base_reader { //tolua_export
+class base_request : public RcObject, public base_reader { //tolua_export
 CC_CLASS(base_request);
 protected:
     base_request(Coord* coord, base_agent* agent);

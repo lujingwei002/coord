@@ -1,9 +1,7 @@
 #include "coord/cache/cache_async_client.h"
 #include "coord/cache/cache_result.h"
 #include "coord/cache/cache_promise.h"
-#include "coord/redis/redis_async_client.h"
-#include "coord/redis/redis_result.h"
-#include "coord/redis/redis_promise.h"
+#include "coord/redis/init.h"
 #include "coord/coord.h"
 #include "coord/builtin/exception.h"
 namespace coord {

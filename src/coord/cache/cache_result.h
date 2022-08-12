@@ -2,7 +2,7 @@
 
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
-#include "coord/redis/redis_result.h"
+#include "coord/redis/declare.h"
 #include <vector>
 #include <iostream>
 #include <map>
@@ -20,10 +20,10 @@ class Coord;
 namespace coord {//tolua_export
 namespace cache {//tolua_export
 
-class CacheResult : public Destoryable {//tolua_export
+class CacheResult : public RcObject {//tolua_export
 CC_CLASS(CacheResult);
 public:
-    CacheResult(Coord *coord, const redis::RedisResultPtr& result);
+    CacheResult(Coord *coord, const redis::RedisResultRef& result);
     virtual ~CacheResult();
 public:
     const char* String();//tolua_export
@@ -33,7 +33,7 @@ public:
 	bool operator!= (std::nullptr_t v) const;
 public:
     Coord*                  coord;
-    redis::RedisResultPtr   result;
+    redis::RedisResultRef   result;
 };//tolua_export
 
 

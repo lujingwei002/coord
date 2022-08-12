@@ -15,7 +15,7 @@ namespace coord {//tolua_export
 
 class Coord;
 class IRequest;
-class RequestPipeline : public Destoryable { //tolua_export
+class RequestPipeline : public RcObject { //tolua_export
 public:
     RequestPipeline(Coord* coord, IRequest* request);
     virtual ~RequestPipeline();

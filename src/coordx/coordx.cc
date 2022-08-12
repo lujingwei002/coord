@@ -1481,7 +1481,7 @@ namespace coordx {
         this->Event->Emit(name, args);
     }
 
-    void Coordx::Destory(Destoryable* object) {
+    void Coordx::Destory(RcObject* object) {
         object->_ref--;
         if(object->_ref != 0){ //避免循环删除，要用!=0判断。 a删除b, b删除a, 导致一直循环
             return;
@@ -1494,7 +1494,7 @@ namespace coordx {
         object->onDestory();
     } 
 
-    void Coordx::DontDestory(Destoryable* object) {
+    void Coordx::DontDestory(RcObject* object) {
         if(object->_ref <= 0) { //避免在destory里，又被操作ref
             return;
         }

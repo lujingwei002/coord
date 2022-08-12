@@ -13,7 +13,7 @@ namespace closure {
 class Closure;
 class closure_await;
 
-class ClosurePromise : public Destoryable {
+class ClosurePromise : public RcObject {
 CC_CLASS(ClosurePromise); 
 public:
     ClosurePromise(Coord* coord, Closure* closure, closure_await* await);

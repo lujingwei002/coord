@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/redis/redis_result.h"
+#include "coord/redis/declare.h"
 #include <map>
 #include <string>
 
@@ -14,11 +14,7 @@ namespace coord {//tolua_export
 /// | [group]:[version]     | set    | 网关版本列表     | [node1, node2] |
 /// | [group]:[node]:user   | hash   | 网关用户列表     | {"userid1":"node1", "userid2":"node2"} |
 /// | [group]:userid        | string | 用户所在的节点   | node1 |
-namespace redis {
-class AsyncClient;
-class Client;
-class RedisResult;
-}
+
 namespace cluster {
 class Request;
 class Result;
@@ -45,16 +41,16 @@ public:
     void persistAgent(uint64_t userId);
     void persistSelf();
     void checkExpireGate();
-    void recvConnectCacheSucc(redis::AsyncClient* client, const redis::RedisResultPtr& reply);
-    void recvConnectCacheErr(redis::AsyncClient* client, const redis::RedisResultPtr& reply);
-    void recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::RedisResultPtr& reply, const char* name);
-    void recvCacheScriptLoadError(redis::AsyncClient* client, const redis::RedisResultPtr& reply);
-    void recvTryRegisterSucc(redis::AsyncClient* client, const redis::RedisResultPtr& reply, uint64_t sessionId, uint64_t userId);
-    void recvTryRegisterError(redis::AsyncClient* client, const redis::RedisResultPtr& reply, uint64_t sessionId, uint64_t userId);
-    void recvRegisterSucc(redis::AsyncClient* client, const redis::RedisResultPtr& reply, uint64_t sessionId, uint64_t userId);
-    void recvRegisterError(redis::AsyncClient* client, const redis::RedisResultPtr& reply, uint64_t sessionId, uint64_t userId);
-    void recvUnregisterSucc(redis::AsyncClient* client, const redis::RedisResultPtr& reply, uint64_t sessionId, uint64_t userId);
-    void recvUnregisterError(redis::AsyncClient* client, const redis::RedisResultPtr& reply, uint64_t sessionId, uint64_t userId);
+    void recvConnectCacheSucc(redis::AsyncClient* client, const redis::RedisResultRef& reply);
+    void recvConnectCacheErr(redis::AsyncClient* client, const redis::RedisResultRef& reply);
+    void recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::RedisResultRef& reply, const char* name);
+    void recvCacheScriptLoadError(redis::AsyncClient* client, const redis::RedisResultRef& reply);
+    void recvTryRegisterSucc(redis::AsyncClient* client, const redis::RedisResultRef& reply, uint64_t sessionId, uint64_t userId);
+    void recvTryRegisterError(redis::AsyncClient* client, const redis::RedisResultRef& reply, uint64_t sessionId, uint64_t userId);
+    void recvRegisterSucc(redis::AsyncClient* client, const redis::RedisResultRef& reply, uint64_t sessionId, uint64_t userId);
+    void recvRegisterError(redis::AsyncClient* client, const redis::RedisResultRef& reply, uint64_t sessionId, uint64_t userId);
+    void recvUnregisterSucc(redis::AsyncClient* client, const redis::RedisResultRef& reply, uint64_t sessionId, uint64_t userId);
+    void recvUnregisterError(redis::AsyncClient* client, const redis::RedisResultRef& reply, uint64_t sessionId, uint64_t userId);
     //中断上一个请求
     void abortRegisterOrInsteadRequest(uint64_t userId);
     //cluster

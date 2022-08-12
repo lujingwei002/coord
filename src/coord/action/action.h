@@ -12,7 +12,7 @@ class Action;
 
 class Sequence;
 
-class Action : public Destoryable {
+class Action : public RcObject {
 public:
     Action(Coord*  coord);
     virtual ~Action();

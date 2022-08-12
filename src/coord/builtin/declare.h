@@ -3,7 +3,7 @@
 
 #include "coord/builtin/type.h"
 namespace coord {
-    class Destoryable;
+    class RcObject;
     class Promise;
     class ref_manager;
     class Environment;

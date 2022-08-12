@@ -17,7 +17,7 @@ class Coord;
 class SceneMgr;  
 class Object;
 
-class Scene : public Destoryable {//tolua_export
+class Scene : public RcObject {//tolua_export
 CC_CLASS(Scene);
 public:
     Scene(Coord* cord, SceneMgr* sceneMgr);

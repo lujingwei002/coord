@@ -629,7 +629,7 @@ int RepeatMessage::Add(lua_State *L) {
     }
 }
 
-MessagePtr RepeatMessage::AddMessage() {
+MessageRef RepeatMessage::AddMessage() {
     if(this->message == nullptr) {
         return nullptr;
     }

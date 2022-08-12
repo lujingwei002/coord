@@ -3,13 +3,9 @@
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/base/base_promise.h"
-#include "coord/redis/redis_result.h"
+#include "coord/redis/declare.h"
 namespace coord {
     class Coord;
-    namespace redis {
-        class RedisResult;
-        class AsyncClient;
-    }
 }
 
 ///
@@ -22,8 +18,8 @@ namespace coord {
 namespace coord {//tolua_export
 namespace redis {//tolua_export
 
-typedef base_promise<AsyncClient*, const RedisResultPtr&> base_redis_promise;
-class RedisPromise: public base_redis_promise, public Destoryable { //tolua_export
+typedef base_promise<AsyncClient*, const RedisResultRef&> base_redis_promise;
+class RedisPromise: public base_redis_promise, public RcObject { //tolua_export
 CC_CLASS(RedisPromise);
 friend AsyncClient;
 private:

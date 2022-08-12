@@ -40,7 +40,7 @@ private:
     virtual void recvHttpRequest(http::HttpRequest* request);
     virtual void recvHttpUpgrade(http::HttpAgent* agent, http::HttpRequest* request);
 private:
-    void get_debug_index(const http::HttpRequestPtr& request);
+    void get_debug_index(const http::HttpRequestRef& request);
 private:
     Coord*              coord;
     WebConfig           Config;

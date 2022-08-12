@@ -1,25 +1,14 @@
 #pragma once 
 
 #include "coord/builtin/init.h"
-#include <uv.h>
-#include <vector>
-#include <iostream>
-#include <stdint.h>
-#include <map>
-extern "C" {
-#include <lua/lua.h>
-#include <lua/lualib.h>
-#include <lua/lauxlib.h>
-#include <tolua++/tolua++.h>
-}
-#include <hiredis/hiredis.h>
-#include <hiredis/async.h>
+#include "coord/redis/declare.h"
+
 
 ///
 ///
-/// 内存 RedisResult在堆中, lua用RedisResultPtr来管理RedisResult, lua是RedisResult的指针，用本身的gc来管理 
+/// 内存 RedisResult在堆中, lua用RedisResultRef来管理RedisResult, lua是RedisResult的指针，用本身的gc来管理 
 /// 
-/// c++ RedisResultPtr -----------> RedisResult*
+/// c++ RedisResultRef -----------> RedisResult*
 ///
 /// lua ownership-----------------------↑
 ///
@@ -29,16 +18,12 @@ extern "C" {
 
 namespace coord {
     class Coord;
-    namespace redis {
-        class Client;
-        class AsyncClient;
-    }
 }
 
 namespace coord {//tolua_export
 namespace redis {//tolua_export
 
-class RedisResult : public Destoryable {//tolua_export
+class RedisResult : public RcObject {//tolua_export
 CC_CLASS(RedisResult);
 friend Client;
 friend AsyncClient;
@@ -67,7 +52,6 @@ public:
     const char* String(size_t index) const;   //tolua_export
 };//tolua_export
 
-typedef DestoryablePtr<RedisResult> RedisResultPtr;//tolua_export
 
 }//tolua_export
 }//tolua_export

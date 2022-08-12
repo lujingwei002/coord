@@ -2,8 +2,7 @@
 #include "coord/login/login.h"
 #include "coord/login/login_cluster.h"
 #include "coord/http/init.h"
-#include "coord/redis/redis_promise.h"
-#include "coord/redis/redis_result.h"
+#include "coord/redis/init.h"
 #include "coord/json/json_mgr.h"
 #include "coord/http/http_router.h"
 #include "coord/coord.h"
@@ -32,7 +31,7 @@ int account_controller::main() {
     return 0;
 }
 
-void account_controller::reqLogin(const http::HttpRequestPtr& request) {
+void account_controller::reqLogin(const http::HttpRequestRef& request) {
     auto args = request->Json();
     printf("gggg %s\n", request->payload.Data());
     printf("gggg %s\n", args.GetString("nickname"));
@@ -75,7 +74,7 @@ void account_controller::reqLogin(const http::HttpRequestPtr& request) {
     });
 }
 
-void account_controller::reqList(const http::HttpRequestPtr& request) {
+void account_controller::reqList(const http::HttpRequestRef& request) {
     auto response = request->GetResponse();
     auto promise = this->loginSvr->loginCluster->getBalanceGate();
     if (promise == nullptr) {

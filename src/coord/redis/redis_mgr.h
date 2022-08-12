@@ -1,12 +1,8 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/redis/redis_config.h"
-#include <uv.h>
-#include <vector>
-#include <iostream>
-#include <stdint.h>
-#include <map>
+#include "coord/redis/declare.h"
+
 
 ///
 ///
@@ -17,10 +13,6 @@
 
 namespace coord {
     class Coord;
-    namespace redis {
-        class Client;
-        class AsyncClient;
-    }
 }
 
 namespace coord {//tolua_export

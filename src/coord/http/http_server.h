@@ -52,7 +52,7 @@ public:
     bool            UseEtag;            //tolua_export
 };//tolua_export
 
-class HttpServer : public net::ITcpHandler, public Destoryable {//tolua_export
+class HttpServer : public net::ITcpHandler, public RcObject {//tolua_export
 CC_CLASS(HttpServer);
 friend Coord;
 friend HttpAgent;

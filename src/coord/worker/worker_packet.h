@@ -20,7 +20,7 @@ enum worker_packet_type {
     worker_packet_notify = 3,
 };
 
-class worker_packet : public Destoryable  { 
+class worker_packet : public RcObject  { 
 CC_CLASS(worker_packet);
 public:
     worker_packet(Coord* coord);

@@ -61,7 +61,7 @@ class Coord { //tolua_export
 
 friend class worker::Worker;
 friend class Argument;
-friend class Destoryable;
+friend class RcObject;
 friend class coord::Config;
 friend class coord::Environment;
 friend class coord::run::Running;
@@ -244,9 +244,9 @@ public:
     void Emit(const char* name, event::BaseEvent* args);//tolua_export
     
     /// ##内存管理接口
-    void Destory(Destoryable* object);//tolua_export
+    void Destory(RcObject* object);//tolua_export
     void Destory(net::TcpClient* object);//tolua_export
-    void DontDestory(Destoryable* object);//tolua_export
+    void DontDestory(RcObject* object);//tolua_export
 
     /// 创建httpserver
     http::HttpServer* NewHttpServer();//tolua_export
@@ -295,8 +295,8 @@ private:
     uint64_t onGC();        
     int onAwake(); 
     uint64_t onUpdate(); 
-    void insertHeapObject(Destoryable* object);
-    void removeHeapObject(Destoryable* object);
+    void insertHeapObject(RcObject* object);
+    void removeHeapObject(RcObject* object);
 public:
     coord::Config*          Config;         //tolua_export
     script::Script*         Script;         //tolua_export   
@@ -338,7 +338,7 @@ private:
     bool                        isAwake;
     uint64_t                    time;
     uint64_t                    nowRecord;
-    std::set<Destoryable*>      heapObjectSet;
+    std::set<RcObject*>      heapObjectSet;
 private:
     
 public:

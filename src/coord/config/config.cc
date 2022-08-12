@@ -1,7 +1,7 @@
 #include "coord/config/config.h"
 #include "coord/log/log.h"
 #include "coord/sql/sql_client.h"
-#include "coord/redis/redis_client.h"
+#include "coord/redis/init.h"
 #include "coord/builtin/init.h"
 #include "coord/log4cc/log4cc.h"
 #include "coord/coord.h"

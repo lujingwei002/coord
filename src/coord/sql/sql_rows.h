@@ -24,7 +24,7 @@ namespace sql {//tolua_export
 
 class SQLConnection;
 
-class sql_rows : public Destoryable {
+class sql_rows : public RcObject {
 public:
     sql_rows(Coord *coord);
     virtual ~sql_rows();                                     
@@ -45,7 +45,7 @@ public:
     int     ref;
 };
 
-class SQLRows : public Destoryable {//tolua_export
+class SQLRows : public RcObject {//tolua_export
 CC_CLASS(SQLRows);
 public:
     SQLRows(Coord* coord, sql_rows* rows);

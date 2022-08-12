@@ -1,8 +1,9 @@
 #include "coord/redis/redis_async_client.h"
+#include "coord/redis/declare.h"
 #include "coord/redis/redis_result.h"
 #include "coord/redis/redis_promise.h"
-#include "coord/builtin/slice.h"
 #include "coord/redis/redis_mgr.h"
+#include "coord/builtin/slice.h"
 #include "coord/coord.h"
 #include <hiredis/adapters/libuv.h>
 

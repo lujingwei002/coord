@@ -28,7 +28,7 @@ enum base_client_status {
 };
 
 template<typename TRequestPromise>
-class base_client : public Destoryable, public Reflectable {//tolua_export
+class base_client : public RcObject, public Reflectable {//tolua_export
 public:
     base_client(Coord *coord);
     virtual ~base_client();

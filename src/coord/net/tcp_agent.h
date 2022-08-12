@@ -29,7 +29,7 @@ public:
     virtual int recvTcpData(TcpAgent* agent, char* data, size_t len) = 0;
 };//tolua_export
 
-class TcpAgent : public Destoryable  {//tolua_export
+class TcpAgent : public RcObject  {//tolua_export
 CC_CLASS(TcpAgent);
 public:
     TcpAgent(Coord* coord, TcpListener* listen);

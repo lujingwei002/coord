@@ -12,7 +12,7 @@ namespace closure {
 
 class Closure;
 
-class closure_action : public Destoryable {
+class closure_action : public RcObject {
 public:
     closure_action(Coord* coord, Closure* closure);
     virtual ~closure_action();

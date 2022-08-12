@@ -144,7 +144,7 @@ const char* Message::Name(){
     return message->GetTypeName().data();
 }
 
-MessagePtr Message::GetMessage(const char* fieldName) {
+MessageRef Message::GetMessage(const char* fieldName) {
     if (this->message == nullptr) {
         return nullptr;
     }
@@ -164,7 +164,7 @@ MessagePtr Message::GetMessage(const char* fieldName) {
     return new Message(this->coord, this->root, subMessage);
 }
 
-RepeatMessagePtr Message::GetRepeat(const char* fieldName) {
+RepeatMessageRef Message::GetRepeat(const char* fieldName) {
     if (this->message == nullptr) {
         return nullptr;
     }

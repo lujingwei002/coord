@@ -27,7 +27,7 @@ class Protobuf;
 class Reflect;
 class share_ptr;
 
-class Array : public Destoryable {//tolua_export
+class Array : public RcObject {//tolua_export
 CC_CLASS(Array);
 public:
     Array(Coord* coord, share_ptr* message, const google::protobuf::FieldDescriptor* field);

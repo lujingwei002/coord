@@ -21,7 +21,7 @@ namespace cache {//tolua_export
 class CacheResult;
 class Promise;
 
-class AsyncClient : public Destoryable {//tolua_export
+class AsyncClient : public RcObject {//tolua_export
 CC_CLASS(AsyncClient);
 public:
     AsyncClient(Coord *coord);

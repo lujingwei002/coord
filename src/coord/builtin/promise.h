@@ -24,7 +24,7 @@ class ScriptComponent;
 typedef std::function<void ()> Promise_Resolve; 
 typedef std::function<void ()> Promise_Reject;
 
-class Promise : public Destoryable { //tolua_export
+class Promise : public RcObject { //tolua_export
 CC_CLASS(Promise);
 public:
     Promise(Coord* coord);

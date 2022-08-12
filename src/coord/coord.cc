@@ -1411,7 +1411,7 @@ namespace coord {
         this->Event->Emit(name, args);
     }
 
-    void Coord::Destory(Destoryable* object) {
+    void Coord::Destory(RcObject* object) {
         object->DecRef();
     }
 
@@ -1419,7 +1419,7 @@ namespace coord {
         object->onDestory();
     } 
 
-    void Coord::DontDestory(Destoryable* object) {
+    void Coord::DontDestory(RcObject* object) {
         object->AddRef();
     }
 
@@ -1480,11 +1480,11 @@ namespace coord {
         return this->RedisMgr->GetAsyncClient(name);
     }
     
-    void Coord::insertHeapObject(Destoryable* object) {
+    void Coord::insertHeapObject(RcObject* object) {
         this->heapObjectSet.insert(object);
     }
 
-    void Coord::removeHeapObject(Destoryable* object) {
+    void Coord::removeHeapObject(RcObject* object) {
 
     }
 

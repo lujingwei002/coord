@@ -31,7 +31,7 @@ protected:
 /// PipeAgent的生命周期由PipeListener控制
 /// PipeAgent关闭后，由PipeListener负责释放
 ///
-class PipeAgent : public Destoryable  {//tolua_export
+class PipeAgent : public RcObject  {//tolua_export
 CC_CLASS(PipeAgent);
 friend PipeListener;
 private:

@@ -13,7 +13,7 @@ namespace coord {//tolua_export
 namespace protobuf {//tolua_export
 
 
-class RepeatMessage: public Destoryable {//tolua_export
+class RepeatMessage: public RcObject {//tolua_export
 CC_CLASS(RepeatMessage);
 public:
     RepeatMessage(Coord* coord, Message* root, google::protobuf::Message* message, const google::protobuf::FieldDescriptor *field);
@@ -48,7 +48,7 @@ public:
     double GetNumber(int index);    //tolua_export
     /// add
     int Add(lua_State *L);          //tolua_export
-    MessagePtr AddMessage();
+    MessageRef AddMessage();
     bool AddInt32(int32_t value);   //tolua_export
     bool AddInt64(int64_t value);   //tolua_export
     bool AddUInt32(uint32_t value); //tolua_export
@@ -65,6 +65,8 @@ public:
     const google::protobuf::Descriptor*         descriptor;
     const google::protobuf::FieldDescriptor*    field;
 } ;//tolua_export
+
+
 
 }//tolua_export
 }//tolua_export

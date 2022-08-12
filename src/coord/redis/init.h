@@ -1,3 +1,4 @@
+#include "coord/redis/declare.h"
 #include "coord/redis/redis_async_client.h"
 #include "coord/redis/redis_client.h"
 #include "coord/redis/redis_config.h"

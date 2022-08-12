@@ -1,14 +1,8 @@
 #pragma once 
 
 #include "coord/builtin/init.h"
-#include "coord/redis/redis_config.h"
-#include <uv.h>
-#include <vector>
-#include <iostream>
-#include <stdint.h>
-#include <map>
-#include <hiredis/hiredis.h>
-#include <hiredis/async.h>
+#include "coord/redis/declare.h"
+
 namespace coord {
     class Coord;
     namespace redis {
@@ -19,14 +13,9 @@ namespace coord {
 }
 
 namespace coord {//tolua_export
-    
-
-
 namespace redis {//tolua_export
 
-
-
-class AsyncClient : public Destoryable {//tolua_export
+class AsyncClient : public RcObject {//tolua_export
 CC_CLASS(AsyncClient);
 friend RedisMgr;
 friend Coord;

@@ -13,7 +13,7 @@ class Result;
 class Worker;
 
 typedef base_promise<Worker*, Result*> base_worker_promise;
-class Promise: public base_worker_promise, public Destoryable { //tolua_export
+class Promise: public base_worker_promise, public RcObject { //tolua_export
 CC_CLASS(Promise);
 public:
     Promise(Coord *coord);

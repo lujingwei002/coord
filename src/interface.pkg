@@ -1,8 +1,10 @@
 
 //
 //
-// Ptr类型特殊处理
-// RedisResultPtr 不导出到lua中，只导出RedisResult*, lua用gc管理RedisResult*
+// RcRef类型特殊处理
+// typedef coord::RcRef<coord::protobuf::Message> MessageRef;    //tolua_export
+// MessageRef 要声明导出到lua中，要比其他方法提早声明， 
+// RcRef和Message都要加上完整的命名空间
 //
 //
 //
@@ -28,6 +30,7 @@ $cfile "coord/object/object.h"
 $cfile "coord/scene/scene.h"
 $cfile "coord/scene/scene_mgr.h"
 $cfile "coord/component/component.h"
+$cfile "coord/http/declare.h"
 $cfile "coord/http/http_server.h"
 $cfile "coord/http/http_request.h"
 $cfile "coord/http/http_response.h"
@@ -55,12 +58,12 @@ $cfile "coord/gate/gate_promise.h"
 $cfile "coord/event/event.h"
 $cfile "coord/event/event_mgr.h"
 $cfile "coord/event/event_listener.h"
+$cfile "coord/protobuf/declare.h"
 $cfile "coord/protobuf/message.h"
 $cfile "coord/protobuf/repeat_message.h"
 $cfile "coord/protobuf/protobuf.h"
 $cfile "coord/protobuf/reflect.h"
 $cfile "coord/protobuf/array.h"
-$cfile "coord/protobuf/declare.h"
 $cfile "coord/timer/timer.h"
 $cfile "coord/sql/sql_mgr.h"
 $cfile "coord/sql/sql_client.h"
@@ -69,6 +72,7 @@ $cfile "coord/sql/sql_rows.h"
 $cfile "coord/sql/mysql/mysql_client.h"
 $cfile "coord/sql/mysql/mysql_result.h"
 $cfile "coord/sql/mysql/mysql_rows.h"
+$cfile "coord/redis/declare.h"
 $cfile "coord/redis/redis_mgr.h"
 $cfile "coord/redis/redis_config.h"
 $cfile "coord/redis/redis_async_client.h"

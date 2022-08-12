@@ -21,6 +21,7 @@
 #include "coord/script/script.h"
 #include "coord/cache/cache_result.h"
 #include "coord/cache/cache_async_client.h"
+#include "coord/redis/init.h"
 #include "coord/coord.h"
 #include <string.h>
 #include <typeinfo>       // operator typeid
@@ -266,7 +267,7 @@ void ScriptComponent::onDestory() {
     lua_pop(L, lua_gettop(L));
 }
 
-void ScriptComponent::recvHttpRequest(const http::HttpRequestPtr& request, int ref) {
+void ScriptComponent::recvHttpRequest(const http::HttpRequestRef& request, int ref) {
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
     auto requestRc = request.Borrow();
@@ -731,7 +732,7 @@ void ScriptComponent::recvWorkerResult(worker::Result* result, base_request* req
     lua_pop(L, lua_gettop(L));
 }*/
 
-void ScriptComponent::recvRedisReply(redis::AsyncClient* const client, const redis::RedisResultPtr& result, const char* script, int ref) {
+void ScriptComponent::recvRedisReply(redis::AsyncClient* const client, const redis::RedisResultRef& result, const char* script, int ref) {
     this->coord->CoreLogDebug("[ScriptComponent] recvRedisReply");
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);

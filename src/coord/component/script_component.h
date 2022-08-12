@@ -1,7 +1,7 @@
 #pragma once 
 #include "coord/builtin/type.h"
 #include "coord/component/component.h"
-#include "coord/redis/redis_result.h"
+#include "coord/redis/declare.h"
 #include "coord/http/http_request.h"
 #include <map>
 #include <string>
@@ -80,7 +80,7 @@ public:
     void recvPromise(const char* script, int ref);
 
     // for http begin
-    void recvHttpRequest(const http::HttpRequestPtr& request, int ref);
+    void recvHttpRequest(const http::HttpRequestRef& request, int ref);
     // for http end
 
     // for websocket begin
@@ -114,7 +114,7 @@ public:
     // for worker end
     //
     // for redis begin
-    void recvRedisReply(redis::AsyncClient* client, const redis::RedisResultPtr& result, const char* script, int ref);
+    void recvRedisReply(redis::AsyncClient* client, const redis::RedisResultRef& result, const char* script, int ref);
     // for redis end
 
     // for redis begin

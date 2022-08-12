@@ -26,7 +26,7 @@ enum base_agent_status {
 
 
 // agent基类
-class base_agent : public Destoryable {//tolua_export
+class base_agent : public RcObject {//tolua_export
 CC_CLASS(base_agent);
 friend base_response;
 protected:

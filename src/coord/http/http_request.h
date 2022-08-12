@@ -2,6 +2,7 @@
 
 #include "coord/builtin/init.h"
 #include "coord/base/base_request.h"
+#include "coord/http/declare.h"
 #include "coord/http/http_response.h"
 #include <uv.h>
 #include <map>
@@ -86,7 +87,6 @@ public:
 
 };//tolua_export
 
-typedef DestoryablePtr<HttpRequest> HttpRequestPtr;//tolua_export
 
 
 }//tolua_export

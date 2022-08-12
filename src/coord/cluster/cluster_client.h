@@ -31,7 +31,7 @@ enum cluster_client_status {
 	cluster_client_status_closed = 3,
 };
 
-class cluster_client : public net::ITcpClientHandler, public Destoryable {//tolua_export
+class cluster_client : public net::ITcpClientHandler, public RcObject {//tolua_export
 public:
     cluster_client(Coord *coord, Cluster* cluster, const char* name, uint64_t version, const char* host, uint16_t port);
     virtual ~cluster_client();

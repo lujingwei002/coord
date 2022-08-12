@@ -8,22 +8,22 @@ Type::Type(const char* name) {
     strcpy(this->name, name);
 }
 
-Destoryable::Destoryable() {
+RcObject::RcObject() {
     this->_ref = 1;
     coorda->insertHeapObject(this);
 }
 
-Destoryable::~Destoryable() {
+RcObject::~RcObject() {
     
 }
 
-void Destoryable::AddRef() {
+void RcObject::AddRef() {
     if(this->_ref <= 0) { //避免在destory里，又被操作ref
         return;
     }
     this->_ref++;
 }
-void Destoryable::DecRef() {
+void RcObject::DecRef() {
     this->_ref--;
     if(this->_ref != 0){ //避免循环删除，要用!=0判断。 a删除b, b删除a, 导致一直循环
         return;
@@ -31,12 +31,12 @@ void Destoryable::DecRef() {
     this->Destory();
 }
 
-void Destoryable::Destory() {
+void RcObject::Destory() {
     this->onDestory();
     delete this;
 }
 
-void Destoryable::onDestory() {
+void RcObject::onDestory() {
     
 }
 

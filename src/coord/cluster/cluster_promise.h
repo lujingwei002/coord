@@ -33,7 +33,7 @@ class Result;
 typedef std::function<void (Result* result)> Promise_Resolve; 
 typedef std::function<void (Result* result)> Promise_Reject; 
 
-class Promise : public Destoryable { //tolua_export
+class Promise : public RcObject { //tolua_export
 CC_CLASS(Promise);
 public:
     Promise(Coord* coord);

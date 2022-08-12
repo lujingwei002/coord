@@ -28,7 +28,7 @@ namespace coord {
 namespace coord {//tolua_export
 
 
-class base_response : public Destoryable { //tolua_export
+class base_response : public RcObject { //tolua_export
 CC_CLASS(base_response);
 protected:
     base_response(Coord* coord, base_agent* agent, base_request* request);

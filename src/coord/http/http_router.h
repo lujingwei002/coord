@@ -38,11 +38,11 @@ namespace http {//tolua_export
 ///
 ///
 
-typedef std::function<void (const HttpRequestPtr& request)> HttpRouter_RecvHttpRequest; 
+typedef std::function<void (const HttpRequestRef& request)> HttpRouter_RecvHttpRequest; 
 
 
 
-class HttpRouter : public Destoryable {//tolua_export
+class HttpRouter : public RcObject {//tolua_export
 CC_CLASS(HttpRouter);
 friend HttpServer;
 friend web::WebServer;
@@ -70,8 +70,8 @@ private:
     virtual ~HttpRouter();
 private:
     void trace(const char* method, http_router_handler* handler);
-    void recvStaticRequest(const HttpRequestPtr& request, const char* dir);
-    void recvStaticFileRequest(const HttpRequestPtr& request, const char* path);
+    void recvStaticRequest(const HttpRequestRef& request, const char* dir);
+    void recvStaticFileRequest(const HttpRequestRef& request, const char* path);
     void recvHttpRequest(HttpRequest* request);
 private:
     http_router_handler* searchHandler(const char* method, const char* path);

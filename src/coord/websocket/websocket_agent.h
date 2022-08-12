@@ -31,7 +31,7 @@ public:
     virtual void recvWebSocketFrame(Agent* agent, Frame* frame) = 0;
 };//tolua_export
 
-class Agent : public Destoryable, public http::IHttpAgentHandler { //tolua_export
+class Agent : public RcObject, public http::IHttpAgentHandler { //tolua_export
 CC_CLASS(Agent);
 public:
     Agent(Coord* coord, Server* server, http::HttpAgent* httpAgent);

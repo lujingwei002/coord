@@ -63,9 +63,9 @@ public:
     Reflect NewReflect(const char* name);               //tolua_export
 
     /// 创建message
-    MessagePtr NewMessage(google::protobuf::Message* message);
+    MessageRef NewMessage(google::protobuf::Message* message);
     /// 创建message
-    MessagePtr NewMessage1(const char* name);               //tolua_export
+    MessageRef NewMessage1(const char* name);               //tolua_export
 
 
     /// 创建message

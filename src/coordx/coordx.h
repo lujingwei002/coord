@@ -203,9 +203,9 @@ public:
     void Emit(const char* name, event::BaseEvent* args);//tolua_export
     /// @事件接口
 
-    void Destory(Destoryable* object);//tolua_export
+    void Destory(RcObject* object);//tolua_export
     void Destory(net::TcpClient* object);//tolua_export
-    void DontDestory(Destoryable* object);//tolua_export
+    void DontDestory(RcObject* object);//tolua_export
 
     /// 创建httpserver
     http::HttpServer* NewHttpServer();//tolua_export

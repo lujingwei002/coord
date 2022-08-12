@@ -51,7 +51,7 @@ struct websocket_frame_header {
     uint8_t mask:1;
 };
 
-class Frame : public Destoryable {//tolua_export
+class Frame : public RcObject {//tolua_export
 CC_CLASS(Frame);
 public:
     Frame(Coord* coord, Agent* agent);

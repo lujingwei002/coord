@@ -30,7 +30,7 @@ namespace coord {
 namespace coord {//tolua_export
 namespace json {//tolua_export
 
-class JsonRef : public Destoryable {//tolua_export
+class JsonRef : public RcObject {//tolua_export
 CC_CLASS(JsonRef);
 friend coord::json::JsonMgr;
 private:

@@ -34,7 +34,7 @@ class HttpRequest;
 class HttpResponse;
 class HttpFrame;
 }
-class Object : public Destoryable {//tolua_export
+class Object : public RcObject {//tolua_export
 CC_CLASS(Object)
 public:
     Object(Coord* coord, const char* name);

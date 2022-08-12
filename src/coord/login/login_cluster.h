@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/component/component.h"
-#include "coord/redis/redis_result.h"
+#include "coord/redis/declare.h"
 #include <uv.h>
 #include <map>
 #include <string>
@@ -26,10 +26,10 @@ public:
     virtual ~login_cluster();
 public:
     int main();
-    void recvConnectCacheSucc(redis::AsyncClient* client, const redis::RedisResultPtr& reply);
-    void recvConnectCacheErr(redis::AsyncClient* client, const redis::RedisResultPtr& reply);
-    void recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::RedisResultPtr& reply, const char* name);
-    void recvCacheScriptLoadError(redis::AsyncClient* client, const redis::RedisResultPtr& reply);
+    void recvConnectCacheSucc(redis::AsyncClient* client, const redis::RedisResultRef& reply);
+    void recvConnectCacheErr(redis::AsyncClient* client, const redis::RedisResultRef& reply);
+    void recvCacheScriptLoadSucc(redis::AsyncClient* client, const redis::RedisResultRef& reply, const char* name);
+    void recvCacheScriptLoadError(redis::AsyncClient* client, const redis::RedisResultRef& reply);
     redis::RedisPromise* getRanomGate();
     redis::RedisPromise* getBalanceGate();
     redis::RedisPromise* listGate();

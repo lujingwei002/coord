@@ -76,7 +76,7 @@ int Client::Connect() {
     return 0;
 }
 
-RedisResultPtr Client::SELECT(const char* db) {
+RedisResultRef Client::SELECT(const char* db) {
     if (!this->context) {
         return nullptr;
     }
@@ -88,7 +88,7 @@ RedisResultPtr Client::SELECT(const char* db) {
     return new RedisResult(this->coord, reply);
 }
 
-RedisResultPtr Client::AUTH(const char* password) {
+RedisResultRef Client::AUTH(const char* password) {
     if (!this->context) {
         return nullptr;
     }
@@ -116,7 +116,7 @@ int Client::EXPIRE(const char* key, uint64_t expire) {
     return 0;
 }
 
-RedisResultPtr Client::GET(const char* key) {
+RedisResultRef Client::GET(const char* key) {
     if (!this->context) {
         return nullptr;
     }
@@ -128,7 +128,7 @@ RedisResultPtr Client::GET(const char* key) {
     return new RedisResult(this->coord, reply);
 }
 
-RedisResultPtr Client::HGETALL(const char* key) {
+RedisResultRef Client::HGETALL(const char* key) {
     if (!this->context) {
         return nullptr;
     }
@@ -160,7 +160,7 @@ int Client::HDEL(const char* key, const char* field) {
     return count;
 }
 
-RedisResultPtr Client::HMSET(const char* key, const char* field, const char* value) {
+RedisResultRef Client::HMSET(const char* key, const char* field, const char* value) {
     if (!this->context) {
         return nullptr;
     }
@@ -172,7 +172,7 @@ RedisResultPtr Client::HMSET(const char* key, const char* field, const char* val
     return new RedisResult(this->coord, reply);
 }
 
-RedisResultPtr Client::HMSET(const char* key, const char* field, uint64_t value) {
+RedisResultRef Client::HMSET(const char* key, const char* field, uint64_t value) {
     if (!this->context) {
         return nullptr;
     }
@@ -181,7 +181,7 @@ RedisResultPtr Client::HMSET(const char* key, const char* field, uint64_t value)
     return this->HMSET(key, field, buffer);
 }
 
-RedisResultPtr Client::SET(const char* key, const char* value) {
+RedisResultRef Client::SET(const char* key, const char* value) {
     if (!this->context) {
         return nullptr;
     }
@@ -193,7 +193,7 @@ RedisResultPtr Client::SET(const char* key, const char* value) {
     return new RedisResult(this->coord, reply);
 }
 
-RedisResultPtr Client::SET(const char* key, const char* data, size_t len) {
+RedisResultRef Client::SET(const char* key, const char* data, size_t len) {
     if (!this->context) {
         return nullptr;
     }
@@ -207,7 +207,7 @@ RedisResultPtr Client::SET(const char* key, const char* data, size_t len) {
     return new RedisResult(this->coord, reply);
 }
 
-RedisResultPtr Client::SETEX(const char* key, const char* data, size_t len, size_t expire) {
+RedisResultRef Client::SETEX(const char* key, const char* data, size_t len, size_t expire) {
     if (!this->context) {
         return nullptr;
     }
@@ -223,14 +223,14 @@ RedisResultPtr Client::SETEX(const char* key, const char* data, size_t len, size
     return new RedisResult(this->coord, reply);
 }
 
-RedisResultPtr Client::SETEX(const char* key, const char* data, size_t expire) {
+RedisResultRef Client::SETEX(const char* key, const char* data, size_t expire) {
     if (!this->context) {
         return nullptr;
     }
     return this->SETEX(key, data, strlen(data), expire);
 }
 
-RedisResultPtr Client::DEL(const char* key) {
+RedisResultRef Client::DEL(const char* key) {
     if (!this->context) {
         return nullptr;
     }
@@ -266,7 +266,7 @@ uint64_t Client::TIME() {
     return second * 1000000 + microsecond;
 }
 
-RedisResultPtr Client::SADD(const char* key, const char* value) {
+RedisResultRef Client::SADD(const char* key, const char* value) {
     if (!this->context) {
         return nullptr;
     }
@@ -278,7 +278,7 @@ RedisResultPtr Client::SADD(const char* key, const char* value) {
     return new RedisResult(this->coord, reply);
 }
 
-RedisResultPtr Client::SREM(const char* key, const char* value) {
+RedisResultRef Client::SREM(const char* key, const char* value) {
     if (!this->context) {
         return nullptr;
     }

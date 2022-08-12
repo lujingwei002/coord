@@ -11,7 +11,7 @@
 /// 类型存在于堆中的对象，有内存池，有引用计数。
 /// CC_CLASS
 /// CC_IMPLEMENT
-/// Destoryable
+/// RcObject
 ///
 /// 2.Ptr对象
 /// 负责管理Rc对象
@@ -34,31 +34,32 @@ public:
     virtual const char* TypeName() const = 0;
 };
 
+
 template<typename TSelf>
-class DestoryablePtr {
+class RcRef {
 public:
-    DestoryablePtr(TSelf* ptr) { 
+    RcRef(TSelf* ptr) { 
         this->_ptr = ptr;
         if (nullptr != this->_ptr) {
             //this->_ptr->AddRef();
         }
     }
-    DestoryablePtr(std::nullptr_t) {
+    RcRef(std::nullptr_t) {
         this->_ptr = nullptr;
     }
-    DestoryablePtr(const DestoryablePtr& other) {
+    RcRef(const RcRef& other) {
         this->_ptr = other._ptr;
         if (nullptr != this->_ptr) {
             this->_ptr->AddRef();
         }
     }
-    virtual ~DestoryablePtr() {
+    virtual ~RcRef() {
         if (nullptr != this->_ptr) {
             this->_ptr->DecRef();
             this->_ptr = nullptr;
         }
     }
-    DestoryablePtr& operator=(const DestoryablePtr& other) {
+    RcRef& operator=(const RcRef& other) {
         if (nullptr != this->_ptr) {
             this->_ptr->DecRef();
             this->_ptr = nullptr;
@@ -85,16 +86,16 @@ private:
 };
 
 template<typename T>
-DestoryablePtr<T> owner_move(T* ptr) {
+RcRef<T> owner_move(T* ptr) {
     if (nullptr) return nullptr;
-    return DestoryablePtr<T>(ptr);
+    return RcRef<T>(ptr);
 }
 
-class Destoryable {//tolua_export
+class RcObject {//tolua_export
 friend Coord;
 public:
-    Destoryable();
-    virtual ~Destoryable();
+    RcObject();
+    virtual ~RcObject();
     void AddRef();              //tolua_export
     void DecRef();              //tolua_export
 protected:

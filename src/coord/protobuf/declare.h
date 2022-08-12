@@ -19,9 +19,9 @@ namespace coord {//tolua_export
         class Reflect;
         class Array;
         class my_multi_file_error_collector;
-        class Message;                                              
-        class RepeatMessage;                                        
-        typedef DestoryablePtr<Message> MessagePtr;                //tolua_export 
-        typedef DestoryablePtr<RepeatMessage> RepeatMessagePtr;    //tolua_export
+        class Message;                                                
+        class RepeatMessage;                                          
+        typedef coord::RcRef<coord::protobuf::Message> MessageRef;               //tolua_export                
+        typedef coord::RcRef<coord::protobuf::RepeatMessage> RepeatMessageRef;   //tolua_export
     } //tolua_export
 } //tolua_export

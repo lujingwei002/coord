@@ -131,7 +131,7 @@ int Protobuf::ImportDir(const char *dir) {
     return 0;
 }
 
-MessagePtr Protobuf::NewMessage1(const char *name) {
+MessageRef Protobuf::NewMessage1(const char *name) {
     google::protobuf::Message* message = this->NewMessage(name);
     if(message == nullptr){
         return nullptr;
@@ -199,7 +199,7 @@ Reflect Protobuf::NewReflect(google::protobuf::Message* message) {
     return Reflect(this->coord, message, false);
 } 
 
-MessagePtr Protobuf::NewMessage(google::protobuf::Message* message) {
+MessageRef Protobuf::NewMessage(google::protobuf::Message* message) {
     return new Message(this->coord, message, false);
 } 
 

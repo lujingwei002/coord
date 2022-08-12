@@ -28,7 +28,7 @@ class AsyncClient;
 typedef std::function<void (AsyncClient* client, CacheResult* result)> PromiseResolveFunction; 
 typedef std::function<void (AsyncClient* client, CacheResult* result)> PromiseRejectFunction; 
 
-class Promise: public Destoryable {//tolua_export
+class Promise: public RcObject {//tolua_export
 CC_CLASS(Promise);
 public:
     Promise(Coord *coord, AsyncClient* client);

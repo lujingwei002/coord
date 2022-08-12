@@ -16,7 +16,7 @@ class Coord;
 
 namespace script {//tolua_export
 
-class Reflect : public Destoryable {//tolua_export
+class Reflect : public RcObject {//tolua_export
 public:
     Reflect(Coord* coord);
     Reflect(Coord* coord, int ref, int type);
