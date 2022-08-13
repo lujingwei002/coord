@@ -1,6 +1,6 @@
 #pragma once 
 #include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
+
 #include "coord/builtin/slice.h"
 #include "coord/argument/argument.h"
 #include "coord/base/base_reader.h"

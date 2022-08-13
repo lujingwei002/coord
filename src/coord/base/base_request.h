@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
+
 #include "coord/base/base_reader.h"
 #include "coord/base/base_response.h"
 extern "C" {

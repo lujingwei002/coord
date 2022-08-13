@@ -2,7 +2,7 @@
 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
+
 #include "coord/net/recv_buffer.h"
 #include "coord/builtin/slice.h"
 #include <uv.h>

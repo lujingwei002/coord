@@ -21,7 +21,7 @@ TOLUA_API int  tolua_coord_open (lua_State* tolua_S);
 #include "coord/builtin/type.h"
 #include "coord/argument/argument.h"
 #include "coord/environment/environment.h"
-#include "coord/builtin/destoryable.h"
+
 #include "coord/base/base_reader.h"
 #include "coord/base/base_request.h"
 #include "coord/base/base_response.h"

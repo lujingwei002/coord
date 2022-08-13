@@ -2,7 +2,7 @@
 
 #include "coord/builtin/type.h"
 #include "coord/builtin/slice.h"
-#include "coord/builtin/destoryable.h"
+
 #include <stdlib.h> 
 #include <stdint.h> 
 #include <stdio.h>

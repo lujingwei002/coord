@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
+
 #include "coord/redis/declare.h"
 #include <vector>
 #include <iostream>

@@ -6,7 +6,6 @@ namespace coord {
     class RcObject;
     class Promise;
     class ref_manager;
-    class Environment;
     
     namespace path {
         bool IsAbsolutePath(const char* path);

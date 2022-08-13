@@ -1,6 +1,6 @@
 #include "coordx/coordx.h"
 #include "coord/scene/scene_mgr.h"
-#include "coord/builtin/destoryable.h"
+
 #include "coord/builtin/request_pipeline.h"
 #include "coord/event/init.h"
 #include "coord/component/script_component.h"

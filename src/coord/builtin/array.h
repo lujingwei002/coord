@@ -1,7 +1,5 @@
 #pragma once 
 
-
-#include "coord/log/log.h"
 #include <vector>
 #include <memory>
 namespace coord {

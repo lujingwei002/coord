@@ -2,7 +2,7 @@
 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
+
 #include <uv.h>
 
 namespace coord {//tolua_export

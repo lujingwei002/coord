@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
+
 #include <uv.h>
 #include <map>
 namespace coord {//tolua_export

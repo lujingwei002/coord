@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
+
 #include "coord/builtin/slice.h"
 #include "coord/script/script.h"
 #include "coord/coord.h"

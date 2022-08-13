@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
+
 #include "coord/base/base_packet.h"
 #include "coord/protobuf/init.h"
 #include "proto/coord.pb.h"

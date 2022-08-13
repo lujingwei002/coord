@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/builtin/destoryable.h"
+
 #include "coord/net/tcp_client.h"
 #include "coord/cluster/cluster_packet.h"
 #include "coord/protobuf/declare.h"
