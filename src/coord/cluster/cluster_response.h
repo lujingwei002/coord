@@ -2,14 +2,13 @@
 
 #include "coord/builtin/type.h"
 #include "coord/base/internal_response.h"
+#include "coord/protobuf/declare.h"
 #include "coord/cluster/cluster_message.h"
 
 namespace coord {//tolua_export
 class Coord;
 
-namespace protobuf{
-class Reflect;
-}
+
 
 namespace cluster {//tolua_export
 

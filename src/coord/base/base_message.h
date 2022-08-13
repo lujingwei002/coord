@@ -2,7 +2,7 @@
 
 #include "coord/component/component.h"
 #include "coord/builtin/slice.h"
-#include "coord/builtin/argument.h"
+#include "coord/argument/argument.h"
 #include <cstdlib>
 #include <uv.h>
 #include <map>

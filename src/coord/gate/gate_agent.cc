@@ -243,7 +243,7 @@ int GateAgent::send(PacketType type, const char* data, size_t len) {
     return 0;
 }
 
-int GateAgent::push(const char* route, protobuf::Reflect* proto){
+int GateAgent::push(const char* route, protobuf::MessageRef& proto){
     return this->push(route, proto->GetMessage());
 }
 
@@ -286,7 +286,7 @@ int GateAgent::push(const char* route, google::protobuf::Message* proto){
     return 0; 
 }
 
-int GateAgent::response(uint64_t id, const char* route, protobuf::Reflect* proto) {
+int GateAgent::response(uint64_t id, const char* route, protobuf::MessageRef& proto) {
     return this->response(id, route, proto->GetMessage());
 }
 

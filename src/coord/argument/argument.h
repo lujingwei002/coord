@@ -27,18 +27,18 @@ enum ArgumentType {
 
 class argument_item {
 public:
-    argument_item(Coord* coord) : coord(coord), type(0), proto(coord), table(coord) {
+    argument_item(Coord* coord) : coord(coord), type(0), table(coord) {
     }
     ~argument_item() {
     }
 public:
-    Coord*              coord;
-    int8_t              type;
-    int64_t             number;
-    void*               data;
-    std::string         str;
-    protobuf::Reflect   proto;
-    script::Reflect     table;
+    Coord*                  coord;
+    int8_t                  type;
+    int64_t                 number;
+    void*                   data;
+    std::string             str;
+    protobuf::MessageRef    proto;
+    script::Reflect         table;
 };
 
 class Argument {//tolua_export
@@ -50,7 +50,7 @@ public:
     int64_t GetNumber(size_t index);                  //tolua_export
     bool GetBool(size_t index);                       //tolua_export
     const char* GetString(size_t index);              //tolua_export
-    protobuf::Reflect& GetProto(size_t index);        //tolua_export
+    protobuf::MessageRef& GetProto(size_t index);        //tolua_export
     script::Reflect& GetTable(size_t index);          //tolua_export
 
     bool IsNone(size_t index);                     //tolua_export
@@ -64,7 +64,7 @@ public:
     int AddNumber(int64_t value);                  //tolua_export    
     int AddString(const char* value);              //tolua_export
     int AddNil();                                  //tolua_export   
-    int AddProto(protobuf::Reflect& proto); 
+    int AddProto(const protobuf::MessageRef& proto); 
     int AddBool(bool value);                       //tolua_export 
     int AddTable(script::Reflect& table);  
     int AddTable(int ref, int type);  

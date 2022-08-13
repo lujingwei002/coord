@@ -1,9 +1,8 @@
 #include "coord/protobuf/protobuf.h"
-#include "coord/protobuf/reflect.h"
-#include "coord/protobuf/array.h"
+
 #include "coord/config/config.h"
 #include "coord/builtin/error.h"
-#include "coord/builtin/environment.h"
+#include "coord/environment/environment.h"
 #include "coord/script/script.h"
 #include "coord/coord.h"
 
@@ -131,22 +130,6 @@ int Protobuf::ImportDir(const char *dir) {
     return 0;
 }
 
-MessageRef Protobuf::NewMessage1(const char *name) {
-    google::protobuf::Message* message = this->NewMessage(name);
-    if(message == nullptr){
-        return nullptr;
-    }
-    return new Message(this->coord, message, true);
-} 
-
-Reflect Protobuf::NewReflect(const char *name) {
-    google::protobuf::Message* message = this->NewMessage(name);
-    if(message == nullptr){
-        return Reflect(this->coord);//null
-    }
-    return Reflect(this->coord, message, true);
-} 
-
 static int __index(lua_State* L) {
     lua_getmetatable(L, 1); //self key mt
     lua_pushvalue(L, 2); //self key mt key
@@ -156,14 +139,14 @@ static int __index(lua_State* L) {
         return 1;
     } else {
         lua_pop(L, 2);//self key        
-        coord::protobuf::Reflect* self = (coord::protobuf::Reflect*)  tolua_tousertype(L,1,0);
+        coord::protobuf::Message* self = (coord::protobuf::Message*)  tolua_tousertype(L,1,0);
         return self->Get(L);
     }
     return 0;
 }
 
 static int __newindex(lua_State* L) {
-    coord::protobuf::Reflect* self = (coord::protobuf::Reflect*)  tolua_tousertype(L,1,0);
+    coord::protobuf::Message* self = (coord::protobuf::Message*)  tolua_tousertype(L,1,0);
     return self->Set(L);
 }
 
@@ -181,9 +164,9 @@ int Protobuf::main() {
 
 int Protobuf::registerMetatable() {
     lua_State* L = this->coord->Script->L;
-    luaL_getmetatable (L, "coord::protobuf::Reflect");
+    luaL_getmetatable (L, protobuf::Message::_TypeName);
     if(lua_isnil(L, -1)) {
-        this->coord->CoreLogError("[Proto] registerMetatable failed, error='metatable not found'");
+        this->coord->CoreLogError("[Proto] registerMetatable failed, name=%s, error='metatable not found'", protobuf::Message::_TypeName);
         return 1;
     }
     lua_pushstring(L, "__index");
@@ -195,29 +178,33 @@ int Protobuf::registerMetatable() {
     return 0;
 }
 
-Reflect Protobuf::NewReflect(google::protobuf::Message* message) {
-    return Reflect(this->coord, message, false);
+MessageRef Protobuf::NewMessage(const char *name) {
+    google::protobuf::Message* message = this->CreateMessage(name);
+    if(message == nullptr){
+        return nullptr;
+    }
+    return new Message(this->coord, message, true);
 } 
 
 MessageRef Protobuf::NewMessage(google::protobuf::Message* message) {
     return new Message(this->coord, message, false);
 } 
 
-google::protobuf::Message* Protobuf::NewMessage(const char* name) {
+google::protobuf::Message* Protobuf::CreateMessage(const char* name) {
     google::protobuf::Message* message = NULL;
     const google::protobuf::Descriptor* descriptor = pool->FindMessageTypeByName(name);
     if(descriptor == NULL) {
-        this->coord->CoreLogError("[Proto] NewMessage failed, name=%s, error='descriptor not found'", name);
+        this->coord->CoreLogError("[Proto] CreateMessage fail, name=%s, error='descriptor not found'", name);
         return NULL;
     }
     const google::protobuf::Message* prototype = factory->GetPrototype(descriptor);
     if(prototype == NULL) {
-        this->coord->CoreLogError("[Proto] NewMessage failed, name=%s, error='prototype not found'", name);
+        this->coord->CoreLogError("[Proto] CreateMessage fail, name=%s, error='prototype not found'", name);
         return NULL;
     }
     message = prototype->New();
     if(message == NULL) {
-        this->coord->CoreLogError("[Proto] NewMessage failed, name=%s, error='message not found'", name);
+        this->coord->CoreLogError("[Proto] CreateMessage fail, name=%s, error='message not found'", name);
         return NULL;
     }
     return message;

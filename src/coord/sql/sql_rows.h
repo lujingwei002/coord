@@ -31,8 +31,8 @@ public:
 public:
     virtual int Index() = 0;
     virtual bool Next() = 0;                                
-    virtual protobuf::Reflect Proto(const char* name) = 0;  
-    virtual int Proto(protobuf::Reflect& proto) = 0;
+    virtual protobuf::MessageRef Proto(const char* name) = 0;  
+    virtual int Proto(protobuf::MessageRef& proto) = 0;
     virtual int Lua(lua_State* L) = 0;                      
     virtual const char* Column(int index) = 0;              
     virtual int ColumnCount() = 0;                          
@@ -58,8 +58,8 @@ public:
 	bool operator!= (std::nullptr_t v) const;
     int Index();
     bool Next();                                //tolua_export   
-    protobuf::Reflect Proto(const char* name);  //tolua_export
-    int Proto(protobuf::Reflect& proto);        //tolua_export
+    protobuf::MessageRef Proto(const char* name);  //tolua_export
+    int Proto(protobuf::MessageRef& proto);        //tolua_export
     int Lua(lua_State* L);                      //tolua_export
     const char* Column(int index);              //tolua_export
     int ColumnCount();                          //tolua_export
@@ -90,13 +90,12 @@ inline bool SQLRows::Next() {
     return this->rows->Next();     
 }            
                       
-inline protobuf::Reflect SQLRows::Proto(const char* name) {
-    static thread_local protobuf::Reflect nullPtr(this->coord);
-    if (!this->rows)return nullPtr;
+inline protobuf::MessageRef SQLRows::Proto(const char* name) {
+    if (!this->rows)return protobuf::MessageRef::NullPtr;
     return this->rows->Proto(name);
 }
 
-inline int SQLRows::Proto(protobuf::Reflect& proto) {
+inline int SQLRows::Proto(protobuf::MessageRef& proto) {
     if (!this->rows)return -1;
     return this->rows->Proto(proto);
 }

@@ -2,13 +2,11 @@
 
 
 #include "coord/base/base_notify.h"
-
+#include "coord/protobuf/declare.h"
 namespace coord {//tolua_export
 class Coord;
 
-namespace protobuf{
-class Reflect;
-}
+
 namespace worker {//tolua_export
 class Worker;
 class Response;

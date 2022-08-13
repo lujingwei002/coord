@@ -10,7 +10,7 @@
 #include "coord/cluster/cluster_promise.h"
 #include "coord/cluster/cluster_response.h"
 #include "coord/net/url.h"
-#include "coord/builtin/argument.h"
+#include "coord/argument/argument.h"
 #include "coord/coord.h"
 #include "proto/coord.pb.h"
 

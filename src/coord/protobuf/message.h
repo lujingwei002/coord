@@ -22,17 +22,27 @@ public:
     virtual ~Message(); //tolua_export
 public:
     /// get
-    int Get(lua_State* L);                          //tolua_export
-    MessageRef GetMessage(const char* fieldName);
-    RepeatMessageRef GetRepeat(const char* fieldName); //tolua_export
-    const char* GetString(const char* fieldName);   //tolua_export
-    int32_t GetInt32(const char* fieldName);        //tolua_export
-    int64_t GetInt64(const char* fieldName);        //tolua_export
-    uint32_t GetUInt32(const char* fieldName);      //tolua_export
-    uint64_t GetUInt64(const char* fieldName);      //tolua_export
-    float GetFloat(const char* fieldName);          //tolua_export
-    double GetDouble(const char* fieldName);        //tolua_export
-    bool GetBool(const char* fieldName);            //tolua_export
+    int Get(lua_State* L);                              //tolua_export
+    /// get message
+    MessageRef GetMessage(const char* fieldName);       //tolua_export
+    /// get array
+    RepeatMessageRef GetRepeat(const char* fieldName);  //tolua_export
+    /// get string
+    const char* GetString(const char* fieldName);       //tolua_export
+    /// get int32
+    int32_t GetInt32(const char* fieldName);            //tolua_export
+    /// get int64
+    int64_t GetInt64(const char* fieldName);            //tolua_export
+    /// get uint32
+    uint32_t GetUInt32(const char* fieldName);          //tolua_export
+    /// get uint64
+    uint64_t GetUInt64(const char* fieldName);          //tolua_export
+    /// get float
+    float GetFloat(const char* fieldName);              //tolua_export
+    /// get double
+    double GetDouble(const char* fieldName);            //tolua_export
+    /// get bool
+    bool GetBool(const char* fieldName);                //tolua_export
 
     /// set
     int Set(lua_State* L);                                                  //tolua_export

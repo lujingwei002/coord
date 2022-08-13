@@ -1007,12 +1007,12 @@ namespace coord {
                 coord::Appendf(buffer, "table: %p", lua_topointer(L, i));
             } else if (lua_isfunction(L, i)) {
                 coord::Appendf(buffer, "function: %p", lua_topointer(L, i));
-            } else if(tolua_isusertype(L, i, "coord::protobuf::Reflect", 0, &tolua_err) ) {
-                protobuf::Reflect* proto = ((protobuf::Reflect*) tolua_tousertype(L, i, 0));
-                if(proto == nullptr) {
+            } else if(tolua_isusertype(L, i, protobuf::Message::_TypeName, 0, &tolua_err) ) {
+                protobuf::Message* message = ((protobuf::Message*) tolua_tousertype(L, i, 0));
+                if(message == nullptr) {
                     coord::Appendf(buffer, "proto: (null)");
                 } else {
-                    coord::Appendf(buffer, "proto: %s", proto->Name());
+                    coord::Appendf(buffer, "proto: %s", message->Name());
                 }
             } else if (lua_isuserdata(L, i)) {
                 coord::Appendf(buffer, "userdata: %p", lua_topointer(L, i));

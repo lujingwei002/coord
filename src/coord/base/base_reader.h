@@ -3,7 +3,7 @@
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/builtin/slice.h"
-#include "coord/builtin/argument.h"
+#include "coord/argument/argument.h"
 #include "coord/json/init.h"
 #include <uv.h>
 #include <map>
@@ -27,7 +27,7 @@ public:
     ///
     ///  # 返回protobuf格式类型的数据
     ///
-    virtual protobuf::Reflect& Proto(const char* name) = 0;//tolua_export
+    virtual protobuf::MessageRef& Proto(const char* name) = 0;//tolua_export
     ///
     ///  # 返回protobuf格式类型的数据
     ///
@@ -74,7 +74,7 @@ public:
     ///
     ///  # 返回protobuf格式类型的数据
     ///
-    virtual protobuf::Reflect& Proto(const char* name);//tolua_export
+    virtual protobuf::MessageRef& Proto(const char* name);//tolua_export
     ///
     ///  # 返回protobuf格式类型的数据
     ///
@@ -115,7 +115,7 @@ public:
     int                         dataType;
     byte_slice                  payload;
     Argument*                   argv;
-    protobuf::Reflect           proto;
+    protobuf::MessageRef        proto;
     int8_t                      type;
     script::Reflect             table;
 };//tolua_export

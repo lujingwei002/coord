@@ -7,14 +7,13 @@
 #include "coord/timer/timer.h"
 #include "coord/builtin/slice.h"
 #include "coord/gate/gate_config.h"
+#include "coord/protobuf/declare.h"
 #include <uv.h>
 #include <map>
 #include <string>
 
 namespace coord {//tolua_export
-namespace protobuf {
-class Reflect;
-}
+
 
 namespace net {
 class TcpListener;

@@ -18,9 +18,9 @@ public:
 
     /// 返回protobuf格式的数据。 
     int Proto(google::protobuf::Message& message);
-    protobuf::Reflect& Proto(const char* name);         //tolua_export
-    int Proto(protobuf::Reflect& proto);                //tolua_export
-    protobuf::Reflect& Proto();                         //tolua_export
+    protobuf::MessageRef& Proto(const char* name);         //tolua_export
+    int Proto(protobuf::MessageRef& proto);                //tolua_export
+    protobuf::MessageRef& Proto();                         //tolua_export
 
     /// 返回字符串类型的数据
     int String(const char* data, size_t len);

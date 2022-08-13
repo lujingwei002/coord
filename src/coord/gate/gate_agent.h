@@ -4,7 +4,7 @@
 #include "coord/base/internal_agent.h"
 #include "coord/gate/gate_packet.h"
 #include "coord/builtin/destoryable.h"
-#include "coord/protobuf/init.h"
+#include "coord/protobuf/declare.h"
 #include "coord/net/tcp_agent.h"
 #include "coord/websocket/websocket_agent.h"
 #include <stdlib.h>
@@ -13,9 +13,6 @@
 #include <string>
 
 namespace coord {//tolua_export
-namespace protobuf {
-class Reflect;
-}
 class Coord;
 namespace gate {
 
@@ -43,10 +40,10 @@ public:
     int send(PacketType type, const char* data, size_t len);
     int response(uint64_t id, const char* route, const byte_slice& data);
     int response(uint64_t id, const char* route, const char* data, size_t len);
-    int response(uint64_t id, const char* route, protobuf::Reflect* proto);
+    int response(uint64_t id, const char* route, protobuf::MessageRef& proto);
     int response(uint64_t id, const char* route, ::google::protobuf::Message* message);
     int push(const char* route, google::protobuf::Message* proto);
-    int push(const char* route, protobuf::Reflect* proto);
+    int push(const char* route, protobuf::MessageRef& proto);
     void sendHandShakeFail();
     //踢下线
     void kick(const char* reason);

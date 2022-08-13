@@ -698,12 +698,12 @@ int Script::tostring(byte_slice& buffer, lua_State* L, int index, std::map<const
             if(!isShort)if(space.Len()>0)coord::Append(buffer, space.Data(), space.Len()-1);
             coord::Appendf(buffer, "}");
         }
-    } else if(tolua_isusertype(L, index, "coord::protobuf::Reflect", 0, &tolua_err)) {
-        protobuf::Reflect* proto = ((protobuf::Reflect*) tolua_tousertype(L, index, 0));
-        if (proto == nullptr) {
+    } else if(tolua_isusertype(L, index, protobuf::Message::_TypeName, 0, &tolua_err)) {
+        protobuf::Message* message = ((protobuf::Message*) tolua_tousertype(L, index, 0));
+        if (message == nullptr) {
             coord::Appendf(buffer, "(null)");
         } else {
-            coord::Appendf(buffer, "\'%s\'", proto->ShortDebugString());
+            coord::Appendf(buffer, "\'%s\'", message->ShortDebugString());
         }
     } else if (lua_isboolean(L, index)) {
         bool value = (bool)lua_toboolean(L, index);
@@ -815,12 +815,12 @@ int Script::encode(byte_slice& buffer, lua_State* L, int index, std::map<const v
             type = 0;//结束table
             coord::Append(buffer, type);
         }
-    } else if(tolua_isusertype(L, index, "coord::protobuf::Reflect", 0, &tolua_err)) {
+    } else if(tolua_isusertype(L, index, protobuf::Message::_TypeName, 0, &tolua_err)) {
         uint8_t type = LUA_TPROTO;
         coord::Append(buffer, type);
-        protobuf::Reflect* proto = ((protobuf::Reflect*) tolua_tousertype(L, index, 0));
+        protobuf::Message* proto = ((protobuf::Message*) tolua_tousertype(L, index, 0));
         google::protobuf::Message* message = proto->GetMessage();
-        if (message == NULL) {
+        if (message == nullptr) {
             size_t totalLen = 0;
             coord::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
         } else {
@@ -1010,17 +1010,17 @@ int Script::decode(lua_State* L, const char* data, size_t len) {
         if (offset + msgLen > end) {
             return -1;
         }
-        auto proto = this->coord->Proto->NewReflect(name.c_str());
+        auto proto = this->coord->Proto->NewMessage(name.c_str());
         if (proto == nullptr) {
             return -1;
         }
-        int err = proto.ParseFrom(offset, msgLen);
+        int err = proto->ParseFrom(offset, msgLen);
         if(err) {
             return -1;
         }
         offset += msgLen;   
-        void* p = new protobuf::Reflect(proto);
-        tolua_pushusertype_and_takeownership(L, p, "coord::protobuf::Reflect");
+        void* p = proto.Borrow();
+        tolua_pushusertype_and_takeownership(L, p, protobuf::Message::_TypeName);
         return offset - data;
     } else if (type == LUA_TBOOLEAN) {
         if (offset + sizeof(uint8_t) > end) {

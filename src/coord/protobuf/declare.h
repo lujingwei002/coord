@@ -12,12 +12,8 @@
 
 
 namespace coord {//tolua_export
-   
-   
     namespace protobuf {//tolua_export
         class Protobuf;
-        class Reflect;
-        class Array;
         class my_multi_file_error_collector;
         class Message;                                                
         class RepeatMessage;                                          

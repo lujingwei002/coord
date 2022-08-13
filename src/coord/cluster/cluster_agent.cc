@@ -211,8 +211,8 @@ int cluster_agent::response(uint64_t id, int code, const char* data, size_t len)
     return 0; 
 }
 
-int cluster_agent::response(uint64_t id, int code, protobuf::Reflect& proto) {
-    return this->response(id, code, proto.GetMessage());
+int cluster_agent::response(uint64_t id, int code, protobuf::MessageRef& proto) {
+    return this->response(id, code, proto->GetMessage());
 }
 
 int cluster_agent::response(uint64_t id, int code, ::google::protobuf::Message* proto) {

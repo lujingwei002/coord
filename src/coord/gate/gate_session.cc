@@ -41,7 +41,7 @@ int GateSession::Push(const char* route, google::protobuf::Message* proto){
     return this->agent->push(route, proto);
 }
 
-int GateSession::Push(const char* route, protobuf::Reflect* proto){
+int GateSession::Push(const char* route, protobuf::MessageRef& proto){
     return this->agent->push(route, proto);
 }
 

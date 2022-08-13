@@ -2,7 +2,7 @@
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/builtin/slice.h"
-#include "coord/builtin/argument.h"
+#include "coord/argument/argument.h"
 #include "coord/base/base_reader.h"
 #include "coord/base/base_writer.h"
 #include <uv.h>
@@ -51,7 +51,7 @@ protected:
 protected:
     base_agent*                 agent;
     base_request*               request;
-    protobuf::Reflect           proto;
+    protobuf::MessageRef        proto;
     Argument*                   argv;
     script::Reflect             table;
 };//tolua_export

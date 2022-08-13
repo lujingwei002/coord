@@ -27,9 +27,11 @@ public:
 };
 
 TEST_F(TestProtobuf, Basic) {
-    auto user = this->coord->Proto->NewMessage1("test.User");
-    user->SetString("nickname", "ljw");
+    auto user = this->coord->Proto->NewMessage("test.User");
     ASSERT_NE(user, nullptr);
+    user->SetString("nickname", "ljw");
+    printf("fffaaa %s\n", user->GetString("nickname"));
+    printf("fffaaa %s\n", user->DebugString());
     auto itemArr = user->GetRepeat("itemArr");
     ASSERT_NE(itemArr, nullptr);
     auto item1 = itemArr->AddMessage();
@@ -37,7 +39,9 @@ TEST_F(TestProtobuf, Basic) {
     auto item2 = itemArr->AddMessage();
     item2->SetNumber("count", 333);
     ASSERT_EQ(itemArr->Count(), 2);
-    ASSERT_STREQ(user->ShortDebugString(), R"(nickname: "ljw" itemArr { id: 100 } itemArr { count: 333 })");
+    printf("fffaaa %s\n", user->ShortDebugString());
+
+    ASSERT_STREQ(user->ShortDebugString(), R"(xxx)");
 }
 
 TEST_F(TestProtobuf, Import) {

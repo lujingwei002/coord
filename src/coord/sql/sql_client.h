@@ -63,7 +63,7 @@ public:
     template<class... T>
     SQLResult Execute(const char* statement, T... args);
     template<class... T>
-    int Get(protobuf::Reflect& proto, const char* statement, T... args);
+    int Get(protobuf::MessageRef& proto, const char* statement, T... args);
 protected:
     virtual SQLRows get(const char* statement) = 0;
     virtual SQLResult execute(const char* statement) = 0;   
@@ -95,7 +95,7 @@ const char* SQLClient::Format(const char* statement, T... args) {
 }
 
 template<class... T>
-int SQLClient::Get(protobuf::Reflect& proto, const char* statement, T... args) {
+int SQLClient::Get(protobuf::MessageRef& proto, const char* statement, T... args) {
     SQLRows rows = this->Get(statement, args...);
     if (rows == nullptr) {
         return -1;

@@ -13,15 +13,12 @@
 /// CC_IMPLEMENT
 /// RcObject
 ///
-/// 2.Ptr对象
+/// 2.RefRc对象
 /// 负责管理Rc对象
 /// C++时，对象存在于栈中，用作用域管理Rc,
 /// lua时，lua指定的是Rc对象， 用lua的gc管理Rc, 释放时调用Rc的DecRef
+/// 构造rc时，引用计算不加1
 ///
-/// 3.Ref对象
-/// 负责管理非Rc对象
-/// C++时，对象存在于栈中，用作用域管理,
-/// lua时，lua指定的是Ref对象指针，用lua的gc管理, 释放时调用其DecRef
 ///
 ///
 
@@ -41,8 +38,21 @@ public:
     RcRef(TSelf* ptr) { 
         this->_ptr = ptr;
         if (nullptr != this->_ptr) {
+            /// 不加1， 因为如果从函数里函数，rc对象无法释放自身
+            ///
+            /// ```
+            ///   MessageRef NewMessage() {
+            ///      auto message = new message();
+            ///      return message;//如果构造ref时引用计算是1+1的话，message对象无法释放自身
+            ///  }
+            /// ```
+            //}
+            ///
+            ////
             //this->_ptr->AddRef();
         }
+    }
+    RcRef() {
     }
     RcRef(std::nullptr_t) {
         this->_ptr = nullptr;
@@ -61,6 +71,7 @@ public:
     }
     RcRef& operator=(const RcRef& other) {
         if (nullptr != this->_ptr) {
+            // 原来的减1
             this->_ptr->DecRef();
             this->_ptr = nullptr;
         }
@@ -83,7 +94,12 @@ public:
     bool operator!= (std::nullptr_t v) const {return this->_ptr != nullptr;}
 private:
     TSelf* _ptr;
+public:
+    static RcRef NullPtr;
 };
+
+template<typename TSelf>
+RcRef<TSelf> RcRef<TSelf>::NullPtr;
 
 template<typename T>
 RcRef<T> owner_move(T* ptr) {
@@ -199,4 +215,4 @@ public:
     {\
         return ClassName::_type->name;\
     }\
-    const char* ClassName::_TypeName = #FullName;
+    const char* ClassName::_TypeName = FullName;

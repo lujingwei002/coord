@@ -1,4 +1,4 @@
-#include "coord/builtin/argument.h"
+#include "coord/argument/argument.h"
 #include "coord/coord.h"
 #include "coord/protobuf/init.h"
 #include "coord/script/script.h"
@@ -54,13 +54,12 @@ const char* Argument::GetString(size_t index) {
     return (const char*)this->argv[index]->str.c_str();
 }
 
-protobuf::Reflect& Argument::GetProto(size_t index) {
-    static thread_local protobuf::Reflect nullPtr(this->coord);
+protobuf::MessageRef& Argument::GetProto(size_t index) {
     if (index < 0 || index >= this->argv.size()) {
-        return nullPtr;
+        return protobuf::MessageRef::NullPtr;
     }
     if (this->argv[index]->type != ArgumentTypeProto) {
-        return nullPtr;
+        return protobuf::MessageRef::NullPtr;
     }
     return this->argv[index]->proto;
 }
@@ -107,7 +106,7 @@ int Argument::AddNil() {
     return 0;
 }
 
-int Argument::AddProto(protobuf::Reflect& proto) {
+int Argument::AddProto(const protobuf::MessageRef& proto) {
     argument_item* arg = new argument_item(this->coord);
     this->argv.push_back(arg);
     arg->type = ArgumentTypeProto;
@@ -234,17 +233,17 @@ int Argument::Parse(byte_slice& data) {
             if (offset + msgLen > end) {
                 return -1;
             }
-            auto proto = this->coord->Proto->NewReflect(name.c_str());
-            if (proto == nullptr) {
+            auto message = this->coord->Proto->NewMessage(name.c_str());
+            if (message == nullptr) {
                 return -1;
             }
-            int err = proto.ParseFrom(offset, msgLen);
+            int err = message->ParseFrom(offset, msgLen);
             if(err) {
                 return -1;
             }
             argument_item* arg = new argument_item(this->coord);
             arg->type = ArgumentTypeProto; 
-            arg->proto = proto;    
+            arg->proto = message;    
             this->argv.push_back(arg);
             offset += msgLen;       
         } else {
@@ -286,7 +285,7 @@ int Argument::Serialize(byte_slice& buffer) {
         } else if (arg->type == ArgumentTypeProto) {
             //数据类型
             coord::Append(buffer, ArgumentTypeProto);
-            google::protobuf::Message* message = arg->proto.GetMessage();
+            google::protobuf::Message* message = arg->proto->GetMessage();
             if (message == NULL) {
                 size_t totalLen = 0;
                 coord::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
@@ -386,9 +385,9 @@ int Argument::pack(lua_State* L, int i) {
         } else if (lua_isstring(L, i)) {
             const char* value = ((const char*)  lua_tostring(L, i));
             this->AddString(value);
-        } else if(tolua_isusertype(L,i,"coord::protobuf::Reflect",0,&tolua_err)) {
-            protobuf::Reflect* proto = (protobuf::Reflect*)  tolua_tousertype(L,i,0);
-            this->AddProto(*proto);
+        } else if(tolua_isusertype(L,i,protobuf::Message::_TypeName,0,&tolua_err)) {
+            protobuf::Message* message = (protobuf::Message*)  tolua_tousertype(L,i,0);
+            this->AddProto(message);
         } else if(lua_istable(L, i)) {
             lua_pushvalue(L, i);
             int type = lua_type(L, -1);
@@ -414,8 +413,13 @@ int Argument::Unpack(lua_State* L) {
         } else if (this->IsString(i)) {
             lua_pushstring(L, this->GetString(i));
         } else if (this->IsProto(i)) {
-            void* proto = new protobuf::Reflect(this->GetProto(i));
-            tolua_pushusertype_and_takeownership(L, proto, "coord::protobuf::Reflect");
+            auto message = this->GetProto(i);
+            auto rc = message.Borrow();
+            if (rc) {
+                tolua_pushusertype_and_takeownership(L, rc, rc->TypeName());
+            } else {
+                lua_pushnil(L);
+            }
         } else if (this->IsTable(i)) {
             this->GetTable(i).Push();
         } else {

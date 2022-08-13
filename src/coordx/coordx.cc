@@ -32,7 +32,7 @@
 #include "coord/managed/managed.h"
 #include "coord/worker/worker.h"
 #include "coord/worker/worker_slave.h"
-#include "coord/builtin/environment.h"
+#include "coord/environment/environment.h"
 #include "coord/run/running.h"
 #include "coord/action/action_mgr.h"
 #include "coord/closure/init.h"

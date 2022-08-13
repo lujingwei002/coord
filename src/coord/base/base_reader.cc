@@ -4,7 +4,7 @@
 namespace coord {
 CC_IMPLEMENT(base_reader, "coord::base_reader")
 
-base_reader::base_reader(Coord* coord) : proto(coord), table(coord){
+base_reader::base_reader(Coord* coord) : table(coord){
     this->coord = coord;
     this->argv = nullptr;
 }
@@ -20,21 +20,19 @@ int base_reader::Proto(google::protobuf::Message& message) {
     return protobuf::ParseFrom(this->payload, &message);
 }
 
-protobuf::Reflect& base_reader::Proto(const char* name){
-    static thread_local protobuf::Reflect nullPtr(this->coord);
-
+protobuf::MessageRef& base_reader::Proto(const char* name){
     if (this->proto != nullptr) {
         return this->proto;
     }
-    auto proto = this->coord->Proto->NewReflect(name);
-    if (proto == nullptr) {
-        return nullPtr;
+    auto message = this->coord->Proto->NewMessage(name);
+    if (message == nullptr) {
+        return protobuf::MessageRef::NullPtr;
     }
-    int err = proto.ParseFrom(this->payload);
+    int err = message->ParseFrom(this->payload);
     if (err) {
-        return nullPtr;
+        return protobuf::MessageRef::NullPtr;
     }
-    this->proto = proto;
+    this->proto = message;
     return this->proto;
 }
 

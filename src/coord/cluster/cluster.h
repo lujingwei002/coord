@@ -3,6 +3,7 @@
 #include "coord/builtin/type.h"
 #include "coord/protobuf/init.h"
 #include "coord/cluster/cluster_config.h"
+#include "coord/protobuf/declare.h"
 #include <vector>
 #include <iostream>
 #include <map>
@@ -11,9 +12,6 @@ namespace coord {//tolua_export
     
 class Coord;
 
-namespace protobuf {
-class Reflect;
-}
 
 namespace cluster {//tolua_export
 
@@ -45,7 +43,7 @@ public:
     /// 向节点发送request消息
     Promise* Request(const char* node, const char* route, const char* data, size_t len);
     /// 向节点发送request消息
-    Promise* Request(const char* node, const char* route, protobuf::Reflect& proto);//tolua_export
+    Promise* Request(const char* node, const char* route, protobuf::MessageRef& proto);//tolua_export
     /// 向节点发送request消息
     Promise* Request(const char* node, const char* route, google::protobuf::Message* message);
 

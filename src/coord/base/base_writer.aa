@@ -2,7 +2,7 @@
 #include "coord/coord.h"
 namespace coord {
 
-base_writer::base_writer(Coord* coord) : proto(coord), table(coord) {
+base_writer::base_writer(Coord* coord) : table(coord) {
     this->coord = coord;
     this->argv = NULL;
     this->type = response_type_none;
@@ -42,34 +42,32 @@ int base_writer::Proto(google::protobuf::Message& message) {
     return 0;
 }
 
-int base_writer::Proto(protobuf::Reflect& proto) {
+int base_writer::Proto(protobuf::MessageRef& proto) {
     this->proto = proto;
     this->type = response_type_proto;
     return 0;
 }
 
-protobuf::Reflect& base_writer::Proto(){
-    static thread_local protobuf::Reflect nullPtr(this->coord);
+protobuf::MessageRef& base_writer::Proto(){
     if(this->proto != nullptr) {
         this->type = response_type_proto;
         return this->proto;
     } else {
-        return nullPtr;
+        return protobuf::MessageRef::NullPtr;
     }
 }
 
-protobuf::Reflect& base_writer::Proto(const char* name){
-    static thread_local protobuf::Reflect nullPtr(this->coord);
+protobuf::MessageRef& base_writer::Proto(const char* name){
     if(this->proto != nullptr) {
         this->type = response_type_proto;
         return this->proto;
     } else {
-        auto proto = this->coord->Proto->NewReflect(name);
-        if (proto == nullptr) {
+        auto message = this->coord->Proto->NewMessage(name);
+        if (message == nullptr) {
             this->coord->CoreLogError("[base_writer] Proto failed, name=%s, error='NewReflect err'", name);
-            return nullPtr;
+            return protobuf::MessageRef::NullPtr;
         }
-        this->proto = proto;
+        this->proto = message;
         this->type = response_type_proto;
         return this->proto;
     }
@@ -118,7 +116,7 @@ int base_writer::Table(lua_State* L) {
 int base_writer::flush() {
     if(this->type == response_type_proto && this->proto != nullptr) {
         this->payload.Resize(0);
-        int err = this->proto.Serialize(this->payload);
+        int err = this->proto->Serialize(this->payload);
         if(err){
             this->coord->CoreLogError("[base_writer] write failed");
             return -1;

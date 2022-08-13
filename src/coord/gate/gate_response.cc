@@ -22,7 +22,7 @@ int GateResponse::flush() {
     GateRequest* request = this->request;
     GateAgent* agent = this->request->agent; 
     if(this->proto != nullptr){
-        return agent->response(request->Id, request->Route.c_str(), this->proto.GetMessage());
+        return agent->response(request->Id, request->Route.c_str(), this->proto->GetMessage());
     } else {
         return agent->response(request->Id, request->Route.c_str(), this->payload);
     }*/

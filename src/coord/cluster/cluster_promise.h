@@ -4,6 +4,7 @@
 #include "coord/builtin/destoryable.h"
 #include "coord/builtin/slice.h"
 #include "coord/cluster/cluster_message.h"
+#include "coord/protobuf/declare.h"
 #include <uv.h>
 #include <map>
 #include <functional>
@@ -20,9 +21,6 @@ namespace coord {//tolua_export
 class Coord;
 class ScriptComponent;
 
-namespace protobuf{
-class Reflect;
-}
 
 namespace cluster {//tolua_export
 

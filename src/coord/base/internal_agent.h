@@ -13,7 +13,7 @@ protected:
 public:
     /// ##export method
     /// 推送消息
-    int Notify(const std::string& route, protobuf::Reflect& proto);
+    int Notify(const std::string& route, protobuf::MessageRef& proto);
     /// 推送消息
     int Notify(const std::string& route, ::google::protobuf::Message* message);
     /// 推送消息
@@ -24,7 +24,7 @@ public:
     int Response(uint64_t id, int code, const char* data, size_t len);
     //响应request
     int Response(uint64_t id, int code, byte_slice& data);
-    int Response(uint64_t id, int code, protobuf::Reflect& proto);
+    int Response(uint64_t id, int code, protobuf::MessageRef& proto);
     int Response(uint64_t id, int code, ::google::protobuf::Message* message);
     int Response(uint64_t id, int code, Argument* argument);
     int SendPacket(base_packet_type type, ::google::protobuf::Message* message);

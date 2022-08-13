@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/builtin/type.h"
-#include "coord/protobuf/init.h"
+#include "coord/protobuf/declare.h"
 #include <uv.h>
 #include <map>
 #include <tuple>
@@ -16,9 +16,6 @@ extern "C" {
 namespace coord {//tolua_export
 class Coord;
 
-namespace protobuf{
-class Reflect;
-}
 
 namespace gate {//tolua_export
 
@@ -36,7 +33,7 @@ public:
     void Kick(const char* reason);//tolua_export
     int Push(const char* route, google::protobuf::Message* proto);
     //推送消息
-    int Push(const char* route, protobuf::Reflect* proto);//tolua_export
+    int Push(const char* route, protobuf::MessageRef& proto);//tolua_export
     //关闭链接
     void Close();
     //登录

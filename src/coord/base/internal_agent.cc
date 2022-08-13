@@ -26,8 +26,8 @@ int internal_agent::Notify(const std::string& route, const char* data, size_t le
     return 0; 
 }
 
-int internal_agent::Notify(const std::string& route, protobuf::Reflect& proto) {
-    return this->Notify(route, proto.GetMessage());
+int internal_agent::Notify(const std::string& route, protobuf::MessageRef& proto) {
+    return this->Notify(route, proto->GetMessage());
 }
 
 int internal_agent::Notify(const std::string& route, ::google::protobuf::Message* proto) {
@@ -55,8 +55,8 @@ int internal_agent::Response(uint64_t id, int code, const char* data, size_t len
     return this->send(packet);
 }
 
-int internal_agent::Response(uint64_t id, int code, protobuf::Reflect& proto) {
-    return this->Response(id, code, proto.GetMessage());
+int internal_agent::Response(uint64_t id, int code, protobuf::MessageRef& proto) {
+    return this->Response(id, code, proto->GetMessage());
 }
 
 int internal_agent::Response(uint64_t id, int code, ::google::protobuf::Message* proto) {

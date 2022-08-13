@@ -7,6 +7,6 @@
 #include "coord/builtin/exception.h"
 #include "coord/builtin/slice.h"
 #include "coord/builtin/ref_manager.h"
-#include "coord/builtin/environment.h"
+#include "coord/environment/environment.h"
 #include "coord/builtin/string.h"
-#include "coord/builtin/argument.h"
+#include "coord/argument/argument.h"

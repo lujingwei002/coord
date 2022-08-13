@@ -57,19 +57,14 @@ public:
     int Import(const char *fileName);                  //tolua_export
     // 导入dir目录下的所有proto文件
     int ImportDir(const char *dir);                    //tolua_export
-    /// 创建message
-    Reflect NewReflect(google::protobuf::Message* message);
-    /// 创建message
-    Reflect NewReflect(const char* name);               //tolua_export
 
     /// 创建message
     MessageRef NewMessage(google::protobuf::Message* message);
     /// 创建message
-    MessageRef NewMessage1(const char* name);               //tolua_export
-
+    MessageRef NewMessage(const char* name);               //tolua_export
 
     /// 创建message
-    google::protobuf::Message* NewMessage(const char* name);
+    google::protobuf::Message* CreateMessage(const char* name);
 public:
     int main();
     int registerMetatable();

@@ -213,21 +213,16 @@ int mysql_rows::Lua(lua_State* L) {
     return 1;
 }
 
-protobuf::Reflect mysql_rows::Proto(const char* name) {
-    static thread_local protobuf::Reflect nullPtr(this->coord);
-    auto message = this->coord->Proto->NewMessage(name);
-    if (message == nullptr) {
-        return nullPtr;
-    }
-    auto proto = this->coord->Proto->NewReflect(message);
+protobuf::MessageRef mysql_rows::Proto(const char* name) {
+    auto proto = this->coord->Proto->NewMessage(name);
     int err = this->Proto(proto);
     if (err) {
-        return nullPtr;
+        return protobuf::MessageRef::NullPtr;
     }
     return proto;
 }
 
-int mysql_rows::Proto(protobuf::Reflect& proto) {
+int mysql_rows::Proto(protobuf::MessageRef& proto) {
     MYSQL_RES* result = this->result;
     if (result == nullptr) {
         return -1;
@@ -246,7 +241,7 @@ int mysql_rows::Proto(protobuf::Reflect& proto) {
                 columnArr[i].type == FIELD_TYPE_LONG_BLOB || 
                 columnArr[i].type == FIELD_TYPE_BLOB ||
                 columnArr[i].type == FIELD_TYPE_CHAR) {
-                if (!proto.SetString(columnArr[i].name, row[i], fieldLength[i])){
+                if (!proto->SetString(columnArr[i].name, row[i], fieldLength[i])){
                     this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_FLOAT ||  
@@ -259,7 +254,7 @@ int mysql_rows::Proto(protobuf::Reflect& proto) {
                       columnArr[i].type == FIELD_TYPE_LONGLONG || 
                       columnArr[i].type == FIELD_TYPE_DOUBLE ||
                       columnArr[i].type == FIELD_TYPE_TIMESTAMP) {
-                if(!proto.SetNumber(columnArr[i].name, atof(row[i]))){
+                if(!proto->SetNumber(columnArr[i].name, atof(row[i]))){
                     this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetNumber err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_DATE || 
@@ -267,21 +262,21 @@ int mysql_rows::Proto(protobuf::Reflect& proto) {
                      columnArr[i].type == FIELD_TYPE_DATETIME || 
                      columnArr[i].type == FIELD_TYPE_YEAR || 
                      columnArr[i].type == FIELD_TYPE_NEWDATE) {
-                if (!proto.SetString(columnArr[i].name, row[i], fieldLength[i])){
+                if (!proto->SetString(columnArr[i].name, row[i], fieldLength[i])){
                     this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_ENUM || 
                      columnArr[i].type == FIELD_TYPE_SET || 
                      columnArr[i].type == FIELD_TYPE_INTERVAL) {
-                if (!proto.SetString(columnArr[i].name, row[i], fieldLength[i])){
+                if (!proto->SetString(columnArr[i].name, row[i], fieldLength[i])){
                     this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_GEOMETRY) {
-                if (!proto.SetString(columnArr[i].name, row[i], fieldLength[i])){
+                if (!proto->SetString(columnArr[i].name, row[i], fieldLength[i])){
                     this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetString err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_BIT) {
-                if(!proto.SetNumber(columnArr[i].name, atof(row[i]))){
+                if(!proto->SetNumber(columnArr[i].name, atof(row[i]))){
                     this->coord->CoreLogError("[MySQLRows] Proto failed, column=%s, type=%d, error='SetNumber err'", columnArr[i].name, columnArr[i].type);
                 }
             } else if(columnArr[i].type == FIELD_TYPE_NULL) {

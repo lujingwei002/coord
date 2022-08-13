@@ -51,32 +51,30 @@ int internal_response::Proto(google::protobuf::Message& message) {
     return 0;
 }
 
-int internal_response::Proto(protobuf::Reflect& proto) {
+int internal_response::Proto(protobuf::MessageRef& proto) {
     this->proto = proto;
     this->DataType = base_message_data_type_protobuf;
     return 0;
 }
 
-protobuf::Reflect& internal_response::Proto(){
-    static thread_local protobuf::Reflect nullPtr(this->coord);
+protobuf::MessageRef& internal_response::Proto(){
     if(this->proto != nullptr) {
         this->DataType = base_message_data_type_protobuf;
         return this->proto;
     } else {
-        return nullPtr;
+        return protobuf::MessageRef::NullPtr;
     }
 }
 
-protobuf::Reflect& internal_response::Proto(const char* name){
-    static thread_local protobuf::Reflect nullPtr(this->coord);
+protobuf::MessageRef& internal_response::Proto(const char* name){
     if(this->proto != nullptr) {
         this->DataType = base_message_data_type_protobuf;
         return this->proto;
     } else {
-        auto proto = this->coord->Proto->NewReflect(name);
+        auto proto = this->coord->Proto->NewMessage(name);
         if (proto == nullptr) {
-            this->coord->CoreLogError("[base_response] Proto failed, name=%s, error='NewReflect err'", name);
-            return nullPtr;
+            this->coord->CoreLogError("[base_response] Proto failed, name=%s, error='NewMessage err'", name);
+            return protobuf::MessageRef::NullPtr;
         }
         this->proto = proto;
         this->DataType = base_message_data_type_protobuf;
@@ -130,7 +128,7 @@ int internal_response::Flush() {
         return this->agent->Response(this->request->Id, this->Code, nullptr, 0);
     } else if(this->DataType == base_message_data_type_protobuf && this->proto != nullptr) {
         this->Payload.Resize(0);
-        int err = this->proto.Serialize(this->Payload);
+        int err = this->proto->Serialize(this->Payload);
         if(err){
             this->coord->CoreLogError("[internal_response] write failed");
             return -1;

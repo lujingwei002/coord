@@ -10,7 +10,6 @@
 #include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 
 #include "coord/protobuf/protobuf.h"
-#include "coord/protobuf/reflect.h"
-#include "coord/protobuf/array.h"
+
 #include "coord/protobuf/message.h"
 #include "coord/protobuf/repeat_message.h"

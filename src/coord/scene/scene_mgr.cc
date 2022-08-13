@@ -1,7 +1,7 @@
 #include "coord/scene/scene.h"
 #include "coord/coord.h"
 #include "coord/scene/scene_mgr.h"
-#include "coord/builtin/environment.h"
+#include "coord/environment/environment.h"
 #include "coord/json/init.h"
 #include <stdio.h>
 #include <assert.h>

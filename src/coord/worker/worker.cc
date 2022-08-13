@@ -190,8 +190,8 @@ Promise* Worker::Request(const char* route, Argument& argv) {
     return this->Request(packet);
 }
 
-Promise* Worker::Request(const char* route, protobuf::Reflect& proto) {
-    return this->Request(route, proto.GetMessage());
+Promise* Worker::Request(const char* route, protobuf::MessageRef& proto) {
+    return this->Request(route, proto->GetMessage());
 }
 
 Promise* Worker::Request(const char* route, google::protobuf::Message* proto) {
@@ -265,8 +265,8 @@ int Worker::Notify(const char* route, Argument& argv) {
     return this->Notify(packet);
 }
 
-int Worker::Notify(const char* route, protobuf::Reflect& proto) {
-    return this->Notify(route, proto.GetMessage());
+int Worker::Notify(const char* route, protobuf::MessageRef& proto) {
+    return this->Notify(route, proto->GetMessage());
 }
 
 int Worker::Notify(const char* route, google::protobuf::Message* proto) {

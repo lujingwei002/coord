@@ -4,7 +4,7 @@
 #include "coord/builtin/destoryable.h"
 #include "coord/net/tcp_client.h"
 #include "coord/cluster/cluster_packet.h"
-#include "coord/protobuf/init.h"
+#include "coord/protobuf/declare.h"
 #include "proto/coord.pb.h"
 #include <google/protobuf/message.h>
 #include <vector>
@@ -13,10 +13,6 @@
 #include <google/protobuf/message.h>
 namespace coord {//tolua_export
     
-
-namespace protobuf {
-class Reflect;
-}
 
 class Coord;
 

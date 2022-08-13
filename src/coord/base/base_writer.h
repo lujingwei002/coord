@@ -2,7 +2,7 @@
 #include "coord/builtin/type.h"
 #include "coord/builtin/destoryable.h"
 #include "coord/builtin/slice.h"
-#include "coord/builtin/argument.h"
+#include "coord/argument/argument.h"
 #include "coord/base/base_reader.h"
 #include <uv.h>
 #include <map>
@@ -31,9 +31,9 @@ public:
     //返回protobuf格式的数据。 
     int Proto(google::protobuf::Message& message);
     //返回protobuf格式的数据。 设置后，不能更改消息类型。
-    protobuf::Reflect& Proto(const char* name);         //tolua_export
-    int Proto(protobuf::Reflect& proto);                //tolua_export
-    protobuf::Reflect& Proto();                         //tolua_export
+    protobuf::MessageRef& Proto(const char* name);         //tolua_export
+    int Proto(protobuf::MessageRef& proto);                //tolua_export
+    protobuf::MessageRef& Proto();                         //tolua_export
     int String(const char* data, size_t len);
     int String(const char* data);                       //tolua_export
     Argument* Args();                                   //tolua_export
@@ -46,7 +46,7 @@ public:
     Coord*                      coord;
     base_agent*                 agent;
     byte_slice                  payload;
-    protobuf::Reflect           proto;
+    protobuf::MessageRef        proto;
     Argument*                   argv;
     script::Reflect             table;
     int8_t                      type;

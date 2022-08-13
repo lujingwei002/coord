@@ -44,8 +44,8 @@ public:
     /// 转换成lua的表格式                              
     virtual int Lua(lua_State* L);                          
     /// 转换成proto格式
-    virtual protobuf::Reflect Proto(const char* name);     
-    virtual int Proto(protobuf::Reflect& proto); 
+    virtual protobuf::MessageRef Proto(const char* name);     
+    virtual int Proto(protobuf::MessageRef& proto); 
     /// 返回列名
     virtual const char* Column(int index);                  
     /// 返回列的数量

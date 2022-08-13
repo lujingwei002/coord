@@ -2,7 +2,8 @@
 
 #include "coord/builtin/type.h"
 #include "coord/protobuf/init.h"
-#include "coord/builtin/argument.h"
+#include "coord/argument/argument.h"
+#include "coord/protobuf/declare.h"
 #include <vector>
 #include <iostream>
 #include <map>
@@ -13,9 +14,7 @@ namespace coord {//tolua_export
     
 class Coord;
 
-namespace protobuf {
-class Reflect;
-}
+
 namespace worker {//tolua_export
 
 class WorkerSlave;
@@ -45,7 +44,7 @@ public:
     /// 向worker发送request消息
     Promise* Request(const char* route, const char* data, size_t len);
     /// 向worker发送request消息
-    Promise* Request(const char* route, protobuf::Reflect& proto);
+    Promise* Request(const char* route, protobuf::MessageRef& proto);
     /// 向worker发送request消息
     Promise* Request(const char* route, google::protobuf::Message* message);
     /// 向worker发送request消息
@@ -60,7 +59,7 @@ public:
     /// 向worker发送notify消息
     int Notify(const char* route, const char* data, size_t len);
     /// 向worker发送notify消息
-    int Notify(const char* route, protobuf::Reflect& proto);
+    int Notify(const char* route, protobuf::MessageRef& proto);
     /// 向worker发送notify消息
     int Notify(const char* route, google::protobuf::Message* message);
     /// 向worker发送notify消息

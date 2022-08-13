@@ -173,8 +173,8 @@ Promise* Cluster::Request(const char* node, const char* route, const char* data,
     return client->request(route, data, len);
 }
 
-Promise* Cluster::Request(const char* node, const char* route, protobuf::Reflect& proto) {
-    return this->Request(node, route, proto.GetMessage());
+Promise* Cluster::Request(const char* node, const char* route, protobuf::MessageRef& proto) {
+    return this->Request(node, route, proto->GetMessage());
 }
 
 Promise* Cluster::Request(const char* node, const char* route, google::protobuf::Message* message) {

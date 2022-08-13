@@ -107,7 +107,7 @@ TEST_F(TestMySQL, TestSetGet) {
         }
     }
 
-    auto user = this->coord->Proto->NewReflect("test.User");
+    auto user = this->coord->Proto->NewMessage("test.User");
     ASSERT_NE(user, nullptr);
     err = client->Get(user, "SELECT * FROM testcoord WHERE userid=?", 1);
     ASSERT_EQ(err, 0);
