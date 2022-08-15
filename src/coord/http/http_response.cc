@@ -6,7 +6,7 @@
 #include "coord/encrypt/sha1.h"
 #include "coord/encrypt/base64.h"
 #include "coord/json/init.h"
-#include "util/os/path.h"
+#include "coord/coordx.h"
 #include <map>
 
 
@@ -52,7 +52,7 @@ int HttpResponse::Text(lua_State* L){
     const char* data = (const char*)lua_tolstring(L, 2, &len);
     this->coord->CoreLogDebug("HttpResponse::Text data=%s, len=%d", data, len);
     this->Payload.Resize(0);
-    coord::Append(this->Payload, data, len);
+    coordx::Append(this->Payload, data, len);
     this->contentType = "text/html";
     this->DataType = base_message_data_type_string;
     return 0;
@@ -62,19 +62,19 @@ void HttpResponse::PageNotFound() {
     this->Code = 404;
     this->contentType = "text/plain";
     this->DataType = base_message_data_type_string;
-    coord::Appendf(this->Payload, "404 page not found");
+    coordx::Appendf(this->Payload, "404 page not found");
 }
 
 void HttpResponse::Exception(const char* msg) {
     this->Code = 500;
     this->DataType = base_message_data_type_string;
     this->contentType = "text/plain";
-    coord::Appendf(this->Payload, msg);
+    coordx::Appendf(this->Payload, msg);
 }
 
 bool HttpResponse::Text(const char* content) {
     this->coord->CoreLogDebug("[HttpResponse] Text, content=%s", content);
-    coord::Appendf(this->Payload, content);
+    coordx::Appendf(this->Payload, content);
     this->DataType = base_message_data_type_string;
     this->contentType = "text/plain";
     return true;
@@ -97,12 +97,12 @@ bool HttpResponse::Allow() {
 
 bool HttpResponse::File(const char* path) {
     this->coord->CoreLogDebug("[HttpResponse] File, path=%s", path);
-    int err = coord::path::ReadFile(path, this->Payload);
+    int err = coordx::path::ReadFile(path, this->Payload);
     if (err) {
         this->PageNotFound();
         return false;
     }
-    const char* fileType = os::path::FileType(path);
+    const char* fileType = coordx::path::FileType(path);
     this->contentType = http::GetContentType(fileType); 
     this->DataType = base_message_data_type_string;
 
@@ -124,7 +124,7 @@ bool HttpResponse::File(const char* path) {
     }
     //Last-Modified和If-Modifyed-Since控制缓存
     if (this->server->config.UseEtag) {
-        uv_stat_t* stat = coord::path::FileStat(path);
+        uv_stat_t* stat = coordx::path::FileStat(path);
         if (stat) {
         }
         const char* ifModifySince = this->request->GetHeader("if-modified-since");
@@ -151,8 +151,8 @@ int HttpResponse::Upgrade() {
     size_t acceptKeyLen = 0;
  
     randomString.Resize(0);
-    coord::Appendf(randomString, "%s", this->request->GetHeader("sec-websocket-key"));
-    coord::Appendf(randomString, "%s", "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
+    coordx::Appendf(randomString, "%s", this->request->GetHeader("sec-websocket-key"));
+    coordx::Appendf(randomString, "%s", "258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
     //sha1加密
     encrypt::sha1::Encode(secret, randomString.Data(), randomString.Len());
     //编码成base64
@@ -182,30 +182,30 @@ int HttpResponse::Flush() {
     byte_slice response;
 
     // Response Line
-    coord::Appendf(response, "HTTP/1.1 %d %s\r\n", this->Code, http_status_str((http_status)this->Code)); 
+    coordx::Appendf(response, "HTTP/1.1 %d %s\r\n", this->Code, http_status_str((http_status)this->Code)); 
     
     // Content-Length
     size_t contentLength = this->Payload.Len();
-    coord::Appendf(response, "Content-Length: %d\r\n", contentLength);
+    coordx::Appendf(response, "Content-Length: %d\r\n", contentLength);
 
     // Connection
     //this->response.Writef("connection: close\r\n");
 
     // Content-Type
-    coord::Appendf(response, "Content-Type: %s\r\n", this->contentType.c_str());
+    coordx::Appendf(response, "Content-Type: %s\r\n", this->contentType.c_str());
 
     // Default Header
     for(auto it = defaultHeaderArr.begin(); it != defaultHeaderArr.end(); ++it){
-        coord::Appendf(response, "%s: %s\r\n", it->first.c_str(), it->second.c_str());
+        coordx::Appendf(response, "%s: %s\r\n", it->first.c_str(), it->second.c_str());
     }
     // Other header
     for(auto it = this->headerDict.begin(); it != this->headerDict.end(); ++it){
-        coord::Appendf(response, "%s: %s\r\n", it->first.c_str(), it->second.c_str());
+        coordx::Appendf(response, "%s: %s\r\n", it->first.c_str(), it->second.c_str());
     }
-    coord::Appendf(response, "\r\n");
+    coordx::Appendf(response, "\r\n");
 
     // 序列化
-    coord::Append(response, this->Payload.Data(), this->Payload.Len());
+    coordx::Append(response, this->Payload.Data(), this->Payload.Len());
     this->request->agent->response(this->request->Id, response);
     return 0;
 }

@@ -1,7 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-
+#include "coord/coordx.h"
 #include "coord/argument/argument.h"
 #include "coord/base/base_packet.h"
 #include "coord/protobuf/init.h"
@@ -28,7 +27,7 @@ enum base_client_status {
 };
 
 template<typename TRequestPromise>
-class base_client : public RcObject, public Reflectable {//tolua_export
+class base_client : public coordx::RcObject, public coordx::Reflectable {//tolua_export
 public:
     base_client(Coord *coord);
     virtual ~base_client();

@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include <vector>
 #include <iostream>
 #include <map>

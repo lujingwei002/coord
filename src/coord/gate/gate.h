@@ -5,7 +5,7 @@
 #include "coord/net/tcp_agent.h"
 #include "coord/websocket/websocket_server.h"
 #include "coord/timer/timer.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/gate/gate_config.h"
 #include "coord/protobuf/declare.h"
 #include <uv.h>

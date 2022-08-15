@@ -2,7 +2,7 @@
 #include "coord/cache/cache_async_client.h"
 #include "coord/cache/cache_result.h"
 #include "coord/component/script_component.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 #include "coord/script/script.h"
 #include "coord/coord.h"
 

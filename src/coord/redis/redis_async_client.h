@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include "coord/redis/declare.h"
 
 namespace coord {
@@ -15,7 +15,7 @@ namespace coord {
 namespace coord {//tolua_export
 namespace redis {//tolua_export
 
-class AsyncClient : public RcObject {//tolua_export
+class AsyncClient : public coordx::RcObject {//tolua_export
 CC_CLASS(AsyncClient);
 friend RedisMgr;
 friend Coord;

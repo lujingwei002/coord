@@ -8,7 +8,7 @@
 #include "coord/worker/worker_request.h"
 #include "coord/worker/worker_packet.h"
 #include "coord/worker/worker_notify.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 namespace coord {
 namespace worker {
     

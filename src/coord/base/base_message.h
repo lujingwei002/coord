@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/component/component.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/argument/argument.h"
 #include <cstdlib>
 #include <uv.h>
@@ -76,7 +76,7 @@ int base_request_decode(base_message* message, TRequest* request) {
     request->Route = message->route;
     request->dataType = message->dataType;
     request->payload.Resize(0);
-    coord::Append(request->payload, message->data, message->length);
+    coordx::Append(request->payload, message->data, message->length);
     return 0;
 }
 
@@ -85,7 +85,7 @@ int base_notify_decode(base_message* message, TNotify* notify) {
     notify->Route = message->route;
     notify->dataType = message->dataType;
     notify->payload.Resize(0);
-    coord::Append(notify->payload, message->data, message->length);
+    coordx::Append(notify->payload, message->data, message->length);
     return 0;
 }
 
@@ -94,7 +94,7 @@ int base_result_decode(base_message* message, TResult* result) {
     result->Code = message->code;
     result->dataType = message->dataType;
     result->payload.Resize(0);
-    coord::Append(result->payload, message->data, message->length);
+    coordx::Append(result->payload, message->data, message->length);
     return 0;
 }
 

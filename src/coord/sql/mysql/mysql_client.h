@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include "coord/sql/sql_client.h"
 #include "coord/sql/sql_result.h"
 #include "tolua++/tolua++.h"

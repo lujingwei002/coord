@@ -6,7 +6,7 @@
 #include "coord/log4cc/file_appender.h"
 #include "coord/environment/environment.h"
 #include "coord/config/config.h"
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 
 namespace coord {
@@ -82,8 +82,8 @@ int LoggerMgr::configDefaultLogger(Category* category) {
     LoggerConfig config;
     int err = this->coord->Config->LoggerConfig(name, &config);
     if (err != 0) {
-        //std::string path = coord::path::PathJoin("log", this->coord->Config->Basic.Name + ".log");
-        //config.File = coord::path::PathJoin(this->coord->Environment->WorkingDir, path);
+        //std::string path = coordx::path::PathJoin("log", this->coord->Config->Basic.Name + ".log");
+        //config.File = coordx::path::PathJoin(this->coord->Environment->WorkingDir, path);
         config.Console = true;
     }
     config.Name = name;
@@ -99,8 +99,8 @@ int LoggerMgr::configCoreLogger(Category* category) {
     LoggerConfig config;
     int err = this->coord->Config->LoggerConfig(name, &config);
     if (err != 0) {
-        std::string path = coord::path::PathJoin("log", this->coord->Config->Basic.Name + "-core.log");
-        config.File = coord::path::PathJoin(this->coord->Environment->CoordDir, path);
+        std::string path = coordx::path::PathJoin("log", this->coord->Config->Basic.Name + "-core.log");
+        config.File = coordx::path::PathJoin(this->coord->Environment->CoordDir, path);
     }
     config.Name = name;
     err = this->ConfigCategory(category, &config);

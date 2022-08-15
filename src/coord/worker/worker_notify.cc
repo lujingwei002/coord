@@ -4,7 +4,7 @@
 #include "coord/worker/worker_result.h"
 #include "coord/coord.h"
 #include "coord/protobuf/init.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 namespace coord {
 
 namespace worker {
@@ -25,7 +25,7 @@ Notify::~Notify() {
 
 void Notify::onDestory() {
     uint64_t duration = uv_hrtime() - this->ReqTime;
-    this->coord->LogDebug("[worker::Notify] %10s| NOTIFY |\t\"%s\"", date::FormatNano(duration), this->Route.c_str());
+    this->coord->LogDebug("[worker::Notify] %10s| NOTIFY |\t\"%s\"", coordx::date::FormatNano(duration), this->Route.c_str());
 }
  
 

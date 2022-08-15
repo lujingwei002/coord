@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include "coord/component/script_component.h"
 #include <uv.h>
 #include <vector>

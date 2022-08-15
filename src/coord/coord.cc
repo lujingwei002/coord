@@ -1,6 +1,6 @@
 #include "coord/coord.h"
 #include "coord/scene/init.h"
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include "coord/event/init.h"
 #include "coord/component/init.h"
 #include "coord/object/init.h"
@@ -27,8 +27,7 @@
 #include "coord/log4cc/init.h"
 #include "coord/environment/environment.h"
 
-#include "util/os/os.h"
-#include "util/os/path.h"
+#include "coordx/coordx.h"
 #include <uv.h>
 #include <iostream>
 #include <fstream>
@@ -243,7 +242,7 @@ namespace coord {
         signal(SIGABRT, SIG_IGN);
 #endif
         //
-        int err = builtinInit();
+        int err = coordx::coordx_init();
         if (err) {
             return err;
         }
@@ -762,7 +761,7 @@ namespace coord {
          ;
         //启动worker服务
         if(this->Config->Basic.WorkerNum > 0) {
-            std::string workerConfigPath = coord::path::DirName(argv.ConfigPath);
+            std::string workerConfigPath = coordx::path::DirName(argv.ConfigPath);
             workerConfigPath = workerConfigPath + this->Config->Basic.Worker;
             this->Worker = worker::newWorker(this);
             int err = this->Worker->start(workerConfigPath, this->Config->Basic.WorkerNum);
@@ -1006,30 +1005,30 @@ namespace coord {
         int argc = lua_gettop(L);
         for (int i = 2; i <= argc; i++) {
             if (lua_isstring(L, i)) {
-                coord::Appendf(buffer, lua_tostring(L, i));    
+                coordx::Appendf(buffer, lua_tostring(L, i));    
             } else if (lua_isnil(L, i)) {
-                coord::Appendf(buffer, "nil");
+                coordx::Appendf(buffer, "nil");
             } else if (lua_istable(L, i)) {
-                coord::Appendf(buffer, "table: %p", lua_topointer(L, i));
+                coordx::Appendf(buffer, "table: %p", lua_topointer(L, i));
             } else if (lua_isfunction(L, i)) {
-                coord::Appendf(buffer, "function: %p", lua_topointer(L, i));
+                coordx::Appendf(buffer, "function: %p", lua_topointer(L, i));
             } else if(tolua_isusertype(L, i, protobuf::Message::_TypeName, 0, &tolua_err) ) {
                 protobuf::Message* message = ((protobuf::Message*) tolua_tousertype(L, i, 0));
                 if(message == nullptr) {
-                    coord::Appendf(buffer, "proto: (null)");
+                    coordx::Appendf(buffer, "proto: (null)");
                 } else {
-                    coord::Appendf(buffer, "proto: %s", message->Name());
+                    coordx::Appendf(buffer, "proto: %s", message->Name());
                 }
             } else if (lua_isuserdata(L, i)) {
-                coord::Appendf(buffer, "userdata: %p", lua_topointer(L, i));
+                coordx::Appendf(buffer, "userdata: %p", lua_topointer(L, i));
             } else if (lua_isboolean(L, i)) {
-                coord::Appendf(buffer, "%s", lua_toboolean(L, i) ? "true" : "false");
+                coordx::Appendf(buffer, "%s", lua_toboolean(L, i) ? "true" : "false");
             } else {
-                coord::Appendf(buffer, "type: %d", lua_type(L, i));
+                coordx::Appendf(buffer, "type: %d", lua_type(L, i));
             }
-            coord::Appendf(buffer, "\t");
+            coordx::Appendf(buffer, "\t");
         }
-        coord::Append(buffer, 0);
+        coordx::Append(buffer, 0);
         this->Log(buffer.Data());
         return 0;
     }
@@ -1417,7 +1416,7 @@ namespace coord {
         this->Event->Emit(name, args);
     }
 
-    void Coord::Destory(RcObject* object) {
+    void Coord::Destory(coordx::RcObject* object) {
         object->DecRef();
     }
 
@@ -1425,7 +1424,7 @@ namespace coord {
         object->onDestory();
     } 
 
-    void Coord::DontDestory(RcObject* object) {
+    void Coord::DontDestory(coordx::RcObject* object) {
         object->AddRef();
     }
 
@@ -1486,13 +1485,6 @@ namespace coord {
         return this->RedisMgr->GetAsyncClient(name);
     }
     
-    void Coord::insertHeapObject(RcObject* object) {
-        this->heapObjectSet.insert(object);
-    }
-
-    void Coord::removeHeapObject(RcObject* object) {
-
-    }
 
     /*int Coord::Cache(const char* name, const char* data, size_t expire) {
         if (data == NULL){

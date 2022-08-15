@@ -3,7 +3,7 @@
 #include "coord/coord.h"
 #include "coord/cluster/cluster.h"
 #include "coord/cluster/cluster_server.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 #include "coord/protobuf/init.h"
 namespace coord {
 
@@ -26,7 +26,7 @@ GateNotify::~GateNotify() {
 
 void GateNotify::onDestory() {
     uint64_t duration = uv_hrtime() - this->ReqTime;
-    this->coord->LogDebug("|%10s|%20s | NOTIFY |\t\"%s\"", date::FormatNano(duration), this->agent->name.c_str(), this->Route.c_str());
+    this->coord->LogDebug("|%10s|%20s | NOTIFY |\t\"%s\"", coordx::date::FormatNano(duration), this->agent->name.c_str(), this->Route.c_str());
 }
 
 

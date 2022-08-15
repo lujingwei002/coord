@@ -27,12 +27,7 @@ public:
 };
 
 TEST_F(TestPromise, Basic) {
-    auto promise = coord::newPromise(this->coord);
-    promise->Then([this](){
-        printf("gg\n");
-      //  std::cout << arg1 << std::endl;
-    });
-    promise->resolve();
+  
 }
 
  

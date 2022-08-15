@@ -3,7 +3,7 @@
 #include "coord/cache/cache_promise.h"
 #include "coord/redis/init.h"
 #include "coord/coord.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 namespace coord {
 namespace cache {
 

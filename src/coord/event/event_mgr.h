@@ -1,7 +1,7 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
+#include "coord/coordx.h"
 #include "coord/event/event.h"
 #include "coord/event/event_listener.h"
 #include <functional>

@@ -1,8 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/script/script.h"
 #include "coord/coord.h"
 #include <uv.h>

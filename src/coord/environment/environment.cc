@@ -1,5 +1,5 @@
 #include "coord/environment/environment.h"
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 #include <cstdio>
 #include <cstring>
@@ -8,8 +8,7 @@
 #include <fstream>
 #include <uv.h>
 #include <ctype.h>
-#include "coord/builtin/string.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
 
 namespace coord {
 static const char* TAG = "Environment";
@@ -103,9 +102,9 @@ int Environment::scanEnvDirectiveLine(const std::string& envFilePath, char* data
         if (argc != 2) {
             return ErrorInvalidArg;
         }
-        std::string currentDir = coord::path::DirName(envFilePath);
+        std::string currentDir = coordx::path::DirName(envFilePath);
         std::string fileName = std::string(argv[1], argLen[1]);
-        std::string envFilePath = coord::path::PathJoin(currentDir, fileName);
+        std::string envFilePath = coordx::path::PathJoin(currentDir, fileName);
         return this->scanEnvFile(envFilePath);
     }
     return ErrorInvalidArg;
@@ -359,19 +358,19 @@ int Environment::main(const Argv& argv) {
         return err;
     }
     // 配置文件所在的目录
-    this->ConfigDir = coord::path::DirName(this->ConfigPath);
+    this->ConfigDir = coordx::path::DirName(this->ConfigPath);
     // 工作目录
     this->WorkingDir = this->ConfigDir;
 
     // 执行文件所在的目录
-    this->ExecDir = coord::path::DirName(this->ExecPath);
+    this->ExecDir = coordx::path::DirName(this->ExecPath);
     // 工程目录
-    this->ProjectDir = coord::path::DirName(this->ExecDir);
+    this->ProjectDir = coordx::path::DirName(this->ExecDir);
     
-    this->ProcDir = coord::path::PathJoin(this->CoordDir, "proc");
-    this->RunDir = coord::path::PathJoin(this->ProcDir, this->Name);
-    this->PidPath = coord::path::PathJoin(this->RunDir, "pid");
-    this->ManagedSockPath = coord::path::PathJoin(this->RunDir, "managed.sock");
+    this->ProcDir = coordx::path::PathJoin(this->CoordDir, "proc");
+    this->RunDir = coordx::path::PathJoin(this->ProcDir, this->Name);
+    this->PidPath = coordx::path::PathJoin(this->RunDir, "pid");
+    this->ManagedSockPath = coordx::path::PathJoin(this->RunDir, "managed.sock");
     this->Package = this->CoordDir + "/package";                        // 引擎目录
     this->Package = this->WorkingDir + "/package;" + this->Package;     // 工作目录
     this->Package = this->ConfigDir + "/package;" + this->Package;  // 配置文件目录
@@ -393,8 +392,8 @@ int Environment::main(const Argv& argv) {
     this->Variables["package"] = this->Package;
     this->Variables["managed-sock-path"] = this->ManagedSockPath;
 
-    std::string envFilePath = coord::path::PathJoin(this->ConfigDir, env_file_name);
-    if (!coord::path::Exists(envFilePath)) {
+    std::string envFilePath = coordx::path::PathJoin(this->ConfigDir, env_file_name);
+    if (!coordx::path::Exists(envFilePath)) {
         return 0;
     }
     err = this->scanEnvFile(envFilePath);
@@ -428,7 +427,7 @@ int Environment::searchCoordDir(std::string& coordDir) {
     int err = uv_os_getenv("COORD_ROOT", buffer, &len);
     if(err == 0) {
         coordDir.assign(buffer, len);
-        err = coord::path::RealPath(coordDir, coordDir);
+        err = coordx::path::RealPath(coordDir, coordDir);
         if (err) {
             return err;
         }
@@ -439,8 +438,8 @@ int Environment::searchCoordDir(std::string& coordDir) {
     searchDirArr.push_back("/usr/local");
     searchDirArr.push_back(this->HomeDir);
     for (auto searchDir : searchDirArr) {
-        auto dir = coord::path::PathJoin(searchDir, "coord");
-        if (coord::path::Exists(dir)) {
+        auto dir = coordx::path::PathJoin(searchDir, "coord");
+        if (coordx::path::Exists(dir)) {
             coordDir = dir;
             return 0;
         }

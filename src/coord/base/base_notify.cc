@@ -2,7 +2,7 @@
 #include "coord/base/base_agent.h"
 #include "coord/base/base_response.h"
 #include "coord/coord.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 
 namespace coord {
 
@@ -23,7 +23,7 @@ base_notify::~base_notify() {
 
 void base_notify::onDestory() {
     uint64_t duration = uv_hrtime() - this->ReqTime;
-    this->coord->LogDebug("|%10s| NOTIFY |\t\"%s\"", date::FormatNano(duration), this->Route.c_str());
+    this->coord->LogDebug("|%10s| NOTIFY |\t\"%s\"", coordx::date::FormatNano(duration), this->Route.c_str());
 }
 
 } 

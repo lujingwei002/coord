@@ -1,7 +1,7 @@
 #pragma once 
 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
 #include <uv.h>
 
@@ -51,7 +51,7 @@ struct websocket_frame_header {
     uint8_t mask:1;
 };
 
-class Frame : public RcObject {//tolua_export
+class Frame : public coordx::RcObject {//tolua_export
 CC_CLASS(Frame);
 public:
     Frame(Coord* coord, Agent* agent);

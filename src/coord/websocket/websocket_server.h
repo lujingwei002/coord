@@ -4,7 +4,7 @@
 #include "coord/component/component.h"
 #include "coord/http/http_server.h"
 #include "coord/http/http_agent.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include <map>
 #include <string>
 #include <openssl/ssl.h>

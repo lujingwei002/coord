@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/component/component.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include <stdlib.h>
 #include <uv.h>
 #include <map>

@@ -1,10 +1,10 @@
 #pragma once 
 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
 #include "coord/net/recv_buffer.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include <uv.h>
 #include <string>
 namespace coord {//tolua_export
@@ -31,7 +31,7 @@ protected:
 /// PipeAgent的生命周期由PipeListener控制
 /// PipeAgent关闭后，由PipeListener负责释放
 ///
-class PipeAgent : public RcObject  {//tolua_export
+class PipeAgent : public coordx::RcObject  {//tolua_export
 CC_CLASS(PipeAgent);
 friend PipeListener;
 private:

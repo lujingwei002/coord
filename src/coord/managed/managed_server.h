@@ -16,7 +16,7 @@ namespace managed {
 namespace coord {
 namespace managed {
 
-class managed_server : public RcObject, public pipe::IPipeHandler  {
+class managed_server : public coordx::RcObject, public pipe::IPipeHandler  {
 CC_CLASS(managed_server);
 friend managed::Managed;
 friend managed::ManagedAgent;

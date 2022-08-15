@@ -1,8 +1,8 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/cluster/cluster_message.h"
 #include "coord/protobuf/declare.h"
 #include <uv.h>
@@ -31,7 +31,7 @@ class Result;
 typedef std::function<void (Result* result)> Promise_Resolve; 
 typedef std::function<void (Result* result)> Promise_Reject; 
 
-class Promise : public RcObject { //tolua_export
+class Promise : public coordx::RcObject { //tolua_export
 CC_CLASS(Promise);
 public:
     Promise(Coord* coord);

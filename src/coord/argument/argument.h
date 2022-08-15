@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/protobuf/init.h"
 #include "coord/script/reflect.h"
 #include <cstdlib>

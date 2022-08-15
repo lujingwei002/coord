@@ -13,7 +13,7 @@
 #include "coord/websocket/websocket_agent.h"
 #include "coord/websocket/websocket_frame.h"
 #include "coord/protobuf/init.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 #include <fstream>
 #include <iostream>
 namespace coord {

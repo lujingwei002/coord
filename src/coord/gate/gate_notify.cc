@@ -3,7 +3,7 @@
 #include "coord/coord.h"
 #include "coord/gate/gate.h"
 #include "coord/gate/gate_response.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 
 namespace coord {
 
@@ -27,7 +27,7 @@ GateNotify::~GateNotify() {
 
 void GateNotify::onDestory() {
     uint64_t duration = uv_hrtime() - this->ReqTime;
-    this->coord->LogDebug("| %10s | %16s | NOTIFY | \"%s\"", date::FormatNano(duration), this->agent->RemoteAddr.c_str(), this->Route.c_str());
+    this->coord->LogDebug("| %10s | %16s | NOTIFY | \"%s\"", coordx::date::FormatNano(duration), this->agent->RemoteAddr.c_str(), this->Route.c_str());
 }
  
 

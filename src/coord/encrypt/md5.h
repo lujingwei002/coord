@@ -1,7 +1,7 @@
 #pragma once 
 
 #include <cstdlib>
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 
 namespace coord {
 

@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
 #include "coord/redis/declare.h"
 
@@ -29,7 +29,7 @@ namespace coord {//tolua_export
 namespace redis {//tolua_export
 
 
-class Client : public RcObject {//tolua_export
+class Client : public coordx::RcObject {//tolua_export
 CC_CLASS(Client);
 friend Coord;
 friend RedisMgr;

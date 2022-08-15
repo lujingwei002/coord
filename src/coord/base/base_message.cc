@@ -1,5 +1,5 @@
 #include "coord/base/base_message.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
 #include "coord/base/base_packet.h"
 #include "coord/protobuf/protobuf.h"
 namespace coord {
@@ -67,26 +67,26 @@ int base_message_header_encode(byte_slice& message, base_message_type type, base
     }
     uint8_t flag = (((uint8_t)dataType) << 4) | (((uint8_t)type) << 1);
     //int offset = 1;
-    coord::Append(message, (char)flag);
+    coordx::Append(message, (char)flag);
     if (type == base_message_type_request || type == base_message_type_response) {
         uint64_t n = id;
         for (;;) {
             uint8_t b = uint8_t(n % 128);
             n = n >> 7;
             if (n != 0){
-                coord::Append(message, (char)(b + 128));
+                coordx::Append(message, (char)(b + 128));
             } else {
-                coord::Append(message, (char)b);
+                coordx::Append(message, (char)b);
                 break;
             }
         } 
     }
     if (type == base_message_type_request || type == base_message_type_notify ||  type == base_message_type_push) {
-        coord::Append(message, (char)strlen(route));
-        coord::Append(message, route, strlen(route));
+        coordx::Append(message, (char)strlen(route));
+        coordx::Append(message, route, strlen(route));
     }
     if (type == base_message_type_response) {
-        coord::Append(message, (char*)&code, sizeof(code));
+        coordx::Append(message, (char*)&code, sizeof(code));
     }
     return 0;
 }
@@ -120,7 +120,7 @@ int base_response_encode(byte_slice& packet, uint64_t id, int code, const char* 
     packet.Resize(packet.Len() + message.Len());
     //message body
     byte_slice payload = packet.Slice(packet.Len(), packet.Len());
-    coord::Append(payload, data, len);
+    coordx::Append(payload, data, len);
     packet.Resize(packet.Len() + payload.Len());
     //重新写packet header 
     header.Resize(0);
@@ -201,7 +201,7 @@ int base_notify_encode(byte_slice& packet, const char* route, const char* data, 
     packet.Resize(packet.Len() + message.Len());
     //message body
     byte_slice payload = packet.Slice(packet.Len(), packet.Len());
-    coord::Append(payload, data, len);
+    coordx::Append(payload, data, len);
     packet.Resize(packet.Len() + payload.Len());
     //重新写packet header 
     header.Resize(0);
@@ -282,7 +282,7 @@ int base_request_encode(byte_slice& packet, const char* route, int requestId, co
     packet.Resize(packet.Len() + message.Len());
     //message body
     byte_slice payload = packet.Slice(packet.Len(), packet.Len());
-    coord::Append(payload, data, len);
+    coordx::Append(payload, data, len);
     packet.Resize(packet.Len() + payload.Len());
     //重新写packet header 
     header.Resize(0);

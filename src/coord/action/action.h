@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include <functional>
 #include <vector>
 
@@ -12,7 +12,7 @@ class Action;
 
 class Sequence;
 
-class Action : public RcObject {
+class Action : public coordx::RcObject {
 public:
     Action(Coord*  coord);
     virtual ~Action();

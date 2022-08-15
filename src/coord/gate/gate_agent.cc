@@ -1,5 +1,5 @@
 #include "coord/gate/gate_agent.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/gate/gate_packet.h"
 #include "coord/gate/gate_message.h"
 #include "coord/gate/gate_request.h"
@@ -188,7 +188,7 @@ void GateAgent::recvData(Packet* packet) {
             request->Id = message.id;
             request->Route = message.route;
             request->payload.Resize(0);
-            coord::Append(request->payload, message.data, message.length);
+            coordx::Append(request->payload, message.data, message.length);
             this->gate->recvGateRequest(this->session, request);
             //this->coord->popRequestPipeline();
             this->coord->Destory(request);
@@ -198,7 +198,7 @@ void GateAgent::recvData(Packet* packet) {
             GateNotify* notify = newGateNotify(this->coord, this);
             notify->Route = message.route;
             notify->payload.Resize(0);
-            coord::Append(notify->payload, message.data, message.length);
+            coordx::Append(notify->payload, message.data, message.length);
             this->gate->recvGateNotify(this->session, notify);
             this->coord->Destory(notify);
             break;
@@ -352,7 +352,7 @@ int GateAgent::response(uint64_t id, const char* route, const char* data, size_t
     response.Resize(response.Len() + messageHeader.Len());
     //message body
     byte_slice messageBody = response.Slice(response.Len(), response.Len());
-    coord::Append(messageBody, data, len);
+    coordx::Append(messageBody, data, len);
 
     //加密
     err = encrypt::des::Encrypt(messageBody, this->secret.c_str());

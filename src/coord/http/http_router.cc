@@ -5,8 +5,7 @@
 #include "coord/component/script_component.h"
 #include "coord/coord.h"
 #include "coord/script/script.h"
-#include "util/os/path.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 
 namespace coord {
 namespace http {
@@ -114,7 +113,7 @@ void HttpRouter::Trace() {
 
 void HttpRouter::trace(const char* method, http_router_handler* handler) {
     uint64_t averageTime = handler->times <= 0 ? 0 : (handler->consumeTime/handler->times);
-    this->coord->LogDebug("[HttpRouter] %10s | %10d | %10s | %s",  method, handler->times, date::FormatNano(averageTime), handler->path.c_str());
+    this->coord->LogDebug("[HttpRouter] %10s | %10d | %10s | %s",  method, handler->times, coordx::date::FormatNano(averageTime), handler->path.c_str());
 }
 
 bool HttpRouter::Get(const char* path, HttpRouter_RecvHttpRequest func){
@@ -284,13 +283,13 @@ int HttpRouter::Post(lua_State* L) {
 }
 
 void HttpRouter::recvStaticRequest(const HttpRequestRef& request, const char* dir) {
-    std::string realPath = coord::path::PathJoin(dir, request->Path);
-    realPath = coord::path::PathJoin(this->server->config.AssetDir, realPath);
+    std::string realPath = coordx::path::PathJoin(dir, request->Path);
+    realPath = coordx::path::PathJoin(this->server->config.AssetDir, realPath);
     request->GetResponse()->File(realPath.c_str());
 }
 
 void HttpRouter::recvStaticFileRequest(const HttpRequestRef& request, const char* filePath) {
-    std::string realPath = coord::path::PathJoin(this->server->config.AssetDir, filePath);
+    std::string realPath = coordx::path::PathJoin(this->server->config.AssetDir, filePath);
     request->GetResponse()->File(realPath.c_str());
 }
 

@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include "coord/cache/cache_config.h"
 #include <uv.h>
 #include <vector>
@@ -21,7 +21,7 @@ namespace cache {//tolua_export
 class CacheResult;
 class Promise;
 
-class AsyncClient : public RcObject {//tolua_export
+class AsyncClient : public coordx::RcObject {//tolua_export
 CC_CLASS(AsyncClient);
 public:
     AsyncClient(Coord *coord);

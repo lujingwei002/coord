@@ -162,7 +162,7 @@ void cluster_client::recvData(cluster_packet* packet) {
                 result->Route = promise->route;
                 result->ReqTime = promise->reqTime;
                 result->payload.Resize(0);
-                coord::Append(result->payload, message.data, message.length);
+                coordx::Append(result->payload, message.data, message.length);
                 this->promiseDict.erase(it);
                 if (result->Code == 0) {
                     promise->resolve(result);
@@ -265,7 +265,7 @@ int cluster_client::notify(const char* route, const char* data, size_t len) {
     packet.Resize(packet.Len() + message.Len());
     //message body
     byte_slice payload = packet.Slice(packet.Len(), packet.Len());
-    coord::Append(payload, data, len);
+    coordx::Append(payload, data, len);
     packet.Resize(packet.Len() + payload.Len());
     //重新写packet header 
     header.Resize(0);
@@ -296,7 +296,7 @@ Promise* cluster_client::request(const char* route, const char* data, size_t len
     packet.Resize(packet.Len() + message.Len());
     //message body
     byte_slice payload = packet.Slice(packet.Len(), packet.Len());
-    coord::Append(payload, data, len);
+    coordx::Append(payload, data, len);
     packet.Resize(packet.Len() + payload.Len());
     //重新写packet header 
     header.Resize(0);

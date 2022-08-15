@@ -3,7 +3,7 @@
 #include "coord/redis/redis_result.h"
 #include "coord/redis/redis_promise.h"
 #include "coord/redis/redis_mgr.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 #include <hiredis/adapters/libuv.h>
 

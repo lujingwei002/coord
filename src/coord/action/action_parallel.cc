@@ -1,7 +1,7 @@
 #include "coord/action/action_parallel.h"
 #include "coord/action/action.h"
 #include "coord/action/action_animation.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 
 namespace coord {

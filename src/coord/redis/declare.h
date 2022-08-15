@@ -35,7 +35,7 @@ namespace coord {//tolua_export
         class AsyncClient;
         class RedisPromise;
         class RedisResult;
-        typedef coord::RcRef<coord::redis::RedisResult> RedisResultRef;//tolua_export
+        typedef coordx::RcRef<coord::redis::RedisResult> RedisResultRef;//tolua_export
     }//tolua_export
 
 } //tolua_export

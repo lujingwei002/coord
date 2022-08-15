@@ -1,7 +1,7 @@
 #pragma once 
 
-#include "coord/builtin/inc.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
+#include "coord/coordx.h"
 #include "coord/sql/sql_result.h"
 #include "coord/sql/sql_rows.h"
 #include "coord/protobuf/init.h"

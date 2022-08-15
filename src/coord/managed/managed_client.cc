@@ -5,7 +5,7 @@
 //#include "coord/managed/managed_message.h"
 #include "coord/managed/managed_promise.h"
 #include "coord/managed/managed_result.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
 #include "json/json.hpp"
 #include "coord/coord.h"
 namespace coord {

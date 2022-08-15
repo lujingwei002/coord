@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include "coord/base/base_request.h"
 #include "coord/http/declare.h"
 #include "coord/http/http_response.h"
@@ -8,7 +8,7 @@
 #include <map>
 #include <tuple>
 #include "http-parser/http_parser.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 extern "C" {
 #include <lua/lua.h>
 #include <lua/lualib.h>

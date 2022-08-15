@@ -15,7 +15,7 @@
 #include "coord/worker/worker_result.h"
 #include "coord/worker/worker_notify.h"
 #include "coord/base/base_notify.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 #include "coord/event/init.h"
 #include "coord/script/script.h"
 #include "coord/cache/cache_result.h"

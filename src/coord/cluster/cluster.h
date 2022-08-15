@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include "coord/protobuf/init.h"
 #include "coord/cluster/cluster_config.h"
 #include "coord/protobuf/declare.h"

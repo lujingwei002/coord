@@ -1,7 +1,7 @@
 #pragma once 
-#include "coord/builtin/inc.h"
-#include "coord/builtin/slice.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
+#include "coord/coordx.h"
+#include "coord/coordx.h"
 #include "coord/script/declare.h"
 #include "coord/json/json_ref.h"
 #include <string>

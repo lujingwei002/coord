@@ -6,7 +6,7 @@
 #include "coord/managed/managed_response.h"
 #include "coord/managed/managed_request.h"
 #include "coord/config/config.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 
 namespace coord {

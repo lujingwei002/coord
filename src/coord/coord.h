@@ -11,7 +11,7 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <tolua++/tolua++.h>
 }
-#include "coord/builtin/declare.h"
+#include "coord/coordx.h"
 #include "coord/environment/declare.h"
 #include "coord/closure/init.h"
 #include "coord/component/declare.h"
@@ -68,7 +68,6 @@ friend class coord::Environment;
 friend class coord::run::Running;
 friend class coord::BaseRequest;
 friend class coord::BaseResponse;
-friend class coord::Promise;
 friend class coord::log4cc::LoggerMgr;
 friend class coord::SceneMgr;
 friend class coord::Scene;
@@ -230,9 +229,9 @@ public:
     void Emit(const char* name, event::BaseEvent* args);//tolua_export
     
     /// ##内存管理接口
-    void Destory(RcObject* object);//tolua_export
+    void Destory(coordx::RcObject* object);//tolua_export
     void Destory(net::TcpClient* object);//tolua_export
-    void DontDestory(RcObject* object);//tolua_export
+    void DontDestory(coordx::RcObject* object);//tolua_export
 
     /// 创建httpserver
     http::HttpServer* NewHttpServer();//tolua_export
@@ -281,8 +280,6 @@ private:
     uint64_t onGC();        
     int onAwake(); 
     uint64_t onUpdate(); 
-    void insertHeapObject(RcObject* object);
-    void removeHeapObject(RcObject* object);
 public:
     coord::Config*          Config;         //tolua_export
     script::Script*         Script;         //tolua_export   
@@ -324,7 +321,6 @@ private:
     bool                        isAwake;
     uint64_t                    time;
     uint64_t                    nowRecord;
-    std::set<RcObject*>      heapObjectSet;
 private:
     
 public:

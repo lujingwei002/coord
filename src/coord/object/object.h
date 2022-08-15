@@ -1,7 +1,7 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
+#include "coord/coordx.h"
 
 #include <stdlib.h> 
 #include <stdint.h> 
@@ -34,7 +34,7 @@ class HttpRequest;
 class HttpResponse;
 class HttpFrame;
 }
-class Object : public RcObject {//tolua_export
+class Object : public coordx::RcObject {//tolua_export
 CC_CLASS(Object)
 public:
     Object(Coord* coord, const char* name);

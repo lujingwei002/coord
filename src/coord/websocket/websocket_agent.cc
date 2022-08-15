@@ -146,17 +146,17 @@ int Agent::sendFrame(int opcode, const char* data, size_t len) {
         header.payloadLen = 126;
         frame.Reserve(sizeof(header) + sizeof(uint16_t) + len);
         frame.Resize(0);
-        coord::Append(frame, (char *)&header, sizeof(header));
-        coord::Append(frame, (len>>8)&0xFF);
-        coord::Append(frame, (len)&0xFF);
-        coord::Append(frame, data, len);
+        coordx::Append(frame, (char *)&header, sizeof(header));
+        coordx::Append(frame, (len>>8)&0xFF);
+        coordx::Append(frame, (len)&0xFF);
+        coordx::Append(frame, data, len);
         return this->send(frame);
     } else {
         header.payloadLen = len;
         frame.Reserve(sizeof(header) + len);
         frame.Resize(0);
-        coord::Append(frame, (char *)&header, sizeof(header));
-        coord::Append(frame, data, len);
+        coordx::Append(frame, (char *)&header, sizeof(header));
+        coordx::Append(frame, data, len);
         return this->send(frame);
     }
     return 0;
@@ -178,9 +178,9 @@ int Agent::sendFrame(int opcode, byte_slice& data) {
         header.payloadLen = 126;
         frame.Reserve(sizeof(header) + sizeof(uint16_t) + len);
         frame.Resize(0);
-        coord::Append(frame, (char *)&header, sizeof(header));
-        coord::Append(frame, (len>>8)&0xFF);
-        coord::Append(frame, (len)&0xFF);
+        coordx::Append(frame, (char *)&header, sizeof(header));
+        coordx::Append(frame, (len>>8)&0xFF);
+        coordx::Append(frame, (len)&0xFF);
         int err = this->send(frame);
         if (err) {
             return err;
@@ -191,7 +191,7 @@ int Agent::sendFrame(int opcode, byte_slice& data) {
         header.payloadLen = len;
         frame.Reserve(sizeof(header) + len);
         frame.Resize(0);
-        coord::Append(frame, (char *)&header, sizeof(header));
+        coordx::Append(frame, (char *)&header, sizeof(header));
         int err = this->send(frame);
         if (err) {
             return err;

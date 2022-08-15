@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include "coord/cache/cache_config.h"
 #include <uv.h>
 #include <vector>

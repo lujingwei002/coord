@@ -2,7 +2,7 @@
 
 
 #include "coord/net/tcp_listener.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include <map>
 #include <string>
 #include <openssl/ssl.h>
@@ -52,7 +52,7 @@ public:
     bool            UseEtag;            //tolua_export
 };//tolua_export
 
-class HttpServer : public net::ITcpHandler, public RcObject {//tolua_export
+class HttpServer : public net::ITcpHandler, public coordx::RcObject {//tolua_export
 CC_CLASS(HttpServer);
 friend Coord;
 friend HttpAgent;

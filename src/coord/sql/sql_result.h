@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
 #include <uv.h>
 #include <vector>
@@ -21,7 +21,7 @@ class Coord;
 namespace sql {//tolua_export
 
 class SQLConnection;
-class sql_result : public RcObject {
+class sql_result : public coordx::RcObject {
 public:
     sql_result(Coord *coord);
     virtual ~sql_result();
@@ -35,7 +35,7 @@ public:
     uint64_t    lastInsertId;
 };
 
-class SQLResult : public RcObject {//tolua_export
+class SQLResult : public coordx::RcObject {//tolua_export
 CC_CLASS(SQLResult);
 public:
     SQLResult(Coord* coord);

@@ -1,5 +1,5 @@
 #include "coord/base/base_packet.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
 namespace coord {
 
 int base_packet_header_encode(byte_slice& packet, base_packet_type type, size_t len) {

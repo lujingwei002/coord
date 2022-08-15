@@ -30,7 +30,7 @@ JsonRef::~JsonRef() {
 int JsonRef::Encode(byte_slice& buffer) {
     std::string result;
     this->object.dump(result);
-    coord::Append(buffer, result.data(), result.length());
+    coordx::Append(buffer, result.data(), result.length());
     return 0;
 }
 

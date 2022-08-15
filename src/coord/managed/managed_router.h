@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include "coord/base/base_router.h"
 #include "coord/managed/managed_response.h"
 #include "coord/managed/managed_request.h"

@@ -1,7 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-
+#include "coord/coordx.h"
 #include "coord/net/tcp_client.h"
 #include "coord/cluster/cluster_packet.h"
 #include "coord/protobuf/declare.h"
@@ -27,7 +26,7 @@ enum cluster_client_status {
 	cluster_client_status_closed = 3,
 };
 
-class cluster_client : public net::ITcpClientHandler, public RcObject {//tolua_export
+class cluster_client : public net::ITcpClientHandler, public coordx::RcObject {//tolua_export
 public:
     cluster_client(Coord *coord, Cluster* cluster, const char* name, uint64_t version, const char* host, uint16_t port);
     virtual ~cluster_client();

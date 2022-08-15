@@ -34,7 +34,7 @@ TEST_F(TestEncrypt, Hex) {
         int err = coord::encrypt::hex::Encode(src, 16, dst);
         ASSERT_EQ(err, 0);
         ASSERT_EQ(dst.Len(), (size_t)32);
-        coord::Append(dst, 0);
+        coordx::Append(dst, 0);
         ASSERT_STREQ(dst.Data(), "0b000000000000000000000000000000");        
     }
     {
@@ -53,7 +53,7 @@ TEST_F(TestEncrypt, Base64) {
         
         int err = coord::encrypt::base64::Encode("hello", 5, dst);
         ASSERT_EQ(err, 0);
-        coord::Append(dst, 0);
+        coordx::Append(dst, 0);
         ASSERT_EQ(dst.Len(), (size_t)9);
         ASSERT_STREQ(dst.Data(), "aGVsbG8=");
     }
@@ -63,7 +63,7 @@ TEST_F(TestEncrypt, Base64) {
         coord::byte_slice dst;
         int err = coord::encrypt::base64::Decode(src, 8, dst);
         ASSERT_EQ(err, 0);
-        coord::Append(dst, 0);
+        coordx::Append(dst, 0);
         ASSERT_EQ(dst.Len(), (size_t)6);
         ASSERT_STREQ(dst.Data(), "hello");        
     }
@@ -72,7 +72,7 @@ TEST_F(TestEncrypt, Base64) {
 TEST_F(TestEncrypt, Des) {
     {
         coord::byte_slice src;
-        coord::Appendf(src, "helloworld");
+        coordx::Appendf(src, "helloworld");
         ASSERT_EQ(src.Len(), (size_t)10);
         int err = coord::encrypt::des::Encrypt(src, "12345678");
         ASSERT_EQ(err, 0);
@@ -80,7 +80,7 @@ TEST_F(TestEncrypt, Des) {
         coord::byte_slice dst;
         err = coord::encrypt::base64::Encode(src.Data(), src.Len(), dst);
         ASSERT_EQ(err, 0);
-        coord::Append(dst, 0);
+        coordx::Append(dst, 0);
         ASSERT_STREQ(dst.Data(), "ovATL3QOQmKh0WiTqhkSbg==");
     }
     {
@@ -90,7 +90,7 @@ TEST_F(TestEncrypt, Des) {
         err = coord::encrypt::des::Decrypt(src.Data(), src.Len(), "12345678", src.Data(), &dstLen);
         ASSERT_EQ(err, 0);
         src.Resize(dstLen);
-        coord::Append(src, 0);
+        coordx::Append(src, 0);
         ASSERT_STREQ(src.Data(), "helloworld");
 
     }
@@ -105,6 +105,6 @@ TEST_F(TestEncrypt, Md5) {
     err = coord::encrypt::hex::Encode(src, 16, dst);
     ASSERT_EQ(err, 0);
     ASSERT_EQ(dst.Len(), (size_t)32);
-    coord::Append(dst, 0);
+    coordx::Append(dst, 0);
     ASSERT_STREQ(dst.Data(), "5d41402abc4b2a76b9719d911017c592"); 
 }

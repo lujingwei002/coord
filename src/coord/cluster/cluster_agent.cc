@@ -71,7 +71,7 @@ void cluster_agent::recvData(cluster_packet* packet) {
             request->Id = message.id;
             request->Route = message.route;
             request->payload.Resize(0);
-            coord::Append(request->payload, message.data, message.length);
+            coordx::Append(request->payload, message.data, message.length);
             this->cluster->recvClusterRequest(request);
             this->coord->Destory(request);
             break;
@@ -80,7 +80,7 @@ void cluster_agent::recvData(cluster_packet* packet) {
             GateNotify* notify = newNotify(this->coord, this);
             notify->Route = message.route;
             notify->payload.Resize(0);
-            coord::Append(notify->payload, message.data, message.length);
+            coordx::Append(notify->payload, message.data, message.length);
             this->cluster->recvClusterNotify(notify);
             this->coord->Destory(notify);
             break;
@@ -199,7 +199,7 @@ int cluster_agent::response(uint64_t id, int code, const char* data, size_t len)
     packet.Resize(packet.Len() + message.Len());
     //message body
     byte_slice payload = packet.Slice(packet.Len(), packet.Len());
-    coord::Append(payload, data, len);
+    coordx::Append(payload, data, len);
     packet.Resize(packet.Len() + payload.Len());
     //重新写packet header 
     header.Resize(0);

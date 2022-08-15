@@ -1,7 +1,7 @@
 #include "coord/config/config.h"
 #include "coord/sql/sql_client.h"
 #include "coord/redis/init.h"
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include "coord/log4cc/log4cc.h"
 #include "coord/environment/environment.h"
 #include "coord/coord.h"
@@ -398,9 +398,9 @@ int Config::scanConfigDirectiveLine(const std::string& configPath, char* data, s
         if (argc != 2) {
             return ErrorInvalidArg;
         }
-        std::string currentDir = coord::path::DirName(configPath);
+        std::string currentDir = coordx::path::DirName(configPath);
         std::string fileName = std::string(argv[1], argLen[1]);
-        std::string realPath = coord::path::PathJoin(currentDir, fileName);
+        std::string realPath = coordx::path::PathJoin(currentDir, fileName);
         return this->scanConfigFile(realPath);
     }
     return ErrorInvalidArg;
@@ -667,7 +667,7 @@ void Config::DebugString(){
 
 int Config::parse(const std::string&  configPath) {
     std::string realPath;
-    int err = coord::path::RealPath(configPath, realPath);
+    int err = coordx::path::RealPath(configPath, realPath);
     if (err) {
         this->coord->CoreLogError("%s: %s", uv_strerror(err), configPath.c_str());
         return err;
@@ -700,8 +700,8 @@ int Config::parse(const std::string&  configPath) {
             size_t pos = this->Basic.Package.find(";", begin);
             if (pos == std::string::npos) {
                 std::string path = this->Basic.Package.substr(begin);
-                if (!coord::path::IsAbsolutePath(path.c_str())) {
-                    path = coord::path::PathJoin(this->coord->Environment->ConfigDir, path);
+                if (!coordx::path::IsAbsolutePath(path.c_str())) {
+                    path = coordx::path::PathJoin(this->coord->Environment->ConfigDir, path);
                 }
                 if (package.length() == 0) {
                     package = path;
@@ -711,8 +711,8 @@ int Config::parse(const std::string&  configPath) {
                 break;
             } else {
                 std::string path = this->Basic.Package.substr(begin, pos - begin);
-                if (!coord::path::IsAbsolutePath(path.c_str())) {
-                    path = coord::path::PathJoin(this->coord->Environment->ConfigDir, path);
+                if (!coordx::path::IsAbsolutePath(path.c_str())) {
+                    path = coordx::path::PathJoin(this->coord->Environment->ConfigDir, path);
                 }
                 if (package.length() == 0) {
                     package = path;

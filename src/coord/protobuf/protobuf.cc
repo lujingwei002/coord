@@ -1,7 +1,7 @@
 #include "coord/protobuf/protobuf.h"
 
 #include "coord/config/config.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
 #include "coord/environment/environment.h"
 #include "coord/script/script.h"
 #include "coord/coord.h"
@@ -109,7 +109,7 @@ int Protobuf::ImportDir(const char *dir) {
     this->coord->CoreLogDebug("[Proto] ImportDir, file=%s", dir);
     uv_fs_t req;
     uv_dirent_t ent;
-    std::string realPath = coord::path::PathJoin(this->coord->Environment->ConfigDir, dir);
+    std::string realPath = coordx::path::PathJoin(this->coord->Environment->ConfigDir, dir);
     uv_fs_scandir(&this->coord->loop, &req, realPath.c_str(), 0, NULL);
     static thread_local char path[PATH_MAX];
     while(uv_fs_scandir_next(&req, &ent) != UV_EOF) {

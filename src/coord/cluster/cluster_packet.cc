@@ -1,5 +1,5 @@
 #include "coord/cluster/cluster_packet.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
 #include <cstring>
 namespace coord {
 namespace cluster {

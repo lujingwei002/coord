@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include "coord/base/base_promise.h"
 #include "coord/managed/managed_client.h"
 #include <vector>
@@ -18,7 +18,7 @@ namespace coord {
 namespace coord {//tolua_export
 namespace managed {//tolua_export
 
-class ManagedPromise: public base_promise<ManagedClient*, ManagedResult*>, public RcObject { //tolua_export
+class ManagedPromise: public base_promise<ManagedClient*, ManagedResult*>, public coordx::RcObject { //tolua_export
 CC_CLASS(ManagedPromise);
 friend base_managed_client;
 friend ManagedClient;

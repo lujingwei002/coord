@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/object/object.h"
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include <cstdlib>
 #include <map>
 extern "C" {

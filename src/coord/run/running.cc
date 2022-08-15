@@ -1,5 +1,5 @@
 #include "coord/run/running.h"
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include "coord/environment/environment.h"
 #include "coord/coord.h"
 #include <cstdio>
@@ -9,8 +9,6 @@
 #include <fstream>
 #include <uv.h>
 #include <ctype.h>
-#include "coord/builtin/string.h"
-#include "coord/builtin/error.h"
 
 namespace coord {
 namespace run {
@@ -29,17 +27,17 @@ int Running::main() {
     // if (err) {
     //     return err;
     // }
-    if (!coord::path::Exists(this->coord->Environment->ProcDir)){
+    if (!coordx::path::Exists(this->coord->Environment->ProcDir)){
         return ErrorNoSuchFileOrDirectory;
     }
-    if (coord::path::Exists(this->coord->Environment->RunDir)){
+    if (coordx::path::Exists(this->coord->Environment->RunDir)){
         return ErrorRunning;
     }
-    int err = coord::path::MakeDir(this->coord->Environment->RunDir, 0755);
+    int err = coordx::path::MakeDir(this->coord->Environment->RunDir, 0755);
     if (err) {
         return err;
     }
-    err = coord::path::FileLock(this->coord->Environment->PidPath);
+    err = coordx::path::FileLock(this->coord->Environment->PidPath);
     if (err) {
         return err;
     }
@@ -52,7 +50,7 @@ int Running::main() {
 void Running::onDestory() {
     auto environment = this->coord->Environment;
     if (environment->RunDir.length() > 0) {
-        int err = coord::path::RemoveDirRecursive(environment->RunDir);
+        int err = coordx::path::RemoveDirRecursive(environment->RunDir);
         if (err){
             this->coord->CoreLogError("[%s] RemoveDir failed, error=%d", TAG, err);
         }

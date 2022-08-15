@@ -7,7 +7,7 @@
 #include "coord/cluster/cluster_request.h"
 #include "coord/cluster/cluster_response.h"
 #include "coord/config/config.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 #include "proto/coord.pb.h"
 

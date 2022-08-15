@@ -72,7 +72,7 @@ void PipeAgent::SetHandler(IPipeAgentHandler* handler) {
 
 int PipeAgent::Send(const void* data, size_t len) {
     byte_slice buffer;
-    coord::Append(buffer, (const char*)data, len);
+    coordx::Append(buffer, (const char*)data, len);
     return this->Send(buffer);
 }
 

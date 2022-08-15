@@ -3,7 +3,7 @@
 #include "coord/gate/gate.h"
 #include "coord/gate/gate_cluster.h"
 #include "coord/component/script_component.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 #include "coord/base/base_request.h"
 #include "coord/script/script.h"
 namespace coord {

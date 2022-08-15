@@ -256,24 +256,24 @@ int Argument::Parse(byte_slice& data) {
 int Argument::Serialize(byte_slice& buffer) {
     for (auto& arg : this->argv) {
         if (arg->type == ArgumentTypeNil) {
-            coord::Append(buffer, (char)ArgumentTypeNil);
+            coordx::Append(buffer, (char)ArgumentTypeNil);
         } else if (arg->type == ArgumentTypeBoolean) {
-            coord::Append(buffer, ArgumentTypeBoolean);
+            coordx::Append(buffer, ArgumentTypeBoolean);
             uint8_t value = arg->number;
-            coord::Append(buffer, (char*)(&value), sizeof(value));
+            coordx::Append(buffer, (char*)(&value), sizeof(value));
         } else if (arg->type == ArgumentTypeNumber) {
-            coord::Append(buffer, ArgumentTypeNumber);
-            coord::Append(buffer, (char*)(&arg->number), sizeof(arg->number));
+            coordx::Append(buffer, ArgumentTypeNumber);
+            coordx::Append(buffer, (char*)(&arg->number), sizeof(arg->number));
         } else if (arg->type == ArgumentTypeString) {
-            coord::Append(buffer, ArgumentTypeString);
+            coordx::Append(buffer, ArgumentTypeString);
             uint16_t len = (uint16_t)(arg->str.length());
-            coord::Append(buffer, (char*)(&len), sizeof(len));
-            coord::Append(buffer, (char*)(arg->str.c_str()), len);
+            coordx::Append(buffer, (char*)(&len), sizeof(len));
+            coordx::Append(buffer, (char*)(arg->str.c_str()), len);
         } else if (arg->type == ArgumentTypeTable) {
-            coord::Append(buffer, ArgumentTypeTable);
+            coordx::Append(buffer, ArgumentTypeTable);
             byte_slice header = buffer.Slice(buffer.Len(), buffer.Len());
             size_t len = 0;
-            coord::Append(buffer, (char*)(&len), sizeof(len));
+            coordx::Append(buffer, (char*)(&len), sizeof(len));
             byte_slice body = buffer.Slice(buffer.Len(), buffer.Len());
             int err = arg->table.Encode(body);
             if (err) {
@@ -281,23 +281,23 @@ int Argument::Serialize(byte_slice& buffer) {
             }
             buffer.Resize(buffer.Len() + body.Len());
             len = body.Len();
-            coord::Append(header, (char*)(&len), sizeof(len));
+            coordx::Append(header, (char*)(&len), sizeof(len));
         } else if (arg->type == ArgumentTypeProto) {
             //数据类型
-            coord::Append(buffer, ArgumentTypeProto);
+            coordx::Append(buffer, ArgumentTypeProto);
             google::protobuf::Message* message = arg->proto->GetMessage();
             if (message == NULL) {
                 size_t totalLen = 0;
-                coord::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
+                coordx::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
             } else {
                 const char* name = message->GetTypeName().data();
                 uint16_t nameLen = (uint16_t)(strlen(name));
                 size_t msgLen = message->ByteSizeLong();
                 size_t totalLen = sizeof(uint16_t) + nameLen + msgLen;
-                coord::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
+                coordx::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
                 //消息名字
-                coord::Append(buffer, (char*)(&nameLen), sizeof(nameLen));
-                coord::Append(buffer, name, nameLen);
+                coordx::Append(buffer, (char*)(&nameLen), sizeof(nameLen));
+                coordx::Append(buffer, name, nameLen);
                 //消息内容
                 buffer.Reserve(buffer.Len() + msgLen);
                 if(buffer.Capacity() < msgLen){
@@ -309,7 +309,7 @@ int Argument::Serialize(byte_slice& buffer) {
             }
         }
     }
-    coord::Append(buffer, 0);
+    coordx::Append(buffer, 0);
     return 0;
 }
 

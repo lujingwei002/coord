@@ -1,6 +1,5 @@
 #pragma once 
-
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include <functional>
 #include <vector>
 
@@ -13,7 +12,7 @@ namespace closure {
 class Closure;
 class closure_await;
 
-class ClosurePromise : public RcObject {
+class ClosurePromise : public coordx::RcObject {
 CC_CLASS(ClosurePromise); 
 public:
     ClosurePromise(Coord* coord, Closure* closure, closure_await* await);

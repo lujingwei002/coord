@@ -1,7 +1,7 @@
 #include "coord/redis/redis_client.h"
 #include "coord/redis/redis_result.h"
 #include "coord/redis/redis_mgr.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 
 namespace coord {

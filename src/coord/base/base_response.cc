@@ -1,7 +1,7 @@
 #include "coord/base/base_response.h"
 #include "coord/base/base_agent.h"
 #include "coord/base/base_request.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 namespace coord {
 
@@ -33,7 +33,7 @@ void base_response::DebugLog() {
             this->TypeName(), 
             this->request->SessionId, 
             this->request->Id, 
-            date::FormatNano(duration), 
+            coordx::date::FormatNano(duration), 
             this->request->Route.c_str()
             );
 }

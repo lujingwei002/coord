@@ -1,6 +1,6 @@
 #include "coord/gate/gate_cluster.h"
 #include "coord/gate/gate.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/redis/init.h"
 #include "coord/config/config.h"
 #include "coord/cluster/cluster.h"

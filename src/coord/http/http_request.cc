@@ -3,7 +3,7 @@
 #include "coord/coord.h"
 #include "coord/http/http_server.h"
 #include "coord/http/http_response.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 #include <locale>         // std::locale, std::tolowe
 namespace coord {
 
@@ -71,8 +71,8 @@ int HttpRequest::on_headers_complete(http_parser* parser){
 
 int HttpRequest::on_body(http_parser* parser, const char *at, size_t length){
     HttpRequest* request = (HttpRequest*)parser->data;
-    coord::Append(request->payload, at, length);
-    coord::Append(request->payload, 0);
+    coordx::Append(request->payload, at, length);
+    coordx::Append(request->payload, 0);
     return 0;
 }
 

@@ -1,7 +1,7 @@
 #pragma once 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include <iostream>
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/protobuf/declare.h"
 extern "C"
 {

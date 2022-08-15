@@ -1,12 +1,12 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include <uv.h>
 #include <map>
 #include <string>
 #include <tuple>
 #include "http-parser/http_parser.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/base/base_response.h"
 extern "C" {
 #include <lua/lua.h>

@@ -1,7 +1,7 @@
 #pragma once 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include "coord/protobuf/declare.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 extern "C"
 {
 #include <lua/lua.h> 
@@ -13,7 +13,7 @@ namespace coord {//tolua_export
 namespace protobuf {//tolua_export
 
 
-class RepeatMessage: public RcObject {//tolua_export
+class RepeatMessage: public coordx::RcObject {//tolua_export
 CC_CLASS(RepeatMessage);
 public:
     RepeatMessage(Coord* coord, Message* root, google::protobuf::Message* message, const google::protobuf::FieldDescriptor *field);

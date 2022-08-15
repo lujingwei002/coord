@@ -4,7 +4,7 @@
 #include "coord/gate/gate.h"
 #include "coord/gate/gate_response.h"
 #include "coord/protobuf/init.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 
 namespace coord {
 
@@ -30,7 +30,7 @@ void GateRequest::onDestory() {
         this->response->flush();
     }
     uint64_t duration = uv_hrtime() - this->reqTime;
-    this->coord->LogDebug("[GateRequest] REQUEST | %10s | %16s | \"%s\"", date::FormatNano(duration), this->agent->remoteAddr.c_str(), this->Route.c_str());
+    this->coord->LogDebug("[GateRequest] REQUEST | %10s | %16s | \"%s\"", coordx::date::FormatNano(duration), this->agent->remoteAddr.c_str(), this->Route.c_str());
 }
 */
  

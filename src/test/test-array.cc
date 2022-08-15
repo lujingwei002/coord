@@ -27,7 +27,7 @@ public:
 };
 
 TEST_F(TestArray, Basic) {
-    coord::array<char> arr(4);
+    coordx::array<char> arr(4);
     ASSERT_EQ(arr.capacity, (size_t)4);
 }
 

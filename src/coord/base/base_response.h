@@ -1,14 +1,11 @@
 #pragma once 
-#include "coord/builtin/type.h"
-
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/argument/argument.h"
 #include "coord/base/base_reader.h"
 #include "coord/base/base_writer.h"
 #include <uv.h>
 #include <map>
 #include <tuple>
-#include "coord/builtin/slice.h"
 #include "coord/gate/gate_message.h"
 #include "coord/protobuf/init.h"
 #include "coord/script/reflect.h"
@@ -28,7 +25,7 @@ namespace coord {
 namespace coord {//tolua_export
 
 
-class base_response : public RcObject { //tolua_export
+class base_response : public coordx::RcObject { //tolua_export
 CC_CLASS(base_response);
 protected:
     base_response(Coord* coord, base_agent* agent, base_request* request);

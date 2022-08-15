@@ -2,7 +2,7 @@
 
 #include "coord/component/component.h"
 #include "coord/net/tcp_agent.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include <uv.h>
 #include <map>
 namespace coord {//tolua_export
@@ -18,7 +18,7 @@ public:
     virtual void recvTcpNew(TcpListener* listener, TcpAgent* agent) = 0;
 };//tolua_export
 
-class TcpListener : public RcObject {//tolua_export
+class TcpListener : public coordx::RcObject {//tolua_export
 CC_CLASS(TcpListener);
 public:
     TcpListener(Coord* coord);

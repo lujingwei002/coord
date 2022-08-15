@@ -31,7 +31,7 @@ public:
 };
 
 TEST_F(TestSlice, Basic) {
-    coord::slice<unsigned char> arr(4, 4);
+    coordx::slice<unsigned char> arr(4, 4);
    // Tiger t1;
    // arr.Appendf("%s", "aa");
     ASSERT_EQ(arr.Capacity(), (size_t)4);

@@ -2,7 +2,7 @@
 
 #include "coord/component/component.h"
 #include "coord/gate/gate.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 
 #include <map>
 #include <string>

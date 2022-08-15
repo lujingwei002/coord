@@ -18,7 +18,7 @@ base_writer::~base_writer() {
 
 int base_writer::String(const char* data, size_t len) {
     this->payload.Resize(0);
-    coord::Append(this->payload, data, len);
+    coordx::Append(this->payload, data, len);
     this->type = response_type_string;
     return 0;
 }

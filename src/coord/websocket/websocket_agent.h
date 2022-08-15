@@ -1,11 +1,11 @@
 #pragma once 
 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
 #include <uv.h>
 #include "coord/http/http_agent.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/bio.h>
@@ -31,7 +31,7 @@ public:
     virtual void recvWebSocketFrame(Agent* agent, Frame* frame) = 0;
 };//tolua_export
 
-class Agent : public RcObject, public http::IHttpAgentHandler { //tolua_export
+class Agent : public coordx::RcObject, public http::IHttpAgentHandler { //tolua_export
 CC_CLASS(Agent);
 public:
     Agent(Coord* coord, Server* server, http::HttpAgent* httpAgent);

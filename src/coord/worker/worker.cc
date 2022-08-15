@@ -6,7 +6,7 @@
 #include "coord/worker/worker_response.h"
 #include "coord/worker/worker_packet.h"
 #include "coord/config/config.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 #include "coord/script/script.h"
 #include "coord/coord.h"
 
@@ -179,7 +179,7 @@ Promise* Worker::Request(const char* route, const char* data, size_t len) {
     auto packet = newWorkerPacket(this->coord);
     //Request* request = newRequest(this->coord, this);
     packet->route = route;
-    coord::Append(packet->payload, data, len);
+    coordx::Append(packet->payload, data, len);
     return this->Request(packet);
 }
 
@@ -254,7 +254,7 @@ int Worker::Notify(const char* route, const char* data) {
 int Worker::Notify(const char* route, const char* data, size_t len) {
     auto packet = newWorkerPacket(this->coord);
     packet->route = route;
-    coord::Append(packet->payload, data, len);
+    coordx::Append(packet->payload, data, len);
     return this->Notify(packet);
 }
 

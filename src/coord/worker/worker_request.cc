@@ -4,7 +4,7 @@
 #include "coord/worker/worker_result.h"
 #include "coord/coord.h"
 #include "coord/protobuf/init.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 namespace coord {
 
 namespace worker {
@@ -29,7 +29,7 @@ Request::~Request() {
 
 void Request::onDestory() {
     uint64_t duration = uv_hrtime() - this->ReqTime;
-    this->coord->LogDebug("[worker::Request] %10s| REQUEST |\t\"%s\"", date::FormatNano(duration), this->Route.c_str());
+    this->coord->LogDebug("[worker::Request] %10s| REQUEST |\t\"%s\"", coordx::date::FormatNano(duration), this->Route.c_str());
 }
  
 Response* Request::GetResponse() {

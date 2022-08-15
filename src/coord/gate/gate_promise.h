@@ -1,8 +1,8 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include <uv.h>
 #include <map>
 #include <functional>
@@ -28,7 +28,7 @@ class GateSession;
 typedef std::function<void (GateSession* session, base_request* request)> GatePromise_Resolve; 
 typedef std::function<void (GateSession* session, base_request* request)> GatePromise_Reject; 
 
-class GatePromise : public RcObject { //tolua_export
+class GatePromise : public coordx::RcObject { //tolua_export
 CC_CLASS(GatePromise);
 public:
     GatePromise(Coord* coord);

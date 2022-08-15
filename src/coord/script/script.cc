@@ -4,7 +4,7 @@
 #include "coord/config/config.h"
 #include "coord/protobuf/init.h"
 #include "coord/json/json_mgr.h"
-#include "coord/builtin/inc.h"
+#include "coord/coordx.h"
 #include "coord/environment/environment.h"
 
 #include "lua-cjson/lua_cjson.h"
@@ -589,7 +589,7 @@ const char* Script::ToString(int index) {
     if (err) {
         return NULL;
     }
-    coord::Append(buffer, 0);
+    coordx::Append(buffer, 0);
     return buffer.Data();
 }
 
@@ -597,7 +597,7 @@ int Script::ToString(int index, byte_slice& buffer) {
     static thread_local byte_slice field;field.Resize(0);
     static thread_local byte_slice space;space.Resize(0);
     std::map<const void*, std::string> recordDict;
-    coord::Appendf(field, "#");
+    coordx::Appendf(field, "#");
     int err = this->tostring(buffer, this->L, index, recordDict, space, field, false);
     return err;
 }
@@ -637,7 +637,7 @@ const char* Script::ToShortString(int index) {
     if (err) {
         return NULL;
     }
-    coord::Append(buffer, 0);
+    coordx::Append(buffer, 0);
     return buffer.Data();
 }
 
@@ -645,7 +645,7 @@ int Script::ToShortString(int index, byte_slice& buffer) {
     static thread_local byte_slice field;field.Resize(0);
     static thread_local byte_slice space;space.Resize(0);
     std::map<const void*, std::string> recordDict;
-    coord::Appendf(field, "#");
+    coordx::Appendf(field, "#");
     int err = this->tostring(buffer, this->L, index, recordDict, space, field, true);
     return err;
 }
@@ -654,26 +654,26 @@ int Script::tostring(byte_slice& buffer, lua_State* L, int index, std::map<const
     tolua_Error tolua_err;
     if (lua_isstring(L, index) && lua_type(L, index) == LUA_TSTRING) {
         const char* value = (const char*)lua_tostring(L, index);
-        coord::Appendf(buffer, "\'%s\'", value);
+        coordx::Appendf(buffer, "\'%s\'", value);
     } else if (lua_isnil(L, index)) {
-        coord::Appendf(buffer, "nil");
+        coordx::Appendf(buffer, "nil");
     } else if (lua_istable(L, index)) {
         auto it = recordDict.find(lua_topointer(L, index));
         if (it != recordDict.end()) {
-            coord::Appendf(buffer, "%s", it->second.c_str());
+            coordx::Appendf(buffer, "%s", it->second.c_str());
         } else {
             recordDict[lua_topointer(L, index)] = std::string(field.Data(), field.Len());
-            if(isShort)coord::Appendf(buffer, "{"); else coord::Appendf(buffer, "{\n");
+            if(isShort)coordx::Appendf(buffer, "{"); else coordx::Appendf(buffer, "{\n");
             lua_pushnil(L); 
             while (lua_next(L, index >= 0 ? index : index - 1) != 0) {
                 byte_slice field2 = field.Slice(0, field.Len());
-                if(!isShort)coord::Append(buffer, space.Data(), space.Len());
+                if(!isShort)coordx::Append(buffer, space.Data(), space.Len());
                 if (lua_type(L, -2) == LUA_TNUMBER) {
-                    coord::Appendf(buffer, "[%d]=", lua_tointeger(L, -2));
-                    coord::Appendf(field2, ".[%d]", lua_tointeger(L, -2));
+                    coordx::Appendf(buffer, "[%d]=", lua_tointeger(L, -2));
+                    coordx::Appendf(field2, ".[%d]", lua_tointeger(L, -2));
                 } else {
-                    coord::Appendf(buffer, "\'%s\'=", lua_tostring(L, -2));
-                    coord::Appendf(field2, ".%s", lua_tostring(L, -2));
+                    coordx::Appendf(buffer, "\'%s\'=", lua_tostring(L, -2));
+                    coordx::Appendf(field2, ".%s", lua_tostring(L, -2));
                 }
                 int err = 0;
                 if(isShort){
@@ -681,46 +681,46 @@ int Script::tostring(byte_slice& buffer, lua_State* L, int index, std::map<const
                     err = this->tostring(buffer, L, -1, recordDict, space, field2, isShort);
                 } else {
                     byte_slice space2 = space.Slice(0, space.Len());
-                    coord::Appendf(space2, "\t");
+                    coordx::Appendf(space2, "\t");
                     /* uses 'key' (at index -2) and 'value' (at index -1) */
                     err = this->tostring(buffer, L, -1, recordDict, space2, field2, isShort);
                 }
                 if (err) {
-                    if(!isShort)if(space.Len()>0)coord::Append(buffer, space.Data(), space.Len()-1);
-                    coord::Appendf(buffer, "}");
+                    if(!isShort)if(space.Len()>0)coordx::Append(buffer, space.Data(), space.Len()-1);
+                    coordx::Appendf(buffer, "}");
                     lua_pop(L, 2);
                     break;
                 }
-                if(isShort) coord::Appendf(buffer, ","); else coord::Appendf(buffer, ",\n");
+                if(isShort) coordx::Appendf(buffer, ","); else coordx::Appendf(buffer, ",\n");
                 /* removes 'value'; keeps 'key' for next iteration */
                 lua_pop(L, 1);
             }
-            if(!isShort)if(space.Len()>0)coord::Append(buffer, space.Data(), space.Len()-1);
-            coord::Appendf(buffer, "}");
+            if(!isShort)if(space.Len()>0)coordx::Append(buffer, space.Data(), space.Len()-1);
+            coordx::Appendf(buffer, "}");
         }
     } else if(tolua_isusertype(L, index, protobuf::Message::_TypeName, 0, &tolua_err)) {
         protobuf::Message* message = ((protobuf::Message*) tolua_tousertype(L, index, 0));
         if (message == nullptr) {
-            coord::Appendf(buffer, "(null)");
+            coordx::Appendf(buffer, "(null)");
         } else {
-            coord::Appendf(buffer, "\'%s\'", message->ShortDebugString());
+            coordx::Appendf(buffer, "\'%s\'", message->ShortDebugString());
         }
     } else if (lua_isboolean(L, index)) {
         bool value = (bool)lua_toboolean(L, index);
         if (value) {
-            coord::Appendf(buffer, "true");
+            coordx::Appendf(buffer, "true");
         } else {
-            coord::Appendf(buffer, "false");
+            coordx::Appendf(buffer, "false");
         }
     } else if (lua_isnumber(L, index)) {
         double value = (double)lua_tonumber(L, index);
-        coord::Appendf(buffer, "%f", value);
+        coordx::Appendf(buffer, "%f", value);
     } else if (lua_isuserdata(L, index)) {
-        coord::Appendf(buffer, "userdata: %p", lua_topointer(L, index));
+        coordx::Appendf(buffer, "userdata: %p", lua_topointer(L, index));
     } else if (lua_isfunction(L, index)) {
-        coord::Appendf(buffer, "function: %p", lua_topointer(L, index));
+        coordx::Appendf(buffer, "function: %p", lua_topointer(L, index));
     } else {
-        coord::Appendf(buffer, "type: %d", lua_type(L, index));
+        coordx::Appendf(buffer, "type: %d", lua_type(L, index));
     }
     return 0;
 }
@@ -739,7 +739,7 @@ int Script::Encode(int index, byte_slice& buffer) {
     buffer.Resize(0);
     field.Resize(0);
     std::map<const void*, std::string> recordDict;
-    coord::Appendf(field, "#");
+    coordx::Appendf(field, "#");
     int err = this->encode(buffer, this->L, index, recordDict, field);
     return err;
 }
@@ -750,7 +750,7 @@ int Script::Encode(lua_State* L) {
     buffer.Resize(0);
     field.Resize(0);
     std::map<const void*, std::string> recordDict;
-    coord::Appendf(field, "#");
+    coordx::Appendf(field, "#");
     int err = this->encode(buffer, L, 2, recordDict, field);
     if (err) {
         lua_pushlstring(L, buffer.Data(), buffer.Len());
@@ -764,44 +764,44 @@ int Script::encode(byte_slice& buffer, lua_State* L, int index, std::map<const v
     tolua_Error tolua_err;
     if (lua_isstring(L, index) && lua_type(L, index) == LUA_TSTRING) {
         uint8_t type = lua_type(L, index);
-        coord::Append(buffer, type);
+        coordx::Append(buffer, type);
         size_t len = 0;
         const char* value = (const char*)lua_tolstring(L, index, &len);
-        coord::Append(buffer, (char*)(&len), sizeof(len));
-        coord::Append(buffer, value, len);
+        coordx::Append(buffer, (char*)(&len), sizeof(len));
+        coordx::Append(buffer, value, len);
     } else if (lua_isnil(L, index) && lua_type(L, index) == LUA_TNIL) {
         uint8_t type = lua_type(L, index);
-        coord::Append(buffer, type);
+        coordx::Append(buffer, type);
     } else if (lua_istable(L, index)) {
         auto it = recordDict.find(lua_topointer(L, index));
         if (it != recordDict.end()) {
             uint8_t type = LUA_TREFERENCE;
-            coord::Append(buffer, type);
+            coordx::Append(buffer, type);
             uint16_t len = it->second.size();
             const char* value = it->second.c_str();
-            coord::Append(buffer, (char*)(&len), sizeof(len));
-            coord::Append(buffer, value, len);
+            coordx::Append(buffer, (char*)(&len), sizeof(len));
+            coordx::Append(buffer, value, len);
         } else {
             recordDict[lua_topointer(L, index)] = std::string(field.Data(), field.Len());
             uint8_t type = lua_type(L, index);
-            coord::Append(buffer, type);
+            coordx::Append(buffer, type);
             lua_pushnil(L); 
             while (lua_next(L, index >= 0 ? index : index - 1) != 0) {
                 byte_slice field2 = field.Slice(0, field.Len());
                 if (lua_type(L, -2) == LUA_TNUMBER) {
                     type = LUA_TNUMBER;
-                    coord::Append(buffer, type);
+                    coordx::Append(buffer, type);
                     lua_Integer value = lua_tointeger(L, -2);
-                    coord::Append(buffer, (char*)(&value), sizeof(value));
-                    coord::Appendf(field2, ".[%d]", lua_tointeger(L, -2));
+                    coordx::Append(buffer, (char*)(&value), sizeof(value));
+                    coordx::Appendf(field2, ".[%d]", lua_tointeger(L, -2));
                 } else {
                     type = LUA_TSTRING;
-                    coord::Append(buffer, type);
+                    coordx::Append(buffer, type);
                     size_t len = 0;
                     const char* key = (const char*)lua_tolstring(L, -2, &len);                    
-                    coord::Append(buffer, (char*)(&len), sizeof(len));
-                    coord::Append(buffer, key, len);
-                    coord::Appendf(field2, ".%s", lua_tostring(L, -2));
+                    coordx::Append(buffer, (char*)(&len), sizeof(len));
+                    coordx::Append(buffer, key, len);
+                    coordx::Appendf(field2, ".%s", lua_tostring(L, -2));
                 }
                 /* uses 'key' (at index -2) and 'value' (at index -1) */
                 int err = this->encode(buffer, L, -1, recordDict, field2);
@@ -813,25 +813,25 @@ int Script::encode(byte_slice& buffer, lua_State* L, int index, std::map<const v
                 lua_pop(L, 1);
             }
             type = 0;//结束table
-            coord::Append(buffer, type);
+            coordx::Append(buffer, type);
         }
     } else if(tolua_isusertype(L, index, protobuf::Message::_TypeName, 0, &tolua_err)) {
         uint8_t type = LUA_TPROTO;
-        coord::Append(buffer, type);
+        coordx::Append(buffer, type);
         protobuf::Message* proto = ((protobuf::Message*) tolua_tousertype(L, index, 0));
         google::protobuf::Message* message = proto->GetMessage();
         if (message == nullptr) {
             size_t totalLen = 0;
-            coord::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
+            coordx::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
         } else {
             const char* name = message->GetTypeName().data();
             uint16_t nameLen = (uint16_t)(strlen(name));
             size_t msgLen = message->ByteSizeLong();
             size_t totalLen = sizeof(uint16_t) + nameLen + msgLen;
-            coord::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
+            coordx::Append(buffer, (char*)(&totalLen), sizeof(totalLen));
             //消息名字
-            coord::Append(buffer, (char*)(&nameLen), sizeof(nameLen));
-            coord::Append(buffer, name, nameLen);
+            coordx::Append(buffer, (char*)(&nameLen), sizeof(nameLen));
+            coordx::Append(buffer, name, nameLen);
             //消息内容
             buffer.Reserve(buffer.Len() + msgLen);
             if(buffer.Capacity() < msgLen){
@@ -843,14 +843,14 @@ int Script::encode(byte_slice& buffer, lua_State* L, int index, std::map<const v
         }
     } else if (lua_isboolean(L, index)) {
         uint8_t type = lua_type(L, index);
-        coord::Append(buffer, type);
+        coordx::Append(buffer, type);
         uint8_t value = (bool)lua_toboolean(L, index) ? 1 : 0;
-        coord::Append(buffer, (char*)(&value), sizeof(value));
+        coordx::Append(buffer, (char*)(&value), sizeof(value));
     } else if (lua_isnumber(L, index)) {
         uint8_t type = lua_type(L, index);
-        coord::Append(buffer, type);
+        coordx::Append(buffer, type);
         lua_Number value = (double)lua_tonumber(L, index);
-        coord::Append(buffer, (char*)(&value), sizeof(value));
+        coordx::Append(buffer, (char*)(&value), sizeof(value));
     } 
     return 0;
 }
@@ -1100,8 +1100,8 @@ const char* Script::ToJson(const char* path) {
     if (str == nullptr) {
         return nullptr;
     }
-    coord::Append(buffer, str, len);
-    coord::Append(buffer, 0);
+    coordx::Append(buffer, str, len);
+    coordx::Append(buffer, 0);
     buffer.Resize(buffer.Len() - 1);
     return buffer.Data();
 }
@@ -1126,8 +1126,8 @@ const char* Script::ToJson(lua_State* L, int index) {
     if (str == nullptr) {
         return nullptr;
     }
-    coord::Append(buffer, str, len);
-    coord::Append(buffer, 0);
+    coordx::Append(buffer, str, len);
+    coordx::Append(buffer, 0);
     buffer.Resize(buffer.Len() - 1);
     return buffer.Data();
 }
@@ -1139,8 +1139,8 @@ int Script::ToJson(int index, byte_slice& buffer) {
     if (str == nullptr) {
         return -1;
     }
-    coord::Append(buffer, str, len);
-    coord::Append(buffer, 0);
+    coordx::Append(buffer, str, len);
+    coordx::Append(buffer, 0);
     buffer.Resize(buffer.Len() - 1);
     return 0;
 }

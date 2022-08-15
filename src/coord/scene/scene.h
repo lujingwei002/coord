@@ -1,7 +1,7 @@
 #pragma once 
 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
 #include <stdint.h>
 #include <vector>
@@ -17,7 +17,7 @@ class Coord;
 class SceneMgr;  
 class Object;
 
-class Scene : public RcObject {//tolua_export
+class Scene : public coordx::RcObject {//tolua_export
 CC_CLASS(Scene);
 public:
     Scene(Coord* cord, SceneMgr* sceneMgr);

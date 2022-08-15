@@ -1,4 +1,4 @@
-#include "coord/init.h"
+#include "coord/inc.h"
 #include <benchmark/benchmark.h>
 #include "benchmark/benchmark-map.cc"
 #include "benchmark/benchmark-json.cc"

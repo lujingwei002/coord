@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 #include "coord/base/base_request.h"
 #include "coord/gate/gate_response.h"
 #include "coord/protobuf/declare.h"

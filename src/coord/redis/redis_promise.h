@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
 #include "coord/base/base_promise.h"
 #include "coord/redis/declare.h"
@@ -19,7 +19,7 @@ namespace coord {//tolua_export
 namespace redis {//tolua_export
 
 typedef base_promise<AsyncClient*, const RedisResultRef&> base_redis_promise;
-class RedisPromise: public base_redis_promise, public RcObject { //tolua_export
+class RedisPromise: public base_redis_promise, public coordx::RcObject { //tolua_export
 CC_CLASS(RedisPromise);
 friend AsyncClient;
 private:

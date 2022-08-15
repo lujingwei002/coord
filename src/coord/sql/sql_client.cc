@@ -97,15 +97,15 @@ const char* SQLClient::formatPlaceholder(lua_State* L) {
     char* start = offset;
     while(*offset != 0) {
         if (*offset == '?') {
-            coord::Append(buffer, start, offset - start);
+            coordx::Append(buffer, start, offset - start);
             if (lua_isstring(L,i)) {
                 size_t len = 0;
                 const char* str = (const char*)lua_tolstring(L, i, &len);
                 size_t realLen = 0;
                 const char* value = this->realEscapeString(str, len, &realLen);
-                coord::Append(buffer, '\'');
-                coord::Append(buffer, value, realLen);
-                coord::Append(buffer, '\'');
+                coordx::Append(buffer, '\'');
+                coordx::Append(buffer, value, realLen);
+                coordx::Append(buffer, '\'');
             } else {
                 return NULL;
             }
@@ -117,9 +117,9 @@ const char* SQLClient::formatPlaceholder(lua_State* L) {
         }
     }
     if (offset - start > 0) {
-        coord::Append(buffer, start, offset - start);
+        coordx::Append(buffer, start, offset - start);
     }
-    coord::Append(buffer, 0);
+    coordx::Append(buffer, 0);
     return buffer.Data();
 }
 

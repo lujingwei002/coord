@@ -5,7 +5,7 @@
 #include "coord/gate/gate_notify.h"
 #include "coord/gate/gate_session.h"
 #include "coord/component/script_component.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 #include "coord/script/script.h"
 #include "coord/coord.h"
 #include <cstdio>
@@ -208,7 +208,7 @@ void GateRouter::Trace() {
             auto handler = it1.second;
             uint64_t averageTime = handler->times <= 0 ? 0 : (handler->consumeTime/handler->times);
             this->coord->LogDebug("[GateRouter] %10s | %10d | %10s | %s", 
-                event.c_str(), handler->times, date::FormatNano(averageTime), it1.first.c_str());
+                event.c_str(), handler->times, coordx::date::FormatNano(averageTime), it1.first.c_str());
         }
     }
 }

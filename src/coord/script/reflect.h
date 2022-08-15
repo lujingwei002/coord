@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/protobuf/init.h"
 #include <cstdlib>
 #include <string>
@@ -16,7 +16,7 @@ class Coord;
 
 namespace script {//tolua_export
 
-class Reflect : public RcObject {//tolua_export
+class Reflect : public coordx::RcObject {//tolua_export
 public:
     Reflect(Coord* coord);
     Reflect(Coord* coord, int ref, int type);

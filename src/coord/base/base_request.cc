@@ -2,7 +2,7 @@
 #include "coord/base/base_response.h"
 #include "coord/base/base_agent.h"
 #include "coord/coord.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 
 namespace coord {
 CC_IMPLEMENT(base_request, "coord::base_request")
@@ -29,7 +29,7 @@ void base_request::DebugLog() {
                 this->TypeName(), 
                 this->SessionId, 
                 this->Id, 
-                date::FormatNano(duration), 
+                coordx::date::FormatNano(duration), 
                 this->Route.c_str()
     );
 }

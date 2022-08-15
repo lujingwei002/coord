@@ -4,7 +4,7 @@
 #include "coord/coord.h"
 #include "coord/cluster/cluster.h"
 #include "coord/protobuf/init.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 
 namespace coord {
 
@@ -28,7 +28,7 @@ Result::~Result() {
 
 void Result::onDestory() {
     uint64_t duration = uv_hrtime() - this->ReqTime;
-    this->coord->LogDebug("|%10s|%20s | RESULT | %3d |\t\"%s\"", date::FormatNano(duration), this->client->name.c_str(), this->Code, this->Route.c_str());
+    this->coord->LogDebug("|%10s|%20s | RESULT | %3d |\t\"%s\"", coordx::date::FormatNano(duration), this->client->name.c_str(), this->Code, this->Route.c_str());
 }
 
 

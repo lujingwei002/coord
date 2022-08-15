@@ -1,14 +1,14 @@
 #pragma once 
 
 
-#include "coord/builtin/type.h"
+#include "coord/coordx.h"
 
 #include "coord/base/base_agent.h"
 #include <uv.h>
 #include "coord/http/http_util.h"
 #include "coord/http/http_base.h"
 #include "coord/net/tcp_agent.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/bio.h>

@@ -2,7 +2,7 @@
 #include "coord/base/internal_response.h"
 #include "coord/base/internal_agent.h"
 #include "coord/base/base_request.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 namespace coord {
 
@@ -24,14 +24,14 @@ internal_response::~internal_response() {
 
 int internal_response::String(const char* data, size_t len) {
     this->Payload.Resize(0);
-    coord::Append(this->Payload, data, len);
+    coordx::Append(this->Payload, data, len);
     this->DataType = base_message_data_type_custom;
     return 0;
 }
 
 int internal_response::String(const char* data) {
     this->Payload.Resize(0);
-    coord::Append(this->Payload, data, strlen(data));
+    coordx::Append(this->Payload, data, strlen(data));
     this->DataType = base_message_data_type_string;
     return 0;
 }

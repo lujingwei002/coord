@@ -1,5 +1,5 @@
 #include "coord/cluster/cluster_message.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
 #include <cstring>
 namespace coord {
 namespace cluster {
@@ -65,26 +65,26 @@ int clusterMessageHeaderEncode(byte_slice& message, message_type type, uint64_t 
     }
     uint8_t flag = ((uint8_t)type) << 1;
     //int offset = 1;
-    coord::Append(message, (char)flag);
+    coordx::Append(message, (char)flag);
     if (type == message_type_request || type == message_type_response) {
         uint64_t n = id;
         for (;;) {
             uint8_t b = uint8_t(n % 128);
             n = n >> 7;
             if (n != 0){
-                coord::Append(message, (char)(b + 128));
+                coordx::Append(message, (char)(b + 128));
             } else {
-                coord::Append(message, (char)b);
+                coordx::Append(message, (char)b);
                 break;
             }
         } 
     }
     if (type == message_type_request || type == message_type_notify ||  type == message_type_push) {
-        coord::Append(message, (char)strlen(route));
-        coord::Append(message, route, strlen(route));
+        coordx::Append(message, (char)strlen(route));
+        coordx::Append(message, route, strlen(route));
     }
     if (type == message_type_response) {
-        coord::Append(message, (char*)&code, sizeof(code));
+        coordx::Append(message, (char*)&code, sizeof(code));
     }
     return 0;
 }

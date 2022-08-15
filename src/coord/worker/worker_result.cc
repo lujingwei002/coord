@@ -3,7 +3,7 @@
 #include "coord/coord.h"
 #include "coord/worker/worker.h"
 #include "coord/protobuf/init.h"
-#include "util/date/date.h"
+#include "coord/coordx.h"
 
 namespace coord {
 

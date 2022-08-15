@@ -1,14 +1,11 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/argument/argument.h"
 #include "coord/json/init.h"
 #include <uv.h>
 #include <map>
 #include <tuple>
-#include "coord/builtin/slice.h"
 #include "coord/protobuf/init.h"
 #include "coord/script/reflect.h"
 #include "coord/base/base_message.h"

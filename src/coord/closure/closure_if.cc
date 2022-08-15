@@ -1,7 +1,7 @@
 #include "coord/closure/closure_if.h"
 #include "coord/closure/closure_action.h"
 #include "coord/closure/closure.h"
-#include "coord/builtin/exception.h"
+#include "coord/coordx.h"
 #include "coord/coord.h"
 
 namespace coord {

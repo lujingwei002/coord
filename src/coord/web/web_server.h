@@ -3,7 +3,7 @@
 #include "coord/component/component.h"
 #include "coord/http/http_server.h"
 #include "coord/http/http_request.h"
-#include "coord/builtin/slice.h"
+#include "coord/coordx.h"
 #include "coord/web/web_config.h"
 #include <map>
 #include <string>

@@ -1,7 +1,6 @@
 #pragma once 
 
-#include "coord/builtin/type.h"
-
+#include "coord/coordx.h"
 #include "coord/base/base_reader.h"
 #include "coord/base/base_response.h"
 extern "C" {
@@ -17,7 +16,7 @@ class base_reader;
 class base_response;
 class base_agent;
 
-class base_request : public RcObject, public base_reader { //tolua_export
+class base_request : public coordx::RcObject, public base_reader { //tolua_export
 CC_CLASS(base_request);
 protected:
     base_request(Coord* coord, base_agent* agent);

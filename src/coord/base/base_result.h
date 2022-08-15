@@ -6,7 +6,7 @@ namespace coord {//tolua_export
 
 class Coord;
 
-class base_result : public RcObject, public base_reader { //tolua_export
+class base_result : public coordx::RcObject, public base_reader { //tolua_export
 public:
     base_result(Coord* coord);
     virtual ~base_result();

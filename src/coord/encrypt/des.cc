@@ -1,8 +1,8 @@
 
 #include "coord/encrypt/des.h"
 #include "coord/encrypt/base64.h"
-#include "coord/builtin/slice.h"
-#include "coord/builtin/error.h"
+#include "coord/coordx.h"
+#include "coord/coordx.h"
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/rsa.h>
@@ -56,7 +56,7 @@ int Encrypt(byte_slice& src, const char* secret) {
     char padding = sizeof(DES_cblock) - src.Len()%sizeof(DES_cblock);
     if(padding > 0){
         for(char i = 0; i < padding; i++){
-            coord::Append(src, &padding, 1);
+            coordx::Append(src, &padding, 1);
         }
     }
     if (src.Len() % sizeof(DES_cblock) != 0) {
