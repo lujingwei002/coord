@@ -131,7 +131,7 @@ int Script::SetBool(lua_State* L, const char* path, bool value) {
 }
 
 int Script::SetNil(const char* path) {
-    return this->SetNil(this->L, path, value);
+    return this->SetNil(this->L, path);
 }
 
 int Script::SetNil(lua_State* L, const char* path) {
@@ -139,7 +139,6 @@ int Script::SetNil(lua_State* L, const char* path) {
     if (key == nullptr) {
         return -1;
     }
-    lua_State* L = this->L;
     if (key == path) {
         lua_pushnil(L);
         lua_setglobal(L, key);
@@ -161,7 +160,6 @@ int Script::SetTable(lua_State* L, const char* path) {
     if (key == nullptr) {
         return -1;
     }
-    lua_State* L = this->L;
     if (key == path) {
         lua_newtable(L);
         lua_setglobal(L, key);
@@ -175,7 +173,7 @@ int Script::SetTable(lua_State* L, const char* path) {
 }
 
 int Script::Set(const char* path, int index) {
-    return this->SetTable(this->L, path, index);
+    return this->Set(this->L, path, index);
 }
 
 int Script::Set(lua_State* L, const char* path, int index) {
@@ -183,7 +181,6 @@ int Script::Set(lua_State* L, const char* path, int index) {
     if (key == nullptr) {
         return -1;
     }
-    lua_State* L = this->L;
     if (key == path) {
         lua_pushvalue(L, index);
         lua_setglobal(L, key);
@@ -292,7 +289,10 @@ bool Script::IsNumber(lua_State* L, const char* path) {
 }
 
 bool Script::IsTable(const char* path) {
-    lua_State* L = this->L;
+    return this->IsTable(this->L, path);
+}
+
+bool Script::IsTable(lua_State* L, const char* path) {
     if(this->getValue(L, path)) {
         return false;
     }
@@ -302,7 +302,10 @@ bool Script::IsTable(const char* path) {
 }
 
 bool Script::IsFunction(const char* path) {
-    lua_State* L = this->L;
+    return this->IsFunction(this->L, path);
+}
+
+bool Script::IsFunction(lua_State* L, const char* path) {
     if(this->getValue(L, path)) {
         return false;
     }
@@ -312,7 +315,10 @@ bool Script::IsFunction(const char* path) {
 }
 
 bool Script::IsNil(const char* path) {
-    lua_State* L = this->L;
+    return this->IsNil(this->L, path);
+}
+
+bool Script::IsNil(lua_State* L, const char* path) {
     if(this->getValue(L, path)) {
         return true;
     }
@@ -322,7 +328,10 @@ bool Script::IsNil(const char* path) {
 }
 
 Reflect Script::Get(const char *fieldName) {
-    lua_State* L = this->L;
+    return this->Get(this->L, fieldName);
+}
+
+Reflect Script::Get(lua_State* L, const char *fieldName) {
     if(this->getValue(L, fieldName)) {
         return Reflect(this->coord);
     }
@@ -426,20 +435,7 @@ int Script::getValue(lua_State* L, const char *fieldName) {;
 }
 
 int Script::GetFunction(const char *path) {
-    lua_State* L = this->L;
-    if(this->getValue(L, path)) {
-        return -1;
-    }
-    if(lua_type(L, -1) != LUA_TFUNCTION) {
-        lua_pop(L, 1);
-        return -1;
-    }
-    return 0;
-}
-
-int Script::GetValue(const char *path) {
-    lua_State* L = this->L;
-    return this->getValue(L, path);
+    return this->GetFunction(this->L, path);
 }
 
 int Script::GetFunction(lua_State* L, const char *path) {
@@ -453,8 +449,21 @@ int Script::GetFunction(lua_State* L, const char *path) {
     return 0;
 }
 
+
+int Script::GetValue(const char *path) {
+    return this->GetValue(this->L, path);
+}
+
+int Script::GetValue(lua_State* L, const char *path) {
+    return this->getValue(L, path);
+}
+
+
 int Script::GetTable(const char *path) {
-    lua_State* L = this->L;
+    return this->GetTable(this->L, path);
+}
+
+int Script::GetTable(lua_State* L, const char *path) {
     if(this->getValue(L, path)) {
         return -1;
     }
@@ -1085,42 +1094,70 @@ int Script::decode(lua_State* L, const char* data, size_t len) {
 }
 
 Reflect Script::NewReflect() {
+    return this->NewReflect(this->L);
+}
+
+Reflect Script::NewReflect(lua_State* L) {
     return Reflect(this->coord);
 }
 
 Reflect Script::NewTable() {
+    return this->NewTable(this->L);
+}
+
+Reflect Script::NewTable(lua_State* L) {
     auto table = Reflect(this->coord);
     table.SetTable();
     return table;
 }
 
-Reflect Script::NewString(const char* value) {
-    auto table = Reflect(this->coord);
-    table.SetString(value);
-    return table;
-}
-
-Reflect Script::NewNumber(lua_Number value) {
-    auto table = Reflect(this->coord);
-    table.SetNumber(value);
-    return table;
-}
-
 Reflect Script::NewTable(const char* path){
+    return this->NewTable(this->L, path);
+}
+
+Reflect Script::NewTable(lua_State* L, const char* path){
     if(this->SetTable(path)) {
         return Reflect(this->coord);
     }
     return this->Get(path);
 }
 
+Reflect Script::NewString(const char* value) {
+    return this->NewString(this->L, value);
+}
+
+Reflect Script::NewString(lua_State* L, const char* value) {
+    auto table = Reflect(this->coord);
+    table.SetString(value);
+    return table;
+}
+
 Reflect Script::NewString(const char* path, const char* value){
+    return this->NewString(this->L, path, value);
+}
+
+Reflect Script::NewString(lua_State* L, const char* path, const char* value){
     if(this->SetString(path, value)) {
         return Reflect(this->coord);
     }
     return this->Get(path);
 }
 
+Reflect Script::NewNumber(lua_Number value) {
+    return this->NewNumber(this->L, value);
+}
+
+Reflect Script::NewNumber(lua_State* L, lua_Number value) {
+    auto table = Reflect(this->coord);
+    table.SetNumber(value);
+    return table;
+}
+
 Reflect Script::NewNumber(const char* path, lua_Number value){
+    return this->NewNumber(this->L, path, value);
+}
+
+Reflect Script::NewNumber(lua_State* L, const char* path, lua_Number value){
     if(this->SetNumber(path, value)) {
         return Reflect(this->coord);
     }
@@ -1131,14 +1168,18 @@ const char* Script::GetLastError() {
     return this->lastError.c_str();
 }
 
-const char* Script::ToJson(const char* path) {
+const char* Script::ToJson(const char* name) {
+    return this->ToJson(this->L, name);
+}
+
+const char* Script::ToJson(lua_State* L, const char* name) {
     static thread_local byte_slice buffer;buffer.Resize(0);
-    if (this->getValue(L, path)) {
+    if (this->getValue(L, name)) {
         return nullptr;
     }
     size_t len;
-    const char* str = cjson_encode(this->L, this->jsonParser, -1, &len);
-    lua_pop(this->L, 1);
+    const char* str = cjson_encode(L, this->jsonParser, -1, &len);
+    lua_pop(L, 1);
     if (str == nullptr) {
         return nullptr;
     }
@@ -1151,20 +1192,20 @@ const char* Script::ToJson(const char* path) {
 int Script::ToJson(lua_State* L) {
     static thread_local byte_slice buffer;buffer.Resize(0);
     size_t len;
-    const char* str = cjson_encode(this->L, this->jsonParser, -1, &len);
-    lua_pop(this->L, 1);
+    const char* str = cjson_encode(L, this->jsonParser, -1, &len);
+    lua_pop(L, 1);
     if (str == nullptr) {
          return 0;
     }
-    lua_pushlstring(this->L, str, len);
+    lua_pushlstring(L, str, len);
     return 1;
 }
 
 const char* Script::ToJson(lua_State* L, int index) {
     static thread_local byte_slice buffer;buffer.Resize(0);
     size_t len;
-    const char* str = cjson_encode(this->L, this->jsonParser, index, &len);
-    lua_pop(this->L, 1);
+    const char* str = cjson_encode(L, this->jsonParser, index, &len);
+    lua_pop(L, 1);
     if (str == nullptr) {
         return nullptr;
     }
@@ -1175,9 +1216,13 @@ const char* Script::ToJson(lua_State* L, int index) {
 }
 
 int Script::ToJson(int index, byte_slice& buffer) {
+    return this->ToJson(index, buffer);
+}
+
+int Script::ToJson(lua_State* L, int index, byte_slice& buffer) {
     size_t len;
-    const char* str = cjson_encode(this->L, this->jsonParser, index, &len);
-    lua_pop(this->L, 1);
+    const char* str = cjson_encode(L, this->jsonParser, index, &len);
+    lua_pop(L, 1);
     if (str == nullptr) {
         return -1;
     }

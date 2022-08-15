@@ -69,29 +69,45 @@ public:
     int SetBool(lua_State* L, const char *path, bool value);
     /// 设置全局变量
     int SetNil(const char *path);
+    int SetNil(lua_State* L, const char *path);
     /// 设置全局变量
     int SetTable(const char *path);
+    int SetTable(lua_State* L, const char *path);
     /// 将栈里的元素设置到变量中,不弹出元素
     int Set(const char* path, int index);
+    int Set(lua_State* L, const char* path, int index);
 
     bool IsBool(const char* path);
+    bool IsBool(lua_State* L, const char* path);
     bool IsString(const char* path);
+    bool IsString(lua_State* L, const char* path);
     bool IsNumber(const char* path);
+    bool IsNumber(lua_State* L, const char* path);
     bool IsTable(const char* path);
+    bool IsTable(lua_State* L, const char* path);
     bool IsNil(const char* path);
+    bool IsNil(lua_State* L, const char* path);
     bool IsFunction(const char* path);
+    bool IsFunction(lua_State* L, const char* path);
 
     /// 创建一个reflect
     Reflect NewReflect();
+    Reflect NewReflect(lua_State* L);
     /// 创建匿名table
     Reflect NewTable();
+    Reflect NewTable(lua_State* L);
+    Reflect NewTable(const char* path);
+    Reflect NewTable(lua_State* L, const char* path);
     /// 创建匿名string
     Reflect NewString(const char* value);
+    Reflect NewString(lua_State* L, const char* value);
+    Reflect NewString(const char* path, const char* value);
+    Reflect NewString(lua_State* L, const char* path, const char* value);
     /// 创建匿名number
     Reflect NewNumber(lua_Number value);
-    Reflect NewTable(const char* path);
-    Reflect NewString(const char* path, const char* value);
     Reflect NewNumber(const char* path, lua_Number value);
+    Reflect NewNumber(lua_State* L, lua_Number value);
+    Reflect NewNumber(lua_State* L, const char* path, lua_Number value);
 
     int TraceStack(); 
 
@@ -134,11 +150,15 @@ public:
 
     const char* GetLastError();
 
-    /// 序列化成json
-    const char* ToJson(const char* path);
+    /// 将name变量序列化成json字符串
+    const char* ToJson(const char* name);
+    const char* ToJson(lua_State* L, const char* name);
     int ToJson(lua_State* L);                               //tolua_export
+    /// 将栈上的变量序列化成json字符串
     const char* ToJson(lua_State* L, int index);
+    /// 将栈上的变量序列化成json字符串
     int ToJson(int index, byte_slice& buffer);
+    int ToJson(lua_State* L, int index, byte_slice& buffer);
 
     int FromJson(lua_State* L);                             //tolua_export
     int FromJson(byte_slice& buffer);
@@ -171,7 +191,6 @@ public:
     Coord*          coord;
     std::string     lastError;
     void*           jsonParser;
-
 private:
     // 协程
     std::vector<lua_State*> threadArr;

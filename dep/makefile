@@ -212,6 +212,7 @@ $(TOLUA_DIR)/install:
 	cp -rf $(TOLUA_DIR)/testfile ../bin/tolua++
 	cp -rf $(TOLUA_DIR)/tests ../bin/tolua++
 	cp -rf $(TOLUA_DIR)/lua ../bin/tolua++
+	cp -rf tolua++/lua/* ../bin/tolua++/lua
 # ============================================= tolua++ ===================================================
 
 
