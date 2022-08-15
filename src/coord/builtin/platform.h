@@ -18,6 +18,9 @@
 
 
 namespace coord {
+
+    extern uv_loop_t uvloop;
+
     namespace path {
         bool IsAbsolutePath(const char* path);
         std::string PathJoin(const std::string& p1, const std::string& p2);
@@ -27,10 +30,8 @@ namespace coord {
         int RemoveDir(const std::string& path);
         bool Exists(const std::string& path);
         int Unlink(const std::string& path);
-
         /// 锁定文件
         int FileLock(const std::string& path);
-
         int RemoveDirRecursive(const std::string& path);
         uv_stat_t* FileStat(const char* path);
         int ReadFile(const char* path, byte_slice& buffer);

@@ -2,7 +2,6 @@
 #include "coord/component/script_component.h"
 #include "coord/object/object.h"
 #include "coord/scene/scene.h"
-#include "coord/log/log.h"
 #include "coord/http/http_request.h"
 #include "coord/http/http_base.h"
 #include "coord/websocket/websocket_agent.h"

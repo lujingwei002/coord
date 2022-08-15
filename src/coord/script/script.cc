@@ -1,11 +1,11 @@
 #include "coord/script/script.h"
+#include "coord/script/reflect.h"
 #include "coord/coord.h"
 #include "coord/config/config.h"
-#include "coord/log/log.h"
 #include "coord/protobuf/init.h"
-#include "coord/script/reflect.h"
 #include "coord/json/json_mgr.h"
-#include "coord/builtin/init.h"
+#include "coord/builtin/inc.h"
+#include "coord/environment/environment.h"
 
 #include "lua-cjson/lua_cjson.h"
 

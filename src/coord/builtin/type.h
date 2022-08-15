@@ -1,8 +1,6 @@
 #pragma once 
 
- 
 #include "coord/builtin/object_pool.h"
-#include "coord/builtin/ref_manager.h"
 ///
 ///
 ///
@@ -123,58 +121,6 @@ protected:
 public:
     int _ref;
 };//tolua_export
-
-
-
-
-
-
-template<typename TSelf>
-class PointerRef {
-public:
-    PointerRef(TSelf* ptr) { 
-        this->_ptr = ptr;
-        if (nullptr != this->_ptr) {
-            refManager.reference(this->_ptr);
-        }
-    }
-    PointerRef(std::nullptr_t) {
-        this->_ptr = nullptr;
-    }
-    PointerRef(const PointerRef& other) {
-        this->_ptr = other._ptr;
-        if (nullptr != this->_ptr) {
-            refManager.reference(this->_ptr);
-        }
-    }
-    virtual ~PointerRef() {
-        if (nullptr != this->_ptr) {
-            if(refManager.release(this->_ptr) == 0){
-                delete this->_ptr;
-            }
-            this->_ptr = nullptr;
-        }
-    }
-    PointerRef& operator=(const PointerRef& other) {
-        if (nullptr != this->_ptr) {
-            if(refManager.release(this->_ptr) == 0){
-                delete this->_ptr;
-            }
-            this->_ptr = nullptr;
-        }
-        this->_ptr = other._ptr;
-        if (nullptr != this->_ptr) {
-            refManager.reference(this->_ptr);
-        }
-        return *this;
-    }
-    TSelf* operator->() { return this->_ptr;}
-    TSelf* Self() {return this->_ptr;}
-    bool operator== (std::nullptr_t v) const {return this->_ptr == nullptr;}
-    bool operator!= (std::nullptr_t v) const {return this->_ptr != nullptr;}
-private:
-    TSelf* _ptr;
-};
 
 class Type {//tolua_export
 public:

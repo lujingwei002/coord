@@ -1,12 +1,13 @@
 #include "coord/builtin/platform.h"
-#include "coord/coord.h"
+#include "coord/builtin/log.h"
 #include <uv.h>
-#include<sys/file.h> // flock
+#include <sys/file.h> // flock
 #include <fcntl.h> // open
 #include <fstream> 
 #include <iostream>
 
 namespace coord {
+    uv_loop_t uvloop;
     namespace path {
         bool IsAbsolutePath(const char* path) {
             return path[0] == '/';
@@ -27,9 +28,9 @@ namespace coord {
 
         int RealPath(const std::string& path, std::string& realPath) {
             uv_fs_t req;
-            int err = uv_fs_realpath(&coorda->loop, &req, path.c_str(), nullptr);
+            int err = uv_fs_realpath(&uvloop, &req, path.c_str(), nullptr);
             if (err) {
-                coorda->CoreLogError("RealPath failed, path=%s, error=%s", path.c_str(), uv_strerror(err));
+                LOG_ERROR("RealPath failed, path=%s, error=%s", path.c_str(), uv_strerror(err));
                 return err;
             }
             realPath.assign((char*)req.ptr);
@@ -38,7 +39,7 @@ namespace coord {
 
         int MakeDir(const std::string& path, int mode) {
             uv_fs_t req;
-            int err = uv_fs_mkdir(&coorda->loop, &req, path.c_str(), mode, nullptr);
+            int err = uv_fs_mkdir(&uvloop, &req, path.c_str(), mode, nullptr);
             if (err) {
                 return err;
             }
@@ -47,7 +48,7 @@ namespace coord {
 
         bool Exists(const std::string& path) {
             uv_fs_t req;
-            int err = uv_fs_stat(&coorda->loop, &req, path.c_str(), nullptr);
+            int err = uv_fs_stat(&uvloop, &req, path.c_str(), nullptr);
             if (err) {
                 return false;
             }
@@ -67,9 +68,9 @@ namespace coord {
 
         int RemoveDir(const std::string& path) {
             uv_fs_t req;
-            int err = uv_fs_rmdir(&coorda->loop, &req, path.c_str(), nullptr);
+            int err = uv_fs_rmdir(&uvloop, &req, path.c_str(), nullptr);
             if (err) {
-                coorda->CoreLogError("RemoveDir failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
+                LOG_ERROR("RemoveDir failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
                 return err;
             }
             return 0;
@@ -77,9 +78,9 @@ namespace coord {
 
         int Unlink(const std::string& path) {
             uv_fs_t req;
-            int err = uv_fs_unlink(&coorda->loop, &req, path.c_str(), nullptr);
+            int err = uv_fs_unlink(&uvloop, &req, path.c_str(), nullptr);
             if (err) {
-                coorda->CoreLogError("Unlink failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
+                LOG_ERROR("Unlink failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
                 return err;
             }
             return 0;
@@ -88,7 +89,7 @@ namespace coord {
         int RemoveDirRecursive(const std::string& path) {
             uv_fs_t req;
             uv_dirent_t ent;
-            uv_fs_scandir(&coorda->loop, &req, path.c_str(), 0, NULL);
+            uv_fs_scandir(&uvloop, &req, path.c_str(), 0, NULL);
             int err;
             while(uv_fs_scandir_next(&req, &ent) != UV_EOF) {
                 if (ent.type == UV_DIRENT_DIR) {
@@ -111,7 +112,7 @@ namespace coord {
 
         uv_stat_t* FileStat(const char* path) {
             static thread_local uv_fs_t req;
-            int err = uv_fs_stat(&coorda->loop, &req, path, NULL);
+            int err = uv_fs_stat(&uvloop, &req, path, NULL);
             if (err) {
                 return NULL;
             }

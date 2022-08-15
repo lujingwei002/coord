@@ -1,5 +1,5 @@
 #pragma once 
-#include "coord/builtin/init.h"
+#include "coord/builtin/inc.h"
 #include "coord/builtin/slice.h"
 #include "coord/builtin/error.h"
 #include "coord/script/declare.h"

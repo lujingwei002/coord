@@ -2,7 +2,6 @@
 #include "coord/scene/scene_mgr.h"
 #include "coord/object/object.h"
 #include "coord/script/script.h"
-#include "coord/log/log.h"
 #include "coord/coord.h"
 #include <stdio.h>
 #include <iostream>

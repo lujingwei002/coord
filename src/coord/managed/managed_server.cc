@@ -1,6 +1,7 @@
 #include "coord/managed/managed_server.h"
 #include "coord/managed/managed.h"
 #include "coord/managed/managed_agent.h"
+#include "coord/environment/environment.h"
 #include "coord/pipe/init.h"
 #include "coord/config/init.h"
 #include "coord/coord.h"

@@ -2,7 +2,7 @@
 #include "coord/sql/mysql/mysql_result.h"
 #include "coord/sql/mysql/mysql_rows.h"
 #include "coord/builtin/slice.h"
-#include "coord/builtin/init.h"
+#include "coord/builtin/inc.h"
 #include "util/date/date.h"
 #include "coord/coord.h"
 

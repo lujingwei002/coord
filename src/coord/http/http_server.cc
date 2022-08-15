@@ -6,7 +6,6 @@
 #include "coord/coord.h"
 #include "coord/object/object.h"
 #include "coord/builtin/slice.h"
-#include "coord/log/log.h"
 #include "coord/http/http_util.h"
 #include "coord/scene/scene.h"
 #include "coord/encrypt/base64.h"

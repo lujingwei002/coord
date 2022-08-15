@@ -17,10 +17,10 @@ void ref_manager::reference(void* ptr) {
 int ref_manager::release(void* ptr) {
     auto it = this->refDict.find(ptr);
     if (it == this->refDict.end()) {
-        coorda->CoreLogError("[ref_manager] release failed'");
+       // LOG_ERROR("[ref_manager] release failed'");
         return 0;
     } else if (it->second <= 0) {
-        coorda->CoreLogError("[ref_manager] release failed'");
+        // LOG_ERROR("[ref_manager] release failed'");
         return 0;
     } else if (it->second == 1) {
         this->refDict.erase(it);

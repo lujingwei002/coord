@@ -1,6 +1,5 @@
 #include "coord/redis/redis_result.h"
 #include "coord/coord.h"
-#include "coord/builtin/ref_manager.h"
 #include <cassert>
 
 namespace coord {

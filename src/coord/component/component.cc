@@ -5,7 +5,6 @@
 #include "coord/scene/scene.h"
 #include "coord/script/script.h"
 #include "coord/coord.h"
-#include "coord/log/log.h"
 
 namespace coord {
 CC_IMPLEMENT(Component, "coord::Component")

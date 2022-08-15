@@ -1,9 +1,9 @@
 #include "coord/config/config.h"
-#include "coord/log/log.h"
 #include "coord/sql/sql_client.h"
 #include "coord/redis/init.h"
-#include "coord/builtin/init.h"
+#include "coord/builtin/inc.h"
 #include "coord/log4cc/log4cc.h"
+#include "coord/environment/environment.h"
 #include "coord/coord.h"
 #include "inipp/inipp.h"
 #include <fstream>

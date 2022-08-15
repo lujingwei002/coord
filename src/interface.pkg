@@ -11,12 +11,13 @@
 //
 //
 
+$cfile "coord/builtin/type.h"
+$cfile "coord/builtin/promise.h"
 $cfile "coord/coord.h"
 $cfile "coord/log4cc/declare.h"
 $cfile "coord/config/config.h"
 $cfile "coord/script/script.h"
 $cfile "coord/script/reflect.h"
-$cfile "coord/builtin/type.h"
 $cfile "coord/argument/argument.h"
 $cfile "coord/environment/environment.h"
 $cfile "coord/base/base_reader.h"
@@ -24,7 +25,6 @@ $cfile "coord/base/base_request.h"
 $cfile "coord/base/base_response.h"
 $cfile "coord/base/base_result.h"
 $cfile "coord/base/internal_response.h"
-$cfile "coord/builtin/promise.h"
 $cfile "coord/object/object.h"
 $cfile "coord/scene/scene.h"
 $cfile "coord/scene/scene_mgr.h"

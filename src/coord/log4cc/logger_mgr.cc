@@ -4,8 +4,9 @@
 #include "coord/log4cc/config.h"
 #include "coord/log4cc/console_appender.h"
 #include "coord/log4cc/file_appender.h"
+#include "coord/environment/environment.h"
 #include "coord/config/config.h"
-#include "coord/builtin/init.h"
+#include "coord/builtin/inc.h"
 #include "coord/coord.h"
 
 namespace coord {

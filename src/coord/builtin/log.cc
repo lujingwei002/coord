@@ -1,6 +1,5 @@
-#include "coord/log/log.h"
-#include "coord/coord.h"
-
+#include "coord/builtin/log.h"
+#include <cstdio>
 namespace coord {
 namespace log  {
 
@@ -8,8 +7,8 @@ namespace log  {
 void LogFatal(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
-    if(coorda) {
-        coorda->CoreLogFatal(fmt, args);
+    if(false) {
+        
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -21,8 +20,8 @@ void LogFatal(const char *fmt, ...){
 void LogError(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
-    if(coorda) {
-        coorda->CoreLogError(fmt, args);
+    if(false) {
+       
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -34,8 +33,8 @@ void LogError(const char *fmt, ...){
 void LogWarn(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
-    if(coorda) {
-        coorda->CoreLogFatal(fmt, args);
+    if(false) {
+        
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -47,21 +46,8 @@ void LogWarn(const char *fmt, ...){
 void LogInfo(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
-    if(coorda) {
-        coorda->CoreLogInfo(fmt, args);
-    } else {
-        //logger.LogFatal(fmt, args);
-        vfprintf(stderr, fmt, args);
-        fprintf(stderr, "\n");
-    }
-    va_end(args);
-}
-
-void LogMsg(const char *fmt, ...){
-    va_list args;
-    va_start(args, fmt);
-    if(coorda) {
-        coorda->CoreLogMsg(fmt, args);
+    if(false) {
+        
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -73,8 +59,8 @@ void LogMsg(const char *fmt, ...){
 void LogDebug(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
-    if(coorda) {
-        coorda->CoreLogDebug(fmt, args);
+    if(false) {
+        
     } else {
         //logger.LogFatal(fmt, args);
         vfprintf(stderr, fmt, args);
@@ -83,11 +69,6 @@ void LogDebug(const char *fmt, ...){
     va_end(args);
 }
 
-void SetPriority(log4cc::PriorityLevel priority) {
-    if(coorda) {
-        coorda->CoreLogSetPriority(priority);
-    }
-}
 
 
 }

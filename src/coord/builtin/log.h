@@ -1,18 +1,14 @@
 #pragma once 
 
-#include "coord/log4cc/declare.h"
+#include <cstdarg>
 
 namespace coord {
 namespace log{
-
     void LogFatal(const char *fmt, ...);
     void LogError(const char *fmt, ...);
     void LogWarn(const char *fmt, ...);
     void LogInfo(const char *fmt, ...);
     void LogDebug(const char *fmt, ...);
-    void LogMsg(const char *fmt, ...);
-    void SetPriority(log4cc::PriorityLevel priority);
-    
 }
 }
 
@@ -29,5 +25,4 @@ namespace log{
 
 #define LOG_DEBUG(str, ...)     coord::log::LogDebug(str, ## __VA_ARGS__);
 
-#define LOG_MSG(str, ...)     coord::log::LogMsg(str, ## __VA_ARGS__);
 

@@ -17,7 +17,8 @@ extern "C" {
 #include "lua-cjson/lua_cjson.h"
 
 #include "coord/coord.h"
-#include "coord/builtin/init.h"
+#include "coord/builtin/inc.h"
+#include "coord/environment/inc.h"
 #include "coord/config/init.h"
 #include "coord/log4cc/init.h"
 #include "coord/script/init.h"

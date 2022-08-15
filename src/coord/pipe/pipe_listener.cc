@@ -1,7 +1,6 @@
 #include "coord/pipe/pipe_listener.h"
 #include "coord/pipe/pipe_agent.h"
 #include "coord/object/object.h"
-#include "coord/log/log.h"
 #include "coord/coord.h"
 #include <uv.h>
 #include <limits>

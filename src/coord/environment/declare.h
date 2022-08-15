@@ -1,5 +1,6 @@
+
 #pragma once
 
 namespace coord {
-    int builtinInit();
+    class Environment;
 }

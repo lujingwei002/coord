@@ -5,7 +5,6 @@
 #include "coord/display/transform.h"
 #include "coord/net/tcp_listener.h"
 #include "coord/http/http_server.h"
-#include "coord/log/log.h"
 #include "coord/coord.h"
 
 #include <string.h>

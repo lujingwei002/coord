@@ -10,7 +10,6 @@ Type::Type(const char* name) {
 
 RcObject::RcObject() {
     this->_ref = 1;
-    coorda->insertHeapObject(this);
 }
 
 RcObject::~RcObject() {

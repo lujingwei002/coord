@@ -1,5 +1,4 @@
 #include "coord/event/event.h"
-#include "coord/log/log.h"
 #include "coord/coord.h"
 #include <limits>
 

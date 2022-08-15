@@ -1,6 +1,6 @@
 #include "coord/coord.h"
 #include "coord/scene/init.h"
-#include "coord/builtin/init.h"
+#include "coord/builtin/inc.h"
 #include "coord/event/init.h"
 #include "coord/component/init.h"
 #include "coord/object/init.h"
@@ -25,6 +25,7 @@
 #include "coord/login/init.h"
 #include "coord/json/init.h"
 #include "coord/log4cc/init.h"
+#include "coord/environment/environment.h"
 
 #include "util/os/os.h"
 #include "util/os/path.h"
@@ -241,6 +242,11 @@ namespace coord {
         //google protobuf出错时候会出这个
         signal(SIGABRT, SIG_IGN);
 #endif
+        //
+        int err = builtinInit();
+        if (err) {
+            return err;
+        }
         //初始化openssl
         SSL_library_init();             /* 为SSL加载加密和哈希算法 */                
         SSL_load_error_strings();       /* 为了更友好的报错，加载错误码的描述字符串 */

@@ -12,6 +12,7 @@ extern "C" {
 #include <tolua++/tolua++.h>
 }
 #include "coord/builtin/declare.h"
+#include "coord/environment/declare.h"
 #include "coord/closure/init.h"
 #include "coord/component/declare.h"
 #include "coord/object/declare.h"
@@ -68,7 +69,6 @@ friend class coord::run::Running;
 friend class coord::BaseRequest;
 friend class coord::BaseResponse;
 friend class coord::Promise;
-friend class coord::ref_manager;
 friend class coord::log4cc::LoggerMgr;
 friend class coord::SceneMgr;
 friend class coord::Scene;
@@ -139,20 +139,6 @@ friend class coord::login::account_controller;
 friend class coord::login::login_cluster;
 friend class coord::json::JsonMgr;
 friend class coord::protobuf::my_multi_file_error_collector;
-friend int coord::path::RealPath(const std::string& path, std::string& realPath);
-friend int coord::path::MakeDir(const std::string& path, int mode);
-friend int coord::path::RemoveDir(const std::string& path);
-friend int coord::path::RemoveDirRecursive(const std::string& path);
-friend int coord::path::Unlink(const std::string& path);
-friend bool coord::path::Exists(const std::string& path);
-friend uv_stat_t* coord::path::FileStat(const char* path);
-friend void coord::log::LogFatal(const char *fmt, ...);
-friend void coord::log::LogError(const char *fmt, ...);
-friend void coord::log::LogWarn(const char *fmt, ...);
-friend void coord::log::LogInfo(const char *fmt, ...);
-friend void coord::log::LogMsg(const char *fmt, ...);
-friend void coord::log::LogDebug(const char *fmt, ...);
-friend void coord::log::SetPriority(log4cc::PriorityLevel priority);
 public:
     Coord();
     ~Coord();
