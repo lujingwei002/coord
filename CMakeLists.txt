@@ -5,6 +5,13 @@ project (coord)
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set (LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
+SET(CMAKE_CXX_COMPILER      "ccache")
+SET(CMAKE_CXX_COMPILER_ARG1 "g++")
+
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+endif(CCACHE_FOUND)
+
 #编译选项
 add_compile_options (-std=c++17 -Wall -O2 -fpermissive -g -Wno-deprecated-declarations -Wno-unused-variable) 
 

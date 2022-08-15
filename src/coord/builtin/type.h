@@ -1,6 +1,6 @@
 #pragma once 
 
-
+ 
 #include "coord/builtin/object_pool.h"
 #include "coord/builtin/ref_manager.h"
 ///
@@ -97,6 +97,7 @@ private:
 public:
     static RcRef NullPtr;
 };
+
 
 template<typename TSelf>
 RcRef<TSelf> RcRef<TSelf>::NullPtr;
