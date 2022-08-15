@@ -1,5 +1,5 @@
 #pragma once 
-
+ 
 #include "coordx/memory/object_pool.h"
 ///
 ///
@@ -80,7 +80,8 @@ public:
     }
     TSelf* operator->() const { return this->_ptr;}
     TSelf* Self() {return this->_ptr;}
-    TSelf* Borrow() const {
+    // 返回一个推入的lua的指针
+    TSelf* TakeOwnerShip() const {
         if (nullptr == this->_ptr) {
             return nullptr;
         }
@@ -111,6 +112,8 @@ public:
     virtual ~RcObject();
     void AddRef();              //tolua_export
     void DecRef();              //tolua_export
+    // lua调用gc
+    void Gc();                  //tolua_export
 protected:
     // 析构函数
     virtual void Destory();

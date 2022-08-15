@@ -249,7 +249,7 @@ void base_promise<TClient, TResult>::recvResult(TClient client, TResult result, 
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
     tolua_pushusertype(L, client, client->TypeName());
-    const auto resultRc = result.Borrow();
+    const auto resultRc = result.TakeOwnerShip();
     if (nullptr == resultRc) {
         lua_pushnil(L);
     } else {
@@ -270,7 +270,7 @@ void base_promise<TClient, TResult>::recvResume(TClient client, TResult result, 
     lua_State* L = this->L;
     this->coord->CoreLogDebug("[%s] recvResume, %s", this->TypeName(), ok ? "resolve" : "reject");
     lua_pushboolean(L, ok ? 1 : 0);
-    const auto resultRc = result.Borrow();
+    const auto resultRc = result.TakeOwnerShip();
     if (nullptr == resultRc) {
         lua_pushnil(L);
     } else {

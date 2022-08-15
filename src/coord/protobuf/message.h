@@ -1,7 +1,7 @@
 #pragma once 
 #include "coord/coordx.h"
 #include "coord/protobuf/declare.h"
-#include "coord/coordx.h"
+
 extern "C"
 {
 #include <lua/lua.h> 

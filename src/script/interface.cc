@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Mon Aug 15 15:11:11 2022.
+** Generated automatically by tolua++-1.0.92 on Mon Aug 15 15:46:54 2022.
 */
 
 #ifndef __cplusplus
@@ -119,35 +119,35 @@ TOLUA_API int  tolua_coord_open (lua_State* tolua_S);
 static int tolua_collect_coord__script__Reflect (lua_State* tolua_S)
 {
  coord::script::Reflect* self = (coord::script::Reflect*) tolua_tousertype(tolua_S,1,0);
-	self->DecRef();
+	self->Gc();
 	return 0;
 }
 
 static int tolua_collect_coord__protobuf__RepeatMessage (lua_State* tolua_S)
 {
  coord::protobuf::RepeatMessage* self = (coord::protobuf::RepeatMessage*) tolua_tousertype(tolua_S,1,0);
-	self->DecRef();
+	self->Gc();
 	return 0;
 }
 
 static int tolua_collect_coord__protobuf__Message (lua_State* tolua_S)
 {
  coord::protobuf::Message* self = (coord::protobuf::Message*) tolua_tousertype(tolua_S,1,0);
-	self->DecRef();
+	self->Gc();
 	return 0;
 }
 
 static int tolua_collect_coord__json__JsonRef (lua_State* tolua_S)
 {
  coord::json::JsonRef* self = (coord::json::JsonRef*) tolua_tousertype(tolua_S,1,0);
-	self->DecRef();
+	self->Gc();
 	return 0;
 }
 
 static int tolua_collect_coord__redis__RedisResult (lua_State* tolua_S)
 {
  coord::redis::RedisResult* self = (coord::redis::RedisResult*) tolua_tousertype(tolua_S,1,0);
-	self->DecRef();
+	self->Gc();
 	return 0;
 }
 #endif
@@ -334,6 +334,37 @@ static int tolua_coord_coordx_RcObject_DecRef00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: Gc of class  coordx::RcObject */
+#ifndef TOLUA_DISABLE_tolua_coord_coordx_RcObject_Gc00
+static int tolua_coord_coordx_RcObject_Gc00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coordx::RcObject",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  coordx::RcObject* self = (coordx::RcObject*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Gc'",NULL);
+#endif
+  {
+   self->Gc();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'Gc'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: AddRef of class  coordx::RcObject */
 #ifndef TOLUA_DISABLE_tolua_coord_coordx_RcObject_AddRef01
 static int tolua_coord_coordx_RcObject_AddRef01(lua_State* tolua_S)
@@ -383,6 +414,32 @@ static int tolua_coord_coordx_RcObject_DecRef01(lua_State* tolua_S)
  return 0;
 tolua_lerror:
  return tolua_coord_coordx_RcObject_DecRef00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: Gc of class  coordx::RcObject */
+#ifndef TOLUA_DISABLE_tolua_coord_coordx_RcObject_Gc01
+static int tolua_coord_coordx_RcObject_Gc01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"coordx::RcObject",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  coordx::RcObject* self = (coordx::RcObject*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'Gc'",NULL);
+#endif
+  {
+   self->Gc();
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_coord_coordx_RcObject_Gc00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -10810,7 +10867,7 @@ static int tolua_coord_coord_protobuf_Message_GetMessage00(lua_State* tolua_S)
     coordx::RcRef<coord::protobuf::Message> tolua_ret = (  coordx::RcRef<coord::protobuf::Message>)  self->GetMessage(fieldName);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::protobuf::Message");
 #else
     not support
@@ -10851,7 +10908,7 @@ static int tolua_coord_coord_protobuf_Message_GetRepeat00(lua_State* tolua_S)
     coordx::RcRef<coord::protobuf::RepeatMessage> tolua_ret = (  coordx::RcRef<coord::protobuf::RepeatMessage>)  self->GetRepeat(fieldName);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::protobuf::RepeatMessage");
 #else
     not support
@@ -13037,7 +13094,7 @@ static int tolua_coord_coord_protobuf_Protobuf_NewMessage00(lua_State* tolua_S)
     coordx::RcRef<coord::protobuf::Message> tolua_ret = (  coordx::RcRef<coord::protobuf::Message>)  self->NewMessage(name);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::protobuf::Message");
 #else
     not support
@@ -13799,7 +13856,7 @@ static int tolua_coord_coord_sql_SQLRows_Proto00(lua_State* tolua_S)
     coordx::RcRef<coord::protobuf::Message> tolua_ret = (  coordx::RcRef<coord::protobuf::Message>)  self->Proto(name);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::protobuf::Message");
 #else
     not support
@@ -14786,7 +14843,7 @@ static int tolua_coord_coord_redis_Client_SELECT00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->SELECT(db);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -14827,7 +14884,7 @@ static int tolua_coord_coord_redis_Client_AUTH00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->AUTH(password);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -14900,7 +14957,7 @@ static int tolua_coord_coord_redis_Client_DEL00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->DEL(key);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -14941,7 +14998,7 @@ static int tolua_coord_coord_redis_Client_GET00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->GET(key);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -14984,7 +15041,7 @@ static int tolua_coord_coord_redis_Client_SET00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->SET(key,value);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -15067,7 +15124,7 @@ static int tolua_coord_coord_redis_Client_SETEX00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->SETEX(key,data,len,expire);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -15110,7 +15167,7 @@ static int tolua_coord_coord_redis_Client_SETEX01(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->SETEX(key,data,expire);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -15148,7 +15205,7 @@ static int tolua_coord_coord_redis_Client_HGETALL00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->HGETALL(key);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -15229,7 +15286,7 @@ static int tolua_coord_coord_redis_Client_HMSET00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->HMSET(key,field,value);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -15272,7 +15329,7 @@ static int tolua_coord_coord_redis_Client_HMSET01(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->HMSET(key,field,value);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -15312,7 +15369,7 @@ static int tolua_coord_coord_redis_Client_SADD00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->SADD(key,value);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -15355,7 +15412,7 @@ static int tolua_coord_coord_redis_Client_SREM00(lua_State* tolua_S)
     coordx::RcRef<coord::redis::RedisResult> tolua_ret = (  coordx::RcRef<coord::redis::RedisResult>)  self->SREM(key,value);
    {
 #ifdef __cplusplus
-    void* tolua_obj = tolua_ret.Borrow();
+    void* tolua_obj = tolua_ret.TakeOwnerShip();
     tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::redis::RedisResult");
 #else
     not support
@@ -19255,8 +19312,10 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
    tolua_beginmodule(tolua_S,"RcObject");
     tolua_function(tolua_S,"AddRef",tolua_coord_coordx_RcObject_AddRef00);
     tolua_function(tolua_S,"DecRef",tolua_coord_coordx_RcObject_DecRef00);
+    tolua_function(tolua_S,"Gc",tolua_coord_coordx_RcObject_Gc00);
     tolua_function(tolua_S,"AddRef",tolua_coord_coordx_RcObject_AddRef01);
     tolua_function(tolua_S,"DecRef",tolua_coord_coordx_RcObject_DecRef01);
+    tolua_function(tolua_S,"Gc",tolua_coord_coordx_RcObject_Gc01);
    tolua_endmodule(tolua_S);
    tolua_cclass(tolua_S,"Type","coordx::Type","",NULL);
    tolua_beginmodule(tolua_S,"Type");

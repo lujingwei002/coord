@@ -414,7 +414,7 @@ int Argument::Unpack(lua_State* L) {
             lua_pushstring(L, this->GetString(i));
         } else if (this->IsProto(i)) {
             auto message = this->GetProto(i);
-            auto rc = message.Borrow();
+            auto rc = message.TakeOwnerShip();
             if (rc) {
                 tolua_pushusertype_and_takeownership(L, rc, rc->TypeName());
             } else {

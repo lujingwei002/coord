@@ -30,7 +30,7 @@ extern "C" {
 #include "coord/encrypt/init.h"
 #include "coord/event/init.h"
 #include "coord/http/init.h"
-#include "coord/json/init.h"
+#include "coord/json/inc.h"
 #include "coord/managed/init.h"
 #include "coord/sql/init.h"
 #include "coord/sql/mysql/init.h"

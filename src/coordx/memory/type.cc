@@ -21,6 +21,11 @@ void RcObject::AddRef() {
     }
     this->_ref++;
 }
+
+void RcObject::Gc() {
+    this->DecRef();
+}
+
 void RcObject::DecRef() {
     this->_ref--;
     if(this->_ref != 0){ //避免循环删除，要用!=0判断。 a删除b, b删除a, 导致一直循环

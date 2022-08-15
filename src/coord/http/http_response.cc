@@ -5,7 +5,7 @@
 #include "coord/http/http_server.h"
 #include "coord/encrypt/sha1.h"
 #include "coord/encrypt/base64.h"
-#include "coord/json/init.h"
+#include "coord/json/inc.h"
 #include "coord/coordx.h"
 #include <map>
 

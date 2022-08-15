@@ -1019,7 +1019,7 @@ int Script::decode(lua_State* L, const char* data, size_t len) {
             return -1;
         }
         offset += msgLen;   
-        void* p = proto.Borrow();
+        void* p = proto.TakeOwnerShip();
         tolua_pushusertype_and_takeownership(L, p, protobuf::Message::_TypeName);
         return offset - data;
     } else if (type == LUA_TBOOLEAN) {

@@ -23,7 +23,7 @@
 #include "coord/action/init.h"
 #include "coord/closure/init.h"
 #include "coord/login/init.h"
-#include "coord/json/init.h"
+#include "coord/json/inc.h"
 #include "coord/log4cc/init.h"
 #include "coord/environment/environment.h"
 

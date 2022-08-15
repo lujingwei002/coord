@@ -269,7 +269,7 @@ void ScriptComponent::onDestory() {
 void ScriptComponent::recvHttpRequest(const http::HttpRequestRef& request, int ref) {
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
-    auto requestRc = request.Borrow();
+    auto requestRc = request.TakeOwnerShip();
     tolua_pushusertype(L, this, "coord::ScriptComponent");
     if (requestRc) {
         tolua_pushusertype(L, requestRc, requestRc->TypeName());
@@ -735,7 +735,7 @@ void ScriptComponent::recvRedisReply(redis::AsyncClient* const client, const red
     this->coord->CoreLogDebug("[ScriptComponent] recvRedisReply");
     lua_State* L = this->GetLuaState(); 
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
-    auto resultRc = result.Borrow();
+    auto resultRc = result.TakeOwnerShip();
     tolua_pushusertype(L, this, "coord::ScriptComponent");
     tolua_pushusertype(L, client, "coord::redis::AsyncClient");
     if (resultRc) {

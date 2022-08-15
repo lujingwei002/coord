@@ -2,7 +2,7 @@
 #include "coord/coord.h"
 #include "coord/scene/scene_mgr.h"
 #include "coord/environment/environment.h"
-#include "coord/json/init.h"
+#include "coord/json/inc.h"
 #include <stdio.h>
 #include <assert.h>
 #include <iostream>
