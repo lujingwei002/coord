@@ -3,7 +3,7 @@
 #include "coord/coordx.h"
 #include "coord/coordx.h"
 #include "coord/script/declare.h"
-#include "coord/json/json_ref.h"
+#include "coord/json/json.h"
 #include <string>
 extern "C"
 {

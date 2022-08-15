@@ -1,8 +1,9 @@
 #pragma once 
 
-namespace coord {
-    namespace json {
+namespace coord { //tolua_export    
+    namespace json { //tolua_export    
         class JsonMgr;
-        class JsonRef;
-    }
-} 
+        class Json;
+        typedef coordx::RcRef<coord::json::Json> JsonRef;               //tolua_export     
+    } //tolua_export    
+}  //tolua_export    

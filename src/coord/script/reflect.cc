@@ -70,9 +70,9 @@ bool Reflect::operator!= (std::nullptr_t v) const  {
 
 int Reflect::SetTable() {
     lua_State* L = this->coord->Script->L;
-    if (this->ref >= 0) {
+    if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_REFNIL;
+        this->ref = LUA_NOREF;
         this->type = LUA_TNIL;
     }
     lua_newtable(L);
@@ -83,9 +83,9 @@ int Reflect::SetTable() {
 
 int Reflect::SetString(const char* value) {
     lua_State* L = this->coord->Script->L;
-    if (this->ref >= 0) {
+    if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_REFNIL;
+        this->ref = LUA_NOREF;
         this->type = LUA_TNIL;
     }
     lua_pushstring(L, value);
@@ -96,9 +96,9 @@ int Reflect::SetString(const char* value) {
 
 int Reflect::SetNumber(lua_Number value) {
     lua_State* L = this->coord->Script->L;
-    if (this->ref >= 0) {
+    if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_REFNIL;
+        this->ref = LUA_NOREF;
         this->type = LUA_TNIL;
     }
     lua_pushnumber(L, value);
@@ -109,9 +109,9 @@ int Reflect::SetNumber(lua_Number value) {
 
 int Reflect::SetBool(bool value) {
     lua_State* L = this->coord->Script->L;
-    if (this->ref >= 0) {
+   if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_REFNIL;
+        this->ref = LUA_NOREF;
         this->type = LUA_TNIL;
     }
     lua_pushboolean(L, value);
@@ -122,12 +122,12 @@ int Reflect::SetBool(bool value) {
 
 int Reflect::SetNil() {
     lua_State* L = this->coord->Script->L;
-    if (this->ref >= 0) {
+    if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_REFNIL;
+        this->ref = LUA_NOREF;
         this->type = LUA_TNIL;
     }
-    this->ref = LUA_REFNIL;
+    this->ref = LUA_NOREF;
     this->type = LUA_TNIL;
     return 0;
 }
@@ -478,9 +478,9 @@ int Reflect::Decode(byte_slice& buffer){
 
 int Reflect::Decode(const char* data, size_t len) {
     lua_State* L = this->coord->Script->L;
-    if (this->ref >= 0) {
+    if (this->ref != LUA_NOREF) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_REFNIL;
+        this->ref = LUA_NOREF;
         this->type = LUA_TNIL;
     }
     int err = this->coord->Script->Decode(data, len);

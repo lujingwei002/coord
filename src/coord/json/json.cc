@@ -1,51 +1,41 @@
-#include "coord/json/json_ref.h"
+#include "coord/json/json.h"
 
 namespace coord {
 namespace json {
 
-CC_IMPLEMENT(JsonRef, "coord::json::JsonRef")
+CC_IMPLEMENT(Json, "coord::json::Json")
 
 
-JsonRef::JsonRef(Coord* coord) {
+Json::Json(Coord* coord) {
     this->coord = coord;
 }
 
-JsonRef::JsonRef(Coord* coord, const json11::Json& object) : object(object) {
+Json::Json(Coord* coord, const json11::Json& object) : object(object) {
     this->coord = coord;
 }
 
-JsonRef::JsonRef(const JsonRef& other) : object(other.object) {
-    this->coord = other.coord;
+Json::~Json() {
 }
 
-JsonRef& JsonRef::operator=(const JsonRef& other) {
-    this->coord = coord;
-    this->object = other.object;
-    return *this;
-}
-
-JsonRef::~JsonRef() {
-}
-
-int JsonRef::Encode(byte_slice& buffer) {
+int Json::Encode(byte_slice& buffer) {
     std::string result;
     this->object.dump(result);
     coordx::Append(buffer, result.data(), result.length());
     return 0;
 }
 
-int JsonRef::Encode(std::string& buffer) {
+int Json::Encode(std::string& buffer) {
     this->object.dump(buffer);
     return 0;
 }
 
-const char* JsonRef::ToString() {
+const char* Json::ToString() {
     static thread_local std::string result;result.clear();
     this->object.dump(result);
     return result.c_str();
 }
 
-int JsonRef::Get(lua_State* L) {
+int Json::Get(lua_State* L) {
     if(lua_type(L, 2) == LUA_TNUMBER) {
         size_t index = (size_t)lua_tointeger(L, 2);
         if (!this->object.is_array()) {
@@ -69,11 +59,11 @@ int JsonRef::Get(lua_State* L) {
             lua_pushstring(L, json.string_value().c_str());
             return 1;
         } else if (json.is_object()) {
-            JsonRef* ret = new JsonRef(this->coord, json);
+            Json* ret = new Json(this->coord, json);
             tolua_pushusertype_and_takeownership(L, ret, this->TypeName());
             return 1;
         } else if (json.is_array()) {
-            JsonRef* ret = new JsonRef(this->coord, json);
+            Json* ret = new Json(this->coord, json);
             tolua_pushusertype_and_takeownership(L, ret, this->TypeName());
             return 1;
         }  
@@ -101,11 +91,11 @@ int JsonRef::Get(lua_State* L) {
             lua_pushstring(L, json.string_value().c_str());
             return 1;
         } else if (json.is_object()) {
-            JsonRef* ret = new JsonRef(this->coord, json);
+            Json* ret = new Json(this->coord, json);
             tolua_pushusertype_and_takeownership(L, ret, this->TypeName());
             return 1;
         } else if (json.is_array()) {
-            JsonRef* ret = new JsonRef(this->coord, json);
+            Json* ret = new Json(this->coord, json);
             tolua_pushusertype_and_takeownership(L, ret, this->TypeName());
             return 1;
         }  
@@ -115,7 +105,7 @@ int JsonRef::Get(lua_State* L) {
 
 // key = index
 // value = index + 1
-int JsonRef::set(lua_State* L, json11::Json& object, int index) {
+int Json::set(lua_State* L, json11::Json& object, int index) {
     tolua_Error tolua_err;
     int valueIndex = (index > 0) ? index + 1 : index - 1;
     if(lua_type(L, index) == LUA_TNUMBER) {
@@ -141,7 +131,7 @@ int JsonRef::set(lua_State* L, json11::Json& object, int index) {
             arr[key] = this->lua_toobject(L, valueIndex);
             return 0;
         } else if(tolua_isusertype(L, valueIndex, this->TypeName(), 0, &tolua_err)) {
-            JsonRef* jsonPtr = ((JsonRef*)  tolua_tousertype(L, valueIndex, 0));
+            Json* jsonPtr = ((Json*)  tolua_tousertype(L, valueIndex, 0));
             arr[key] = jsonPtr->object;
             return 0;
         }
@@ -162,7 +152,7 @@ int JsonRef::set(lua_State* L, json11::Json& object, int index) {
             dict[key] = this->lua_toobject(L, valueIndex);
             return 0;
         } else if(tolua_isusertype(L, valueIndex, this->TypeName(), 0, &tolua_err)) {
-            JsonRef* jsonPtr = ((JsonRef*)  tolua_tousertype(L, valueIndex, 0));
+            Json* jsonPtr = ((Json*)  tolua_tousertype(L, valueIndex, 0));
             dict[key] = jsonPtr->object;
             return 0;
         }
@@ -170,7 +160,7 @@ int JsonRef::set(lua_State* L, json11::Json& object, int index) {
     return -1;
 }
 
-json11::Json JsonRef::lua_toobject(lua_State* L, int index) {
+json11::Json Json::lua_toobject(lua_State* L, int index) {
     tolua_Error tolua_err;
     size_t objlen = lua_objlen(L, index);
     if (objlen != 0) {
@@ -187,7 +177,7 @@ json11::Json JsonRef::lua_toobject(lua_State* L, int index) {
             } else if(lua_type(L, -1) == LUA_TTABLE) {
                 arr.push_back(this->lua_toobject(L, -1));
             } else if(tolua_isusertype(L, -1, this->TypeName(), 0, &tolua_err)) {
-                JsonRef* jsonPtr = ((JsonRef*)  tolua_tousertype(L, -1, 0));
+                Json* jsonPtr = ((Json*)  tolua_tousertype(L, -1, 0));
                 arr.push_back(jsonPtr->object);
             }
             lua_pop(L, 1);
@@ -209,7 +199,7 @@ json11::Json JsonRef::lua_toobject(lua_State* L, int index) {
                 } else if(lua_type(L, -1) == LUA_TTABLE) {
                     dict[key] = this->lua_toobject(L, -1);
                 } else if(tolua_isusertype(L, -1, this->TypeName(), 0, &tolua_err)) {
-                    JsonRef* jsonPtr = ((JsonRef*)  tolua_tousertype(L, -1, 0));
+                    Json* jsonPtr = ((Json*)  tolua_tousertype(L, -1, 0));
                     dict[key] = jsonPtr->object;
                 }
             }
@@ -220,7 +210,7 @@ json11::Json JsonRef::lua_toobject(lua_State* L, int index) {
     }
 }
 
-int JsonRef::Set(lua_State* L) {
+int Json::Set(lua_State* L) {
     int err = this->set(L, this->object, 2);
     if (err) {
         return 0;

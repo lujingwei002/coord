@@ -17,12 +17,14 @@ void onDestory(coord::Coord* coord) {
 
 
 int main(int argc, char** _argv) {    
+    coord::Init();
     coord::Coord* coorda = coord::NewCoord();
     coord::Argv argv;
     argv.Name = "benchmark";
     argv.ConfigPath = "test/test.ini";
     int err = coorda->beforeTest(argv);
     if (err) {
+        printf("benchmark error %d\n", err);
         return err;
     }
     ::benchmark::Initialize(&argc, _argv);                               
@@ -30,6 +32,7 @@ int main(int argc, char** _argv) {
     ::benchmark::RunSpecifiedBenchmarks();   
     err = coorda->afterTest();
     delete coorda;                               
-    ::benchmark::Shutdown();                               
+    ::benchmark::Shutdown();    
+    coord::Destory();                           
     return 0;                                                           
 }    

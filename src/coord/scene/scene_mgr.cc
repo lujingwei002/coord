@@ -75,11 +75,11 @@ Scene* SceneMgr::loadSceneInternal(const char* filePath) {
     if (json == nullptr) {
         return nullptr;
     }
-    Scene* scene = this->CreateScene(json.GetString("name"));
-    auto objectArr = json.GetArray("objectArr");
-    for (int i = 0; i < objectArr.Count(); i++) {
-        auto objectConf = objectArr.GetObject(i);
-        Object* object = scene->createObjectInternal(objectConf.GetString("name"));
+    Scene* scene = this->CreateScene(json->GetString("name"));
+    auto objectArr = json->GetArray("objectArr");
+    for (int i = 0; i < objectArr->Count(); i++) {
+        auto objectConf = objectArr->GetObject(i);
+        Object* object = scene->createObjectInternal(objectConf->GetString("name"));
         if (nullptr == object) {
             this->coord->Destory(scene);
             return nullptr;

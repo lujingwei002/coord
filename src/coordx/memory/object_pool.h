@@ -49,7 +49,7 @@ public:
             return nullptr;
         }
         pointer object = (pointer)this->freeList.back();
-        LOG_DEBUG("[ObjectPool<%s>] alloc, address=%p", this->name.c_str(), object);
+        //LOG_DEBUG("[ObjectPool<%s>] alloc, address=%p", this->name.c_str(), object);
         this->freeList.pop_back();
         this->allocateList.insert(object);
         return object;
@@ -60,7 +60,7 @@ public:
         if(object == nullptr){
             return nullptr;
         }
-        LOG_DEBUG("[ObjectPool<%s>] construct", this->name.c_str());
+        //LOG_DEBUG("[ObjectPool<%s>] construct", this->name.c_str());
         this->allocator.construct(object);
         return object;
     }
@@ -71,7 +71,7 @@ public:
             LOG_ERROR("ObjectPool<%s> free failed, address=%p", this->name.c_str(), object);
             return false;
         }
-        LOG_DEBUG("ObjectPool<%s> free, address=%p, freeList:%d", this->name.c_str(), object, this->freeList.size());
+        //LOG_DEBUG("ObjectPool<%s> free, address=%p, freeList:%d", this->name.c_str(), object, this->freeList.size());
         this->freeList.push_back(object);
         this->allocateList.erase(it);
         return true;

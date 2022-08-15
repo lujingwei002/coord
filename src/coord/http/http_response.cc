@@ -81,8 +81,8 @@ bool HttpResponse::Text(const char* content) {
 }
 
 bool HttpResponse::Json(json::JsonRef& json) {
-    this->coord->CoreLogDebug("[HttpResponse] JSON, content=%s", json.ToString());
-    if(json.Encode(this->Payload)){
+    this->coord->CoreLogDebug("[HttpResponse] JSON, content=%s", json->ToString());
+    if(json->Encode(this->Payload)){
         return false;
     }
    // this->body.Write(content, strlen(content));

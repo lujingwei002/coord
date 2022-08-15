@@ -38,26 +38,35 @@ public:
 
     /// 获取全局变量
     lua_Number GetNumber(const char *path);
+    lua_Number GetNumber(lua_State* L, const char *path);
     /// 获取全局变量
     const char* GetString(const char *path);
+    const char* GetString(lua_State* L, const char *path);
     /// 获取全局变量
     bool GetBool(const char *path);
+    bool GetBool(lua_State* L, const char *path);
     /// 获取全局变量, 放在栈顶
     int GetFunction(const char *path);
     int GetFunction(lua_State* L, const char *path);
     int GetValue(const char *path);
+    int GetValue(lua_State* L, const char *path);
     /// 获取全局变量, 放在栈顶
     int GetTable(const char *path);
+    int GetTable(lua_State* L, const char *path);
     /// 获取全局变量
     Reflect Get(const char *path);
+    Reflect Get(lua_State* L, const char *path);
 
     /// #set 不存在的话就自动创建table
     /// 设置全局变量
     int SetNumber(const char *path, lua_Number value);
+    int SetNumber(lua_State* L, const char *path, lua_Number value);
     /// 设置全局变量
-    int  SetString(const char *path, const char* value);
+    int SetString(const char *path, const char* value);
+    int SetString(lua_State* L, const char *path, const char* value);
     /// 设置全局变量
     int SetBool(const char *path, bool value);
+    int SetBool(lua_State* L, const char *path, bool value);
     /// 设置全局变量
     int SetNil(const char *path);
     /// 设置全局变量
@@ -141,6 +150,7 @@ public:
 public:
     void regLib(int (*p)(lua_State* L));
     const char* getTableAndKey(const char *path);
+    const char* getTableAndKey(lua_State* L, const char *path);
     int getValue(lua_State* L, const char *path);
     int encode(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& field);
     int tostring(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);

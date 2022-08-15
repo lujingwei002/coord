@@ -34,42 +34,42 @@ int account_controller::main() {
 void account_controller::reqLogin(const http::HttpRequestRef& request) {
     auto args = request->Json();
     printf("gggg %s\n", request->payload.Data());
-    printf("gggg %s\n", args.GetString("nickname"));
+    printf("gggg %s\n", args->GetString("nickname"));
     auto response = request->GetResponse();
     auto promise = this->loginSvr->loginCluster->getBalanceGate();
     if (promise == nullptr) {
         auto result = this->coord->Json->NewObject();
-        result.SetInteger("code", 1);
+        result->SetInteger("code", 1);
         response->Json(result);
         return;
     }
     promise->Then([this, request, response](auto client, auto reply){
         if (reply->Empty()) {
             auto result = this->coord->Json->NewObject();
-            result.SetInteger("code", 1);
+            result->SetInteger("code", 1);
             response->Json(result);
             return;
         }
         if (!reply->Array() || reply->ArrayCount() < 3 || reply->Empty(0)) {
             auto result = this->coord->Json->NewObject();
-            result.SetInteger("code", 2);
+            result->SetInteger("code", 2);
             response->Json(result);
             return;
         }
         auto result = this->coord->Json->NewObject();
-        result.SetInteger("code", 0);
-        auto data = result.SetObject("data");
-        data.SetString("host", reply->String(0));
-        data.SetString("port", reply->String(2));
-        data.SetString("online", reply->String(3));
-        data.SetString("version", reply->String(4));
+        result->SetInteger("code", 0);
+        auto data = result->SetObject("data");
+        data->SetString("host", reply->String(0));
+        data->SetString("port", reply->String(2));
+        data->SetString("online", reply->String(3));
+        data->SetString("version", reply->String(4));
         response->Json(result);
         this->coord->CoreLogError("[login_cluster] test succ %s", reply->String());
     });
     promise->Else([this, request, response](auto client, auto reply){
         this->coord->CoreLogError("[login_cluster] test error");
         auto result = this->coord->Json->NewObject();
-        result.SetInteger("code", 4);
+        result->SetInteger("code", 4);
         response->Json(result);
     });
 }
@@ -79,33 +79,33 @@ void account_controller::reqList(const http::HttpRequestRef& request) {
     auto promise = this->loginSvr->loginCluster->getBalanceGate();
     if (promise == nullptr) {
         auto result = this->coord->Json->NewObject();
-        result.SetInteger("code", 1);
+        result->SetInteger("code", 1);
         response->Json(result);
         return;
     }
     promise->Then([this, request, response](auto client, auto reply){
         if (reply->Empty()) {
             auto result = this->coord->Json->NewObject();
-            result.SetInteger("code", 1);
+            result->SetInteger("code", 1);
             response->Json(result);
             return;
         }
         if (!reply->Array() || reply->ArrayCount() % 5 != 0) {
             auto result = this->coord->Json->NewObject();
-            result.SetInteger("code", 2);
+            result->SetInteger("code", 2);
             response->Json(result);
             return;
         }
         auto result = this->coord->Json->NewObject();
-        result.SetInteger("code", 0);
-        auto data = result.SetArray("data");
+        result->SetInteger("code", 0);
+        auto data = result->SetArray("data");
 
         for (int i = 0; i < reply->ArrayCount() / 5; i++) {
-            auto gate = data.AddObject();
-            gate.SetString("host", reply->String(0 + 5 * i));
-            gate.SetString("port", reply->String(2 + 5 * i));
-            gate.SetString("online", reply->String(3 + 5 * i));
-            gate.SetString("version", reply->String(4 + 5 * i));
+            auto gate = data->AddObject();
+            gate->SetString("host", reply->String(0 + 5 * i));
+            gate->SetString("port", reply->String(2 + 5 * i));
+            gate->SetString("online", reply->String(3 + 5 * i));
+            gate->SetString("version", reply->String(4 + 5 * i));
         }
         response->Json(result);
         this->coord->CoreLogError("[login_cluster] test succ %s", reply->String());
@@ -113,7 +113,7 @@ void account_controller::reqList(const http::HttpRequestRef& request) {
     promise->Else([this, request, response](auto client, auto reply){
         this->coord->CoreLogError("[login_cluster] test error");
         auto result = this->coord->Json->NewObject();
-        result.SetInteger("code", 4);
+        result->SetInteger("code", 4);
         response->Json(result);
     });
 }

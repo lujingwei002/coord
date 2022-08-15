@@ -1,5 +1,5 @@
 #include "coord/json/json_mgr.h"
-#include "coord/json/json_ref.h"
+#include "coord/json/json.h"
 #include "coord/script/script.h"
 #include "coord/coord.h"
 #include <json11/json11.hpp>
@@ -18,7 +18,7 @@ static int __index(lua_State* L) {
         return 1;
     } else {
         lua_pop(L, 2);//self key        
-        coord::json::JsonRef* self = (coord::json::JsonRef*)  tolua_tousertype(L,1,0);
+        coord::json::Json* self = (coord::json::Json*)  tolua_tousertype(L,1,0);
         return self->Get(L);
     }
     return 0;
@@ -26,7 +26,7 @@ static int __index(lua_State* L) {
 
 // 设置字段
 static int __newindex(lua_State* L) {
-    coord::json::JsonRef* self = (coord::json::JsonRef*)  tolua_tousertype(L,1,0);
+    coord::json::Json* self = (coord::json::Json*)  tolua_tousertype(L,1,0);
     return self->Set(L);
 }
 
@@ -44,7 +44,7 @@ int JsonMgr::main() {
 
 int JsonMgr::registerMetatable() {
     lua_State* L = this->coord->Script->L;
-    luaL_getmetatable (L, JsonRef::_type->name);
+    luaL_getmetatable (L, Json::_type->name);
     if(lua_isnil(L, -1)) {
         this->coord->CoreLogError("[coord::JsonMgr] registerMetatable failed, error='metatable not found'");
         return 1;
@@ -60,37 +60,37 @@ int JsonMgr::registerMetatable() {
 
 JsonRef JsonMgr::NewString(const char* data) {
     json11::Json json = json11::Json(data == nullptr ? "" : data);
-    return JsonRef(this->coord, json);
+    return new Json(this->coord, json);
 }
 
 JsonRef JsonMgr::NewObject(){
     json11::Json json = json11::Json(json11::Json::object());
-    return JsonRef(this->coord, json);
+    return new Json(this->coord, json);
 }
 
 JsonRef JsonMgr::NewArray(){
     json11::Json json = json11::Json(json11::Json::array());
-    return JsonRef(this->coord, json);
+    return new Json(this->coord, json);
 }
 
 JsonRef JsonMgr::NewNull(){
     json11::Json json = json11::Json();
-    return JsonRef(this->coord, json);
+    return new Json(this->coord, json);
 }
 
 JsonRef JsonMgr::NewBool(bool value){
     json11::Json json = json11::Json(value);
-    return JsonRef(this->coord, json);
+    return new Json(this->coord, json);
 }
 
 JsonRef JsonMgr::NewNumber(int value){
     json11::Json json = json11::Json(value);
-    return JsonRef(this->coord, json);
+    return new Json(this->coord, json);
 }
 
 JsonRef JsonMgr::NewNumber(double value){
     json11::Json json = json11::Json(value);
-    return JsonRef(this->coord, json);
+    return new Json(this->coord, json);
 }
 
 JsonRef JsonMgr::Decode(const char* data){
@@ -100,7 +100,7 @@ JsonRef JsonMgr::Decode(const char* data){
         this->coord->CoreLogError("[JsonMgr] Decode failed, error=%s", err.c_str());
         return nullptr;
     }
-    return JsonRef(this->coord, json);
+    return new Json(this->coord, json);
 }
 
 JsonRef JsonMgr::Decode(std::string& data){
@@ -110,15 +110,15 @@ JsonRef JsonMgr::Decode(std::string& data){
         this->coord->CoreLogError("[JsonMgr] Decode failed, error=%s", err.c_str());
         return nullptr;
     }
-    return JsonRef(this->coord, json);
+    return new Json(this->coord, json);
 }
 
 int Encode(JsonRef& json, byte_slice& buffer) {
-    return json.Encode(buffer);
+    return json->Encode(buffer);
 }
 
 int Encode(JsonRef& json, std::string& buffer) {
-    return json.Encode(buffer);
+    return json->Encode(buffer);
 }
 
 }
