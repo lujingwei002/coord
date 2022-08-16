@@ -13,7 +13,7 @@ if(CCACHE_FOUND)
 endif(CCACHE_FOUND)
 
 #编译选项
-add_compile_options (-std=c++17 -Wall -O2 -fpermissive -g -Wno-deprecated-declarations -Wno-unused-variable) 
+add_compile_options (-std=c++20 -Wall -O2 -fpermissive -g -Wno-deprecated-declarations -Wno-unused-variable) 
 
 #头文件
 include_directories (src)

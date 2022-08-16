@@ -28,9 +28,7 @@ public:
 
     int GetFunction(const char *func);
     int TraceStack(); 
-    const char* GetString(const char *fieldname);
-    int64_t GetNumber(const char *fieldname);
-    bool getValue(const char *fieldName);
+   
     
     Object *GetObject();
     void SetObject(Object* object);

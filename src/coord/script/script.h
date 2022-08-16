@@ -36,78 +36,16 @@ public:
     int DoFile(const char* filePath);
     int DoString(const char* buffer);
 
-    /// 获取全局变量
-    lua_Number GetNumber(const char *path);
-    lua_Number GetNumber(lua_State* L, const char *path);
-    /// 获取全局变量
-    const char* GetString(const char *path);
-    const char* GetString(lua_State* L, const char *path);
-    /// 获取全局变量
-    bool GetBool(const char *path);
-    bool GetBool(lua_State* L, const char *path);
+    /// 获取变量
+    Reflect NewReflect(const char *path = nullptr);
+
     /// 获取全局变量, 放在栈顶
     int GetFunction(const char *path);
     int GetFunction(lua_State* L, const char *path);
     int GetValue(const char *path);
-    int GetValue(lua_State* L, const char *path);
-    /// 获取全局变量, 放在栈顶
-    int GetTable(const char *path);
-    int GetTable(lua_State* L, const char *path);
-    /// 获取全局变量
-    Reflect Get(const char *path);
-    Reflect Get(lua_State* L, const char *path);
 
-    /// #set 不存在的话就自动创建table
-    /// 设置全局变量
-    int SetNumber(const char *path, lua_Number value);
-    int SetNumber(lua_State* L, const char *path, lua_Number value);
-    /// 设置全局变量
-    int SetString(const char *path, const char* value);
-    int SetString(lua_State* L, const char *path, const char* value);
-    /// 设置全局变量
-    int SetBool(const char *path, bool value);
-    int SetBool(lua_State* L, const char *path, bool value);
-    /// 设置全局变量
-    int SetNil(const char *path);
-    int SetNil(lua_State* L, const char *path);
-    /// 设置全局变量
-    int SetTable(const char *path);
-    int SetTable(lua_State* L, const char *path);
     /// 将栈里的元素设置到变量中,不弹出元素
     int Set(const char* path, int index);
-    int Set(lua_State* L, const char* path, int index);
-
-    bool IsBool(const char* path);
-    bool IsBool(lua_State* L, const char* path);
-    bool IsString(const char* path);
-    bool IsString(lua_State* L, const char* path);
-    bool IsNumber(const char* path);
-    bool IsNumber(lua_State* L, const char* path);
-    bool IsTable(const char* path);
-    bool IsTable(lua_State* L, const char* path);
-    bool IsNil(const char* path);
-    bool IsNil(lua_State* L, const char* path);
-    bool IsFunction(const char* path);
-    bool IsFunction(lua_State* L, const char* path);
-
-    /// 创建一个reflect
-    Reflect NewReflect();
-    Reflect NewReflect(lua_State* L);
-    /// 创建匿名table
-    Reflect NewTable();
-    Reflect NewTable(lua_State* L);
-    Reflect NewTable(const char* path);
-    Reflect NewTable(lua_State* L, const char* path);
-    /// 创建匿名string
-    Reflect NewString(const char* value);
-    Reflect NewString(lua_State* L, const char* value);
-    Reflect NewString(const char* path, const char* value);
-    Reflect NewString(lua_State* L, const char* path, const char* value);
-    /// 创建匿名number
-    Reflect NewNumber(lua_Number value);
-    Reflect NewNumber(const char* path, lua_Number value);
-    Reflect NewNumber(lua_State* L, lua_Number value);
-    Reflect NewNumber(lua_State* L, const char* path, lua_Number value);
 
     int TraceStack(); 
 
@@ -171,6 +109,7 @@ public:
     void regLib(int (*p)(lua_State* L));
     const char* getTableAndKey(const char *path);
     const char* getTableAndKey(lua_State* L, const char *path);
+    /// 获取变量并放在栈顶
     int getValue(lua_State* L, const char *path);
     int encode(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& field);
     int tostring(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);

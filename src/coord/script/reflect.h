@@ -70,7 +70,7 @@ public:
     Reflect GetTable(int key);
 
     /// #self operation
-    const char* ToString();
+    const char* ToString();                             //tolua_export
     const char* ToShortString();
     int Decode(byte_slice& data);        
     int Decode(const char* data, size_t len);        

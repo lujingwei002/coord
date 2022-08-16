@@ -48,32 +48,11 @@ Object* Component::GetObject(){
     return this->object;
 }
 
-int64_t Component::GetNumber(const char *fieldname){
-    if (!this->coord){
-        return 0;
-    }
-    return this->coord->Script->GetNumber(fieldname);
-}
-
-const char* Component::GetString(const char *fieldname){
-    if (!this->coord){
-        return 0;
-    }
-    return this->coord->Script->GetString(fieldname);
-}
-
 int Component::GetFunction(const char *func){
     if (!this->coord){
         return 0;
     }
     return this->coord->Script->GetFunction(func);
-}
-
-bool Component::getValue(const char *fieldName){
-    if (!this->coord){
-        return 0;
-    }
-    return this->coord->Script->GetValue(fieldName);
 }
 
 int Component::TraceStack(){
