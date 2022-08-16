@@ -67,116 +67,8 @@ int Script::DoString(const char* filePath) {
     return 0;
 }
 
-int Script::SetNumber(const char* path, lua_Number value) {
-    return this->SetNumber(this->L, path, value);
-}
-
-int Script::SetNumber(lua_State* L, const char* path, lua_Number value) {
-    const char* key = this->getTableAndKey(L, path);
-    if (key == nullptr) {
-        return -1;
-    }
-    if (key == path) {
-        lua_pushnumber(L, value);
-        lua_setglobal(L, key);
-    } else {
-        lua_pushstring(L, key);
-        lua_pushnumber(L, value);
-        lua_settable(L, -3);
-        lua_pop(L, 1);
-    }
-    return 0;
-}
-
-int Script::SetString(const char* path, const char* value) {
-    return this->SetString(this->L, path, value);
-}
-
-int Script::SetString(lua_State* L, const char* path, const char* value) {
-    const char* key = this->getTableAndKey(L, path);
-    if (key == nullptr) {
-        return -1;
-    }
-    if (key == path) {
-        lua_pushstring(L, value);
-        lua_setglobal(L, key);
-    } else {
-        lua_pushstring(L, key);
-        lua_pushstring(L, value);
-        lua_settable(L, -3);
-        lua_pop(L, 1);
-    }
-    return 0;
-}
-
-int Script::SetBool(const char* path, bool value) {
-    return this->SetBool(this->L, path, value);
-}
-
-int Script::SetBool(lua_State* L, const char* path, bool value) {
-    const char* key = this->getTableAndKey(L, path);
-    if (key == nullptr) {
-        return -1;
-    }
-    if (key == path) {
-        lua_pushboolean(L, value);
-        lua_setglobal(L, key);
-    } else {
-        lua_pushstring(L, key);
-        lua_pushboolean(L, value);
-        lua_settable(L, -3);
-        lua_pop(L, 1);
-    }
-    return 0;
-}
-
-int Script::SetNil(const char* path) {
-    return this->SetNil(this->L, path);
-}
-
-int Script::SetNil(lua_State* L, const char* path) {
-    const char* key = this->getTableAndKey(L, path);
-    if (key == nullptr) {
-        return -1;
-    }
-    if (key == path) {
-        lua_pushnil(L);
-        lua_setglobal(L, key);
-    } else {
-        lua_pushstring(L, key);
-        lua_pushnil(L);
-        lua_settable(L, -3);
-        lua_pop(L, 1);
-    }
-    return 0;
-}
-
-int Script::SetTable(const char* path) {
-    return this->SetTable(this->L, path);
-}
-
-int Script::SetTable(lua_State* L, const char* path) {
-    const char* key = this->getTableAndKey(L, path);
-    if (key == nullptr) {
-        return -1;
-    }
-    if (key == path) {
-        lua_newtable(L);
-        lua_setglobal(L, key);
-    } else {
-        lua_pushstring(L, key);
-        lua_newtable(L);
-        lua_settable(L, -3);
-        lua_pop(L, 1);
-    }
-    return 0;
-}
-
 int Script::Set(const char* path, int index) {
-    return this->Set(this->L, path, index);
-}
-
-int Script::Set(lua_State* L, const char* path, int index) {
+    lua_State* L = this->L;
     const char* key = this->getTableAndKey(L, path);
     if (key == nullptr) {
         return -1;
@@ -188,26 +80,8 @@ int Script::Set(lua_State* L, const char* path, int index) {
         lua_pushstring(L, key);
         lua_pushvalue(L, index);
         lua_settable(L, -3);
-        lua_pop(L, 1);
     }
     return 0;
-}
-
-lua_Number Script::GetNumber(const char *name) {
-    return this->GetNumber(this->L, name);
-}
-
-lua_Number Script::GetNumber(lua_State* L, const char *name) {
-    if(this->getValue(L, name)) {
-        return 0;
-    }
-    if(lua_type(L, -1) != LUA_TNUMBER) {
-        lua_pop(L, 1);
-        return 0;
-    }
-    lua_Number result = (lua_Number)lua_tonumber(L, -1);
-    lua_pop(L, 1);
-    return result;
 }
 
 void Script::regLib(int (*p)(lua_State* L)) {
@@ -215,123 +89,8 @@ void Script::regLib(int (*p)(lua_State* L)) {
     p(L);
 }
 
-const char* Script::GetString(const char *name) {
-    return this->GetString(this->L, name);
-}
-
-const char* Script::GetString(lua_State* L, const char *name) {
-    if(this->getValue(L, name)) {
-        return nullptr;
-    }
-    if(lua_type(L, -1) != LUA_TSTRING) {
-        lua_pop(L, 1);
-        return nullptr;
-    }
-    const char* result = (const char*)lua_tostring(L, -1);
-    lua_pop(L, 1);
-    return result;
-}
-
-bool Script::GetBool(const char *name) {
-    return this->GetBool(this->L, name);
-}
-
-bool Script::GetBool(lua_State* L, const char *name) {
-    if(this->getValue(L, name)) {
-        return false;
-    }
-    if(lua_type(L, -1) != LUA_TBOOLEAN) {
-        lua_pop(L, 1);
-        return false;
-    }
-    bool result = (bool)lua_toboolean(L, -1);
-    lua_pop(L, 1);
-    return result;
-}
-
-bool Script::IsBool(const char* path) {
-    return this->IsBool(this->L, path);
-}
-
-bool Script::IsBool(lua_State* L, const char* path) {
-    if(this->getValue(L, path)) {
-        return false;
-    }
-    bool result = lua_type(L, -1) == LUA_TBOOLEAN;
-    lua_pop(L, 1);
-    return result;
-}
-
-bool Script::IsString(const char* path) {
-    return this->IsString(this->L, path);
-}
-
-bool Script::IsString(lua_State* L, const char* path) {
-    if(this->getValue(L, path)) {
-        return false;
-    }
-    bool result = lua_type(L, -1) == LUA_TSTRING;
-    lua_pop(L, 1);
-    return result;
-}
-
-bool Script::IsNumber(const char* path) {
-    return this->IsNumber(this->L, path);
-}
-
-bool Script::IsNumber(lua_State* L, const char* path) {
-    if(this->getValue(L, path)) {
-        return false;
-    }
-    bool result = lua_type(L, -1) == LUA_TNUMBER;
-    lua_pop(L, 1);
-    return result;
-}
-
-bool Script::IsTable(const char* path) {
-    return this->IsTable(this->L, path);
-}
-
-bool Script::IsTable(lua_State* L, const char* path) {
-    if(this->getValue(L, path)) {
-        return false;
-    }
-    bool result = lua_type(L, -1) == LUA_TTABLE;
-    lua_pop(L, 1);
-    return result;
-}
-
-bool Script::IsFunction(const char* path) {
-    return this->IsFunction(this->L, path);
-}
-
-bool Script::IsFunction(lua_State* L, const char* path) {
-    if(this->getValue(L, path)) {
-        return false;
-    }
-    bool result = lua_type(L, -1) == LUA_TFUNCTION;
-    lua_pop(L, 1);
-    return result;
-}
-
-bool Script::IsNil(const char* path) {
-    return this->IsNil(this->L, path);
-}
-
-bool Script::IsNil(lua_State* L, const char* path) {
-    if(this->getValue(L, path)) {
-        return true;
-    }
-    bool result = lua_type(L, -1) == LUA_TNIL;
-    lua_pop(L, 1);
-    return result;
-}
-
-Reflect Script::Get(const char *fieldName) {
-    return this->Get(this->L, fieldName);
-}
-
-Reflect Script::Get(lua_State* L, const char *fieldName) {
+Reflect Script::NewReflect(const char *fieldName) {
+    lua_State* L = this->L;
     if(this->getValue(L, fieldName)) {
         return Reflect(this->coord);
     }
@@ -449,29 +208,9 @@ int Script::GetFunction(lua_State* L, const char *path) {
     return 0;
 }
 
-
 int Script::GetValue(const char *path) {
-    return this->GetValue(this->L, path);
-}
-
-int Script::GetValue(lua_State* L, const char *path) {
+    lua_State* L = this->L;
     return this->getValue(L, path);
-}
-
-
-int Script::GetTable(const char *path) {
-    return this->GetTable(this->L, path);
-}
-
-int Script::GetTable(lua_State* L, const char *path) {
-    if(this->getValue(L, path)) {
-        return -1;
-    }
-    if(lua_type(L, -1) != LUA_TTABLE) {
-        lua_pop(L, 1);
-        return -1;
-    }
-    return 0;
 }
 
 int Script::TraceStack()  {
@@ -490,14 +229,14 @@ int Script::onAwake() {
     if (nullptr == L) {
         return ErrorOutOfMemory;
     }
-    printf("aaaaaaaaa2\n");
+    printf("aaaaaaaaa2 %d\n", lua_gettop(L));
     int err = this->GetFunction(L, "_onAwake_");
     if(err){
         this->coord->CoreLogError("[script] onAwake not found");
         lua_pop(L, lua_gettop(L));
         return ErrorScript;
     }
-    printf("aaaaaaaaa2\n");
+    printf("aaaaaaaaa2 %d\n", lua_gettop(L));
     err = lua_resume(L, 0);
     if (err == LUA_YIELD) {
         printf("yield %d\n", lua_gettop(L));
@@ -1091,77 +830,6 @@ int Script::decode(lua_State* L, const char* data, size_t len) {
         return offset - data;
     } 
     return -1;
-}
-
-Reflect Script::NewReflect() {
-    return this->NewReflect(this->L);
-}
-
-Reflect Script::NewReflect(lua_State* L) {
-    return Reflect(this->coord);
-}
-
-Reflect Script::NewTable() {
-    return this->NewTable(this->L);
-}
-
-Reflect Script::NewTable(lua_State* L) {
-    auto table = Reflect(this->coord);
-    table.SetTable();
-    return table;
-}
-
-Reflect Script::NewTable(const char* path){
-    return this->NewTable(this->L, path);
-}
-
-Reflect Script::NewTable(lua_State* L, const char* path){
-    if(this->SetTable(path)) {
-        return Reflect(this->coord);
-    }
-    return this->Get(path);
-}
-
-Reflect Script::NewString(const char* value) {
-    return this->NewString(this->L, value);
-}
-
-Reflect Script::NewString(lua_State* L, const char* value) {
-    auto table = Reflect(this->coord);
-    table.SetString(value);
-    return table;
-}
-
-Reflect Script::NewString(const char* path, const char* value){
-    return this->NewString(this->L, path, value);
-}
-
-Reflect Script::NewString(lua_State* L, const char* path, const char* value){
-    if(this->SetString(path, value)) {
-        return Reflect(this->coord);
-    }
-    return this->Get(path);
-}
-
-Reflect Script::NewNumber(lua_Number value) {
-    return this->NewNumber(this->L, value);
-}
-
-Reflect Script::NewNumber(lua_State* L, lua_Number value) {
-    auto table = Reflect(this->coord);
-    table.SetNumber(value);
-    return table;
-}
-
-Reflect Script::NewNumber(const char* path, lua_Number value){
-    return this->NewNumber(this->L, path, value);
-}
-
-Reflect Script::NewNumber(lua_State* L, const char* path, lua_Number value){
-    if(this->SetNumber(path, value)) {
-        return Reflect(this->coord);
-    }
-    return this->Get(path);
 }
 
 const char* Script::GetLastError() {
