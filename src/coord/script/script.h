@@ -36,33 +36,59 @@ public:
     int DoFile(const char* filePath);
     int DoString(const char* buffer);
 
-    /// 获取变量
-    Reflect NewReflect(const char *path = nullptr);
+    /// 将栈里的元素设置到变量中,不弹出元素
+    int SetValue(const char* name, int index);
+    /// 设置全局变量
+    int SetNil(const char* name);
+    int SetBool(const char* name, bool value);
+    int SetString(const char* name, const char* value);
+    int SetNumber(const char* name, lua_Number value);
+    int SetTable(const char* name);
 
+    /// 获取全局变量
+    lua_Number GetNumber(const char *name);
+    const char* GetString(const char *name);
+    bool GetBool(const char *name);
     /// 获取全局变量, 放在栈顶
     int GetFunction(const char *path);
-    int GetFunction(lua_State* L, const char *path);
-    int GetValue(const char *path);
+    int GetFunction(lua_State* co, const char *name);
+    int GetValue(const char *name);
+    int GetValue(lua_State* L, const char *name);
 
-    /// 将栈里的元素设置到变量中,不弹出元素
-    int Set(const char* path, int index);
+    /// 判断全局变量类型
+    bool IsBool(const char* name);
+    bool IsString(const char* name);
+    bool IsNumber(const char* name);
+    bool IsTable(const char* name);
+    bool IsFunction(const char* name);
+    bool IsNil(const char* name);
+
+    /// 获取变量
+    Reflect NewReflect(const char *name = nullptr);
+    Reflect NewVariable(const char *name);
+    Reflect NewVariable(const char *name, const char* value);
+    Reflect GetVariable(const char *name);
+
 
     int TraceStack(); 
 
     /// 将栈顶元素转换成字符串格式
-    int ToString(lua_State* L);//tolua_export 
-    /// 将栈中第index个元素转换成字符串, 并保存在变量path中 
-    const char* ToString(int index, const char* path); 
-    const char* ToString(const char* path); 
+    int DebugString(lua_State* L);//tolua_export 
+    /// 将栈中第index个元素转换成字符串, 并保存在变量name中 
+    const char* DebugString(int index, const char* name); 
+    /// 将变量转换成字符串
+    const char* DebugString(const char* name); 
     /// 将栈中第index个元素转换成字符串
-    const char* ToString(int index);
+    const char* DebugString(int index);
     /// 将栈中第index个元素转换成字符串
-    int ToString(int index, byte_slice& buffer);
+    int DebugString(int index, byte_slice& buffer);
 
+    /// 将栈顶元素转换成字符串格式
     int ToShortString(lua_State* L);//tolua_export 
-    /// 将栈中第index个元素转换成字符串, 并保存在变量path中
-    const char* ToShortString(int index, const char* path); 
-    const char* ToShortString(const char* path); 
+    /// 将栈中第index个元素转换成字符串, 并保存在变量name中
+    const char* ToShortString(int index, const char* name); 
+    /// 将变量转换成字符串
+    const char* ToShortString(const char* name); 
     /// 将栈中第index个元素转换成字符串
     const char* ToShortString(int index);
     /// 将栈中第index个元素转换成字符串

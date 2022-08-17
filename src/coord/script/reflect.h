@@ -18,9 +18,11 @@ namespace script {//tolua_export
 
 class Reflect : public coordx::RcObject {//tolua_export
 public:
+    Reflect();
     Reflect(Coord* coord);
     Reflect(Coord* coord, int ref, int type);
     Reflect(const Reflect& other);
+    Reflect(Reflect&& other);
     Reflect& operator=(const Reflect& other);
     ~Reflect();
 public:
@@ -51,6 +53,7 @@ public:
 
     /// #table.set operation
     int SetBool(const char* key, bool value);           //tolua_export
+    int Set(const char* key, const char* value);  
     int SetString(const char* key, const char* value);  //tolua_export
     int SetNumber(const char* key, lua_Number value);   //tolua_export
     Reflect SetTable(const char* key);                  //tolua_export
@@ -58,6 +61,7 @@ public:
 
     /// #array.set operation
     int SetBool(int key, bool value);                   //tolua_export
+    int Set(int key, const char* value);          
     int SetString(int key, const char* value);          //tolua_export
     int SetNumber(int key, lua_Number value);           //tolua_export
     Reflect SetTable(int key);                          //tolua_export
@@ -70,7 +74,7 @@ public:
     Reflect GetTable(int key);
 
     /// #self operation
-    const char* ToString();                             //tolua_export
+    const char* DebugString();                             //tolua_export
     const char* ToShortString();
     int Decode(byte_slice& data);        
     int Decode(const char* data, size_t len);        
@@ -84,10 +88,10 @@ public:
     Coord*  coord;
     int     ref;
     int     type;
+public:
+    static Reflect NullPtr;
 };//tolua_export
 
-
-Reflect newReflect(Coord* coord, int ref, int type);
 }//tolua_export
 }//tolua_export
 

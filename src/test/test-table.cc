@@ -30,6 +30,25 @@ public:
 };
 
 TEST_F(TestTable, TestReflect) {
+    // _G.aa.bb = 'hello' 
+    // local user1 = _G.aa.bb
+    auto user1 = this->coord->Script->NewVariable("aa.bb", "hello");
+
+    ASSERT_STREQ(user1.ToShortString(), "'hello'");
+
+    // local user2 = _G.aa.bb
+    auto user2 = this->coord->Script->GetVariable("aa.bb");
+    ASSERT_STREQ(user2.ToShortString(), "'hello'");
+
+    // local user3 = _G.aa
+    auto user3 = this->coord->Script->GetVariable("aa");
+    ASSERT_STREQ(user3.ToShortString(), "{'bb'='hello',}");
+
+    // user3.bb = 'hello2'
+    user3.Set("bb", "hello2");
+    ASSERT_STREQ(user3.ToShortString(), "{'bb'='hello2',}");
+
+    ASSERT_STREQ(user2.ToShortString(), "'hello'");
 }
 
 TEST_F(TestTable, TestReflectSetGet) {

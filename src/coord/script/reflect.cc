@@ -8,13 +8,15 @@ namespace coord {
 namespace script {
 
 
-Reflect newReflect(Coord* coord, int ref, int type) {
-    return Reflect(coord, ref, type);
+Reflect::Reflect() {
+    this->coord = nullptr;
+    this->ref = LUA_NOREF;
+    this->type = LUA_TNIL;
 }
 
 Reflect::Reflect(Coord* coord) {
     this->coord = coord;
-    this->ref = LUA_REFNIL;
+    this->ref = LUA_NOREF;
     this->type = LUA_TNIL;
 }
 
@@ -25,18 +27,26 @@ Reflect::Reflect(Coord* coord, int ref, int type) {
 }
 
 Reflect::~Reflect() {
-    if(this->ref >= 0) {
+    if(this->ref != LUA_NOREF) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->ref);
         this->ref = LUA_REFNIL;
         this->type = LUA_TNIL;
     }
 }
 
+Reflect::Reflect(Reflect&& other) {
+    this->coord = other.coord;
+    this->ref = other.ref;
+    this->type = other.type;
+    other.ref = LUA_NOREF;
+    other.type = LUA_TNIL;
+}
+
 Reflect::Reflect(const Reflect& other) {
     this->coord = other.coord;
     this->ref = other.ref;
     this->type = other.type;
-    if (this->ref >= 0) {
+    if(this->ref != LUA_NOREF) {
         lua_State* L = this->coord->Script->L;
         lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
         this->ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -45,15 +55,15 @@ Reflect::Reflect(const Reflect& other) {
 
 Reflect& Reflect::operator=(const Reflect& other) {
     lua_State* L = this->coord->Script->L;
-    if (this->ref >= 0) {
+    if(this->ref != LUA_NOREF) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_REFNIL;
+        this->ref = LUA_NOREF;
         this->type = LUA_TNIL;
     }
     this->coord = other.coord;
     this->ref = other.ref;
     this->type = other.type;
-    if (this->ref >= 0) {
+    if(this->ref != LUA_NOREF) {
         lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
         this->ref = luaL_ref(L, LUA_REGISTRYINDEX);
     }
@@ -61,11 +71,11 @@ Reflect& Reflect::operator=(const Reflect& other) {
 }
 
 bool Reflect::operator== (std::nullptr_t v) const  {
-    return this->ref == LUA_REFNIL;
+    return this->ref == LUA_NOREF;
 }
 
 bool Reflect::operator!= (std::nullptr_t v) const  {
-    return this->ref != LUA_REFNIL;
+    return this->ref != LUA_NOREF;
 }
 
 int Reflect::SetTable() {
@@ -132,10 +142,10 @@ int Reflect::SetNil() {
     return 0;
 }
 
-const char* Reflect::ToString() {
+const char* Reflect::DebugString() {
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
-    const char* buffer = this->coord->Script->ToString(-1);
+    const char* buffer = this->coord->Script->DebugString(-1);
     lua_pop(L, 1);
     return buffer;
 }
@@ -331,7 +341,7 @@ int Reflect::SetBool(const char* key, bool value) {
     return 0;
 }
 
-int Reflect::SetString(const char* key, const char* value) {
+int Reflect::Set(const char* key, const char* value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -344,6 +354,18 @@ int Reflect::SetString(const char* key, const char* value) {
     return 0;
 }
 
+int Reflect::SetString(const char* key, const char* value) {
+    if(this->type != LUA_TTABLE) {
+        return ErrorType;
+    }
+    lua_State* L = this->coord->Script->L;
+    lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
+    lua_pushstring(L, key);
+    lua_pushstring(L, value);
+    lua_settable(L, -3);
+    lua_pop(L, 1);
+    return 0;
+}
 int Reflect::SetNumber(const char* key, lua_Number value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
@@ -398,7 +420,7 @@ int Reflect::SetBool(int key, bool value) {
     return 0;
 }
 
-int Reflect::SetString(int key, const char* value) {
+int Reflect::Set(int key, const char* value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -411,6 +433,18 @@ int Reflect::SetString(int key, const char* value) {
     return 0;
 }
 
+int Reflect::SetString(int key, const char* value) {
+    if(this->type != LUA_TTABLE) {
+        return ErrorType;
+    }
+    lua_State* L = this->coord->Script->L;
+    lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
+    lua_pushinteger(L, key);
+    lua_pushstring(L, value);
+    lua_settable(L, -3);
+    lua_pop(L, 1);
+    return 0;
+}
 int Reflect::SetNumber(int key, lua_Number value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;

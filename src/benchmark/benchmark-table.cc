@@ -4,7 +4,7 @@ static void bench_table_set_string(benchmark::State& state) {
     auto table = coord::script::Reflect(coorda);
     table.SetTable();
     for (auto _: state) {
-        table.SetString("name", "ljw");
+        table.Set("name", "ljw");
     }
 }
 

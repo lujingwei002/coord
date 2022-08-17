@@ -109,7 +109,7 @@ TEST_F(TestArgument, TestTable) {
     args1.AddNil();
     coord::script::Reflect table1(this->coord);
     table1.SetTable();
-    table1.SetString("HELLo", "world");
+    table1.Set("HELLo", "world");
     args1.AddTable(table1);
 
 

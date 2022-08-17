@@ -107,7 +107,7 @@ int base_writer::Table(lua_State* L) {
         lua_pushinteger(L, -1);
         return 1;
     }
-    this->table = script::newReflect(this->coord, ref, type);
+    this->table = new script::Reflect(this->coord, ref, type);
     lua_pushinteger(L, 0);
     this->type = response_type_table;
     return 1;

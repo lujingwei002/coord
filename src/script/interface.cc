@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Wed Aug 17 00:12:27 2022.
+** Generated automatically by tolua++-1.0.92 on Wed Aug 17 16:36:29 2022.
 */
 
 #ifndef __cplusplus
@@ -4611,9 +4611,9 @@ static int tolua_set_coord__Config_Login(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: ToString of class  coord::script::Script */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Script_ToString00
-static int tolua_coord_coord_script_Script_ToString00(lua_State* tolua_S)
+/* method: DebugString of class  coord::script::Script */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Script_DebugString00
+static int tolua_coord_coord_script_Script_DebugString00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4628,16 +4628,16 @@ static int tolua_coord_coord_script_Script_ToString00(lua_State* tolua_S)
   coord::script::Script* self = (coord::script::Script*)  tolua_tousertype(tolua_S,1,0);
   lua_State* L =  tolua_S;
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ToString'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'DebugString'",NULL);
 #endif
   {
-return self->ToString(L);
+return self->DebugString(L);
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'ToString'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'DebugString'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5141,9 +5141,9 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: ToString of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_ToString00
-static int tolua_coord_coord_script_Reflect_ToString00(lua_State* tolua_S)
+/* method: DebugString of class  coord::script::Reflect */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_DebugString00
+static int tolua_coord_coord_script_Reflect_DebugString00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5157,17 +5157,17 @@ static int tolua_coord_coord_script_Reflect_ToString00(lua_State* tolua_S)
  {
   coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ToString'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'DebugString'",NULL);
 #endif
   {
-   const char* tolua_ret = (const char*)  self->ToString();
+   const char* tolua_ret = (const char*)  self->DebugString();
    tolua_pushstring(tolua_S,(const char*)tolua_ret);
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'ToString'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'DebugString'.",&tolua_err);
  return 0;
 #endif
 }
@@ -19547,7 +19547,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
    tolua_beginmodule(tolua_S,"script");
     tolua_cclass(tolua_S,"Script","coord::script::Script","",NULL);
     tolua_beginmodule(tolua_S,"Script");
-     tolua_function(tolua_S,"ToString",tolua_coord_coord_script_Script_ToString00);
+     tolua_function(tolua_S,"DebugString",tolua_coord_coord_script_Script_DebugString00);
      tolua_function(tolua_S,"ToShortString",tolua_coord_coord_script_Script_ToShortString00);
      tolua_function(tolua_S,"Encode",tolua_coord_coord_script_Script_Encode00);
      tolua_function(tolua_S,"Decode",tolua_coord_coord_script_Script_Decode00);
@@ -19576,7 +19576,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
      tolua_function(tolua_S,"SetString",tolua_coord_coord_script_Reflect_SetString01);
      tolua_function(tolua_S,"SetNumber",tolua_coord_coord_script_Reflect_SetNumber01);
      tolua_function(tolua_S,"SetTable",tolua_coord_coord_script_Reflect_SetTable01);
-     tolua_function(tolua_S,"ToString",tolua_coord_coord_script_Reflect_ToString00);
+     tolua_function(tolua_S,"DebugString",tolua_coord_coord_script_Reflect_DebugString00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
