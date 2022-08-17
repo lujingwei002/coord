@@ -289,7 +289,7 @@ void base_promise<TClient, TResult>::recvResume(TClient client, TResult result, 
     } else {
         printf("promise finished\n");
         printf("free thread\n");
-        this->coord->Script->freeThread(this->L);
+        this->coord->Script->FreeThread(this->L);
         this->L = nullptr;
         return;
     }   

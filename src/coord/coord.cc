@@ -458,7 +458,7 @@ namespace coord {
         this->Timer = timer::newTimerMgr(this);
         this->sqlMgr = sql::newSQLMgr(this);
         this->RedisMgr = new redis::RedisMgr(this);
-        this->Script = script::newScript(this); 
+        this->Script = new script::Script(this); 
         this->Action = action::newActionMgr(this);
         this->Closure = closure::newClosureMgr(this);
         this->Json = new json::JsonMgr(this);

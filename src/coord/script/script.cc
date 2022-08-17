@@ -21,11 +21,6 @@ const char* TAG = "Script";
 namespace coord {
 namespace script {
 
-Script* newScript(Coord *coord){
-    Script* script = new Script(coord);
-    return script;
-}
-
 Script::Script(Coord *coord) {
     this->coord = coord;
     lua_State* L = lua_open();
@@ -66,6 +61,19 @@ int Script::DoString(const char* filePath) {
     }
     return 0;
 }
+
+int Script::SetGlobal(const char* name, const char* value) {
+    return this->SetString(name, value);
+}
+
+int Script::SetGlobal(const char* name, const std::initializer_list<std::any>& value) {
+    return this->SetTable(name, value);
+}
+
+/*int Script::SetGlobal(const char* name, const std::initializer_list<const any*>& value) {
+    return this->SetTable(name, value);
+}*/
+
 
 int Script::SetString(const char* name, const char* value) {
     lua_State* L = this->L;
@@ -138,6 +146,83 @@ int Script::SetTable(const char* name) {
     }
     return 0;
 }
+
+int Script::SetTable(const char* name, const std::initializer_list<std::any>& value) {
+    lua_State* L = this->L;
+    const char* key = this->getTableAndKey(L, name);
+    if (key == nullptr) {
+        return -1;
+    }
+    if (key == name) {
+        lua_newtable(L);
+        int index = 1;
+        for (const auto& v : value) {
+            if (v.type() == typeid(int)) {
+                lua_pushinteger(L, index);
+                lua_pushinteger(L, std::any_cast<int>(v));
+                lua_settable(L, -3);
+            } else if (v.type() == typeid(const char*)) {
+                lua_pushinteger(L, index);
+                lua_pushstring(L, std::any_cast<const char*>(v));
+                lua_settable(L, -3);
+            }
+            index++;
+        }
+        lua_setglobal(L, key); 
+    } else {
+        lua_pushstring(L, key);
+        lua_newtable(L);
+        int index = 1;
+        for (const auto& v : value) {
+            if (v.type() == typeid(int)) {
+                lua_pushinteger(L, index);
+                lua_pushinteger(L, std::any_cast<int>(v));
+                lua_settable(L, -3);
+            } else if (v.type() == typeid(const char*)) {
+                lua_pushinteger(L, index);
+                lua_pushstring(L, std::any_cast<const char*>(v));
+                lua_settable(L, -3);
+            }
+            index++;
+        }
+        lua_settable(L, -3);
+        lua_pop(L, 1);
+    }
+    return 0;
+}
+
+/*int Script::SetTable(const char* name, const std::initializer_list<const char*>& value) {
+    lua_State* L = this->L;
+    const char* key = this->getTableAndKey(L, name);
+    if (key == nullptr) {
+        return -1;
+    }
+    if (key == name) {
+        lua_newtable(L);
+        int index = 1;
+        for (auto& v : value) {
+            lua_pushinteger(L, index);
+            lua_pushstring(L, v);
+            lua_settable(L, -3);
+            index++;
+        }
+        lua_setglobal(L, key); 
+    } else {
+        lua_pushstring(L, key);
+        lua_newtable(L);
+        int index = 1;
+        for (auto& v : value) {
+            lua_pushinteger(L, index);
+            lua_pushstring(L, v);
+            lua_settable(L, -3);
+            index++;
+        }
+        lua_settable(L, -3);
+        lua_pop(L, 1);
+    }
+    return 0;
+}
+*/
 
 int Script::SetNumber(const char* name, lua_Number value) {
     lua_State* L = this->L;
@@ -273,11 +358,6 @@ bool Script::IsNil(const char* name) {
     bool result = lua_type(L, -1) == LUA_TNIL;
     lua_pop(L, 1);
     return result;
-}
-
-void Script::regLib(int (*p)(lua_State* L)) {
-    lua_State* L = this->L;
-    p(L);
 }
 
 Reflect Script::GetVariable(const char *name) {
@@ -483,7 +563,7 @@ int Script::onAwake() {
     } else {
         printf("finished %d\n", lua_gettop(co));
         lua_pop(co, lua_gettop(co));
-        this->freeThread(co);
+        this->FreeThread(co);
         return 0;
     }
     return 0;
@@ -621,31 +701,31 @@ int Script::DebugString(int index, byte_slice& buffer) {
     static thread_local byte_slice space;space.Resize(0);
     std::map<const void*, std::string> recordDict;
     coordx::Appendf(field, "#");
-    int err = this->tostring(buffer, this->L, index, recordDict, space, field, false);
+    int err = this->formatDebugString(buffer, this->L, index, recordDict, space, field, false);
     return err;
 }
 
-const char* Script::ToShortString(const char* path) {
+const char* Script::ShortDebugString(const char* path) {
     if (this->GetValue(L, path)) {
         return nullptr;
     }
-    const char* result = this->ToShortString(-1);
+    const char* result = this->ShortDebugString(-1);
     lua_pop(this->L, 1);
     return result;
 }
 
-const char* Script::ToShortString(int index, const char* path) {
+const char* Script::ShortDebugString(int index, const char* path) {
     if (this->GetValue(L, path)) {
         return nullptr;
     }
-    const char* result = this->ToShortString(index);
+    const char* result = this->ShortDebugString(index);
     lua_pop(this->L, 1);
     return result;
 }
 
-int Script::ToShortString(lua_State* L) {
+int Script::ShortDebugString(lua_State* L) {
     static thread_local byte_slice buffer;buffer.Resize(0);
-    int err = this->ToShortString(2, buffer);
+    int err = this->ShortDebugString(2, buffer);
     if (err) {
         lua_pushnil(L);
         return 1;
@@ -654,9 +734,9 @@ int Script::ToShortString(lua_State* L) {
     return 1;
 }
 
-const char* Script::ToShortString(int index) {
+const char* Script::ShortDebugString(int index) {
     static thread_local byte_slice buffer;buffer.Resize(0);
-    int err = this->ToShortString(index, buffer);
+    int err = this->ShortDebugString(index, buffer);
     if (err) {
         return NULL;
     }
@@ -664,16 +744,16 @@ const char* Script::ToShortString(int index) {
     return buffer.Data();
 }
 
-int Script::ToShortString(int index, byte_slice& buffer) {
+int Script::ShortDebugString(int index, byte_slice& buffer) {
     static thread_local byte_slice field;field.Resize(0);
     static thread_local byte_slice space;space.Resize(0);
     std::map<const void*, std::string> recordDict;
     coordx::Appendf(field, "#");
-    int err = this->tostring(buffer, this->L, index, recordDict, space, field, true);
+    int err = this->formatDebugString(buffer, this->L, index, recordDict, space, field, true);
     return err;
 }
 
-int Script::tostring(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort) {
+int Script::formatDebugString(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort) {
     tolua_Error tolua_err;
     if (lua_isstring(L, index) && lua_type(L, index) == LUA_TSTRING) {
         const char* value = (const char*)lua_tostring(L, index);
@@ -701,12 +781,12 @@ int Script::tostring(byte_slice& buffer, lua_State* L, int index, std::map<const
                 int err = 0;
                 if(isShort){
                     /* uses 'key' (at index -2) and 'value' (at index -1) */
-                    err = this->tostring(buffer, L, -1, recordDict, space, field2, isShort);
+                    err = this->formatDebugString(buffer, L, -1, recordDict, space, field2, isShort);
                 } else {
                     byte_slice space2 = space.Slice(0, space.Len());
                     coordx::Appendf(space2, "\t");
                     /* uses 'key' (at index -2) and 'value' (at index -1) */
-                    err = this->tostring(buffer, L, -1, recordDict, space2, field2, isShort);
+                    err = this->formatDebugString(buffer, L, -1, recordDict, space2, field2, isShort);
                 }
                 if (err) {
                     if(!isShort)if(space.Len()>0)coordx::Append(buffer, space.Data(), space.Len()-1);
@@ -1070,10 +1150,7 @@ const char* Script::GetLastError() {
 }
 
 const char* Script::ToJson(const char* name) {
-    return this->ToJson(this->L, name);
-}
-
-const char* Script::ToJson(lua_State* L, const char* name) {
+    lua_State* L = this->L;
     static thread_local byte_slice buffer;buffer.Resize(0);
     if (this->GetValue(L, name)) {
         return nullptr;
@@ -1222,10 +1299,10 @@ lua_State* Script::getThread() {
     }
 }
 
-void Script::freeThread(lua_State* L) {
+void Script::FreeThread(lua_State* L) {
     auto it = this->runningThreadSet.find(L);
     if (it == this->runningThreadSet.end()) {
-        this->coord->CoreLogError("[Script] freeThread failed, error='thread not found'");
+        this->coord->CoreLogError("[Script] FreeThread failed, error='thread not found'");
         return;
     }
     this->runningThreadSet.erase(it);

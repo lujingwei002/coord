@@ -75,7 +75,7 @@ public:
 
     /// #self operation
     const char* DebugString();                             //tolua_export
-    const char* ToShortString();
+    const char* ShortDebugString();
     int Decode(byte_slice& data);        
     int Decode(const char* data, size_t len);        
     int Encode(byte_slice& data);

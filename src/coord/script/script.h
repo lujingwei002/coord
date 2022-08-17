@@ -12,11 +12,15 @@ extern "C" {
 #include <map>
 #include <set>
 #include <string>
+#include <any>
+#include <initializer_list>
 #include "coord/script/reflect.h"
+namespace coord {
+    class Coord;
+}
+
+
 namespace coord {//tolua_export
-
-class Coord;
-
 namespace script {//tolua_export
 
 #define LUA_TPROTO      LUA_TTHREAD + 1
@@ -26,9 +30,36 @@ typedef int (*ScriptOpenFunc) (lua_State* L);
 #define PACKAGE_MAX 1024
 
 class Script { //tolua_export
-public:
+friend Coord;
+private:
     Script(Coord *coord);
+public:
     ~Script();
+private:
+    const char* getTableAndKey(const char *path);
+    const char* getTableAndKey(lua_State* L, const char *path);
+    /// 获取变量并放在栈顶
+    int getValue(lua_State* L, const char *path);
+    int encode(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& field);
+    int formatDebugString(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);
+    int tojson(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);
+    int decode(lua_State* L, const char* data, size_t len);
+    int registerLibs();
+    int main();
+    int onAwake();
+    void onDestory();
+    void gc();
+    int onReload();
+    lua_State* getThread(); 
+private:
+    Coord*          coord;
+    std::string     lastError;
+    void*           jsonParser;
+    // 协程
+    std::vector<lua_State*> threadArr;
+    std::set<lua_State*>    runningThreadSet;
+
+    
 public:
     /// 导入脚本库
     int Import(ScriptOpenFunc func);
@@ -44,6 +75,12 @@ public:
     int SetString(const char* name, const char* value);
     int SetNumber(const char* name, lua_Number value);
     int SetTable(const char* name);
+    /// 初始化列表支持 int const char*
+    int SetTable(const char* name, const std::initializer_list<std::any>& arr);
+    //int SetTable(const char* name, const std::initializer_list<const char*>& arr);
+    int SetGlobal(const char* name, const char* value);
+    int SetGlobal(const char* name, const std::initializer_list<std::any>& arr);
+   // int SetGlobal(const char* name, const std::initializer_list<const char*>& arr);
 
     /// 获取全局变量
     lua_Number GetNumber(const char *name);
@@ -84,15 +121,15 @@ public:
     int DebugString(int index, byte_slice& buffer);
 
     /// 将栈顶元素转换成字符串格式
-    int ToShortString(lua_State* L);//tolua_export 
+    int ShortDebugString(lua_State* L);//tolua_export 
     /// 将栈中第index个元素转换成字符串, 并保存在变量name中
-    const char* ToShortString(int index, const char* name); 
+    const char* ShortDebugString(int index, const char* name); 
     /// 将变量转换成字符串
-    const char* ToShortString(const char* name); 
+    const char* ShortDebugString(const char* name); 
     /// 将栈中第index个元素转换成字符串
-    const char* ToShortString(int index);
+    const char* ShortDebugString(int index);
     /// 将栈中第index个元素转换成字符串
-    int ToShortString(int index, byte_slice& buffer);
+    int ShortDebugString(int index, byte_slice& buffer);
 
     /// 将栈顶元素序列化成二进制
     int Encode(lua_State* L);                                //tolua_export 
@@ -114,9 +151,9 @@ public:
 
     const char* GetLastError();
 
-    /// 将name变量序列化成json字符串
+    /// 将变量转为json字符串
     const char* ToJson(const char* name);
-    const char* ToJson(lua_State* L, const char* name);
+    /// 将栈顶元素转为json字符串
     int ToJson(lua_State* L);                               //tolua_export
     /// 将栈上的变量序列化成json字符串
     const char* ToJson(lua_State* L, int index);
@@ -124,45 +161,24 @@ public:
     int ToJson(int index, byte_slice& buffer);
     int ToJson(lua_State* L, int index, byte_slice& buffer);
 
+
     int FromJson(lua_State* L);                             //tolua_export
     int FromJson(byte_slice& buffer);
     int FromJson(const char* data, size_t len);
     int FromJson(const char* str);
-    int FromJson(const char* path, byte_slice& buffer);
-    int FromJson(const char* path, const char* data, size_t len);
-    int FromJson(const char* path, const char* str);
-public:
-    void regLib(int (*p)(lua_State* L));
-    const char* getTableAndKey(const char *path);
-    const char* getTableAndKey(lua_State* L, const char *path);
-    /// 获取变量并放在栈顶
-    int getValue(lua_State* L, const char *path);
-    int encode(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& field);
-    int tostring(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);
-    int tojson(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);
-    int decode(lua_State* L, const char* data, size_t len);
-    int registerLibs();
-    int main();
-    int onAwake();
-    void onDestory();
-    void gc();
-    int onReload();
-    lua_State* getThread(); 
-    void freeThread(lua_State* L); 
+    int FromJson(const char* name, byte_slice& buffer);
+    int FromJson(const char* name, const char* data, size_t len);
+    int FromJson(const char* name, const char* str);
+
+    /// 释放协程，暂时设置为导出方法。TODO
+    void FreeThread(lua_State* co); 
 public:
     char            Path[PACKAGE_MAX+1];  //tolua_export
     char            Main[PACKAGE_MAX+1];  //tolua_export
     lua_State*      L;
-    Coord*          coord;
-    std::string     lastError;
-    void*           jsonParser;
-private:
-    // 协程
-    std::vector<lua_State*> threadArr;
-    std::set<lua_State*>    runningThreadSet;
 }; //tolua_export
 
-Script* newScript(Coord *coord);
+
 }//tolua_export
 } //tolua_export
 

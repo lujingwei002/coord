@@ -150,10 +150,10 @@ const char* Reflect::DebugString() {
     return buffer;
 }
 
-const char* Reflect::ToShortString() {
+const char* Reflect::ShortDebugString() {
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
-    const char* buffer = this->coord->Script->ToShortString(-1);
+    const char* buffer = this->coord->Script->ShortDebugString(-1);
     lua_pop(L, 1);
     return buffer;
 }

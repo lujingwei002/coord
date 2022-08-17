@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Wed Aug 17 16:36:29 2022.
+** Generated automatically by tolua++-1.0.92 on Wed Aug 17 23:42:14 2022.
 */
 
 #ifndef __cplusplus
@@ -4643,9 +4643,9 @@ return self->DebugString(L);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: ToShortString of class  coord::script::Script */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Script_ToShortString00
-static int tolua_coord_coord_script_Script_ToShortString00(lua_State* tolua_S)
+/* method: ShortDebugString of class  coord::script::Script */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Script_ShortDebugString00
+static int tolua_coord_coord_script_Script_ShortDebugString00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4660,16 +4660,16 @@ static int tolua_coord_coord_script_Script_ToShortString00(lua_State* tolua_S)
   coord::script::Script* self = (coord::script::Script*)  tolua_tousertype(tolua_S,1,0);
   lua_State* L =  tolua_S;
 #ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ToShortString'",NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ShortDebugString'",NULL);
 #endif
   {
-return self->ToShortString(L);
+return self->ShortDebugString(L);
   }
  }
  return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'ToShortString'.",&tolua_err);
+ tolua_error(tolua_S,"#ferror in function 'ShortDebugString'.",&tolua_err);
  return 0;
 #endif
 }
@@ -19548,7 +19548,7 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
     tolua_cclass(tolua_S,"Script","coord::script::Script","",NULL);
     tolua_beginmodule(tolua_S,"Script");
      tolua_function(tolua_S,"DebugString",tolua_coord_coord_script_Script_DebugString00);
-     tolua_function(tolua_S,"ToShortString",tolua_coord_coord_script_Script_ToShortString00);
+     tolua_function(tolua_S,"ShortDebugString",tolua_coord_coord_script_Script_ShortDebugString00);
      tolua_function(tolua_S,"Encode",tolua_coord_coord_script_Script_Encode00);
      tolua_function(tolua_S,"Decode",tolua_coord_coord_script_Script_Decode00);
      tolua_function(tolua_S,"ToJson",tolua_coord_coord_script_Script_ToJson00);

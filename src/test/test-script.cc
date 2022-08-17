@@ -113,7 +113,7 @@ TEST_F(TestScript, ToString) {
     t.SetString("nickname", "ljw");
     t.SetString("avatar", "xx");
     t.SetNumber("score", 100);
-    ASSERT_STREQ(script->ToShortString("a"), R"({'b'={'d'=1.000000,'c'='hello','t'={'nickname'='ljw','score'=100.000000,'avatar'='xx',},},})");
+    ASSERT_STREQ(script->ShortDebugString("a"), R"({'b'={'d'=1.000000,'c'='hello','t'={'nickname'='ljw','score'=100.000000,'avatar'='xx',},},})");
     ASSERT_EQ(lua_gettop(script->L), 0);
 }
 
@@ -140,7 +140,7 @@ TEST_F(TestScript, Serialize) {
     ASSERT_EQ(script->Decode("b", buffer),  0);
     ASSERT_EQ(lua_gettop(script->L), 0);
     ASSERT_EQ(lua_gettop(script->L), 0);
-    ASSERT_STREQ(script->ToShortString("b"), R"({'b'={'d'=1.000000,'c'='hello','t'={'nickname'='ljw','score'=100.000000,'avatar'='xx',},},})");
+    ASSERT_STREQ(script->ShortDebugString("b"), R"({'b'={'d'=1.000000,'c'='hello','t'={'nickname'='ljw','score'=100.000000,'avatar'='xx',},},})");
     //script->GetTable("a");
     //ASSERT_EQ(lua_gettop(script->L), 1);
 }
