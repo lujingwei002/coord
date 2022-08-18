@@ -64,7 +64,7 @@ protobuf::MessageRef& base_writer::Proto(const char* name){
     } else {
         auto message = this->coord->Proto->NewMessage(name);
         if (message == nullptr) {
-            this->coord->CoreLogError("[base_writer] Proto failed, name=%s, error='NewReflect err'", name);
+            this->coord->CoreLogError("[base_writer] Proto failed, name=%s, error='NewMessage err'", name);
             return protobuf::MessageRef::NullPtr;
         }
         this->proto = message;
@@ -94,7 +94,7 @@ Argument* base_writer::Args() {
     return argv;
 }
 
-script::Reflect& base_writer::Table() {
+script::Variable& base_writer::Table() {
     this->type = response_type_table;
     return this->table;
 }
@@ -107,7 +107,7 @@ int base_writer::Table(lua_State* L) {
         lua_pushinteger(L, -1);
         return 1;
     }
-    this->table = new script::Reflect(this->coord, ref, type);
+    this->table = new script::Variable(this->coord, ref, type);
     lua_pushinteger(L, 0);
     this->type = response_type_table;
     return 1;

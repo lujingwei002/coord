@@ -76,13 +76,13 @@ Argument* base_reader::Args() {
 }
 
 int base_reader::Table(lua_State* L) {
-    script::Reflect& table = this->Table();
+    script::Variable& table = this->Table();
     table.Push();
     return 1;
 }
 
-script::Reflect& base_reader::Table() {
-    static thread_local script::Reflect nullPtr(this->coord);
+script::Variable& base_reader::Table() {
+    static thread_local script::Variable nullPtr(this->coord);
     int err = this->table.Decode(this->payload);
     if (err) {
         return nullPtr;

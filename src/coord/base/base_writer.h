@@ -7,7 +7,7 @@
 #include <tuple>
 #include "coord/gate/gate_message.h"
 #include "coord/protobuf/init.h"
-#include "coord/script/reflect.h"
+#include "coord/script/variable.h"
 extern "C" {
 #include <lua/lua.h>
 #include <lua/lualib.h>
@@ -37,7 +37,7 @@ public:
     int Pack(lua_State* L);                             //tolua_export 
     //返回lua table格式的数据，重复调用会覆盖
     int Table(lua_State* L);                            //tolua_export
-    script::Reflect& Table();
+    script::Variable& Table();
     virtual int Flush() = 0;
 public:
     Coord*                      coord;
@@ -45,7 +45,7 @@ public:
     byte_slice                  payload;
     protobuf::MessageRef        proto;
     Argument*                   argv;
-    script::Reflect             table;
+    script::Variable             table;
     int8_t                      type;
 };//tolua_export
 

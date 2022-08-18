@@ -32,7 +32,7 @@ public:
 
     /// 返回table类型的数据
     int Table(lua_State* L);                            //tolua_export
-    script::Reflect& Table();
+    script::Variable& Table();
 private:
     internal_agent* agent;
 };//tolua_export

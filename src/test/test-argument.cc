@@ -107,7 +107,7 @@ TEST_F(TestArgument, TestTable) {
     args1.AddString("hello");
     args1.AddBool(true);
     args1.AddNil();
-    coord::script::Reflect table1(this->coord);
+    coord::script::Variable table1(this->coord);
     table1.SetTable();
     table1.Set("HELLo", "world");
     args1.AddTable(table1);
@@ -120,7 +120,7 @@ TEST_F(TestArgument, TestTable) {
     ASSERT_EQ(args2.Parse(buffer1), 0);
 
     ASSERT_EQ(args2.IsTable(4), true);
-    coord::script::Reflect& table2 = args2.GetTable(4);
+    coord::script::Variable& table2 = args2.GetTable(4);
     ASSERT_STREQ(table2.GetString("HELLo"), "world");
 
     ASSERT_EQ(args1.Count(), args2.Count());

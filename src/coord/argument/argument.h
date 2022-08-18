@@ -2,7 +2,7 @@
 
 #include "coord/coordx.h"
 #include "coord/protobuf/init.h"
-#include "coord/script/reflect.h"
+#include "coord/script/variable.h"
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -38,7 +38,7 @@ public:
     void*                   data;
     std::string             str;
     protobuf::MessageRef    proto;
-    script::Reflect         table;
+    script::Variable         table;
 };
 
 class Argument {//tolua_export
@@ -51,7 +51,7 @@ public:
     bool GetBool(size_t index);                       //tolua_export
     const char* GetString(size_t index);              //tolua_export
     protobuf::MessageRef& GetProto(size_t index);        //tolua_export
-    script::Reflect& GetTable(size_t index);          //tolua_export
+    script::Variable& GetTable(size_t index);          //tolua_export
 
     bool IsNone(size_t index);                     //tolua_export
     bool IsNil(size_t index);                      //tolua_export
@@ -66,7 +66,7 @@ public:
     int AddNil();                                  //tolua_export   
     int AddProto(const protobuf::MessageRef& proto); 
     int AddBool(bool value);                       //tolua_export 
-    int AddTable(script::Reflect& table);  
+    int AddTable(script::Variable& table);  
     int AddTable(int ref, int type);  
 
     int Count();                                    //tolua_export

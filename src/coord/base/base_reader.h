@@ -7,7 +7,7 @@
 #include <map>
 #include <tuple>
 #include "coord/protobuf/init.h"
-#include "coord/script/reflect.h"
+#include "coord/script/variable.h"
 #include "coord/base/base_message.h"
 extern "C" {
 #include <lua/lua.h>
@@ -51,14 +51,14 @@ public:
     virtual int Unpack(lua_State* L) = 0;//tolua_export 
     ///
     /// # 返回lua table格式类型的数据
-    ///  # @return script::Reflect
+    ///  # @return script::Variable
     ///
     virtual int Table(lua_State* L) = 0;//tolua_export
     ///
     /// # 返回argument格式类型的数据
-    /// # @return script::Reflect
+    /// # @return script::Variable
     ///
-    virtual script::Reflect& Table() = 0;
+    virtual script::Variable& Table() = 0;
     virtual json::JsonRef Json() = 0;   //tolua_export
 };//tolua_export
 
@@ -98,14 +98,14 @@ public:
     virtual int Unpack(lua_State* L);//tolua_export 
     ///
     /// # 返回lua table格式类型的数据
-    ///  # @return script::Reflect
+    ///  # @return script::Variable
     ///
     virtual int Table(lua_State* L);//tolua_export
     ///
     /// # 返回argument格式类型的数据
-    /// # @return script::Reflect
+    /// # @return script::Variable
     ///
-    virtual script::Reflect& Table();
+    virtual script::Variable& Table();
     virtual json::JsonRef Json();   //tolua_export
 public:
     Coord*                      coord;
@@ -114,7 +114,7 @@ public:
     Argument*                   argv;
     protobuf::MessageRef        proto;
     int8_t                      type;
-    script::Reflect             table;
+    script::Variable             table;
 };//tolua_export
 
 }//tolua_export

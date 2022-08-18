@@ -17,15 +17,15 @@ class Coord;
 
 namespace script {//tolua_export
 
-class Reflect : public coordx::RcObject {//tolua_export
+class Variable : public coordx::RcObject {//tolua_export
 public:
-    Reflect();
-    Reflect(Coord* coord);
-    Reflect(Coord* coord, int ref, int type);
-    Reflect(const Reflect& other);
-    Reflect(Reflect&& other);
-    Reflect& operator=(const Reflect& other);
-    ~Reflect();
+    Variable();
+    Variable(Coord* coord);
+    Variable(Coord* coord, int ref, int type);
+    Variable(const Variable& other);
+    Variable(Variable&& other);
+    Variable& operator=(const Variable& other);
+    ~Variable();
 public:
     
     /// #self.is operation
@@ -40,39 +40,39 @@ public:
     const char* GetString();
 
     /// #self.set operation
-    Reflect& operator=(const std::any& other);
-    Reflect& operator=(std::nullptr_t);
-   // Reflect& operator=(const std::initializer_list<std::any>& value);
-     Reflect& operator=(const std::initializer_list<std::tuple<std::any, std::any>>& value);
+    Variable& operator=(const std::any& other);
+    Variable& operator=(std::nullptr_t);
+   // Variable& operator=(const std::initializer_list<std::any>& value);
+     Variable& operator=(const std::initializer_list<std::tuple<std::any, std::any>>& value);
     int SetTable();
 
     /// #table.get operation
     bool GetBool(const char* key);
     lua_Number GetNumber(const char* key);
     const char* GetString(const char* key);
-    Reflect GetTable(const char* key);
+    Variable GetTable(const char* key);
 
     /// #table.set operation
     int SetBool(const char* key, bool value);           //tolua_export
     int Set(const char* key, const char* value);  
     int SetString(const char* key, const char* value);  //tolua_export
     int SetNumber(const char* key, lua_Number value);   //tolua_export
-    Reflect SetTable(const char* key);                  //tolua_export
-    int SetTable(const char* key, Reflect& table);
+    Variable SetTable(const char* key);                  //tolua_export
+    int SetTable(const char* key, Variable& table);
 
     /// #array.set operation
     int SetBool(int key, bool value);                   //tolua_export
     int Set(int key, const char* value);          
     int SetString(int key, const char* value);          //tolua_export
     int SetNumber(int key, lua_Number value);           //tolua_export
-    Reflect SetTable(int key);                          //tolua_export
-    int SetTable(int key, Reflect& table);
+    Variable SetTable(int key);                          //tolua_export
+    int SetTable(int key, Variable& table);
 
     /// #array.get operation
     bool GetBool(int key);
     lua_Number GetNumber(int key);
     const char* GetString(int key);
-    Reflect GetTable(int key);
+    Variable GetTable(int key);
 
     /// #self operation
     const char* DebugString();                             //tolua_export
@@ -90,7 +90,7 @@ public:
     int     ref;
     int     type;
 public:
-    static Reflect NullPtr;
+    static Variable NullPtr;
 };//tolua_export
 
 }//tolua_export

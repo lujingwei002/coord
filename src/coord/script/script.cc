@@ -1,5 +1,5 @@
 #include "coord/script/script.h"
-#include "coord/script/reflect.h"
+#include "coord/script/variable.h"
 #include "coord/coord.h"
 #include "coord/config/config.h"
 #include "coord/protobuf/init.h"
@@ -20,6 +20,46 @@ const char* TAG = "Script";
 
 namespace coord {
 namespace script {
+
+int lua_pushtableandreturnkey(lua_State* L, const char *path, char** key) {
+    char *begin = (char *)path;
+    char *varBegin = begin;
+    char *it = begin;
+    while(*it != 0) {
+        if(*it == '.' && varBegin == begin) {
+            std::string var(varBegin, it - varBegin);
+            lua_getglobal(L, var.c_str());   // value
+            if(lua_isnil(L, -1)){               // nil
+                lua_pop(L, 1);                  //
+                lua_newtable(L);                // table
+                lua_pushvalue(L, -1);           // table table
+                lua_setglobal(L, var.c_str());     // table
+            } else if(!lua_istable(L, -1)) {
+                lua_pop(L, 1);                  // 
+                return 1;
+            }
+            varBegin = it + 1;
+        } else if(*it == '.') {
+            lua_pushlstring(L, varBegin, it - varBegin);        // table key
+            lua_gettable(L, -2);                                // table value
+            if(lua_isnil(L, -1)) {
+                lua_pop(L, 1);                  // table
+                lua_newtable(L);                // table value
+                lua_pushlstring(L, varBegin, it - varBegin);  // table value key
+                lua_pushvalue(L, -2);           // table value key value
+                lua_settable(L, -4);            // table value
+            } else if(!lua_istable(L, -1)) {
+                lua_pop(L, 2);                  //
+                return 1;
+            }
+            lua_remove(L, -2);//弹出table       // value
+            varBegin = it + 1;
+        }
+        it++;
+    }
+    *key = varBegin;
+    return 0;
+}
 
 Script::Script(Coord *coord) {
     this->coord = coord;
@@ -77,9 +117,10 @@ int Script::SetGlobal(const char* name, const std::initializer_list<std::any>& v
 
 int Script::SetString(const char* name, const char* value) {
     lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return -1;
+    char *key = nullptr;
+    int err = lua_pushtableandreturnkey(L, name, &key);
+    if (err) {
+        return err;
     }
     if (key == name) {
         lua_pushstring(L, value);
@@ -95,9 +136,10 @@ int Script::SetString(const char* name, const char* value) {
 
 int Script::SetBool(const char* name, bool value) {
     lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return -1;
+    char *key = nullptr;
+    int err = lua_pushtableandreturnkey(L, name, &key);
+    if (err) {
+        return err;
     }
     if (key == name) {
         lua_pushboolean(L, value);
@@ -113,9 +155,10 @@ int Script::SetBool(const char* name, bool value) {
 
 int Script::SetNil(const char* name) {
     lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return -1;
+    char *key = nullptr;
+    int err = lua_pushtableandreturnkey(L, name, &key);
+    if (err) {
+        return err;
     }
     if (key == name) {
         lua_pushnil(L);
@@ -151,9 +194,10 @@ int lua_pushany(lua_State* L, const std::any& value) {
 
 int Script::SetTable(const char* name) {
     lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return -1;
+    char *key = nullptr;
+    int err = lua_pushtableandreturnkey(L, name, &key);
+    if (err) {
+        return err;
     }
     if (key == name) {
         lua_newtable(L);
@@ -169,9 +213,10 @@ int Script::SetTable(const char* name) {
 
 int Script::SetTable(const char* name, const std::initializer_list<std::any>& value) {
     lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return -1;
+    char *key = nullptr;
+    int err = lua_pushtableandreturnkey(L, name, &key);
+    if (err) {
+        return err;
     }
     if (key == name) {
         lua_newtable(L);
@@ -201,9 +246,10 @@ int Script::SetTable(const char* name, const std::initializer_list<std::any>& va
 
 /*int Script::SetTable(const char* name, const std::initializer_list<const char*>& value) {
     lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return -1;
+    char *key = nullptr;
+    int err = lua_pushtableandreturnkey(L, name, &key);
+    if (err) {
+        return err;
     }
     if (key == name) {
         lua_newtable(L);
@@ -234,9 +280,10 @@ int Script::SetTable(const char* name, const std::initializer_list<std::any>& va
 
 int Script::SetNumber(const char* name, lua_Number value) {
     lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return -1;
+    char *key = nullptr;
+    int err = lua_pushtableandreturnkey(L, name, &key);
+    if (err) {
+        return err;
     }
     if (key == name) {
         lua_pushnumber(L, value);
@@ -252,9 +299,10 @@ int Script::SetNumber(const char* name, lua_Number value) {
 
 int Script::SetValue(const char* name, int index) {
     lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return -1;
+    char *key = nullptr;
+    int err = lua_pushtableandreturnkey(L, name, &key);
+    if (err) {
+        return err;
     }
     if (key == name) {
         lua_pushvalue(L, index);
@@ -368,103 +416,19 @@ bool Script::IsNil(const char* name) {
     return result;
 }
 
-Reflect Script::GetVariable(const char *name) {
+Variable Script::GetVariable(const char *name) {
     lua_State* L = this->L;
     if(this->GetValue(L, name)) {
-        return Reflect(this->coord);
+        return Variable(this->coord);
     }
     int type = lua_type(L, -1);
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);
-    return Reflect(this->coord, ref, type);
+    return Variable(this->coord, ref, type);
 }
 
-Reflect Script::NewVariable(const char *name) {
-    lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return Reflect(this->coord);
-    }
-    if (key == name) {
-        lua_pushnil(L);
-        lua_setglobal(L, key);
-    } else {
-        lua_pushstring(L, key);
-        lua_pushnil(L);
-        lua_settable(L, -3);
-        lua_pop(L, 1);
-    }
-    return this->GetVariable(name);
-}
 
-Reflect Script::NewVariable(const char *name, const char* value) {
-    lua_State* L = this->L;
-    const char* key = this->getTableAndKey(L, name);
-    if (key == nullptr) {
-        return Reflect(this->coord);
-    }
-    if (key == name) {
-        lua_pushstring(L, value);
-        lua_setglobal(L, key);
-    } else {
-        lua_pushstring(L, key);
-        lua_pushstring(L, value);
-        lua_settable(L, -3);
-        lua_pop(L, 1);
-    }
-    return this->GetVariable(name);
-}
-
-Reflect Script::NewReflect(const char *fieldName) {
-    lua_State* L = this->L;
-    if(this->GetValue(L, fieldName)) {
-        return Reflect(this->coord);
-    }
-    int type = lua_type(L, -1);
-    int ref = luaL_ref(L, LUA_REGISTRYINDEX);
-    return Reflect(this->coord, ref, type);
-}
-
-const char* Script::getTableAndKey(const char *path) {
-    return this->getTableAndKey(this->L, path);
-}
-
-const char* Script::getTableAndKey(lua_State* L, const char *path) {
-    char *begin = (char *)path;
-    char *varBegin = begin;
-    char *it = begin;
-    while(*it != 0) {
-        if(*it == '.' && varBegin == begin) {
-            std::string var(varBegin, it - varBegin);
-            lua_getglobal(L, var.c_str());   // value
-            if(lua_isnil(L, -1)){               // nil
-                lua_pop(L, 1);                  //
-                lua_newtable(L);                // table
-                lua_pushvalue(L, -1);           // table table
-                lua_setglobal(L, var.c_str());     // table
-            } else if(!lua_istable(L, -1)) {
-                lua_pop(L, 1);                  // 
-                return nullptr;
-            }
-            varBegin = it + 1;
-        } else if(*it == '.') {
-            lua_pushlstring(L, varBegin, it - varBegin);        // table key
-            lua_gettable(L, -2);                                // table value
-            if(lua_isnil(L, -1)) {
-                lua_pop(L, 1);                  // table
-                lua_newtable(L);                // table value
-                lua_pushlstring(L, varBegin, it - varBegin);  // table value key
-                lua_pushvalue(L, -2);           // table value key value
-                lua_settable(L, -4);            // table value
-            } else if(!lua_istable(L, -1)) {
-                lua_pop(L, 2);                  //
-                return nullptr;
-            }
-            lua_remove(L, -2);//弹出table       // value
-            varBegin = it + 1;
-        }
-        it++;
-    }
-    return varBegin;
+Variable Script::NewVariable() {
+    return Variable(this->coord);
 }
 
 int Script::GetValue(const char *name) {

@@ -1,4 +1,4 @@
-#include "coord/script/reflect.h"
+#include "coord/script/variable.h"
 #include "coord/coordx.h"
 #include "coord/coord.h"
 #include "coord/script/script.h"
@@ -8,25 +8,25 @@ namespace coord {
 namespace script {
 
 
-Reflect::Reflect() {
-    this->coord = nullptr;
+Variable::Variable() {
+    this->coord = coorda;
     this->ref = LUA_NOREF;
     this->type = LUA_TNIL;
 }
 
-Reflect::Reflect(Coord* coord) {
+Variable::Variable(Coord* coord) {
     this->coord = coord;
     this->ref = LUA_NOREF;
     this->type = LUA_TNIL;
 }
 
-Reflect::Reflect(Coord* coord, int ref, int type) {
+Variable::Variable(Coord* coord, int ref, int type) {
     this->coord = coord;
     this->ref = ref;
     this->type = type;    
 }
 
-Reflect::~Reflect() {
+Variable::~Variable() {
     if(this->ref != LUA_NOREF) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->ref);
         this->ref = LUA_REFNIL;
@@ -34,7 +34,7 @@ Reflect::~Reflect() {
     }
 }
 
-Reflect::Reflect(Reflect&& other) {
+Variable::Variable(Variable&& other) {
     this->coord = other.coord;
     this->ref = other.ref;
     this->type = other.type;
@@ -42,7 +42,7 @@ Reflect::Reflect(Reflect&& other) {
     other.type = LUA_TNIL;
 }
 
-Reflect::Reflect(const Reflect& other) {
+Variable::Variable(const Variable& other) {
     this->coord = other.coord;
     this->ref = other.ref;
     this->type = other.type;
@@ -53,7 +53,7 @@ Reflect::Reflect(const Reflect& other) {
     }
 }
 
-Reflect& Reflect::operator=(const Reflect& other) {
+Variable& Variable::operator=(const Variable& other) {
     lua_State* L = this->coord->Script->L;
     if(this->ref != LUA_NOREF) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->ref);
@@ -70,15 +70,15 @@ Reflect& Reflect::operator=(const Reflect& other) {
     return *this;
 }
 
-bool Reflect::operator== (std::nullptr_t v) const  {
+bool Variable::operator== (std::nullptr_t v) const  {
     return this->ref == LUA_NOREF;
 }
 
-bool Reflect::operator!= (std::nullptr_t v) const  {
+bool Variable::operator!= (std::nullptr_t v) const  {
     return this->ref != LUA_NOREF;
 }
 
-Reflect& Reflect::operator=(std::nullptr_t) {
+Variable& Variable::operator=(std::nullptr_t) {
     lua_State* L = this->coord->Script->L;
     if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
@@ -90,7 +90,7 @@ Reflect& Reflect::operator=(std::nullptr_t) {
     return *this;
 }
 
-Reflect& Reflect::operator=(const std::any& value) {
+Variable& Variable::operator=(const std::any& value) {
     lua_State* L = this->coord->Script->L;
     if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
@@ -103,7 +103,7 @@ Reflect& Reflect::operator=(const std::any& value) {
     return *this;
 }
 
-Reflect& Reflect::operator=(const std::initializer_list<std::tuple<std::any, std::any>>& value) {
+Variable& Variable::operator=(const std::initializer_list<std::tuple<std::any, std::any>>& value) {
     lua_State* L = this->coord->Script->L;
     if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
@@ -126,7 +126,7 @@ Reflect& Reflect::operator=(const std::initializer_list<std::tuple<std::any, std
     return *this;
 }
 
-/*Reflect& Reflect::operator=(const std::initializer_list<std::any>& value) {
+/*Variable& Variable::operator=(const std::initializer_list<std::any>& value) {
     lua_State* L = this->coord->Script->L;
     if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
@@ -146,7 +146,7 @@ Reflect& Reflect::operator=(const std::initializer_list<std::tuple<std::any, std
     return *this;
 }*/
 
-int Reflect::SetTable() {
+int Variable::SetTable() {
     lua_State* L = this->coord->Script->L;
     if (this->ref != LUA_NOREF) {
         luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
@@ -160,7 +160,7 @@ int Reflect::SetTable() {
 }
 
 
-const char* Reflect::DebugString() {
+const char* Variable::DebugString() {
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
     const char* buffer = this->coord->Script->DebugString(-1);
@@ -168,7 +168,7 @@ const char* Reflect::DebugString() {
     return buffer;
 }
 
-const char* Reflect::ShortDebugString() {
+const char* Variable::ShortDebugString() {
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
     const char* buffer = this->coord->Script->ShortDebugString(-1);
@@ -176,7 +176,7 @@ const char* Reflect::ShortDebugString() {
     return buffer;
 }
 
-const char* Reflect::GetString() {
+const char* Variable::GetString() {
     if(this->type != LUA_TSTRING) {
         return nullptr;
     }
@@ -187,7 +187,7 @@ const char* Reflect::GetString() {
     return value;
 }
 
-lua_Number Reflect::GetNumber() {
+lua_Number Variable::GetNumber() {
     if(this->type != LUA_TNUMBER) {
         return 0;
     }
@@ -198,7 +198,7 @@ lua_Number Reflect::GetNumber() {
     return value;
 }
 
-const char* Reflect::GetString(const char* key) {
+const char* Variable::GetString(const char* key) {
     if(this->type != LUA_TTABLE) {
         return nullptr;
     }
@@ -215,9 +215,9 @@ const char* Reflect::GetString(const char* key) {
     return nullptr;
 }
 
-Reflect Reflect::GetTable(const char* key) {
+Variable Variable::GetTable(const char* key) {
     if(this->type != LUA_TTABLE) {
-        return Reflect(this->coord);
+        return Variable(this->coord);
     }
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
@@ -228,17 +228,17 @@ Reflect Reflect::GetTable(const char* key) {
         int ref = luaL_ref(L, LUA_REGISTRYINDEX); 
         if (ref == LUA_NOREF) {
             lua_pop(L, 1);
-            return Reflect(this->coord);
+            return Variable(this->coord);
         } else {
             lua_pop(L, 1);
-            return Reflect(this->coord, ref, LUA_TTABLE);
+            return Variable(this->coord, ref, LUA_TTABLE);
         }
     }
     lua_pop(L, 2);
-    return Reflect(this->coord);
+    return Variable(this->coord);
 }
 
-bool Reflect::GetBool(const char* key) {
+bool Variable::GetBool(const char* key) {
     if(this->type != LUA_TTABLE) {
         return false;
     }
@@ -255,7 +255,7 @@ bool Reflect::GetBool(const char* key) {
     return false;
 }
 
-lua_Number Reflect::GetNumber(const char* key) {
+lua_Number Variable::GetNumber(const char* key) {
     if(this->type != LUA_TTABLE) {
         return 0;
     }
@@ -272,7 +272,7 @@ lua_Number Reflect::GetNumber(const char* key) {
     return 0;
 }
 
-const char* Reflect::GetString(int key) {
+const char* Variable::GetString(int key) {
     if(this->type != LUA_TTABLE) {
         return nullptr;
     }
@@ -289,9 +289,9 @@ const char* Reflect::GetString(int key) {
     return nullptr;
 }
 
-Reflect Reflect::GetTable(int key) {
+Variable Variable::GetTable(int key) {
     if(this->type != LUA_TTABLE) {
-        return Reflect(this->coord);
+        return Variable(this->coord);
     }
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
@@ -302,17 +302,17 @@ Reflect Reflect::GetTable(int key) {
         int ref = luaL_ref(L, LUA_REGISTRYINDEX); 
         if (ref == LUA_NOREF) {
             lua_pop(L, 1);
-            return Reflect(this->coord);
+            return Variable(this->coord);
         } else {
             lua_pop(L, 1);
-            return Reflect(this->coord, ref, LUA_TTABLE);
+            return Variable(this->coord, ref, LUA_TTABLE);
         }
     }
     lua_pop(L, 2);
-    return Reflect(this->coord);
+    return Variable(this->coord);
 }
 
-bool Reflect::GetBool(int key) {
+bool Variable::GetBool(int key) {
     if(this->type != LUA_TTABLE) {
         return false;
     }
@@ -329,7 +329,7 @@ bool Reflect::GetBool(int key) {
     return false;
 }
 
-lua_Number Reflect::GetNumber(int key) {
+lua_Number Variable::GetNumber(int key) {
     if(this->type != LUA_TTABLE) {
         return 0;
     }
@@ -346,7 +346,7 @@ lua_Number Reflect::GetNumber(int key) {
     return 0;
 }
 
-int Reflect::SetBool(const char* key, bool value) {
+int Variable::SetBool(const char* key, bool value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -359,7 +359,7 @@ int Reflect::SetBool(const char* key, bool value) {
     return 0;
 }
 
-int Reflect::Set(const char* key, const char* value) {
+int Variable::Set(const char* key, const char* value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -372,7 +372,7 @@ int Reflect::Set(const char* key, const char* value) {
     return 0;
 }
 
-int Reflect::SetString(const char* key, const char* value) {
+int Variable::SetString(const char* key, const char* value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -384,7 +384,7 @@ int Reflect::SetString(const char* key, const char* value) {
     lua_pop(L, 1);
     return 0;
 }
-int Reflect::SetNumber(const char* key, lua_Number value) {
+int Variable::SetNumber(const char* key, lua_Number value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -397,9 +397,9 @@ int Reflect::SetNumber(const char* key, lua_Number value) {
     return 0;
 }
 
-Reflect Reflect::SetTable(const char* key) {
+Variable Variable::SetTable(const char* key) {
     if(this->type != LUA_TTABLE) {
-        return Reflect(this->coord);
+        return Variable(this->coord);
     }
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref); //table
@@ -409,10 +409,10 @@ Reflect Reflect::SetTable(const char* key) {
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);     //table key value
     lua_settable(L, -3);                          //table
     lua_pop(L, 1);        
-    return Reflect(this->coord, ref, LUA_TTABLE);                 
+    return Variable(this->coord, ref, LUA_TTABLE);                 
 }
 
-int Reflect::SetTable(const char* key, Reflect& table) {
+int Variable::SetTable(const char* key, Variable& table) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -425,7 +425,7 @@ int Reflect::SetTable(const char* key, Reflect& table) {
     return 0;  
 }
 
-int Reflect::SetBool(int key, bool value) {
+int Variable::SetBool(int key, bool value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -438,7 +438,7 @@ int Reflect::SetBool(int key, bool value) {
     return 0;
 }
 
-int Reflect::Set(int key, const char* value) {
+int Variable::Set(int key, const char* value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -451,7 +451,7 @@ int Reflect::Set(int key, const char* value) {
     return 0;
 }
 
-int Reflect::SetString(int key, const char* value) {
+int Variable::SetString(int key, const char* value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -463,7 +463,7 @@ int Reflect::SetString(int key, const char* value) {
     lua_pop(L, 1);
     return 0;
 }
-int Reflect::SetNumber(int key, lua_Number value) {
+int Variable::SetNumber(int key, lua_Number value) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -476,9 +476,9 @@ int Reflect::SetNumber(int key, lua_Number value) {
     return 0;
 }
 
-Reflect Reflect::SetTable(int key) {
+Variable Variable::SetTable(int key) {
     if(this->type != LUA_TTABLE) {
-        return Reflect(this->coord);
+        return Variable(this->coord);
     }
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref); //table
@@ -488,10 +488,10 @@ Reflect Reflect::SetTable(int key) {
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);     //table key value
     lua_settable(L, -3);                          //table
     lua_pop(L, 1);        
-    return Reflect(this->coord, ref, LUA_TTABLE);                 
+    return Variable(this->coord, ref, LUA_TTABLE);                 
 }
 
-int Reflect::SetTable(int key, Reflect& table) {
+int Variable::SetTable(int key, Variable& table) {
     if(this->type != LUA_TTABLE) {
         return ErrorType;
     }
@@ -504,31 +504,31 @@ int Reflect::SetTable(int key, Reflect& table) {
     return 0;  
 }
 
-bool Reflect::IsBool() {
+bool Variable::IsBool() {
     return this->type == LUA_TBOOLEAN;
 }
 
-bool Reflect::IsString() {
+bool Variable::IsString() {
     return this->type == LUA_TSTRING;
 }
 
-bool Reflect::IsTable() {
+bool Variable::IsTable() {
     return this->type == LUA_TTABLE;
 }
 
-bool Reflect::IsNumber() {
+bool Variable::IsNumber() {
     return this->type == LUA_TNUMBER;
 }
 
-bool Reflect::IsNil() {
+bool Variable::IsNil() {
     return this->type == LUA_TNIL;
 }
 
-int Reflect::Decode(byte_slice& buffer){
+int Variable::Decode(byte_slice& buffer){
     return this->Decode(buffer.Data(), buffer.Len()); 
 }   
 
-int Reflect::Decode(const char* data, size_t len) {
+int Variable::Decode(const char* data, size_t len) {
     lua_State* L = this->coord->Script->L;
     if (this->ref != LUA_NOREF) {
         luaL_unref(this->coord->Script->L, LUA_REGISTRYINDEX, this->ref);
@@ -544,7 +544,7 @@ int Reflect::Decode(const char* data, size_t len) {
     return 0;   
 }
 
-int Reflect::Encode(byte_slice& buffer) {
+int Variable::Encode(byte_slice& buffer) {
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);       // table
     int err = this->coord->Script->Encode(-1, buffer);
@@ -552,7 +552,7 @@ int Reflect::Encode(byte_slice& buffer) {
     return err;
 }
 
-void Reflect::Push() {
+void Variable::Push() {
     lua_State* L = this->coord->Script->L;
     lua_rawgeti(L, LUA_REGISTRYINDEX, this->ref);
     

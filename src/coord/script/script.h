@@ -14,7 +14,7 @@ extern "C" {
 #include <string>
 #include <any>
 #include <initializer_list>
-#include "coord/script/reflect.h"
+#include "coord/script/variable.h"
 namespace coord {
     class Coord;
 }
@@ -36,14 +36,12 @@ private:
 public:
     ~Script();
 private:
-    const char* getTableAndKey(const char *path);
-    const char* getTableAndKey(lua_State* L, const char *path);
-    /// 获取变量并放在栈顶
-    int getValue(lua_State* L, const char *path);
     int encode(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& field);
+    int decode(lua_State* L, const char* data, size_t len);
     int formatDebugString(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);
     int tojson(byte_slice& buffer, lua_State* L, int index, std::map<const void*, std::string>& recordDict, byte_slice& space, byte_slice& field, bool isShort);
-    int decode(lua_State* L, const char* data, size_t len);
+    
+    // 注册内置的coord库
     int registerLibs();
     int main();
     int onAwake();
@@ -67,7 +65,8 @@ public:
     /// 执行脚本文件
     int DoFile(const char* filePath);
     int DoString(const char* buffer);
-
+    const char* GetLastError();
+    
     /// 将栈里的元素设置到变量中,不弹出元素
     int SetValue(const char* name, int index);
     /// 设置全局变量
@@ -102,10 +101,8 @@ public:
     bool IsNil(const char* name);
 
     /// 获取变量
-    Reflect NewReflect(const char *name = nullptr);
-    Reflect NewVariable(const char *name);
-    Reflect NewVariable(const char *name, const char* value);
-    Reflect GetVariable(const char *name);
+    Variable NewVariable();
+    Variable GetVariable(const char *name);
 
     int TraceStack(); 
 
@@ -149,8 +146,6 @@ public:
     /// 反序列化，成功的话元素放在栈顶
     int Decode(const char* data, size_t len);
 
-    const char* GetLastError();
-
     /// 将变量转为json字符串
     const char* ToJson(const char* name);
     /// 将栈顶元素转为json字符串
@@ -181,6 +176,9 @@ public:
 
 
 int lua_pushany(lua_State* L, const std::any& value);
+// user.name 将_G.user放入栈顶，并返回key=name
+// user      无数据放入栈中，返回key=user
+int lua_pushtableandreturnkey(lua_State* L, const char *name, char** key);
 
 }//tolua_export
 } //tolua_export

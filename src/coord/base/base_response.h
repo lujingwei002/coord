@@ -8,7 +8,7 @@
 #include <tuple>
 #include "coord/gate/gate_message.h"
 #include "coord/protobuf/init.h"
-#include "coord/script/reflect.h"
+#include "coord/script/variable.h"
 extern "C" {
 #include <lua/lua.h>
 #include <lua/lualib.h>
@@ -50,7 +50,7 @@ protected:
     base_request*               request;
     protobuf::MessageRef        proto;
     Argument*                   argv;
-    script::Reflect             table;
+    script::Variable             table;
 };//tolua_export
 
 

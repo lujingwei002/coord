@@ -1,7 +1,7 @@
 
 
 static void bench_table_set_string(benchmark::State& state) {
-    auto table = coord::script::Reflect(coorda);
+    auto table = coord::script::Variable(coorda);
     table.SetTable();
     for (auto _: state) {
         table.Set("name", "ljw");
@@ -9,7 +9,7 @@ static void bench_table_set_string(benchmark::State& state) {
 }
 
 static void bench_table_set_number(benchmark::State& state) {
-    auto table = coord::script::Reflect(coorda);
+    auto table = coord::script::Variable(coorda);
     table.SetTable();
     int score = 0;
     for (auto _: state) {

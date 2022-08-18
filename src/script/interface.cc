@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Thu Aug 18 13:13:56 2022.
+** Generated automatically by tolua++-1.0.92 on Thu Aug 18 14:44:34 2022.
 */
 
 #ifndef __cplusplus
@@ -23,7 +23,7 @@ TOLUA_API int  tolua_coord_open (lua_State* tolua_S);
 #include "coord/log4cc/declare.h"
 #include "coord/config/config.h"
 #include "coord/script/script.h"
-#include "coord/script/reflect.h"
+#include "coord/script/variable.h"
 #include "coord/argument/argument.h"
 #include "coord/environment/environment.h"
 #include "coord/base/base_reader.h"
@@ -117,9 +117,9 @@ TOLUA_API int  tolua_coord_open (lua_State* tolua_S);
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
-static int tolua_collect_coord__script__Reflect (lua_State* tolua_S)
+static int tolua_collect_coord__script__Variable (lua_State* tolua_S)
 {
- coord::script::Reflect* self = (coord::script::Reflect*) tolua_tousertype(tolua_S,1,0);
+ coord::script::Variable* self = (coord::script::Variable*) tolua_tousertype(tolua_S,1,0);
 	self->Gc();
 	return 0;
 }
@@ -176,7 +176,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::net::ITcpHandler");
  tolua_usertype(tolua_S,"coord::worker::Promise");
  tolua_usertype(tolua_S,"coord::closure::ClosureMgr");
- tolua_usertype(tolua_S,"coord::script::Reflect");
+ tolua_usertype(tolua_S,"coord::SceneMgr");
  tolua_usertype(tolua_S,"coord::login::LoginSvr");
  tolua_usertype(tolua_S,"coord::pipe::PipeAgent");
  tolua_usertype(tolua_S,"coord::pipe::IPipeAgentHandler");
@@ -202,7 +202,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::sql::SQLConfig");
  tolua_usertype(tolua_S,"coord::managed::Managed");
  tolua_usertype(tolua_S,"coord::worker::WorkerRouter");
- tolua_usertype(tolua_S,"coord::net::ITcpAgentHandler");
+ tolua_usertype(tolua_S,"coord::script::Variable");
  tolua_usertype(tolua_S,"coord::worker::Worker");
  tolua_usertype(tolua_S,"coord::worker::WorkerConfig");
  tolua_usertype(tolua_S,"coordx::RcObject");
@@ -248,7 +248,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"coord::timer::TimerMgr");
  tolua_usertype(tolua_S,"coord::websocket::Router");
  tolua_usertype(tolua_S,"coord::protobuf::Protobuf");
- tolua_usertype(tolua_S,"coord::SceneMgr");
+ tolua_usertype(tolua_S,"coord::net::ITcpAgentHandler");
  tolua_usertype(tolua_S,"coord::event::Listener");
  tolua_usertype(tolua_S,"coord::protobuf::Message");
  tolua_usertype(tolua_S,"coord::event::EventMgr");
@@ -4861,14 +4861,14 @@ static int tolua_set_coord__script__Script_Main(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: SetBool of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_SetBool00
-static int tolua_coord_coord_script_Reflect_SetBool00(lua_State* tolua_S)
+/* method: SetBool of class  coord::script::Variable */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Variable_SetBool00
+static int tolua_coord_coord_script_Variable_SetBool00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::script::Reflect",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::script::Variable",0,&tolua_err) ||
      !tolua_isstring(tolua_S,2,0,&tolua_err) ||
      !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
@@ -4877,7 +4877,7 @@ static int tolua_coord_coord_script_Reflect_SetBool00(lua_State* tolua_S)
  else
 #endif
  {
-  coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
+  coord::script::Variable* self = (coord::script::Variable*)  tolua_tousertype(tolua_S,1,0);
   const char* key = ((const char*)  tolua_tostring(tolua_S,2,0));
   bool value = ((bool)  tolua_toboolean(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
@@ -4897,14 +4897,14 @@ static int tolua_coord_coord_script_Reflect_SetBool00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: SetString of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_SetString00
-static int tolua_coord_coord_script_Reflect_SetString00(lua_State* tolua_S)
+/* method: SetString of class  coord::script::Variable */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Variable_SetString00
+static int tolua_coord_coord_script_Variable_SetString00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::script::Reflect",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::script::Variable",0,&tolua_err) ||
      !tolua_isstring(tolua_S,2,0,&tolua_err) ||
      !tolua_isstring(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
@@ -4913,7 +4913,7 @@ static int tolua_coord_coord_script_Reflect_SetString00(lua_State* tolua_S)
  else
 #endif
  {
-  coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
+  coord::script::Variable* self = (coord::script::Variable*)  tolua_tousertype(tolua_S,1,0);
   const char* key = ((const char*)  tolua_tostring(tolua_S,2,0));
   const char* value = ((const char*)  tolua_tostring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
@@ -4933,14 +4933,14 @@ static int tolua_coord_coord_script_Reflect_SetString00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: SetNumber of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_SetNumber00
-static int tolua_coord_coord_script_Reflect_SetNumber00(lua_State* tolua_S)
+/* method: SetNumber of class  coord::script::Variable */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Variable_SetNumber00
+static int tolua_coord_coord_script_Variable_SetNumber00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::script::Reflect",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::script::Variable",0,&tolua_err) ||
      !tolua_isstring(tolua_S,2,0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"lua_Number",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
@@ -4949,7 +4949,7 @@ static int tolua_coord_coord_script_Reflect_SetNumber00(lua_State* tolua_S)
  else
 #endif
  {
-  coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
+  coord::script::Variable* self = (coord::script::Variable*)  tolua_tousertype(tolua_S,1,0);
   const char* key = ((const char*)  tolua_tostring(tolua_S,2,0));
   lua_Number value = *((lua_Number*)  tolua_tousertype(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
@@ -4969,14 +4969,14 @@ static int tolua_coord_coord_script_Reflect_SetNumber00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: SetTable of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_SetTable00
-static int tolua_coord_coord_script_Reflect_SetTable00(lua_State* tolua_S)
+/* method: SetTable of class  coord::script::Variable */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Variable_SetTable00
+static int tolua_coord_coord_script_Variable_SetTable00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::script::Reflect",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::script::Variable",0,&tolua_err) ||
      !tolua_isstring(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -4984,20 +4984,20 @@ static int tolua_coord_coord_script_Reflect_SetTable00(lua_State* tolua_S)
  else
 #endif
  {
-  coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
+  coord::script::Variable* self = (coord::script::Variable*)  tolua_tousertype(tolua_S,1,0);
   const char* key = ((const char*)  tolua_tostring(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetTable'",NULL);
 #endif
   {
-   coord::script::Reflect tolua_ret = (coord::script::Reflect)  self->SetTable(key);
+   coord::script::Variable tolua_ret = (coord::script::Variable)  self->SetTable(key);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::script::Reflect(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::script::Reflect");
+    void* tolua_obj = new coord::script::Variable(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::script::Variable");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::script::Reflect));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::script::Reflect");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::script::Variable));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::script::Variable");
 #endif
    }
   }
@@ -5011,13 +5011,13 @@ static int tolua_coord_coord_script_Reflect_SetTable00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: SetBool of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_SetBool01
-static int tolua_coord_coord_script_Reflect_SetBool01(lua_State* tolua_S)
+/* method: SetBool of class  coord::script::Variable */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Variable_SetBool01
+static int tolua_coord_coord_script_Variable_SetBool01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::script::Reflect",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::script::Variable",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
@@ -5025,7 +5025,7 @@ static int tolua_coord_coord_script_Reflect_SetBool01(lua_State* tolua_S)
   goto tolua_lerror;
  else
  {
-  coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
+  coord::script::Variable* self = (coord::script::Variable*)  tolua_tousertype(tolua_S,1,0);
   int key = ((int)  tolua_tonumber(tolua_S,2,0));
   bool value = ((bool)  tolua_toboolean(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
@@ -5038,17 +5038,17 @@ static int tolua_coord_coord_script_Reflect_SetBool01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua_coord_coord_script_Reflect_SetBool00(tolua_S);
+ return tolua_coord_coord_script_Variable_SetBool00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: SetString of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_SetString01
-static int tolua_coord_coord_script_Reflect_SetString01(lua_State* tolua_S)
+/* method: SetString of class  coord::script::Variable */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Variable_SetString01
+static int tolua_coord_coord_script_Variable_SetString01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::script::Reflect",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::script::Variable",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isstring(tolua_S,3,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
@@ -5056,7 +5056,7 @@ static int tolua_coord_coord_script_Reflect_SetString01(lua_State* tolua_S)
   goto tolua_lerror;
  else
  {
-  coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
+  coord::script::Variable* self = (coord::script::Variable*)  tolua_tousertype(tolua_S,1,0);
   int key = ((int)  tolua_tonumber(tolua_S,2,0));
   const char* value = ((const char*)  tolua_tostring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
@@ -5069,17 +5069,17 @@ static int tolua_coord_coord_script_Reflect_SetString01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua_coord_coord_script_Reflect_SetString00(tolua_S);
+ return tolua_coord_coord_script_Variable_SetString00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: SetNumber of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_SetNumber01
-static int tolua_coord_coord_script_Reflect_SetNumber01(lua_State* tolua_S)
+/* method: SetNumber of class  coord::script::Variable */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Variable_SetNumber01
+static int tolua_coord_coord_script_Variable_SetNumber01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::script::Reflect",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::script::Variable",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isusertype(tolua_S,3,"lua_Number",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,4,&tolua_err)
@@ -5087,7 +5087,7 @@ static int tolua_coord_coord_script_Reflect_SetNumber01(lua_State* tolua_S)
   goto tolua_lerror;
  else
  {
-  coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
+  coord::script::Variable* self = (coord::script::Variable*)  tolua_tousertype(tolua_S,1,0);
   int key = ((int)  tolua_tonumber(tolua_S,2,0));
   lua_Number value = *((lua_Number*)  tolua_tousertype(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
@@ -5100,62 +5100,62 @@ static int tolua_coord_coord_script_Reflect_SetNumber01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua_coord_coord_script_Reflect_SetNumber00(tolua_S);
+ return tolua_coord_coord_script_Variable_SetNumber00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: SetTable of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_SetTable01
-static int tolua_coord_coord_script_Reflect_SetTable01(lua_State* tolua_S)
+/* method: SetTable of class  coord::script::Variable */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Variable_SetTable01
+static int tolua_coord_coord_script_Variable_SetTable01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::script::Reflect",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::script::Variable",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
+  coord::script::Variable* self = (coord::script::Variable*)  tolua_tousertype(tolua_S,1,0);
   int key = ((int)  tolua_tonumber(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetTable'",NULL);
 #endif
   {
-   coord::script::Reflect tolua_ret = (coord::script::Reflect)  self->SetTable(key);
+   coord::script::Variable tolua_ret = (coord::script::Variable)  self->SetTable(key);
    {
 #ifdef __cplusplus
-    void* tolua_obj = new coord::script::Reflect(tolua_ret);
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::script::Reflect");
+    void* tolua_obj = new coord::script::Variable(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::script::Variable");
 #else
-    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::script::Reflect));
-    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::script::Reflect");
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(coord::script::Variable));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"coord::script::Variable");
 #endif
    }
   }
  }
  return 1;
 tolua_lerror:
- return tolua_coord_coord_script_Reflect_SetTable00(tolua_S);
+ return tolua_coord_coord_script_Variable_SetTable00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: DebugString of class  coord::script::Reflect */
-#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Reflect_DebugString00
-static int tolua_coord_coord_script_Reflect_DebugString00(lua_State* tolua_S)
+/* method: DebugString of class  coord::script::Variable */
+#ifndef TOLUA_DISABLE_tolua_coord_coord_script_Variable_DebugString00
+static int tolua_coord_coord_script_Variable_DebugString00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
-     !tolua_isusertype(tolua_S,1,"coord::script::Reflect",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,1,"coord::script::Variable",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,2,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  coord::script::Reflect* self = (coord::script::Reflect*)  tolua_tousertype(tolua_S,1,0);
+  coord::script::Variable* self = (coord::script::Variable*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'DebugString'",NULL);
 #endif
@@ -5330,8 +5330,8 @@ static int tolua_coord_coord_Argument_GetTable00(lua_State* tolua_S)
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetTable'",NULL);
 #endif
   {
-   coord::script::Reflect& tolua_ret = (coord::script::Reflect&)  self->GetTable(index);
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"coord::script::Reflect");
+   coord::script::Variable& tolua_ret = (coord::script::Variable&)  self->GetTable(index);
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"coord::script::Variable");
   }
  }
  return 1;
@@ -19563,20 +19563,20 @@ TOLUA_API int tolua_coord_open (lua_State* tolua_S)
    tolua_module(tolua_S,"script",0);
    tolua_beginmodule(tolua_S,"script");
     #ifdef __cplusplus
-    tolua_cclass(tolua_S,"Reflect","coord::script::Reflect","coordx::RcObject",tolua_collect_coord__script__Reflect);
+    tolua_cclass(tolua_S,"Variable","coord::script::Variable","coordx::RcObject",tolua_collect_coord__script__Variable);
     #else
-    tolua_cclass(tolua_S,"Reflect","coord::script::Reflect","coordx::RcObject",NULL);
+    tolua_cclass(tolua_S,"Variable","coord::script::Variable","coordx::RcObject",NULL);
     #endif
-    tolua_beginmodule(tolua_S,"Reflect");
-     tolua_function(tolua_S,"SetBool",tolua_coord_coord_script_Reflect_SetBool00);
-     tolua_function(tolua_S,"SetString",tolua_coord_coord_script_Reflect_SetString00);
-     tolua_function(tolua_S,"SetNumber",tolua_coord_coord_script_Reflect_SetNumber00);
-     tolua_function(tolua_S,"SetTable",tolua_coord_coord_script_Reflect_SetTable00);
-     tolua_function(tolua_S,"SetBool",tolua_coord_coord_script_Reflect_SetBool01);
-     tolua_function(tolua_S,"SetString",tolua_coord_coord_script_Reflect_SetString01);
-     tolua_function(tolua_S,"SetNumber",tolua_coord_coord_script_Reflect_SetNumber01);
-     tolua_function(tolua_S,"SetTable",tolua_coord_coord_script_Reflect_SetTable01);
-     tolua_function(tolua_S,"DebugString",tolua_coord_coord_script_Reflect_DebugString00);
+    tolua_beginmodule(tolua_S,"Variable");
+     tolua_function(tolua_S,"SetBool",tolua_coord_coord_script_Variable_SetBool00);
+     tolua_function(tolua_S,"SetString",tolua_coord_coord_script_Variable_SetString00);
+     tolua_function(tolua_S,"SetNumber",tolua_coord_coord_script_Variable_SetNumber00);
+     tolua_function(tolua_S,"SetTable",tolua_coord_coord_script_Variable_SetTable00);
+     tolua_function(tolua_S,"SetBool",tolua_coord_coord_script_Variable_SetBool01);
+     tolua_function(tolua_S,"SetString",tolua_coord_coord_script_Variable_SetString01);
+     tolua_function(tolua_S,"SetNumber",tolua_coord_coord_script_Variable_SetNumber01);
+     tolua_function(tolua_S,"SetTable",tolua_coord_coord_script_Variable_SetTable01);
+     tolua_function(tolua_S,"DebugString",tolua_coord_coord_script_Variable_DebugString00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

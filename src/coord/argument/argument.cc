@@ -64,8 +64,8 @@ protobuf::MessageRef& Argument::GetProto(size_t index) {
     return this->argv[index]->proto;
 }
 
-script::Reflect& Argument::GetTable(size_t index) {
-    static thread_local script::Reflect nullPtr(this->coord);
+script::Variable& Argument::GetTable(size_t index) {
+    static thread_local script::Variable nullPtr(this->coord);
     if (index < 0 || index >= this->argv.size()) {
         return nullPtr;
     }
@@ -114,7 +114,7 @@ int Argument::AddProto(const protobuf::MessageRef& proto) {
     return 0;
 }
 
-int Argument::AddTable(script::Reflect& table) {
+int Argument::AddTable(script::Variable& table) {
     argument_item* arg = new argument_item(this->coord);
     this->argv.push_back(arg);
     arg->type = ArgumentTypeTable;
@@ -126,7 +126,7 @@ int Argument::AddTable(int ref, int type) {
     argument_item* arg = new argument_item(this->coord);
     this->argv.push_back(arg);
     arg->type = ArgumentTypeTable;
-    script::Reflect table(this->coord, ref, type);
+    script::Variable table(this->coord, ref, type);
     arg->table = table;
     return 0;
 }
@@ -200,7 +200,7 @@ int Argument::Parse(byte_slice& data) {
             if (len == 0) {
                 return -3;
             }
-            auto table = this->coord->Script->NewReflect();
+            auto table = this->coord->Script->NewVariable();
             int err = table.Decode(offset, end - offset);
             if (err) {
                 return -2;

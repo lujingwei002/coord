@@ -103,7 +103,7 @@ Argument* internal_response::Args() {
     return argv;
 }
 
-script::Reflect& internal_response::Table() {
+script::Variable& internal_response::Table() {
     this->DataType = base_message_data_type_table;
     return this->table;
 }
@@ -116,7 +116,7 @@ int internal_response::Table(lua_State* L) {
         lua_pushinteger(L, -1);
         return 1;
     }
-    this->table = script::Reflect(this->coord, ref, type);
+    this->table = script::Variable(this->coord, ref, type);
     lua_pushinteger(L, 0);
     this->DataType = base_message_data_type_table;
     return 1;
