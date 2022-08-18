@@ -36,12 +36,15 @@ Message::~Message() {
     this->message = nullptr;
 }
 
-int Message::CopyFrom(Message* other) {
-    if (this->message == nullptr || other == nullptr || other->message == nullptr) {
+int Message::CopyFrom(const MessageRef& other) {
+    if (other == nullptr) {
         return -1;
     }
     google::protobuf::Message* message = this->message;
-    google::protobuf::Message* otherMessage = other->message;
+    google::protobuf::Message* otherMessage = other->GetMessage();
+    if (this->message == nullptr || otherMessage == nullptr) {
+        return -1;
+    }
     if(message->GetDescriptor() != otherMessage->GetDescriptor()){
         this->coord->CoreLogError("[Message] CopyFrom fail, this=%s, from=%s", message->GetTypeName().data(), otherMessage->GetTypeName().data());
         return -1;
@@ -51,12 +54,15 @@ int Message::CopyFrom(Message* other) {
     return 0;
 }
 
-int Message::MergeFrom(Message* other) {
-    if (this->message == nullptr || other == nullptr || other->message == nullptr) {
+int Message::MergeFrom(const MessageRef& other) {
+    if (other == nullptr) {
         return -1;
     }
     google::protobuf::Message* message = this->message;
-    google::protobuf::Message* otherMessage = other->message;
+    google::protobuf::Message* otherMessage = other->GetMessage();
+    if (this->message == nullptr || otherMessage == nullptr) {
+        return -1;
+    }
     if(message->GetDescriptor() != otherMessage->GetDescriptor()){
         this->coord->CoreLogError("[Message] MergeFrom fail, this=%s, from=%s", message->GetTypeName().data(), otherMessage->GetTypeName().data());
         return -1;
@@ -437,6 +443,7 @@ bool Message::SetString(const char* fieldName, const char* value) {
         this->coord->CoreLogError("[Message] SetString fail, message='%s', field='%s', error='type unknown'", descriptor->full_name().c_str(), fieldName);
         return false;
     }
+    printf("set string %p %s\n", message, value);
     reflection->SetString(message, field, value);
     return true;
 }
@@ -780,7 +787,9 @@ const char* Message::DebugString() {
         return nullptr;
     }
     google::protobuf::Message* message = this->message;
-    return message->DebugString().data();
+    static thread_local std::string str;
+    str = message->DebugString();
+    return str.data();
 }
 
 const char* Message::ShortDebugString() {
@@ -788,7 +797,9 @@ const char* Message::ShortDebugString() {
         return nullptr;
     }
     google::protobuf::Message* message = this->message;
-    return message->ShortDebugString().data();
+    static thread_local std::string str;
+    str = message->ShortDebugString();
+    return str.data();
 }
 
 }}

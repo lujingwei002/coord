@@ -9,8 +9,6 @@
 namespace coord {
 namespace protobuf {
 
-CC_IMPLEMENT(share_ptr, "coord::protobuf::share_ptr")
-
 void my_multi_file_error_collector::AddError(const std::string& fileName, int line, int column, const std::string & message) {
     // std::cout << line << ":" << column << " " << message << std::endl;
     coorda->CoreLogError("[Proto] my_multi_file_error_collector, file='%s', line=%d, column=%d, error='%s'\n", fileName.c_str(), line, column, message.c_str());
@@ -42,26 +40,6 @@ int CopyFrom(google::protobuf::Message* to, google::protobuf::Message* from) {
     to->CopyFrom(*from);
     return 0;
 } 
-
-share_ptr::share_ptr(google::protobuf::Message* message) {
-    this->message = message;
-    this->descriptor = message->GetDescriptor();
-    this->reflection = message->GetReflection();
-    this->ref = 0;
-    this->owner = true;
-}
-
-share_ptr::~share_ptr(){
-    if(this->owner && this->message){
-        delete this->message;
-    } 
-    this->message = nullptr;
-}
-
-Protobuf* newProtobuf(Coord* coord) {
-    Protobuf* self = new Protobuf(coord);
-    return self; 
-}
 
 Protobuf::Protobuf(Coord* coord) : coord(coord) {
     this->sourceTree = new google::protobuf::compiler::DiskSourceTree();

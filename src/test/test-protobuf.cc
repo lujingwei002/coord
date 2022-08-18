@@ -30,8 +30,6 @@ TEST_F(TestProtobuf, Basic) {
     auto user = this->coord->Proto->NewMessage("test.User");
     ASSERT_NE(user, nullptr);
     user->SetString("nickname", "ljw");
-    printf("fffaaa %s\n", user->GetString("nickname"));
-    printf("fffaaa %s\n", user->DebugString());
     auto itemArr = user->GetRepeat("itemArr");
     ASSERT_NE(itemArr, nullptr);
     auto item1 = itemArr->AddMessage();
@@ -39,9 +37,7 @@ TEST_F(TestProtobuf, Basic) {
     auto item2 = itemArr->AddMessage();
     item2->SetNumber("count", 333);
     ASSERT_EQ(itemArr->Count(), 2);
-    printf("fffaaa %s\n", user->ShortDebugString());
-
-    ASSERT_STREQ(user->ShortDebugString(), R"(xxx)");
+    ASSERT_STREQ(user->ShortDebugString(), R"(nickname: "ljw" itemArr { id: 100 } itemArr { count: 333 })");
 }
 
 TEST_F(TestProtobuf, Import) {
@@ -49,3 +45,19 @@ TEST_F(TestProtobuf, Import) {
     ASSERT_NE(err, 0);
 }
 
+
+TEST_F(TestProtobuf, Serialize) {
+    auto user1 = this->coord->Proto->NewMessage("test.User");
+    ASSERT_NE(user1, nullptr);
+    user1->SetString("nickname", "ljw");
+
+    coord::byte_slice buffer;
+    int err = user1->Serialize(buffer);
+    ASSERT_EQ(err, 0);
+
+    auto user2 = this->coord->Proto->NewMessage("test.User");
+    err = user2->ParseFrom(buffer);
+    ASSERT_EQ(err, 0);
+
+    ASSERT_EQ(user1->ByteSize(), user2->ByteSize());
+}

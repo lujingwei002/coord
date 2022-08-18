@@ -38,12 +38,22 @@ bool RepeatMessage::Clear() {
     return true;
 } 
 
-bool RepeatMessage::MergeFrom(RepeatMessage* other) {
-    if (this->message == nullptr || other == nullptr || other->message == nullptr) {
+google::protobuf::Message* RepeatMessage::GetMessage() {
+    if (this->message == nullptr) {
+        return nullptr;
+    }
+    return this->message;
+}
+
+bool RepeatMessage::MergeFrom(RepeatMessageRef other) {
+    if (other == nullptr) {
         return false;
     }
     google::protobuf::Message* message = this->message;
-    google::protobuf::Message* otherMessage = other->message;
+    google::protobuf::Message* otherMessage = other->GetMessage();
+    if (message == nullptr || otherMessage == nullptr) {
+        return false;
+    }
     const google::protobuf::Reflection* reflection = this->reflection;
     const google::protobuf::Reflection* otherReflection = other->reflection;
     int count = otherReflection->FieldSize(*otherMessage, other->field);

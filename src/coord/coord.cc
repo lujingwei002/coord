@@ -454,7 +454,7 @@ namespace coord {
         this->Running = new coord::run::Running(this);
         this->sceneMgr = newSceneMgr(this);     
         this->Event = event::newEventMgr(this);        
-        this->Proto = protobuf::newProtobuf(this);
+        this->Proto = new protobuf::Protobuf(this);
         this->Timer = timer::newTimerMgr(this);
         this->sqlMgr = sql::newSQLMgr(this);
         this->RedisMgr = new redis::RedisMgr(this);
