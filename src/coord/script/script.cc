@@ -129,6 +129,26 @@ int Script::SetNil(const char* name) {
     return 0;
 }
 
+int lua_pushany(lua_State* L, const std::any& value) {
+    if (value.type() == typeid(int)) {
+        lua_pushinteger(L, std::any_cast<int>(value));
+        return 0;
+    } else if (value.type() == typeid(const char*)) {
+        lua_pushstring(L, std::any_cast<const char*>(value));
+        return 0;
+    } else if (value.type() == typeid(bool)) {
+        lua_pushboolean(L, std::any_cast<bool>(value));
+        return 0;
+    } else if (value.type() == typeid(std::nullptr_t)) {
+        lua_pushnil(L);
+        return 0;
+    } else {
+        lua_pushnil(L);
+        return 0;
+    }
+    return 1;
+}
+
 int Script::SetTable(const char* name) {
     lua_State* L = this->L;
     const char* key = this->getTableAndKey(L, name);
@@ -157,15 +177,9 @@ int Script::SetTable(const char* name, const std::initializer_list<std::any>& va
         lua_newtable(L);
         int index = 1;
         for (const auto& v : value) {
-            if (v.type() == typeid(int)) {
-                lua_pushinteger(L, index);
-                lua_pushinteger(L, std::any_cast<int>(v));
-                lua_settable(L, -3);
-            } else if (v.type() == typeid(const char*)) {
-                lua_pushinteger(L, index);
-                lua_pushstring(L, std::any_cast<const char*>(v));
-                lua_settable(L, -3);
-            }
+            lua_pushinteger(L, index);
+            lua_pushany(L, v);
+            lua_settable(L, -3);
             index++;
         }
         lua_setglobal(L, key); 
@@ -174,15 +188,9 @@ int Script::SetTable(const char* name, const std::initializer_list<std::any>& va
         lua_newtable(L);
         int index = 1;
         for (const auto& v : value) {
-            if (v.type() == typeid(int)) {
-                lua_pushinteger(L, index);
-                lua_pushinteger(L, std::any_cast<int>(v));
-                lua_settable(L, -3);
-            } else if (v.type() == typeid(const char*)) {
-                lua_pushinteger(L, index);
-                lua_pushstring(L, std::any_cast<const char*>(v));
-                lua_settable(L, -3);
-            }
+            lua_pushinteger(L, index);
+            lua_pushany(L, v);
+            lua_settable(L, -3);
             index++;
         }
         lua_settable(L, -3);

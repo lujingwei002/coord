@@ -78,6 +78,74 @@ bool Reflect::operator!= (std::nullptr_t v) const  {
     return this->ref != LUA_NOREF;
 }
 
+Reflect& Reflect::operator=(std::nullptr_t) {
+    lua_State* L = this->coord->Script->L;
+    if (this->ref != LUA_NOREF) {
+        luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
+        this->ref = LUA_NOREF;
+        this->type = LUA_TNIL;
+    }
+    this->ref = LUA_NOREF;
+    this->type = LUA_TNIL;
+    return *this;
+}
+
+Reflect& Reflect::operator=(const std::any& value) {
+    lua_State* L = this->coord->Script->L;
+    if (this->ref != LUA_NOREF) {
+        luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
+        this->ref = LUA_NOREF;
+        this->type = LUA_TNIL;
+    }
+    lua_pushany(L, value);
+    this->ref = luaL_ref(L, LUA_REGISTRYINDEX);
+    this->type = LUA_TNUMBER;
+    return *this;
+}
+
+Reflect& Reflect::operator=(const std::initializer_list<std::tuple<std::any, std::any>>& value) {
+    lua_State* L = this->coord->Script->L;
+    if (this->ref != LUA_NOREF) {
+        luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
+        this->ref = LUA_NOREF;
+        this->type = LUA_TNIL;
+    }
+    lua_newtable(L);
+    int index = 1;
+    for (const auto& v : value) {
+        const auto& v1 = std::get<0>(v);
+        const auto& v2 = std::get<1>(v);
+        lua_pushany(L, v1);
+        lua_pushany(L, v2);
+        lua_settable(L, -3);
+        index++;
+    }
+    this->ref = luaL_ref(L, LUA_REGISTRYINDEX);
+    this->type = LUA_TNUMBER;
+    return *this;
+    return *this;
+}
+
+/*Reflect& Reflect::operator=(const std::initializer_list<std::any>& value) {
+    lua_State* L = this->coord->Script->L;
+    if (this->ref != LUA_NOREF) {
+        luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
+        this->ref = LUA_NOREF;
+        this->type = LUA_TNIL;
+    }
+    lua_newtable(L);
+    int index = 1;
+    for (const auto& v : value) {
+        lua_pushinteger(L, index);
+        lua_pushany(L, v);
+        lua_settable(L, -3);
+        index++;
+    }
+    this->ref = luaL_ref(L, LUA_REGISTRYINDEX);
+    this->type = LUA_TNUMBER;
+    return *this;
+}*/
+
 int Reflect::SetTable() {
     lua_State* L = this->coord->Script->L;
     if (this->ref != LUA_NOREF) {
@@ -91,56 +159,6 @@ int Reflect::SetTable() {
     return 0;
 }
 
-int Reflect::SetString(const char* value) {
-    lua_State* L = this->coord->Script->L;
-    if (this->ref != LUA_NOREF) {
-        luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_NOREF;
-        this->type = LUA_TNIL;
-    }
-    lua_pushstring(L, value);
-    this->ref = luaL_ref(L, LUA_REGISTRYINDEX);
-    this->type = LUA_TSTRING;
-    return 0;
-}
-
-int Reflect::SetNumber(lua_Number value) {
-    lua_State* L = this->coord->Script->L;
-    if (this->ref != LUA_NOREF) {
-        luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_NOREF;
-        this->type = LUA_TNIL;
-    }
-    lua_pushnumber(L, value);
-    this->ref = luaL_ref(L, LUA_REGISTRYINDEX);
-    this->type = LUA_TNUMBER;
-    return 0;
-}
-
-int Reflect::SetBool(bool value) {
-    lua_State* L = this->coord->Script->L;
-   if (this->ref != LUA_NOREF) {
-        luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_NOREF;
-        this->type = LUA_TNIL;
-    }
-    lua_pushboolean(L, value);
-    this->ref = luaL_ref(L, LUA_REGISTRYINDEX);
-    this->type = LUA_TNUMBER;
-    return 0;
-}
-
-int Reflect::SetNil() {
-    lua_State* L = this->coord->Script->L;
-    if (this->ref != LUA_NOREF) {
-        luaL_unref(L, LUA_REGISTRYINDEX, this->ref);
-        this->ref = LUA_NOREF;
-        this->type = LUA_TNIL;
-    }
-    this->ref = LUA_NOREF;
-    this->type = LUA_TNIL;
-    return 0;
-}
 
 const char* Reflect::DebugString() {
     lua_State* L = this->coord->Script->L;

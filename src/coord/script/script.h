@@ -51,6 +51,7 @@ private:
     void gc();
     int onReload();
     lua_State* getThread(); 
+    
 private:
     Coord*          coord;
     std::string     lastError;
@@ -105,7 +106,6 @@ public:
     Reflect NewVariable(const char *name);
     Reflect NewVariable(const char *name, const char* value);
     Reflect GetVariable(const char *name);
-
 
     int TraceStack(); 
 
@@ -178,6 +178,9 @@ public:
     lua_State*      L;
 }; //tolua_export
 
+
+
+int lua_pushany(lua_State* L, const std::any& value);
 
 }//tolua_export
 } //tolua_export

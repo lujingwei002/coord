@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <string>
 #include <cstddef>
+#include <any>
 extern "C" {
 #include <lua/lua.h>
 #include <lua/lualib.h>
@@ -39,11 +40,11 @@ public:
     const char* GetString();
 
     /// #self.set operation
+    Reflect& operator=(const std::any& other);
+    Reflect& operator=(std::nullptr_t);
+   // Reflect& operator=(const std::initializer_list<std::any>& value);
+     Reflect& operator=(const std::initializer_list<std::tuple<std::any, std::any>>& value);
     int SetTable();
-    int SetString(const char* value);
-    int SetNumber(lua_Number value);
-    int SetBool(bool value);
-    int SetNil();
 
     /// #table.get operation
     bool GetBool(const char* key);

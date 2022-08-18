@@ -1,6 +1,6 @@
 /*
 ** Lua binding: coord
-** Generated automatically by tolua++-1.0.92 on Wed Aug 17 23:42:14 2022.
+** Generated automatically by tolua++-1.0.92 on Thu Aug 18 13:13:56 2022.
 */
 
 #ifndef __cplusplus

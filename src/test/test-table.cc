@@ -57,16 +57,36 @@ TEST_F(TestTable, TestReflectSetGet) {
     // _G.aa.bb = {1, 2} 
     this->coord->Script->SetGlobal("aa.user1", {1, "2"});
 
-    // // local user1 = _G.aa.bb
+    // local user1 = _G.aa.bb
     auto user1 = this->coord->Script->GetVariable("aa.user1");
-    printf("fffff %s\n", user1.ShortDebugString());
-
-    // _G.aa.bb = {1, 2} 
+    ASSERT_STREQ(user1.ShortDebugString(), "{[1]=1.000000,[2]='2',}");
+    // _G.aa.bb = {} 
     this->coord->Script->SetGlobal("aa.user2", {});
 
-    // // local user1 = _G.aa.bb
+    // local user2 = _G.aa.bb
     auto user2 = this->coord->Script->GetVariable("aa.user2");
-    printf("fffff %s\n", user2.ShortDebugString());
+    ASSERT_STREQ(user2.ShortDebugString(), "{}");
+    ASSERT_TRUE(user2.IsTable());
+    // user2 = 123
+    user2 = 123;
+    printf("fff %s\n", user2.ShortDebugString());
+    // user2 = 'abc'
+    user2 = "abc";
+    printf("fff %s\n", user2.ShortDebugString());
+    // user2 = true
+    user2 = true;
+    printf("fff %s\n", user2.ShortDebugString());
+    // user2 = nil
+    user2 = nullptr;
+    printf("fff %s\n", user2.ShortDebugString());
+    // user2 = {}
+    user2 = {};
+    printf("fff %s\n", user2.ShortDebugString());
+    user2 = {{1, "2"}};
+    printf("fff %s\n", user2.ShortDebugString());
+    user2 = {{1, "2"}, {"2", "3"}};
+   // user2 = {1, "2"};
+    printf("fff %s\n", user2.ShortDebugString());
 }
 
 TEST_F(TestTable, TestReflectSerialize) {
