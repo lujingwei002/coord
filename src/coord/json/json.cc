@@ -5,7 +5,6 @@ namespace json {
 
 CC_IMPLEMENT(Json, "coord::json::Json")
 
-
 Json::Json(Coord* coord) {
     this->coord = coord;
 }
@@ -17,14 +16,14 @@ Json::Json(Coord* coord, const json11::Json& object) : object(object) {
 Json::~Json() {
 }
 
-int Json::Encode(byte_slice& buffer) {
+int Json::Dump(byte_slice& buffer) {
     std::string result;
     this->object.dump(result);
     coordx::Append(buffer, result.data(), result.length());
     return 0;
 }
 
-int Json::Encode(std::string& buffer) {
+int Json::Dump(std::string& buffer) {
     this->object.dump(buffer);
     return 0;
 }

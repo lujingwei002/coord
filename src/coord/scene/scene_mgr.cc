@@ -71,7 +71,7 @@ Scene* SceneMgr::loadSceneInternal(const char* filePath) {
     }
     std::string str((std::istreambuf_iterator<char>(ifile)),  
     std::istreambuf_iterator<char>());
-    auto json = this->coord->Json->Decode(str);
+    auto json = this->coord->Json->Parse(str);
     if (json == nullptr) {
         return nullptr;
     }

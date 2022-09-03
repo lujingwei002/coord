@@ -252,7 +252,6 @@ function owner_move(ptr)
 end
 
 function _main_()
-    print('cccccccccccccccccccaaa')
     --coorda:CoreLogDebug(coorda.Script.Path)
     --环境初始化
     script.package = {}

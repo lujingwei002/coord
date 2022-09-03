@@ -91,7 +91,7 @@ script::Variable& base_reader::Table() {
 }
 
 json::JsonRef base_reader::Json() {
-    return this->coord->Json->Decode(this->payload.Data());
+    return this->coord->Json->Parse(this->payload.Data());
 }
 
 }

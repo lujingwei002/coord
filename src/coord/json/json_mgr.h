@@ -14,7 +14,7 @@ extern "C"
 
 /// ```c++
 ///
-/// auto json = coorda->Json->Decode(R"({"nickname":"ljw"})");
+/// auto json = coorda->Json->Parse(R"({"nickname":"ljw"})");
 /// json.GetString("nickname");
 ///
 /// auto object = coorda->Json->NewObject();
@@ -49,6 +49,14 @@ private:
 
 
 public:
+    /// 创建JSON空值
+    ///
+    /// ```
+    /// null
+    /// ```
+    ///
+    JsonRef NewNull();                              //tolua_export
+
     /// 创建JSON字符串 
     ///
     /// ```
@@ -72,14 +80,6 @@ public:
     /// ```
     ///
     JsonRef NewArray();                             //tolua_export
-
-    /// 创建JSON空值
-    ///
-    /// ```
-    /// null
-    /// ```
-    ///
-    JsonRef NewNull();                              //tolua_export
 
     /// 创建JSON布尔值
     ///
@@ -106,16 +106,16 @@ public:
     JsonRef NewNumber(double value);                //tolua_export
 
     /// 将字节流中解析成JSON对象
-    JsonRef Decode(const char* data);
+    JsonRef Parse(const char* data);
 
     /// 将字节流中解析成JSON对象
-    JsonRef Decode(std::string& data);
+    JsonRef Parse(const std::string& data);
 
     /// 将JSON对象序列化成字节流
-    int Encode(JsonRef& json, byte_slice& buffer);
+    int Dump(JsonRef& json, byte_slice& buffer);
 
     /// 将JSON对象序列化成字节流
-    int Encode(JsonRef& json, std::string& buffer);
+    int Dump(JsonRef& json, std::string& buffer);
 };//tolua_export
 
 

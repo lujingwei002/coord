@@ -102,7 +102,7 @@ void HttpRouter::recvHttpRequest(HttpRequest* request) {
 
 void HttpRouter::Trace() {
     for(auto const& it : this->methodDict){
-        for(auto const it1 : it.second) {
+        for(auto const& it1 : it.second) {
             this->trace(it.first.c_str(), it1.second);
         }
     }

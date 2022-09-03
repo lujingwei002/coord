@@ -45,7 +45,7 @@ static void bench_json_object_tostring(benchmark::State& state) {
 
 static void bench_json_object_decode(benchmark::State& state) {
     for (auto _: state) { 
-        auto json = coorda->Json->Decode(R"({"b":{"d":1,"c":"hello","t":{"nickname":"lj\nw","score":100,"avatar":"xx"}}})"); 
+        auto json = coorda->Json->Parse(R"({"b":{"d":1,"c":"hello","t":{"nickname":"lj\nw","score":100,"avatar":"xx"}}})"); 
     }
 }
 

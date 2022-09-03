@@ -123,8 +123,8 @@ public:
 
    
 
-    int Encode(byte_slice& buffer);
-    int Encode(std::string& buffer);
+    int Dump(byte_slice& buffer);
+    int Dump(std::string& buffer);
     const char* ToString();                             //tolua_export    
 };//tolua_export
 

@@ -93,32 +93,32 @@ JsonRef JsonMgr::NewNumber(double value){
     return new Json(this->coord, json);
 }
 
-JsonRef JsonMgr::Decode(const char* data){
+JsonRef JsonMgr::Parse(const char* data){
     std::string err;
     json11::Json json = json11::Json::parse(data, err);
     if (err.length() > 0) {
-        this->coord->CoreLogError("[JsonMgr] Decode failed, error=%s", err.c_str());
-        return nullptr;
+        this->coord->CoreLogError("[JsonMgr] Parse failed, error=%s", err.c_str());
+        return JsonRef::NullPtr;
     }
     return new Json(this->coord, json);
 }
 
-JsonRef JsonMgr::Decode(std::string& data){
+JsonRef JsonMgr::Parse(const std::string& data){
     std::string err;
     json11::Json json = json11::Json::parse(data, err);
     if (err.length() > 0) {
-        this->coord->CoreLogError("[JsonMgr] Decode failed, error=%s", err.c_str());
-        return nullptr;
+        this->coord->CoreLogError("[JsonMgr] Parse failed, error=%s", err.c_str());
+        return JsonRef::NullPtr;
     }
     return new Json(this->coord, json);
 }
 
-int Encode(JsonRef& json, byte_slice& buffer) {
-    return json->Encode(buffer);
+int JsonMgr::Dump(JsonRef& json, byte_slice& buffer) {
+    return json->Dump(buffer);
 }
 
-int Encode(JsonRef& json, std::string& buffer) {
-    return json->Encode(buffer);
+int JsonMgr::Dump(JsonRef& json, std::string& buffer) {
+    return json->Dump(buffer);
 }
 
 }

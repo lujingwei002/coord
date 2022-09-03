@@ -7,7 +7,7 @@ namespace coord {
 
 class NotImplementException {
 public:
-    NotImplementException(const char* msg):msg(msg){
+    NotImplementException(const std::string& msg):msg(msg){
     }
     const char* What() const {
         return this->msg.c_str();
@@ -18,7 +18,7 @@ private:
 
 class NotConfigException {
 public:
-    NotConfigException(const char* msg):msg(msg){
+    NotConfigException(const std::string& msg):msg(msg){
     }
     const char* What() const {
         return this->msg.c_str();
@@ -29,7 +29,7 @@ private:
 
 class ScriptException {
 public:
-    ScriptException(const char* msg):msg(msg){
+    ScriptException(const std::string& msg):msg(msg){
     }
     const char* What() const {
         return this->msg.c_str();
@@ -41,7 +41,7 @@ private:
 
 class ArgumentException {
 public:
-    ArgumentException(const char* msg):msg(msg){
+    ArgumentException(const std::string& msg):msg(msg){
     }
     const char* What() const {
         return this->msg.c_str();
