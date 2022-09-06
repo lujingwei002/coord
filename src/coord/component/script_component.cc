@@ -26,7 +26,7 @@
 #include <typeinfo>       // operator typeid
 namespace coord {
 
-CC_IMPLEMENT(ScriptComponent, "coord::ScriptComponent")
+RC_IMPLEMENT(ScriptComponent, "coord::ScriptComponent")
 
 
 ScriptComponent::ScriptComponent(Coord* coord, const char* scriptName, int ref) : Component(coord) {

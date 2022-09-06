@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
-
+#include "coord/memory/type.h"
 #include "coord/protobuf/init.h"
 #include <uv.h>
 #include <vector>
@@ -24,7 +24,7 @@ namespace sql {//tolua_export
 
 class SQLConnection;
 
-class sql_rows : public coordx::RcObject {
+class sql_rows : public coord::RcObject {
 public:
     sql_rows(Coord *coord);
     virtual ~sql_rows();                                     
@@ -45,8 +45,8 @@ public:
     int     ref;
 };
 
-class SQLRows : public coordx::RcObject {//tolua_export
-CC_CLASS(SQLRows);
+class SQLRows : public coord::RcObject {//tolua_export
+RC_CLASS(SQLRows);
 public:
     SQLRows(Coord* coord, sql_rows* rows);
     SQLRows(Coord* coord);    

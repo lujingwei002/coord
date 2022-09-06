@@ -22,7 +22,7 @@ namespace coord {//tolua_export
 namespace managed {//tolua_export
 
 class ManagedRouter : public base_router<ManagedRequest, ManagedNotify, ManagedResponse> { //tolua_export
-CC_CLASS(ManagedRouter);
+RC_CLASS(ManagedRouter);
 friend managed::Managed;
 private:
     ManagedRouter(Coord *coord, Managed* managed);

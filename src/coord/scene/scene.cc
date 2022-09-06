@@ -8,7 +8,7 @@
 
 namespace coord {
 
-CC_IMPLEMENT(Scene, "coord::Scene")
+RC_IMPLEMENT(Scene, "coord::Scene")
 
 Scene *newScene(Coord* coord, SceneMgr *sceneMgr) {
     Scene *scene = new Scene(coord, sceneMgr);

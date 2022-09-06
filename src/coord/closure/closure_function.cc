@@ -5,7 +5,7 @@
 namespace coord {
 namespace closure {
 
-CC_IMPLEMENT(closure_function, "coord::closure::closure_function")
+RC_IMPLEMENT(closure_function, "coord::closure::closure_function")
 
 closure_function::closure_function(Coord* coord, Closure* closure, Function func) : closure_action(coord, closure) {
     this->func = func;

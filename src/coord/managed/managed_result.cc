@@ -4,7 +4,7 @@
 namespace coord {
 namespace managed {
 
-CC_IMPLEMENT(ManagedResult, "coord::managed::ManagedResult")
+RC_IMPLEMENT(ManagedResult, "coord::managed::ManagedResult")
 
 ManagedResult::ManagedResult(Coord* coord) : base_result(coord) {
 }

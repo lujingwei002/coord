@@ -24,7 +24,7 @@ typedef std::function<void ()> CronFunc;
 class TimerMgr;
 
 class timer {
-CC_CLASS(timer);
+RC_CLASS(timer);
 public:
     timer(Coord *coord, TimerMgr* timerMgr);
     virtual ~timer();
@@ -43,7 +43,7 @@ public:
 };
 
 class cron {
-CC_CLASS(cron);
+RC_CLASS(cron);
 public:
     cron(Coord *coord, TimerMgr* timerMgr);
     virtual ~cron();

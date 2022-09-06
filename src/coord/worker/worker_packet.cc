@@ -4,7 +4,7 @@
 namespace coord {
 
 namespace worker {
-CC_IMPLEMENT(worker_packet, "coord::worker::worker_packet")
+RC_IMPLEMENT(worker_packet, "coord::worker::worker_packet")
 
 worker_packet* newWorkerPacket(Coord* coord) {
     worker_packet* packet = new worker_packet(coord);

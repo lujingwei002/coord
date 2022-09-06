@@ -63,7 +63,7 @@ public:
 };//tolua_export
 
 class base_reader { //tolua_export
-CC_CLASS(base_reader);
+RC_CLASS(base_reader);
 public:
     base_reader(Coord* coord);
     virtual ~base_reader();

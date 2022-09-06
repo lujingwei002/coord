@@ -87,6 +87,8 @@ public:
     /// 环境变量字典
     std::map<std::string, std::string> Variables;
 
+    std::string LoggerPriority;
+    std::string CoreLoggerPriority;
     uv_pid_t    Pid;
 private:
     int main(const Argv& argv);

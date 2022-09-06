@@ -8,7 +8,7 @@
 namespace coord {
 namespace web {
 
-CC_IMPLEMENT(WebServer, "coord::web::WebServer")
+RC_IMPLEMENT(WebServer, "coord::web::WebServer")
 
 
 

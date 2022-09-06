@@ -6,7 +6,7 @@
 namespace coord {
 namespace sql {
 
-CC_IMPLEMENT(SQLClient, "coord::sql::SQLClient")
+RC_IMPLEMENT(SQLClient, "coord::sql::SQLClient")
 
 
 SQLClient::SQLClient(Coord *coord) {

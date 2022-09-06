@@ -8,7 +8,7 @@
 namespace coord {
 namespace pipe {
 
-CC_IMPLEMENT(PipeListener, "coord::pipe::PipeListener")
+RC_IMPLEMENT(PipeListener, "coord::pipe::PipeListener")
 
 /// 状态
 enum pipe_listener_status {

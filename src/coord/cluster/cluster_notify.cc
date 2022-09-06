@@ -8,7 +8,7 @@
 namespace coord {
 
 namespace cluster {
-CC_IMPLEMENT(GateNotify, "coord::cluster::GateNotify")
+RC_IMPLEMENT(GateNotify, "coord::cluster::GateNotify")
 
 GateNotify* newNotify(Coord* coord, cluster_agent* agent) {
     GateNotify* notify = new GateNotify(coord, agent);

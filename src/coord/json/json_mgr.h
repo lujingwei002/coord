@@ -31,7 +31,7 @@ namespace coord {//tolua_export
 namespace json {//tolua_export
 
 class JsonMgr { //tolua_export
-CC_CLASS(JsonMgr);
+COORD_CLASS(JsonMgr);
 friend class coord::Coord;
 friend class coord::script::Script;
 private:

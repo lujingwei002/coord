@@ -6,7 +6,7 @@
 namespace coord {//tolua_export
 class Coord;
 class Transform : public Component {//tolua_export
-CC_CLASS(Transform);
+RC_CLASS(Transform);
 
     public:
         Transform(Coord* coord);

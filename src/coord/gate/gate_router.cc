@@ -13,7 +13,7 @@
 namespace coord {
 namespace gate {
 
-CC_IMPLEMENT(GateRouter, "coord::gate::GateRouter")
+RC_IMPLEMENT(GateRouter, "coord::gate::GateRouter")
 
 GateRouter* newGateRouter(Coord* coord) {
     GateRouter* gateRouter = new GateRouter(coord);

@@ -7,7 +7,7 @@
 namespace coord {
 
 namespace closure {
-CC_IMPLEMENT(closure_if, "coord::closure::closure_if")
+RC_IMPLEMENT(closure_if, "coord::closure::closure_if")
 
 closure_if::closure_if(Coord* coord, Closure* closure, IfFunction func) : closure_sequence(coord, closure) {
     this->ifFunc = func;

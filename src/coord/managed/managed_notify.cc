@@ -7,7 +7,7 @@
 namespace coord {
 
 namespace managed {
-CC_IMPLEMENT(ManagedNotify, "coord::managed::ManagedNotify")
+RC_IMPLEMENT(ManagedNotify, "coord::managed::ManagedNotify")
 
 ManagedNotify::ManagedNotify(Coord* coord, ManagedAgent* agent) : base_notify(coord, agent) {
 }

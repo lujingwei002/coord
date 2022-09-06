@@ -1,12 +1,13 @@
 
 #pragma once 
+
 #include "coord/base/base_reader.h"
 
 namespace coord {//tolua_export
 
 class Coord;
 
-class base_result : public coordx::RcObject, public base_reader { //tolua_export
+class base_result : public coord::RcObject, public base_reader { //tolua_export
 public:
     base_result(Coord* coord);
     virtual ~base_result();

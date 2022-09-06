@@ -16,7 +16,7 @@ class Gate;
 class GateSession;
 
 class GateRequest : public base_request  { //tolua_export
-CC_CLASS(GateRequest);
+RC_CLASS(GateRequest);
 public:
     GateRequest(Coord* coord, GateAgent* agent);
     virtual ~GateRequest();

@@ -6,7 +6,7 @@ namespace coord {
 
 // 内置协议实现
 class internal_agent : public base_agent {
-CC_CLASS(internal_agent);
+RC_CLASS(internal_agent);
 protected:
     internal_agent(Coord *coord);
     virtual ~internal_agent();

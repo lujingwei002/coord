@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include <functional>
 #include <vector>
 
@@ -12,7 +13,7 @@ namespace closure {
 
 class Closure;
 
-class closure_action : public coordx::RcObject {
+class closure_action : public coord::RcObject {
 public:
     closure_action(Coord* coord, Closure* closure);
     virtual ~closure_action();

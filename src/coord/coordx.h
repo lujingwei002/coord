@@ -5,5 +5,4 @@
 
 namespace coord {
     typedef coordx::byte_slice byte_slice;
-    typedef coordx::Type Type;
 }

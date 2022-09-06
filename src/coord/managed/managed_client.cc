@@ -11,7 +11,7 @@
 namespace coord {
 namespace managed {
 
-CC_IMPLEMENT(ManagedClient, "coord::managed::ManagedClient")
+RC_IMPLEMENT(ManagedClient, "coord::managed::ManagedClient")
     
 ManagedClient::ManagedClient(Coord *coord, Managed* managed, const std::string& path, int ipc) : base_client(coord), path(path), ipc(ipc) {
     this->managed = managed;

@@ -1,5 +1,6 @@
 #pragma once 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/protobuf/declare.h"
 
 extern "C"
@@ -20,8 +21,8 @@ namespace protobuf {//tolua_export
 
 
 
-class Message: public coordx::RcObject {//tolua_export
-CC_CLASS(Message);
+class Message: public coord::RcObject {//tolua_export
+RC_CLASS(Message);
 friend RepeatMessage;
 friend Protobuf;
 private:

@@ -3,7 +3,7 @@
 namespace coord {
 namespace json {
 
-CC_IMPLEMENT(Json, "coord::json::Json")
+RC_IMPLEMENT(Json, "coord::json::Json")
 
 Json::Json(Coord* coord) {
     this->coord = coord;

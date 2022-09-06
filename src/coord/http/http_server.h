@@ -3,6 +3,7 @@
 
 #include "coord/net/tcp_listener.h"
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include <map>
 #include <string>
 #include <openssl/ssl.h>
@@ -52,8 +53,8 @@ public:
     bool            UseEtag;            //tolua_export
 };//tolua_export
 
-class HttpServer : public net::ITcpHandler, public coordx::RcObject {//tolua_export
-CC_CLASS(HttpServer);
+class HttpServer : public net::ITcpHandler, public coord::RcObject {//tolua_export
+RC_CLASS(HttpServer);
 friend Coord;
 friend HttpAgent;
 friend HttpRequest;

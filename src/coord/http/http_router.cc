@@ -10,7 +10,7 @@
 namespace coord {
 namespace http {
 
-CC_IMPLEMENT(HttpRouter, "coord::http::HttpRouter")
+RC_IMPLEMENT(HttpRouter, "coord::http::HttpRouter")
 
 
 HttpRouter::http_router_handler::http_router_handler(Coord* coord, const std::string& path, HttpRouter_RecvHttpRequest recvHttpRequestFunc, int ref) {

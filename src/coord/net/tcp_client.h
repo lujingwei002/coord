@@ -2,7 +2,7 @@
 
 
 #include "coord/coordx.h"
-#include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/net/recv_buffer.h"
 #include <uv.h>
 #include <string>
@@ -29,7 +29,7 @@ enum TcpClientStatus {
 };
 
 class TcpClient {//tolua_export
-CC_CLASS(TcpClient);
+RC_CLASS(TcpClient);
 public:
     TcpClient(Coord* coord);
     virtual ~TcpClient();

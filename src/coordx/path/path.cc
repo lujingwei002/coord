@@ -1,6 +1,6 @@
 #include "coordx/path/path.h"
 #include "coordx/reactor/reactor.h"
-#include "coordx/log/log.h"
+#include "coordx/log/print.h"
 #include <uv.h>
 #include <sys/file.h> // flock
 #include <sys/stat.h>
@@ -121,7 +121,7 @@ namespace coordx {
             uv_fs_t req;
             int err = uv_fs_realpath(&uvloop, &req, path.c_str(), nullptr);
             if (err) {
-                LOG_ERROR("RealPath failed, path=%s, error=%s", path.c_str(), uv_strerror(err));
+                Errorln("RealPath failed, path=%s, error=%s", path.c_str(), uv_strerror(err));
                 return err;
             }
             realPath.assign((char*)req.ptr);
@@ -161,7 +161,7 @@ namespace coordx {
             uv_fs_t req;
             int err = uv_fs_rmdir(&uvloop, &req, path.c_str(), nullptr);
             if (err) {
-                LOG_ERROR("RemoveDir failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
+                Errorln("RemoveDir failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
                 return err;
             }
             return 0;
@@ -171,7 +171,7 @@ namespace coordx {
             uv_fs_t req;
             int err = uv_fs_unlink(&uvloop, &req, path.c_str(), nullptr);
             if (err) {
-                LOG_ERROR("Unlink failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
+                Errorln("Unlink failed, path='%s', err='%s'", path.c_str(), uv_strerror(err));
                 return err;
             }
             return 0;

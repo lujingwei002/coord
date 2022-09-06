@@ -13,8 +13,8 @@ class Result;
 class Worker;
 
 typedef base_promise<Worker*, Result*> base_worker_promise;
-class Promise: public base_worker_promise, public coordx::RcObject { //tolua_export
-CC_CLASS(Promise);
+class Promise: public base_worker_promise, public coord::RcObject { //tolua_export
+RC_CLASS(Promise);
 public:
     Promise(Coord *coord);
     virtual ~Promise();

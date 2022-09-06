@@ -6,7 +6,7 @@
 #include "coord/coord.h"
 namespace coord {
 namespace http {
-CC_IMPLEMENT(HttpAgent, "coord::http::HttpAgent")
+RC_IMPLEMENT(HttpAgent, "coord::http::HttpAgent")
 
 HttpAgent::HttpAgent(Coord* coord, HttpServer* server, net::TcpAgent* tcpAgent) : base_agent(coord) {
     this->coord = coord;

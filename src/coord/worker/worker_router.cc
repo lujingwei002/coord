@@ -10,7 +10,7 @@
 
 namespace coord {
 namespace worker {
-CC_IMPLEMENT(WorkerRouter, "coord::worker::WorkerRouter")
+RC_IMPLEMENT(WorkerRouter, "coord::worker::WorkerRouter")
 
 WorkerRouter* newWorkerRouter(Coord* coord) {
     WorkerRouter* router = new WorkerRouter(coord);

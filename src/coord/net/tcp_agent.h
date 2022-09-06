@@ -2,7 +2,7 @@
 
 
 #include "coord/coordx.h"
-
+#include "coord/memory/type.h"
 #include "coord/net/recv_buffer.h"
 #include "coord/coordx.h"
 #include <uv.h>
@@ -29,8 +29,8 @@ public:
     virtual int recvTcpData(TcpAgent* agent, char* data, size_t len) = 0;
 };//tolua_export
 
-class TcpAgent : public coordx::RcObject  {//tolua_export
-CC_CLASS(TcpAgent);
+class TcpAgent : public coord::RcObject  {//tolua_export
+RC_CLASS(TcpAgent);
 public:
     TcpAgent(Coord* coord, TcpListener* listen);
     virtual ~TcpAgent();

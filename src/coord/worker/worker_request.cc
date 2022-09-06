@@ -8,7 +8,7 @@
 namespace coord {
 
 namespace worker {
-CC_IMPLEMENT(Request, "coord::worker::Request")
+RC_IMPLEMENT(Request, "coord::worker::Request")
 
 Request* newRequest(Coord* coord) {
     Request* request = new Request(coord);

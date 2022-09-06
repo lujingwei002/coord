@@ -1,6 +1,6 @@
 #pragma once 
 #include "coord/coordx.h"
-#include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include <uv.h>
 #include <stdint.h>
 
@@ -8,7 +8,7 @@ namespace coord {//tolua_export
 namespace net {//tolua_export
 //tolua_begin
 class WriteReq {
-CC_CLASS(WriteReq)
+RC_CLASS(WriteReq)
 public:
     WriteReq(byte_slice& data);
     virtual ~WriteReq();

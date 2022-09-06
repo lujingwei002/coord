@@ -6,7 +6,7 @@ namespace coord {//tolua_export
 
 
 class internal_response : public base_response {//tolua_export
-CC_CLASS(internal_response);
+RC_CLASS(internal_response);
 protected:
     internal_response(Coord* coord, internal_agent* agent, base_request* request);
     virtual ~internal_response();

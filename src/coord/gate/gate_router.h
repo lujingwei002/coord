@@ -73,7 +73,7 @@ public:
 };
 
 class GateRouter {//tolua_export
-CC_CLASS(GateRouter);
+RC_CLASS(GateRouter);
 public:
     GateRouter(Coord* coord);
     virtual ~GateRouter();

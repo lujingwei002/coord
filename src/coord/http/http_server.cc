@@ -25,7 +25,7 @@
 
 namespace coord {
 namespace http {
-CC_IMPLEMENT(HttpServer, "coord::http::HttpServer")
+RC_IMPLEMENT(HttpServer, "coord::http::HttpServer")
 
 HttpServer::HttpServer(Coord* coord) : coord(coord) {
     this->handler = nullptr;

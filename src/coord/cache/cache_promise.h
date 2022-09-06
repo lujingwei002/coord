@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include <uv.h>
 #include <vector>
 #include <iostream>
@@ -27,8 +28,8 @@ class AsyncClient;
 typedef std::function<void (AsyncClient* client, CacheResult* result)> PromiseResolveFunction; 
 typedef std::function<void (AsyncClient* client, CacheResult* result)> PromiseRejectFunction; 
 
-class Promise: public coordx::RcObject {//tolua_export
-CC_CLASS(Promise);
+class Promise: public coord::RcObject {//tolua_export
+RC_CLASS(Promise);
 public:
     Promise(Coord *coord, AsyncClient* client);
     virtual ~Promise();

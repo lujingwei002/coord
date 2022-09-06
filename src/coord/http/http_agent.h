@@ -44,7 +44,7 @@ protected:
 };//tolua_export
 
 class HttpAgent : public base_agent, public net::ITcpAgentHandler {//tolua_export
-CC_CLASS(HttpAgent);
+RC_CLASS(HttpAgent);
 friend HttpServer;
 friend HttpRequest;
 friend HttpResponse;

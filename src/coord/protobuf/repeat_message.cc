@@ -6,7 +6,7 @@
 namespace coord {
 namespace protobuf {
 
-CC_IMPLEMENT(RepeatMessage, "coord::protobuf::RepeatMessage")
+RC_IMPLEMENT(RepeatMessage, "coord::protobuf::RepeatMessage")
 
 RepeatMessage::RepeatMessage(Coord* coord, Message* root, google::protobuf::Message* message, const google::protobuf::FieldDescriptor *field) {
     this->coord = coord;

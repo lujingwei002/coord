@@ -261,7 +261,7 @@ private:
     std::map<std::string, base_router_tree*>    trees;
 };//tolua_export
 
-//CC_IMPLEMENT(base_router, "coord::base_router")
+//RC_IMPLEMENT(base_router, "coord::base_router")
 
 }//tolua_export
  

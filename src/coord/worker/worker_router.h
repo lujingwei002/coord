@@ -56,7 +56,7 @@ public:
 };
 
 class WorkerRouter {//tolua_export
-CC_CLASS(WorkerRouter);
+RC_CLASS(WorkerRouter);
 public:
     WorkerRouter(Coord* coord);
     virtual ~WorkerRouter();

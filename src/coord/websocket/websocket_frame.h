@@ -2,7 +2,7 @@
 
 
 #include "coord/coordx.h"
-
+#include "coord/memory/type.h"
 #include <uv.h>
 
 namespace coord {//tolua_export
@@ -51,8 +51,8 @@ struct websocket_frame_header {
     uint8_t mask:1;
 };
 
-class Frame : public coordx::RcObject {//tolua_export
-CC_CLASS(Frame);
+class Frame : public coord::RcObject {//tolua_export
+RC_CLASS(Frame);
 public:
     Frame(Coord* coord, Agent* agent);
     virtual ~Frame();

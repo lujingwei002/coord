@@ -1,5 +1,6 @@
 #pragma once 
 
+#include "coord/memory/type.h"
 #include <uv.h>
 #include <vector>
 #include <iostream>
@@ -35,7 +36,7 @@ namespace coord {//tolua_export
         class AsyncClient;
         class RedisPromise;
         class RedisResult;
-        typedef coordx::RcRef<coord::redis::RedisResult> RedisResultRef;//tolua_export
+        typedef coord::RcRef<coord::redis::RedisResult> RedisResultRef;//tolua_export
     }//tolua_export
 
 } //tolua_export

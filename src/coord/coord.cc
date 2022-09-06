@@ -1,4 +1,5 @@
 #include "coord/coord.h"
+#include "coord/memory/type.h"
 #include "coord/scene/init.h"
 #include "coord/coordx.h"
 #include "coord/event/init.h"
@@ -440,6 +441,8 @@ namespace coord {
         this->Closure = nullptr;
         this->Json = nullptr;
         this->LoggerMgr = nullptr;
+
+        coord::objectPoolMgr = new object_pool_mgr();
         //this->requestPipelineTop = NULL;
         if(uv_loop_init(&this->loop)){
         }
@@ -546,6 +549,9 @@ namespace coord {
             delete this->Json;
             this->Json = nullptr;
         }       
+        delete coord::objectPoolMgr;
+        coord::objectPoolMgr = nullptr;
+
         if(this->LoggerMgr) {
             delete this->LoggerMgr;
             this->LoggerMgr = nullptr;
@@ -1117,6 +1123,61 @@ namespace coord {
         va_end(args);
     }
 
+    void Coord::LogFatal(const char* fmt, va_list args){
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
+        } else {
+            this->logger->Fatal(fmt, args);
+        }
+    }
+
+    void Coord::LogError(const char* fmt, va_list args){
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
+        } else {
+            this->logger->Error(fmt, args);
+        }
+    }
+
+    void Coord::LogWarn(const char* fmt, va_list args){
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
+        } else {
+            this->logger->Warn(fmt, args);
+        }
+    }
+
+    void Coord::LogInfo(const char* fmt, va_list args){
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
+        } else {
+            this->logger->Info(fmt, args);
+        }
+    }
+
+    void Coord::LogDebug(const char* fmt, va_list args){
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
+        } else {
+            this->logger->Debug(fmt, args);
+        }
+    }
+
+    void Coord::LogMsg(const char* fmt, va_list args){
+        if(this->logger == nullptr){
+            vfprintf(stderr, fmt, args);
+            fprintf(stderr, "\n");
+        } else {
+            this->logger->Notice(fmt, args);
+        }
+    }
+
+
     void Coord::Log(const char* str) const{;
         if(this->logger == nullptr){
             fprintf(stderr, str);
@@ -1416,7 +1477,7 @@ namespace coord {
         this->Event->Emit(name, args);
     }
 
-    void Coord::Destory(coordx::RcObject* object) {
+    void Coord::Destory(coord::RcObject* object) {
         object->DecRef();
     }
 
@@ -1424,7 +1485,7 @@ namespace coord {
         object->onDestory();
     } 
 
-    void Coord::DontDestory(coordx::RcObject* object) {
+    void Coord::DontDestory(coord::RcObject* object) {
         object->AddRef();
     }
 

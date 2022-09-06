@@ -13,7 +13,7 @@ class Response;
 class Result;
 
 class Notify : public base_notify { //tolua_export
-CC_CLASS(Notify);
+RC_CLASS(Notify);
 public:
     Notify(Coord* coord);
     virtual ~Notify();   

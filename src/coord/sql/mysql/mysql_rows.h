@@ -33,7 +33,7 @@ namespace sql {//tolua_export
 class MySQLConnection;
 
 class mysql_rows : public sql_rows {
-CC_CLASS(mysql_rows);
+RC_CLASS(mysql_rows);
 public:
     mysql_rows(Coord *coord, MYSQL *conn);
     virtual ~mysql_rows();

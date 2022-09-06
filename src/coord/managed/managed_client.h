@@ -20,7 +20,7 @@ namespace managed {//tolua_export
 
 typedef base_client<ManagedPromise> base_managed_client;
 class ManagedClient: public base_managed_client, public pipe::IPipeClientHandler {//tolua_export
-CC_CLASS(ManagedClient);
+RC_CLASS(ManagedClient);
 friend coord::Coord;
 friend managed::Managed;
 private:

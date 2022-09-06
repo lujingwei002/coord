@@ -10,7 +10,7 @@
 namespace coord {
 namespace redis {
 
-CC_IMPLEMENT(AsyncClient, "coord::redis::AsyncClient")
+RC_IMPLEMENT(AsyncClient, "coord::redis::AsyncClient")
 
 enum redis_client_status {
     redis_client_status_nil = 0,

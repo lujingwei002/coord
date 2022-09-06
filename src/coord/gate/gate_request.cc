@@ -9,7 +9,7 @@
 namespace coord {
 
 namespace gate {
-CC_IMPLEMENT(GateRequest, "coord::gate::GateRequest")
+RC_IMPLEMENT(GateRequest, "coord::gate::GateRequest")
 
 GateRequest* newGateRequest(Coord* coord, GateAgent* agent) {
     GateRequest* request = new GateRequest(coord, agent);

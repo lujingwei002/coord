@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/base/base_packet.h"
 #include "coord/protobuf/init.h"
 #include "proto/coord.pb.h"
@@ -25,8 +26,8 @@ enum base_agent_status {
 
 
 // agent基类
-class base_agent : public coordx::RcObject {//tolua_export
-CC_CLASS(base_agent);
+class base_agent : public coord::RcObject {//tolua_export
+RC_CLASS(base_agent);
 friend base_response;
 protected:
     base_agent(Coord *coord);

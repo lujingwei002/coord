@@ -7,7 +7,7 @@
 namespace coord {
 
 namespace closure {
-CC_IMPLEMENT(closure_sequence, "coord::closure::closure_sequence")
+RC_IMPLEMENT(closure_sequence, "coord::closure::closure_sequence")
 
 closure_sequence::closure_sequence(Coord* coord, Closure* closure) : closure_action(coord, closure) {
     this->progress = 0;

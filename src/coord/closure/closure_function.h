@@ -14,7 +14,7 @@ class Closure;
 
 
 class closure_function : public closure_action {
-CC_CLASS(closure_function);
+RC_CLASS(closure_function);
 public:
     closure_function(Coord*  coord, Closure* closure, Function func);
     virtual ~closure_function();

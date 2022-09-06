@@ -2,7 +2,7 @@
 
 
 #include "coord/coordx.h"
-
+#include "coord/memory/type.h"
 #include <stdint.h>
 #include <vector>
 extern "C" {
@@ -17,8 +17,8 @@ class Coord;
 class SceneMgr;  
 class Object;
 
-class Scene : public coordx::RcObject {//tolua_export
-CC_CLASS(Scene);
+class Scene : public coord::RcObject {//tolua_export
+RC_CLASS(Scene);
 public:
     Scene(Coord* cord, SceneMgr* sceneMgr);
     ~Scene();

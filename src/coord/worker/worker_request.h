@@ -14,7 +14,7 @@ namespace coord {//tolua_export
 namespace worker {//tolua_export
 
 class Request : public base_request  { //tolua_export
-CC_CLASS(Request);
+RC_CLASS(Request);
 public:
     Request(Coord* coord);
     virtual ~Request();

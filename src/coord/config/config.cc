@@ -889,7 +889,7 @@ int Config::LoggerConfig(const std::string& section, log4cc::LoggerConfig* confi
     this->get(it->second, "layout", config->Layout, "basic");
     this->get(it->second, "max-line", config->MaxLine, 0);
     this->get(it->second, "max-byte", config->MaxByte, 0); 
-    this->get(it->second, "console", config->Console, true);
+    this->get(it->second, "console", config->Console, false);
     std::string priority;
     if(this->get(it->second, "priority", priority)) {
         config->Priority = log4cc::IntPriority(priority.c_str());

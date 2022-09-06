@@ -5,7 +5,7 @@
 #include "coord/coord.h"
 namespace coord {
 
-CC_IMPLEMENT(base_response, "coord::base_response")
+RC_IMPLEMENT(base_response, "coord::base_response")
 
 base_response::base_response(Coord* coord, base_agent* agent, base_request* request) : table(coord) {
     this->coord = coord;

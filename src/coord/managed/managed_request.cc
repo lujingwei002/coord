@@ -7,7 +7,7 @@
 namespace coord {
 namespace managed {
 
-CC_IMPLEMENT(ManagedRequest, "coord::managed::ManagedRequest")
+RC_IMPLEMENT(ManagedRequest, "coord::managed::ManagedRequest")
 
 ManagedRequest::ManagedRequest(Coord* coord, ManagedAgent* agent) : base_request(coord, agent) {
     this->response = new ManagedResponse(this->coord, agent, this);

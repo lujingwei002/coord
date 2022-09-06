@@ -6,7 +6,7 @@
 #include "coord/coord.h"
 namespace coord {
 
-CC_IMPLEMENT(internal_response, "coord::internal_response")
+RC_IMPLEMENT(internal_response, "coord::internal_response")
 
 
 internal_response::internal_response(Coord* coord, internal_agent* agent, base_request* request) : base_response(coord, agent, request) {

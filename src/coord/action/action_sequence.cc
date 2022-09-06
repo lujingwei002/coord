@@ -6,7 +6,7 @@
 
 namespace coord {
 namespace action {
-CC_IMPLEMENT(sequence_action, "coord::action::sequence_action")
+RC_IMPLEMENT(sequence_action, "coord::action::sequence_action")
 
 sequence_action::sequence_action(Coord* coord) : Action(coord) {
     this->progress = 0;

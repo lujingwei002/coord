@@ -8,7 +8,7 @@
 namespace coord {
 
 namespace cluster {
-CC_IMPLEMENT(Response, "coord::cluster::Response")
+RC_IMPLEMENT(Response, "coord::cluster::Response")
 
 
 Response::Response(Coord* coord, cluster_agent* agent, Request* request) : internal_response(coord, agent, request) {

@@ -13,7 +13,7 @@
 
 namespace coord {
 namespace worker {
-CC_IMPLEMENT(Worker, "coord::worker::Worker")
+RC_IMPLEMENT(Worker, "coord::worker::Worker")
 
 class worker_data {
 public:

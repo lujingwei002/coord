@@ -6,7 +6,7 @@
 
 namespace coord {
 namespace action {
-CC_IMPLEMENT(parallel_action, "coord::action::parallel_action")
+RC_IMPLEMENT(parallel_action, "coord::action::parallel_action")
 
 parallel_action::parallel_action(Coord* coord) : Action(coord) {
     

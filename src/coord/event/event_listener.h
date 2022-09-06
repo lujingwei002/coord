@@ -18,7 +18,7 @@ class EventMgr;
 typedef std::function<void (BaseEvent* args)> Function; 
 
 class Listener  {//tolua_export
-CC_CLASS(Listener);
+RC_CLASS(Listener);
 public:
     Listener(Coord* coord, EventMgr* mgr, std::string name, Function func);
     Listener(Coord* coord, EventMgr* mgr, std::string name, ScriptComponent* object, int ref);

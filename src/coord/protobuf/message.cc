@@ -6,7 +6,7 @@
 namespace coord {
 namespace protobuf {
 
-CC_IMPLEMENT(Message, "coord::protobuf::Message")
+RC_IMPLEMENT(Message, "coord::protobuf::Message")
 
 
 Message::Message(Coord* coord, google::protobuf::Message* message, bool owner) {

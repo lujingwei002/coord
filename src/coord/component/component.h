@@ -21,7 +21,7 @@ class Object;
 class Coord;
 class Scene;
 class Component {//tolua_export
-CC_CLASS(Component)
+RC_CLASS(Component)
 public:
     Component(Coord* coord);
     virtual ~Component();

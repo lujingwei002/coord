@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/redis/declare.h"
 #include <map>
 #include <string>
@@ -25,7 +26,7 @@ namespace gate {
 class Gate;
 
 class gate_cluster  {
-CC_CLASS(gate_cluster);  
+RC_CLASS(gate_cluster);  
 public:
     gate_cluster(Coord* coord, Gate* gate);
     virtual ~gate_cluster();

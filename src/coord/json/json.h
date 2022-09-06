@@ -1,7 +1,6 @@
 #pragma once 
 #include "coord/coordx.h"
-#include "coord/coordx.h"
-#include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/json/declare.h"
 #include <json11/json11.hpp>
 #include <string>
@@ -30,8 +29,8 @@ namespace coord {
 namespace coord {//tolua_export
 namespace json {//tolua_export
 
-class Json : public coordx::RcObject {//tolua_export
-CC_CLASS(Json);
+class Json : public coord::RcObject {//tolua_export
+RC_CLASS(Json);
 friend coord::json::JsonMgr;
 private:
     Json(Coord* coord, const json11::Json& object);

@@ -28,7 +28,7 @@ class Packet;
 class GateSession;
 
 class GateAgent : public internal_agent, public net::ITcpAgentHandler, public websocket::IAgentHandler {
-CC_CLASS(GateAgent);  
+RC_CLASS(GateAgent);  
 public:
     GateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent);
     GateAgent(Coord* coord, Gate* gate, websocket::Agent* webSocketAgent);

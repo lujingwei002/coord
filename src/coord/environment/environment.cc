@@ -307,6 +307,10 @@ int Environment::scanEnvFile(const std::string& envFilePath) {
 }
 
 int Environment::main(const Argv& argv) {
+
+    this->LoggerPriority = argv.LoggerPriority;
+    this->CoreLoggerPriority = argv.CoreLoggerPriority;
+
     char buffer[PATH_MAX];
     size_t len = sizeof(buffer);
 

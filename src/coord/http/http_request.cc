@@ -8,7 +8,7 @@
 namespace coord {
 
 namespace http {
-CC_IMPLEMENT(HttpRequest, "coord::http::HttpRequest")
+RC_IMPLEMENT(HttpRequest, "coord::http::HttpRequest")
 
 int HttpRequest::on_message_begin(http_parser* parser){
     return 0;

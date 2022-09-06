@@ -12,7 +12,7 @@ class Worker;
 class Request;
 
 class Response : public internal_response { //tolua_export
-CC_CLASS(Response);
+RC_CLASS(Response);
 public:
     Response(Coord* coord, Request* request);
     virtual ~Response();

@@ -10,7 +10,7 @@ namespace coord {
 
 namespace gate {
 
-CC_IMPLEMENT(GatePromise, "coord::gate::GatePromise")
+RC_IMPLEMENT(GatePromise, "coord::gate::GatePromise")
 
 GatePromise* newGatePromise(Coord* coord) {
     GatePromise* pomise = new GatePromise(coord);

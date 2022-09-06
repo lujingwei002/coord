@@ -6,7 +6,7 @@
 
 namespace coord {
 
-CC_IMPLEMENT(base_notify, "coord::base_notify")
+RC_IMPLEMENT(base_notify, "coord::base_notify")
 
 base_notify::base_notify(Coord* coord, base_agent* agent) : base_reader(coord) {
     this->agent = agent;

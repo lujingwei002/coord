@@ -6,7 +6,7 @@
 namespace coord {
 namespace pipe {
 
-CC_IMPLEMENT(PipeAgent, "coord::pipe::PipeAgent")
+RC_IMPLEMENT(PipeAgent, "coord::pipe::PipeAgent")
 
 enum pipe_agent_status {
     pipe_agent_status_connected = 0,

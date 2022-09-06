@@ -9,7 +9,7 @@
 namespace coord {
 namespace cache {
 
-CC_IMPLEMENT(Promise, "coord::cache::Promise")
+RC_IMPLEMENT(Promise, "coord::cache::Promise")
 
 Promise* newPromise(Coord* coord, AsyncClient* client) {
     Promise* promise = new Promise(coord, client);

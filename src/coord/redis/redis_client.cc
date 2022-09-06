@@ -7,7 +7,7 @@
 namespace coord {
 namespace redis {
 
-CC_IMPLEMENT(Client, "coord::redis::Client")
+RC_IMPLEMENT(Client, "coord::redis::Client")
 
 
 Client::Client(Coord *coord, RedisMgr* redisMgr) {

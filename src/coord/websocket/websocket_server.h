@@ -42,7 +42,7 @@ public:
 };//tolua_export
 
 class Server : public http::IHttpHandler {//tolua_export
-CC_CLASS(Server);
+RC_CLASS(Server);
 public:
     Server(Coord* coord);
     virtual ~Server();

@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/base/base_reader.h"
 #include "coord/base/base_response.h"
 extern "C" {
@@ -16,8 +17,8 @@ class base_reader;
 class base_response;
 class base_agent;
 
-class base_request : public coordx::RcObject, public base_reader { //tolua_export
-CC_CLASS(base_request);
+class base_request : public coord::RcObject, public base_reader { //tolua_export
+RC_CLASS(base_request);
 protected:
     base_request(Coord* coord, base_agent* agent);
     virtual ~base_request();

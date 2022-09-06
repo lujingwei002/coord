@@ -1,5 +1,6 @@
 #pragma once 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/argument/argument.h"
 #include "coord/base/base_reader.h"
 #include "coord/base/base_writer.h"
@@ -25,8 +26,8 @@ namespace coord {
 namespace coord {//tolua_export
 
 
-class base_response : public coordx::RcObject { //tolua_export
-CC_CLASS(base_response);
+class base_response : public coord::RcObject { //tolua_export
+RC_CLASS(base_response);
 protected:
     base_response(Coord* coord, base_agent* agent, base_request* request);
     virtual ~base_response();

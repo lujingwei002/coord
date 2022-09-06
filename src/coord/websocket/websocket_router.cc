@@ -10,7 +10,7 @@
 namespace coord {
 namespace websocket {
 
-CC_IMPLEMENT(Router, "coord::websocket::Router")
+RC_IMPLEMENT(Router, "coord::websocket::Router")
 
 Router* newRouter(Coord* coord) {
     Router* webSocketRouter = new Router(coord);

@@ -24,7 +24,7 @@ namespace coord {//tolua_export
 namespace managed {//tolua_export
 
 class Managed {//tolua_export
-CC_CLASS(Managed);
+COORD_CLASS(Managed);
 friend coord::Coord;
 friend ManagedAgent;
 private:

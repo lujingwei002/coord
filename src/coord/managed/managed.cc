@@ -12,7 +12,7 @@
 namespace coord {
 namespace managed {
 
-CC_IMPLEMENT(Managed, "coord::managed::Managed")
+COORD_IMPLEMENT(Managed, "coord::managed::Managed")
 
 Managed::Managed(Coord *coord) {
     this->coord = coord;

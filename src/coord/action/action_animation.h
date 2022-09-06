@@ -12,7 +12,7 @@ namespace action {
 
 class Action;
 class Animation : public Action {
-CC_CLASS(Animation);
+RC_CLASS(Animation);
 public:
     Animation(Coord*  coord);
     ~Animation();

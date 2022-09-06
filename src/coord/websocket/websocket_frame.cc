@@ -6,7 +6,7 @@
 namespace coord {
 namespace websocket {
 
-CC_IMPLEMENT(Frame, "coord::websocket::Frame")
+RC_IMPLEMENT(Frame, "coord::websocket::Frame")
 
 Frame* newWebSocketFrame(Coord* coord, Agent* agent) {
     Frame* request = new Frame(coord, agent);

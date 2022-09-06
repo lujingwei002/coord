@@ -1,5 +1,5 @@
 #pragma once 
-
+#include "coord/memory/type.h"
 #include "coord/component/component.h"
 #include "coord/net/tcp_agent.h"
 #include "coord/coordx.h"
@@ -18,8 +18,8 @@ public:
     virtual void recvTcpNew(TcpListener* listener, TcpAgent* agent) = 0;
 };//tolua_export
 
-class TcpListener : public coordx::RcObject {//tolua_export
-CC_CLASS(TcpListener);
+class TcpListener : public coord::RcObject {//tolua_export
+RC_CLASS(TcpListener);
 public:
     TcpListener(Coord* coord);
     virtual ~TcpListener();

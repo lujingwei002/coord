@@ -9,7 +9,7 @@
 namespace coord {
 namespace sql {
 
-CC_IMPLEMENT(MySQLClient, "coord::mysql::MySQLClient")
+RC_IMPLEMENT(MySQLClient, "coord::mysql::MySQLClient")
 
 MySQLClient* newMySQLClient(Coord *coord) {
     auto client = new MySQLClient(coord);

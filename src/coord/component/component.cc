@@ -7,7 +7,7 @@
 #include "coord/coord.h"
 
 namespace coord {
-CC_IMPLEMENT(Component, "coord::Component")
+RC_IMPLEMENT(Component, "coord::Component")
 
 Component::Component(Coord* coord){
     this->coord = coord;

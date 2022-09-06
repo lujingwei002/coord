@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/protobuf/init.h"
 #include <cstdlib>
 #include <string>
@@ -17,7 +18,7 @@ class Coord;
 
 namespace script {//tolua_export
 
-class Variable : public coordx::RcObject {//tolua_export
+class Variable : public coord::RcObject {//tolua_export
 public:
     Variable();
     Variable(Coord* coord);

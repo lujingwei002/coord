@@ -5,7 +5,7 @@
 namespace coord {
 namespace managed {
 
-CC_IMPLEMENT(ManagedRouter, "coord::managed::ManagedRouter")
+RC_IMPLEMENT(ManagedRouter, "coord::managed::ManagedRouter")
 
 ManagedRouter::ManagedRouter(Coord *coord, Managed* managed) : base_router(coord) {
     this->managed = managed;

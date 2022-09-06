@@ -22,7 +22,7 @@ namespace sql {//tolua_export
 
 class MySQLConnection;
 class mysql_result : public sql_result {
-CC_CLASS(mysql_result);
+RC_CLASS(mysql_result);
 public:
     mysql_result(Coord *coord, MYSQL *conn);
     virtual ~mysql_result();        

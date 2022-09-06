@@ -49,7 +49,7 @@ enum GateStatus {
 };
 
 class Gate : public net::ITcpHandler, public websocket::IWebSocketHandler {//tolua_export
-CC_CLASS(Gate);
+RC_CLASS(Gate);
 public:
     Gate(Coord* coord);
     virtual ~Gate();

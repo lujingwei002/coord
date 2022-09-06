@@ -2,6 +2,7 @@
 
 #include "coord/component/component.h"
 #include "coord/http/http_server.h"
+#include "coord/memory/type.h"
 #include "coord/coordx.h"
 #include "coord/http/http_base.h"
 #include "coord/http/http_request.h"
@@ -42,8 +43,8 @@ typedef std::function<void (const HttpRequestRef& request)> HttpRouter_RecvHttpR
 
 
 
-class HttpRouter : public coordx::RcObject {//tolua_export
-CC_CLASS(HttpRouter);
+class HttpRouter : public coord::RcObject {//tolua_export
+RC_CLASS(HttpRouter);
 friend HttpServer;
 friend web::WebServer;
 private:

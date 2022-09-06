@@ -13,7 +13,7 @@ class Action;
 typedef std::function<void (Action* action)> Function; 
 
 class function_action : public Action {
-CC_CLASS(function_action);
+RC_CLASS(function_action);
 public:
     function_action(Coord*  coord, Function func);
     virtual ~function_action();

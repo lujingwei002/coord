@@ -18,7 +18,7 @@ namespace coord {//tolua_export
 namespace managed {//tolua_export
 
 class ManagedRequest : public base_request { //tolua_export
-CC_CLASS(ManagedRequest);
+RC_CLASS(ManagedRequest);
 friend ManagedAgent;
 private:
     ManagedRequest(Coord* coord, ManagedAgent* agent);

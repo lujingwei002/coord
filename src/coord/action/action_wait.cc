@@ -6,7 +6,7 @@
 
 namespace coord {
 namespace action {
-CC_IMPLEMENT(wait_action, "coord::action::wait_action")
+RC_IMPLEMENT(wait_action, "coord::action::wait_action")
 
 wait_action::wait_action(Coord* coord, uint64_t msec) : Action(coord) {
     this->msec = msec;

@@ -10,7 +10,7 @@
 namespace coord {
 
 namespace cluster {
-CC_IMPLEMENT(Promise, "coord::cluster::Promise")
+RC_IMPLEMENT(Promise, "coord::cluster::Promise")
 
 Promise* newPromise(Coord* coord) {
     Promise* pomise = new Promise(coord);

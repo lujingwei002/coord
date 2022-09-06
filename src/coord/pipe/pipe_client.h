@@ -2,7 +2,7 @@
 
 
 #include "coord/coordx.h"
-#include "coord/coordx.h"
+#include "coord/memory/type.h"
 
 #include "coord/net/recv_buffer.h"
 #include <uv.h>
@@ -25,8 +25,8 @@ public:
     virtual void EvClose() = 0;
 };//tolua_export
 
-class PipeClient : public coordx::RcObject {//tolua_export
-CC_CLASS(PipeClient);
+class PipeClient : public coord::RcObject {//tolua_export
+RC_CLASS(PipeClient);
 public:
     PipeClient(Coord* coord);
     virtual ~PipeClient();

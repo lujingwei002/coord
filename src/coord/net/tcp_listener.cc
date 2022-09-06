@@ -8,7 +8,7 @@
 namespace coord {
 namespace net {
 
-CC_IMPLEMENT(TcpListener, "coord::net::TcpListener")
+RC_IMPLEMENT(TcpListener, "coord::net::TcpListener")
 
 static void uv_connection_cb(uv_stream_t *server, int status) {
     TcpListener* listener = (TcpListener*)server->data;

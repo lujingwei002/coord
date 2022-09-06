@@ -6,7 +6,7 @@
 namespace coord {
 namespace redis {
 
-CC_IMPLEMENT(RedisPromise, "coord::redis::RedisPromise")
+RC_IMPLEMENT(RedisPromise, "coord::redis::RedisPromise")
 
 RedisPromise::RedisPromise(Coord *coord) : base_promise(coord)  {
 }

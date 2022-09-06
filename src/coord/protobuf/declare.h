@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor_database.h>
 #include <google/protobuf/message.h>
@@ -17,7 +18,7 @@ namespace coord {//tolua_export
         class my_multi_file_error_collector;
         class Message;                                                
         class RepeatMessage;                                          
-        typedef coordx::RcRef<coord::protobuf::Message> MessageRef;               //tolua_export                
-        typedef coordx::RcRef<coord::protobuf::RepeatMessage> RepeatMessageRef;   //tolua_export
+        typedef coord::RcRef<coord::protobuf::Message> MessageRef;               //tolua_export                
+        typedef coord::RcRef<coord::protobuf::RepeatMessage> RepeatMessageRef;   //tolua_export
     } //tolua_export
 } //tolua_export

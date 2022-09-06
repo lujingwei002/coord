@@ -15,7 +15,7 @@ class Closure;
 
 
 class closure_await : public closure_action {
-CC_CLASS(closure_await);
+RC_CLASS(closure_await);
 public:
     closure_await(Coord*  coord, Closure* closure, AwaitFunction func, Function thenFunc, Function catchFunc);
     virtual ~closure_await();

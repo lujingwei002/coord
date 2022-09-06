@@ -8,7 +8,7 @@
 namespace coord {
 
 namespace cluster {
-CC_IMPLEMENT(Request, "coord::cluster::Request")
+RC_IMPLEMENT(Request, "coord::cluster::Request")
 
 Request* newRequest(Coord* coord, cluster_agent* agent) {
     Request* request = new Request(coord, agent);

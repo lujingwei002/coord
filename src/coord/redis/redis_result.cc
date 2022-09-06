@@ -5,7 +5,7 @@
 namespace coord {
 namespace redis {
 
-CC_IMPLEMENT(RedisResult, "coord::redis::RedisResult")
+RC_IMPLEMENT(RedisResult, "coord::redis::RedisResult")
 
 RedisResult::RedisResult(Coord *coord, redisReply* reply)  {
     this->coord = coord;

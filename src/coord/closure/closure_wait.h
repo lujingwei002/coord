@@ -11,7 +11,7 @@ namespace closure {
 class Closure;
 
 class closure_wait : public closure_action {
-CC_CLASS(closure_wait);  
+RC_CLASS(closure_wait);  
 public:
     closure_wait(Coord*  coord, Closure* closure, uint64_t msec);
     virtual ~closure_wait();

@@ -8,7 +8,7 @@
 namespace coord {
 
 namespace gate {
-CC_IMPLEMENT(GateNotify, "coord::gate::GateNotify")
+RC_IMPLEMENT(GateNotify, "coord::gate::GateNotify")
 
 GateNotify* newGateNotify(Coord* coord, GateAgent* agent) {
     GateNotify* notify = new GateNotify(coord, agent);

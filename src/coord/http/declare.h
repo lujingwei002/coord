@@ -7,6 +7,6 @@ namespace coord {//tolua_export
         class HttpAgent;
         class HttpRouter;
         class HttpResponse;
-        typedef coordx::RcRef<coord::http::HttpRequest> HttpRequestRef;//tolua_export
+        typedef coord::RcRef<coord::http::HttpRequest> HttpRequestRef;//tolua_export
     }//tolua_export
 } //tolua_export

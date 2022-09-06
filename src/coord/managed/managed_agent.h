@@ -20,7 +20,7 @@ namespace coord {//tolua_export
 namespace managed {//tolua_export
 
 class ManagedAgent : public internal_agent, public pipe::IPipeAgentHandler  {//tolua_export
-CC_CLASS(ManagedAgent);
+RC_CLASS(ManagedAgent);
 friend managed_server;
 friend ManagedResponse;
 friend coord::pipe::PipeAgent;

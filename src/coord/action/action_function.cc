@@ -6,7 +6,7 @@
 namespace coord {
 namespace action {
 
-CC_IMPLEMENT(function_action, "coord::action::function_action")
+RC_IMPLEMENT(function_action, "coord::action::function_action")
 
 function_action::function_action(Coord* coord, Function func) : Action(coord) {
     this->func = func;

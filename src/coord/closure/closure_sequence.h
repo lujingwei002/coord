@@ -13,7 +13,7 @@ namespace closure {
 class closure_action;
 
 class closure_sequence : public closure_action {
-CC_CLASS(closure_sequence);    
+RC_CLASS(closure_sequence);    
 public:
     closure_sequence(Coord* coord, Closure* closure);
     virtual ~closure_sequence();

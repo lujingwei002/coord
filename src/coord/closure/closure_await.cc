@@ -5,7 +5,7 @@
 namespace coord {
 namespace closure {
 
-CC_IMPLEMENT(closure_await, "coord::closure::closure_await")
+RC_IMPLEMENT(closure_await, "coord::closure::closure_await")
 
 closure_await::closure_await(Coord* coord, Closure* closure, AwaitFunction func, Function thenFunc, Function catchFunc) : closure_action(coord, closure), promise(coord, closure, this) {
     this->func = func;

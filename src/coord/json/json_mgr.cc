@@ -6,7 +6,7 @@
 
 namespace coord {
 namespace json {
-CC_IMPLEMENT(JsonMgr, "coord::json::JsonMgr")
+COORD_IMPLEMENT(JsonMgr, "coord::json::JsonMgr")
 
 // 获取字段
 static int __index(lua_State* L) {

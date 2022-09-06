@@ -59,7 +59,7 @@ public:
 };
 
 class Router {//tolua_export
-CC_CLASS(Router);
+RC_CLASS(Router);
 public:
     Router(Coord* coord);
     virtual ~Router();

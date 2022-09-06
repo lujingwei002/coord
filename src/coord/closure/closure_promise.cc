@@ -5,7 +5,7 @@
 namespace coord {
 namespace closure {
 
-CC_IMPLEMENT(ClosurePromise, "coord::closure::ClosurePromise")
+RC_IMPLEMENT(ClosurePromise, "coord::closure::ClosurePromise")
 
 ClosurePromise::ClosurePromise(Coord* coord, Closure* closure, closure_await* await) {
     this->coord = coord;

@@ -2,7 +2,7 @@
 #include "coord/json/json_mgr.h"
 #include "coord/coord.h"
 namespace coord {
-CC_IMPLEMENT(base_reader, "coord::base_reader")
+RC_IMPLEMENT(base_reader, "coord::base_reader")
 
 base_reader::base_reader(Coord* coord) : table(coord){
     this->coord = coord;

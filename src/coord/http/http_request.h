@@ -27,7 +27,7 @@ namespace coord {//tolua_export
 namespace http {//tolua_export
 
 class HttpRequest : public base_request  { //tolua_export
-CC_CLASS(HttpRequest);
+RC_CLASS(HttpRequest);
 friend HttpAgent;
 friend HttpResponse;
 private:

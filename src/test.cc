@@ -49,10 +49,13 @@ class Environment : public testing::Environment {
 public:
     virtual void SetUp() {
         coord::Init();
-       // std::cout << "Environment SetUP" << std::endl;
+        // std::cout << "Environment SetUP" << std::endl;
     }
 
     virtual void TearDown() {
+       int err = coorda->afterTest();
+       ASSERT_EQ(err, 0);
+       delete coorda;
        // std::cout << "Environment TearDown" << std::endl;
        coord::Destory();
     }
@@ -61,5 +64,35 @@ public:
 int main(int argc,char **argv){
     testing::AddGlobalTestEnvironment(new Environment);
     testing::InitGoogleTest(&argc,argv);
+
+    coord::Argv args;
+    for (int i = 0; i < argc; i++){
+        if (strcmp(argv[i], "-v") == 0) {
+            if (i + 1 >= argc) {
+                printf("verbose argument error\n");
+                return -1;
+            }
+            i = i + 1;
+            args.LoggerPriority = argv[i];
+            break;
+        }
+        if (strcmp(argv[i], "-vv") == 0) {
+            if (i + 1 >= argc) {
+                printf("vverbose argument error\n");
+                return -1;
+            }
+            i = i + 1;
+            args.CoreLoggerPriority = argv[i];
+            break;
+        }
+    }
+    coord::Coord* coord = coord::NewCoord();
+    args.Name = "test";
+    args.ConfigPath = "test/test.ini";
+    int err = coord->beforeTest(args);
+    if (err) {
+        printf("set up fail, error=%d\n", err);
+        return err;
+    }
     return RUN_ALL_TESTS();
 }

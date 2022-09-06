@@ -3,7 +3,7 @@
 namespace coord {
 namespace worker {
 
-CC_IMPLEMENT(Promise, "coord::worker::Promise")
+RC_IMPLEMENT(Promise, "coord::worker::Promise")
 
 Promise::Promise(Coord *coord) : base_promise(coord) {
 }

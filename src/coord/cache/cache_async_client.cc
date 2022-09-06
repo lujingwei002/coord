@@ -7,7 +7,7 @@
 namespace coord {
 namespace cache {
 
-CC_IMPLEMENT(AsyncClient, "coord::cache::AsyncClient")
+RC_IMPLEMENT(AsyncClient, "coord::cache::AsyncClient")
 
 AsyncClient* newAsyncClient(Coord *coord) {
     AsyncClient* self = new AsyncClient(coord);

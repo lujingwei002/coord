@@ -1,8 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
-
-#include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include <string>
 namespace coord {
 class Coord;
@@ -20,8 +19,8 @@ enum worker_packet_type {
     worker_packet_notify = 3,
 };
 
-class worker_packet : public coordx::RcObject  { 
-CC_CLASS(worker_packet);
+class worker_packet : public coord::RcObject  { 
+RC_CLASS(worker_packet);
 public:
     worker_packet(Coord* coord);
     virtual ~worker_packet();

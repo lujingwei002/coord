@@ -3,9 +3,6 @@
 #pragma once
 #include "coordx/memory/array.h"
 #include "coordx/memory/slice.h"
-#include "coordx/memory/object_pool_mgr.h"
-#include "coordx/memory/object_pool.h"
-#include "coordx/memory/type.h"
 
 #include "coordx/log/log.h"
 

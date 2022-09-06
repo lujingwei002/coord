@@ -6,7 +6,7 @@
 namespace coord {
 namespace net {
 
-CC_IMPLEMENT(TcpAgent, "coord::net::TcpAgent")
+RC_IMPLEMENT(TcpAgent, "coord::net::TcpAgent")
 
 static void uv_alloc_cb(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf) {
     TcpAgent* agent = (TcpAgent*)handle->data;

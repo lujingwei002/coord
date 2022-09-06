@@ -13,7 +13,7 @@
 
 namespace coord {
 namespace cluster {
-CC_IMPLEMENT(Cluster, "coord::cluster::Cluster")
+RC_IMPLEMENT(Cluster, "coord::cluster::Cluster")
 Cluster* newCluster(Coord* coord) {
     auto self = new Cluster(coord);
     return self;

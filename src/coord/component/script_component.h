@@ -56,7 +56,7 @@ namespace event {
 class BaseEvent;
 }
 class ScriptComponent : public Component {  //tolua_export
-CC_CLASS(ScriptComponent);
+RC_CLASS(ScriptComponent);
 public:
     ScriptComponent(Coord* coord, const char* scriptName, int ref);
     virtual ~ScriptComponent(); 

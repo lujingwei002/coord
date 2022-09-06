@@ -13,7 +13,7 @@
 
 namespace coord {
 namespace http {
-CC_IMPLEMENT(HttpResponse, "coord::http::HttpResponse")
+RC_IMPLEMENT(HttpResponse, "coord::http::HttpResponse")
 
 static std::map<int, std::string> contentTypeDict = {
     {base_message_data_type_string, "text/plain"}

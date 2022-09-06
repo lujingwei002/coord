@@ -10,7 +10,7 @@ namespace coord {
 
 namespace managed {
 
-CC_IMPLEMENT(ManagedAgent, "coord::managed::ManagedAgent")
+RC_IMPLEMENT(ManagedAgent, "coord::managed::ManagedAgent")
 
 ManagedAgent::ManagedAgent(Coord *coord, Managed* managed, managed_server* server, pipe::PipeAgent* pipeAgent) : internal_agent(coord) {
     this->managed = managed;

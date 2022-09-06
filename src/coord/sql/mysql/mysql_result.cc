@@ -4,7 +4,7 @@
 
 namespace coord {
 namespace sql {
-CC_IMPLEMENT(mysql_result, "coord::mysql::mysql_result")
+RC_IMPLEMENT(mysql_result, "coord::mysql::mysql_result")
 
 mysql_result* newMySQLResult(Coord* coord, MYSQL *conn) {
     auto self = new mysql_result(coord, conn);

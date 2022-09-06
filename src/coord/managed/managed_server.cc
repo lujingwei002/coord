@@ -9,7 +9,7 @@
 namespace coord {
 namespace managed {
 
-CC_IMPLEMENT(managed_server, "coord::managed::managed_server")
+RC_IMPLEMENT(managed_server, "coord::managed::managed_server")
 const char* TAG = "coord::managed::managed_server";
 
 managed_server::managed_server(Coord *coord, Managed* managed) {

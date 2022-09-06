@@ -20,7 +20,7 @@ using json = nlohmann::json;
 
 namespace coord {
 namespace gate {
-CC_IMPLEMENT(GateAgent, "coord::gate::GateAgent")
+RC_IMPLEMENT(GateAgent, "coord::gate::GateAgent")
 
 GateAgent* newGateAgent(Coord* coord, Gate* gate, net::TcpAgent* tcpAgent) {
     GateAgent* gateAgent = new GateAgent(coord, gate, tcpAgent);

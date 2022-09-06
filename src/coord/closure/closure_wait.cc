@@ -5,7 +5,7 @@
 
 namespace coord {
 namespace closure {
-CC_IMPLEMENT(closure_wait, "coord::closure::closure_wait")
+RC_IMPLEMENT(closure_wait, "coord::closure::closure_wait")
 
 closure_wait::closure_wait(Coord* coord, Closure* closure, uint64_t msec) : closure_action(coord, closure) {
     this->msec = msec;

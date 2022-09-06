@@ -5,7 +5,7 @@
 
 namespace coord {
 
-CC_IMPLEMENT(base_promise, "coord::base_promise")
+RC_IMPLEMENT(base_promise, "coord::base_promise")
 
 base_promise::base_promise(Coord* coord) {
     this->coord = coord;

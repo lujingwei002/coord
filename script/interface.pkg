@@ -10,10 +10,8 @@
 //
 //
 //
-
-$cfile "coordx/memory/type.h"
-$cfile "coordx/memory/type.h"
 $cfile "coordx/path/path.h"
+$cfile "coord/memory/type.h"
 $cfile "coord/json/declare.h"
 $cfile "coord/json/json_mgr.h"
 $cfile "coord/json/json.h"

@@ -15,7 +15,7 @@ namespace closure {
 class closure_action;
 
 class closure_if : public closure_sequence {
-CC_CLASS(closure_if);    
+RC_CLASS(closure_if);    
 public:
     closure_if(Coord* coord, Closure* closure, IfFunction func);
     virtual ~closure_if();

@@ -13,7 +13,7 @@ namespace action {
 class Action;
 
 class parallel_action : public Action {
-CC_CLASS(parallel_action);
+RC_CLASS(parallel_action);
 public:
     parallel_action(Coord*  coord);
     virtual ~parallel_action();

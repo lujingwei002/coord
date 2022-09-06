@@ -11,7 +11,7 @@
 namespace coord {
 namespace cluster {
 
-CC_IMPLEMENT(ClusterRouter, "coord::cluster::ClusterRouter")
+RC_IMPLEMENT(ClusterRouter, "coord::cluster::ClusterRouter")
 
 ClusterRouter* newClusterRouter(Coord* coord) {
     ClusterRouter* router = new ClusterRouter(coord);

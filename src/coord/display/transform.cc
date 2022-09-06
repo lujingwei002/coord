@@ -3,7 +3,7 @@
 
 namespace coord {
 
-CC_IMPLEMENT(Transform, "coord::Transform")
+RC_IMPLEMENT(Transform, "coord::Transform")
 
 Transform::Transform(Coord* coord) : Component(coord) {
 

@@ -2,7 +2,7 @@
 #include "coord/coord.h"
 namespace coord {
 
-CC_IMPLEMENT(internal_agent, "coord::internal_agent")
+RC_IMPLEMENT(internal_agent, "coord::internal_agent")
 
 
 internal_agent::internal_agent(Coord *coord) : base_agent(coord) {

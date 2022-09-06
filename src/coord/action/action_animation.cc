@@ -7,7 +7,7 @@
 
 namespace coord {
 namespace action {
-CC_IMPLEMENT(Animation, "coord::action::Animation")
+RC_IMPLEMENT(Animation, "coord::action::Animation")
 Animation* newAnimation(Coord* coord) {
     Animation* self = new Animation(coord);
     return self;

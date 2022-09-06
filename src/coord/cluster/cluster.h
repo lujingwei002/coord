@@ -26,7 +26,7 @@ class ClusterRouter;
 class Promise;
 
 class Cluster {//tolua_export
-CC_CLASS(Cluster);
+RC_CLASS(Cluster);
 public:
     Cluster(Coord *coord);
     virtual ~Cluster();

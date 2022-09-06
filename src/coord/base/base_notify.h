@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
-
+#include "coord/memory/type.h"
 #include "coord/base/base_reader.h"
 extern "C" {
 #include <lua/lua.h>
@@ -18,8 +18,8 @@ namespace coord {
 namespace coord {//tolua_export
 
 
-class base_notify : public coordx::RcObject, public base_reader { //tolua_export
-CC_CLASS(base_notify);
+class base_notify : public coord::RcObject, public base_reader { //tolua_export
+RC_CLASS(base_notify);
 public:
     base_notify(Coord* coord, base_agent* agent);
     virtual ~base_notify();

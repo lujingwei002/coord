@@ -2,7 +2,7 @@
 
 
 #include "coord/coordx.h"
-
+#include "coord/memory/type.h"
 #include "coord/net/recv_buffer.h"
 #include "coord/coordx.h"
 #include <uv.h>
@@ -31,8 +31,8 @@ protected:
 /// PipeAgent的生命周期由PipeListener控制
 /// PipeAgent关闭后，由PipeListener负责释放
 ///
-class PipeAgent : public coordx::RcObject  {//tolua_export
-CC_CLASS(PipeAgent);
+class PipeAgent : public coord::RcObject  {//tolua_export
+RC_CLASS(PipeAgent);
 friend PipeListener;
 private:
     PipeAgent(Coord* coord, PipeListener* listen);

@@ -32,7 +32,7 @@ class MySQLResult;
 class MySQLRows;
 
 class MySQLClient : public SQLClient {//tolua_export
-CC_CLASS(MySQLClient);
+RC_CLASS(MySQLClient);
 public:
     MySQLClient(Coord *coord);
     virtual ~MySQLClient();

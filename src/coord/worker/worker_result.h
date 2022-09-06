@@ -13,7 +13,7 @@ class Worker;
 class Request;
 
 class Result : public base_result  { //tolua_export
-CC_CLASS(Result);
+RC_CLASS(Result);
 public:
     Result(Coord* coord);
     virtual ~Result();

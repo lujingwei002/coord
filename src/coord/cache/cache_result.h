@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/redis/declare.h"
 #include <vector>
 #include <iostream>
@@ -19,8 +20,8 @@ class Coord;
 namespace coord {//tolua_export
 namespace cache {//tolua_export
 
-class CacheResult : public coordx::RcObject {//tolua_export
-CC_CLASS(CacheResult);
+class CacheResult : public coord::RcObject {//tolua_export
+RC_CLASS(CacheResult);
 public:
     CacheResult(Coord *coord, const redis::RedisResultRef& result);
     virtual ~CacheResult();

@@ -5,7 +5,7 @@
 namespace coord {
 namespace sql {
     
-CC_IMPLEMENT(SQLRows, "coord::sql::SQLRows")
+RC_IMPLEMENT(SQLRows, "coord::sql::SQLRows")
 
 sql_rows::sql_rows(Coord *coord) {
     this->coord = coord;

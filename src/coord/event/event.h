@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
-#include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include <uv.h>
 #include <map>
 #include <string>
@@ -11,7 +11,7 @@ class Coord;
 namespace event {//tolua_export
 
 class BaseEvent  {//tolua_export
-CC_CLASS(BaseEvent);
+RC_CLASS(BaseEvent);
 public:
     BaseEvent(const char* name, const char* arg);
     virtual ~BaseEvent();

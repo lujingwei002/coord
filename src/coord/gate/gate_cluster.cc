@@ -16,7 +16,7 @@
 
 namespace coord {
 namespace gate {
-CC_IMPLEMENT(gate_cluster, "coord::gate::gate_cluster")
+RC_IMPLEMENT(gate_cluster, "coord::gate::gate_cluster")
 
 gate_cluster* newgate_cluster(Coord* coord, Gate* gate) {
     gate_cluster* gateCluster = new gate_cluster(coord, gate);

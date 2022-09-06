@@ -54,15 +54,17 @@ enum worker_role {
 
 class Argv {
 public:
-    std::string Name;           /// 名字
-    std::string ConfigPath;     /// 配置文件路径
+    std::string Name;                       /// 名字
+    std::string ConfigPath;                 /// 配置文件路径
+    std::string LoggerPriority;             /// 输出到标准输出
+    std::string CoreLoggerPriority;         /// 输出到标准输出
 };
 
 class Coord { //tolua_export
 
 friend class worker::Worker;
 friend class Argument;
-friend class RcObject;
+friend class coord::RcObject;
 friend class coord::Config;
 friend class coord::Environment;
 friend class coord::run::Running;
@@ -158,6 +160,13 @@ public:
     void LogInfo(const char* fmt, ...);
     void LogDebug(const char* fmt, ...);
     void LogMsg(const char* fmt, ...);
+    void LogFatal(const char* fmt, va_list args);
+    void LogError(const char* fmt, va_list args); 
+    void LogWarn(const char* fmt, va_list args);
+    void LogInfo(const char* fmt, va_list args);
+    void LogDebug(const char* fmt, va_list args);
+    void LogMsg(const char* fmt, va_list args);
+
     /// Info级别日志，类似lua的print, 支持可变参数
     int Log(lua_State* L);                      //tolua_export
     void Log(const char* str) const;            //tolua_export
@@ -229,9 +238,9 @@ public:
     void Emit(const char* name, event::BaseEvent* args);//tolua_export
     
     /// ##内存管理接口
-    void Destory(coordx::RcObject* object);//tolua_export
+    void Destory(coord::RcObject* object);//tolua_export
     void Destory(net::TcpClient* object);//tolua_export
-    void DontDestory(coordx::RcObject* object);//tolua_export
+    void DontDestory(coord::RcObject* object);//tolua_export
 
     /// 创建httpserver
     http::HttpServer* NewHttpServer();//tolua_export

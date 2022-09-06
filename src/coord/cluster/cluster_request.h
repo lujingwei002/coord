@@ -16,7 +16,7 @@ class cluster_agent;
 class Cluster;
 
 class Request : public base_request  { //tolua_export
-CC_CLASS(Request);
+RC_CLASS(Request);
 public:
     Request(Coord* coord, cluster_agent* agent);
     virtual ~Request();

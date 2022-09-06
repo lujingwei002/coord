@@ -31,7 +31,7 @@ public:
 };//tolua_export
 
 class WebServer : public http::IHttpHandler {//tolua_export
-CC_CLASS(WebServer);
+RC_CLASS(WebServer);
 friend Coord;
 private:
     WebServer(Coord* coord);

@@ -5,7 +5,7 @@
 namespace coord {
 namespace pipe {
 
-CC_IMPLEMENT(PipeClient, "coord::pipe::PipeClient")
+RC_IMPLEMENT(PipeClient, "coord::pipe::PipeClient")
 
 /// 状态
 enum pipe_client_status {

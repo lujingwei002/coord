@@ -6,7 +6,7 @@
 namespace coord {
 namespace cache {
 
-CC_IMPLEMENT(Client, "coord::cache::Client")
+RC_IMPLEMENT(Client, "coord::cache::Client")
 
 Client* newClient(Coord *coord) {
     Client* self = new Client(coord);

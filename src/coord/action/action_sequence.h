@@ -12,7 +12,7 @@ namespace action {
 class Action;
 
 class sequence_action : public Action {
-CC_CLASS(sequence_action);    
+RC_CLASS(sequence_action);    
 public:
     sequence_action(Coord*  coord);
     virtual ~sequence_action();

@@ -11,7 +11,7 @@ namespace coord {//tolua_export
 namespace managed {//tolua_export
 
 class ManagedResult : public base_result { //tolua_export
-CC_CLASS(ManagedResult);
+RC_CLASS(ManagedResult);
 public:
     ManagedResult(Coord* coord);
     virtual ~ManagedResult();

@@ -2,7 +2,7 @@
 
 
 #include "coord/coordx.h"
-
+#include "coord/memory/type.h"
 #include <uv.h>
 #include "coord/http/http_agent.h"
 #include "coord/coordx.h"
@@ -31,8 +31,8 @@ public:
     virtual void recvWebSocketFrame(Agent* agent, Frame* frame) = 0;
 };//tolua_export
 
-class Agent : public coordx::RcObject, public http::IHttpAgentHandler { //tolua_export
-CC_CLASS(Agent);
+class Agent : public coord::RcObject, public http::IHttpAgentHandler { //tolua_export
+RC_CLASS(Agent);
 public:
     Agent(Coord* coord, Server* server, http::HttpAgent* httpAgent);
     virtual ~Agent();

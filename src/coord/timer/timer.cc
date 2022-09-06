@@ -10,8 +10,8 @@
 namespace coord {
 namespace timer {
 
-CC_IMPLEMENT(timer, "coord::timer::timer")
-CC_IMPLEMENT(cron, "coord::timer::cron")
+RC_IMPLEMENT(timer, "coord::timer::timer")
+RC_IMPLEMENT(cron, "coord::timer::cron")
 
 void uv_timer_cb (uv_timer_t *handle) {
     timer* t = (timer*)handle->data;

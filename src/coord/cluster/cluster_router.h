@@ -55,7 +55,7 @@ public:
 };
 
 class ClusterRouter {//tolua_export
-CC_CLASS(ClusterRouter);
+RC_CLASS(ClusterRouter);
 public:
     ClusterRouter(Coord* coord);
     virtual ~ClusterRouter();

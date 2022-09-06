@@ -5,7 +5,7 @@
 
 namespace coord {
 namespace cache {
-CC_IMPLEMENT(CacheResult, "coord::cache::CacheResult")
+RC_IMPLEMENT(CacheResult, "coord::cache::CacheResult")
 
 
 

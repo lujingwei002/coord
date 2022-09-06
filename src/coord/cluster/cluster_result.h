@@ -17,7 +17,7 @@ class Request;
 class cluster_client;
 
 class Result : public base_result  { //tolua_export
-CC_CLASS(Result);
+RC_CLASS(Result);
 public:
     Result(Coord* coord, cluster_client* client);
     virtual ~Result();

@@ -39,7 +39,7 @@ public:
 };//tolua_export
 
 class SQLClient {//tolua_export
-CC_CLASS(SQLClient);
+RC_CLASS(SQLClient);
 public:
     SQLClient(Coord *coord);
     virtual ~SQLClient();

@@ -8,7 +8,7 @@
 namespace coord {
 
 namespace worker {
-CC_IMPLEMENT(Result, "coord::worker::Result")
+RC_IMPLEMENT(Result, "coord::worker::Result")
 
 Result* newResult(Coord* coord) {
     Result* result = new Result(coord);

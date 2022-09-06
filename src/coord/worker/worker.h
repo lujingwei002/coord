@@ -29,7 +29,7 @@ public:
 };//tolua_export
 
 class Worker {//tolua_export
-CC_CLASS(Worker);
+RC_CLASS(Worker);
 public:
     Worker(Coord *coord);
     virtual ~Worker();

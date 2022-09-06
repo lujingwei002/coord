@@ -8,7 +8,7 @@
 
 namespace coord {
 
-//CC_IMPLEMENT(base_router, "coord::base_router")
+//RC_IMPLEMENT(base_router, "coord::base_router")
 
 base_router_handler::~base_router_handler() {
     if(this->ref >= 0) {

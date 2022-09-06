@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
-
+#include "coord/memory/type.h"
 #include <uv.h>
 #include <map>
 namespace coord {//tolua_export
@@ -23,8 +23,8 @@ protected:
     virtual void EvClose(PipeListener* listener) = 0;
 };//tolua_export
 
-class PipeListener : public coordx::RcObject {//tolua_export
-CC_CLASS(PipeListener);
+class PipeListener : public coord::RcObject {//tolua_export
+RC_CLASS(PipeListener);
 friend PipeAgent;
 friend void uv_pipe_connection_cb(uv_stream_t *server, int status);
 public:

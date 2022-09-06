@@ -10,7 +10,7 @@
 #include <string.h>
 #include <type_traits>
 namespace coord {
-CC_IMPLEMENT(Object, "coord::Object")
+RC_IMPLEMENT(Object, "coord::Object")
 
 Object* newObject(Coord* coord, const char* name) {
     Object* object = new Object(coord, name);

@@ -5,7 +5,7 @@
 #include "coord/coordx.h"
 
 namespace coord {
-CC_IMPLEMENT(base_request, "coord::base_request")
+RC_IMPLEMENT(base_request, "coord::base_request")
 
 base_request::base_request(Coord* coord, base_agent* agent) : base_reader(coord) {
     this->ReqTime = uv_hrtime();

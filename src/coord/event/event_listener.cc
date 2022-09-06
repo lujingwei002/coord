@@ -8,7 +8,7 @@
 namespace coord {
 namespace event {
 
-CC_IMPLEMENT(Listener, "coord::event::Listener")
+RC_IMPLEMENT(Listener, "coord::event::Listener")
 
 Listener::Listener(Coord* coord, EventMgr* mgr, std::string name, Function func) 
     : coord(coord), mgr(mgr), name(name), func(func), luaRef(LUA_NOREF) {

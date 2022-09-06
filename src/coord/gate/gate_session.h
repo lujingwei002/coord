@@ -24,7 +24,7 @@ class Gate;
 class GatePromise;
 
 class GateSession  { //tolua_export
-CC_CLASS(GateSession);
+RC_CLASS(GateSession);
 public:
     GateSession(Coord* coord, GateAgent* agent);
     virtual ~GateSession();

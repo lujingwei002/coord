@@ -15,7 +15,7 @@ class Gate;
 class GateResponse;
 
 class GateNotify : public base_notify { //tolua_export
-CC_CLASS(GateNotify);
+RC_CLASS(GateNotify);
 public:
     GateNotify(Coord* coord, GateAgent* agent);
     virtual ~GateNotify();

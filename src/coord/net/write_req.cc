@@ -4,7 +4,7 @@
 
 namespace coord {
 namespace net {
-CC_IMPLEMENT(WriteReq, "coord::net::WriteReq")
+RC_IMPLEMENT(WriteReq, "coord::net::WriteReq")
 
 WriteReq::WriteReq(byte_slice& data) : data(data){
     this->req.data = this;

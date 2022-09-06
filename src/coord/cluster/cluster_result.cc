@@ -9,7 +9,7 @@
 namespace coord {
 
 namespace cluster {
-CC_IMPLEMENT(Result, "coord::cluster::Result")
+RC_IMPLEMENT(Result, "coord::cluster::Result")
 
 Result* newResult(Coord* coord, cluster_client* client) {
     Result* result = new Result(coord, client);

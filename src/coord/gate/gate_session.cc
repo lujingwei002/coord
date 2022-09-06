@@ -9,7 +9,7 @@
 namespace coord {
 
 namespace gate {
-CC_IMPLEMENT(GateSession, "coord::gate::GateSession")
+RC_IMPLEMENT(GateSession, "coord::gate::GateSession")
 
 GateSession* newGateSession(Coord* coord, GateAgent* agent) {
     GateSession* session = new GateSession(coord, agent);

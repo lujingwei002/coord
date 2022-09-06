@@ -6,7 +6,7 @@
 namespace coord {
 
 namespace managed {
-CC_IMPLEMENT(ManagedResponse, "coord::managed::ManagedResponse")
+RC_IMPLEMENT(ManagedResponse, "coord::managed::ManagedResponse")
 
 ManagedResponse::ManagedResponse(Coord* coord, ManagedAgent* agent, ManagedRequest* request) : internal_response(coord, agent, request) {
 }

@@ -25,7 +25,7 @@
 namespace coord {
 namespace websocket {
 
-CC_IMPLEMENT(Server, "coord::websocket::Server")
+RC_IMPLEMENT(Server, "coord::websocket::Server")
 
 Server* newWebSocketServer(Coord* coord) {
     Server* webSocketServer = new Server(coord);

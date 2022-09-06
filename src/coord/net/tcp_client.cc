@@ -5,7 +5,7 @@
 namespace coord {
 namespace net {
 
-CC_IMPLEMENT(TcpClient, "coord::net::TcpClient")
+RC_IMPLEMENT(TcpClient, "coord::net::TcpClient")
 
 
 static void uv_connect_cb(uv_connect_t* req, int status) {

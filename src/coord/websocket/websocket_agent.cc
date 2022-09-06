@@ -5,7 +5,7 @@
 #include "coord/coord.h"
 namespace coord {
 namespace websocket {
-CC_IMPLEMENT(Agent, "coord::websocket::Agent")
+RC_IMPLEMENT(Agent, "coord::websocket::Agent")
 
 Agent* newAgent(Coord* coord, Server* server, http::HttpAgent* httpAgent) {
     Agent* agent = new Agent(coord, server, httpAgent);

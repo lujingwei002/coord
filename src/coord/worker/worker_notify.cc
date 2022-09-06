@@ -8,7 +8,7 @@
 namespace coord {
 
 namespace worker {
-CC_IMPLEMENT(Notify, "coord::worker::Notify")
+RC_IMPLEMENT(Notify, "coord::worker::Notify")
 
 Notify* newNotify(Coord* coord) {
     Notify* notify = new Notify(coord);

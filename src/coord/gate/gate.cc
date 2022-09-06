@@ -18,7 +18,7 @@
 #include <iostream>
 namespace coord {
 namespace gate {
-CC_IMPLEMENT(Gate, "coord::Gate")
+RC_IMPLEMENT(Gate, "coord::Gate")
 
 Gate* NewGate(Coord* coord) {
     Gate* gate = new Gate(coord);

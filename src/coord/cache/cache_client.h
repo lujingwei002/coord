@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "coord/coordx.h"
+#include "coord/memory/type.h"
 #include "coord/cache/cache_config.h"
 #include <uv.h>
 #include <vector>
@@ -37,7 +38,7 @@ namespace cache {//tolua_export
 
 
 class Client {//tolua_export
-CC_CLASS(Client);
+RC_CLASS(Client);
 public:
     Client(Coord *coord);
     virtual ~Client();           

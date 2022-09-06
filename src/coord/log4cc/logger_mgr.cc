@@ -86,6 +86,10 @@ int LoggerMgr::configDefaultLogger(Category* category) {
         //config.File = coordx::path::PathJoin(this->coord->Environment->WorkingDir, path);
         config.Console = true;
     }
+    if (this->coord->Environment->LoggerPriority.length() > 0) {
+        config.Console = true;
+        config.Priority = log4cc::IntPriority(this->coord->Environment->LoggerPriority.c_str());
+    }
     config.Name = name;
     err = this->ConfigCategory(category, &config);
     if (err) {
@@ -101,6 +105,10 @@ int LoggerMgr::configCoreLogger(Category* category) {
     if (err != 0) {
         std::string path = coordx::path::PathJoin("log", this->coord->Config->Basic.Name + "-core.log");
         config.File = coordx::path::PathJoin(this->coord->Environment->CoordDir, path);
+    }
+    if (this->coord->Environment->CoreLoggerPriority.length() > 0) {
+        config.Console = true;
+        config.Priority = log4cc::IntPriority(this->coord->Environment->CoreLoggerPriority.c_str());
     }
     config.Name = name;
     err = this->ConfigCategory(category, &config);
