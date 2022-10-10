@@ -51,7 +51,7 @@ TEST_F(TestManaged, Basic) {
     });
     //client->Close();
     //this->coord->Destory(client);
-    this->coord->loopTest();
+    //coorda->loopTest();
 }
 
  

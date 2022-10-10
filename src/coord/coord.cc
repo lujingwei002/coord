@@ -45,6 +45,7 @@
 
 thread_local coord::Coord* coorda;
 
+extern int onStart(coord::Coord* coord);
 extern int onAwake(coord::Coord* coord);
 extern void onDestory(coord::Coord* coord);
 
@@ -415,6 +416,7 @@ namespace coord {
     
     
     Coord::Coord() {
+        this->isJoin = false;
         this->isAwake = false;
         this->coreLogger = nullptr;
         this->logger = nullptr;
@@ -594,6 +596,14 @@ namespace coord {
         //this->script->gc();
     }
     
+    int Coord::onStart(){   
+        int err = ::onStart(this);
+        if (err) {
+            return err;
+        }
+        return err;
+    }
+
     int Coord::onAwake(){   
         if (this->workerRole == worker_role_master) {   
             this->CoreLogMsg("[coord] onAwake at %ld", this->Time()/1000);
@@ -838,6 +848,11 @@ namespace coord {
                     self->Abort();
                     return;
                 }
+                err = this->onStart();
+                if (err) {
+                    self->Abort();
+                    return;
+                }
             })
             ->Catch([this](auto self){
                 this->Destory(-1);
@@ -845,7 +860,9 @@ namespace coord {
             ->End()
             ->Call();
         }
-        uv_run(&this->loop, UV_RUN_DEFAULT);
+        while(1) {
+            uv_run(&this->loop, UV_RUN_DEFAULT);
+        }
         this->onDestory(this->ExitCode);
         uv_loop_close(&this->loop);
         return this->ExitCode;
@@ -973,9 +990,20 @@ namespace coord {
         return 0;
     }
 
-    void Coord::loopTest() {
+    int Coord::Break() {
+        if (!this->isJoin) {
+            return 0;
+        }
+        uv_stop(&this->loop);        
+        return 0;
+    }
+
+    int Coord::Join() {
+        this->isJoin = true;
+        uv_stop(&this->loop);        
         uv_run(&this->loop, UV_RUN_DEFAULT);
-        uv_loop_close(&this->loop);
+        this->isJoin = false;
+        return 0;
     }
 
     int Coord::afterTest() {

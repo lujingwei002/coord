@@ -82,6 +82,6 @@ TEST_F(TestClosure, Basic) {
         })
     ->End();
     func->Call(1, "2", 3.3);
-    this->coord->loopTest();
+    //coorda->loopTest();
 }
 

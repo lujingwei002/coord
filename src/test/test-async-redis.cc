@@ -44,7 +44,7 @@ TEST_F(TestAsyncRedis, DbError) {
         ASSERT_TRUE(true);
         this->coord->Destory(0);
     });
-    this->coord->loopTest();
+    //coorda->loopTest();
 }
 
 // host错误
@@ -85,7 +85,7 @@ TEST_F(TestAsyncRedis, passwordError) {
         ASSERT_TRUE(true);
         this->coord->Destory(0);
     });
-    this->coord->loopTest();
+    //coorda->loopTest();
 }
 
 TEST_F(TestAsyncRedis, Action) {
@@ -167,7 +167,7 @@ TEST_F(TestAsyncRedis, Action) {
         }),
         nullptr
     ));
-    this->coord->loopTest();
+    //coorda->loopTest();
 }
 
 TEST_F(TestAsyncRedis, setGet) {
@@ -225,7 +225,7 @@ TEST_F(TestAsyncRedis, setGet) {
         ASSERT_TRUE(false);
     });
 
-    this->coord->loopTest();
+    //coorda->loopTest();
     //printf("%s\n", this->cache->get("coord-cache").String());
 }
 

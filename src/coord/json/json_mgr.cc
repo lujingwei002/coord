@@ -8,6 +8,30 @@ namespace coord {
 namespace json {
 COORD_IMPLEMENT(JsonMgr, "coord::json::JsonMgr")
 
+JsonRef NewObject() {
+    return coorda->Json->NewObject();
+}
+
+JsonRef Parse(const std::string& data) {
+    return coorda->Json->Parse(data);
+}
+
+JsonRef NewArray() {
+    return coorda->Json->NewArray();   
+}
+
+JsonRef NewString(const char* data) {
+    return coorda->Json->NewString(data);   
+}
+
+JsonRef NewNull() {
+    return coorda->Json->NewNull();   
+}
+
+JsonRef NewBool(bool value) {
+    return coorda->Json->NewBool(value);   
+}
+
 // 获取字段
 static int __index(lua_State* L) {
     lua_getmetatable(L, 1); //self key mt

@@ -68,5 +68,5 @@ TEST_F(TestAsyncCache, TestSetGet) {
     promise->Else([this](auto client, auto reader) {
         ASSERT_TRUE(false);
     });
-    this->coord->loopTest();
+    //coorda->loopTest();
 }

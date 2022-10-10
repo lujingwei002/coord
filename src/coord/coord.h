@@ -271,8 +271,9 @@ public:
     int ActionStatus(const char *configPath);
     int ActionRestart(const char *configPath);
     int beforeTest(const Argv& argv); 
-    void loopTest();   
     int afterTest();  
+    int Join();  
+    int Break();  
 
 private:
     int initLogger();
@@ -288,6 +289,7 @@ private:
     void onDestory(int code);
     uint64_t onGC();        
     int onAwake(); 
+    int onStart(); 
     uint64_t onUpdate(); 
 public:
     coord::Config*          Config;         //tolua_export
@@ -314,10 +316,11 @@ public:
     log4cc::LoggerMgr*      LoggerMgr;   
     int                     ExitCode;   
     std::string             ProcDir;        
+    timer::TimerMgr*        Timer;
 private:
+    bool                        isJoin;
     uint64_t                    frame;
     sql::sql_mgr*               sqlMgr;         
-    timer::TimerMgr*            Timer;
     SceneMgr*                   sceneMgr;
     uv_loop_t                   loop;
     log4cc::Category*           logger;

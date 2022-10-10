@@ -5,7 +5,5 @@
 
 
 namespace coordx {
-
     extern uv_loop_t uvloop;
-
 }

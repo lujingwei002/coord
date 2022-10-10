@@ -8,61 +8,48 @@ public:
     }
 
     void SetUp() {
-        coord::Coord* coord = coord::NewCoord();
-        this->coord = coord;
-        coord::Argv argv;
-        argv.Name = "test";
-        argv.ConfigPath = "test/test.ini";
-        int err = coord->beforeTest(argv);
-        ASSERT_EQ(err, 0);
     }
 
     void TearDown() {
-        int err = this->coord->afterTest();
-        ASSERT_EQ(err, 0);
-        delete this->coord;
     } 
 public:
-    coord::Coord* coord;
 };
 
 TEST_F(TestTimer, Timeout) {
-    this->coord->SetTimeout(10, [this]() {
-        this->coord->Destory(0);
+    coord::timer::SetTimeout(10, [this]() {
+        printf("ggggggggggggggggggg2\n");
+        coorda->Break();
         return 0;
     });
-    this->coord->loopTest();
+    printf("ggggggggggggggggggg1\n");
+    coorda->Join();
+    printf("ggggggggggggggggggg11\n");
 }
 
 TEST_F(TestTimer, Interval) {
     int count = 0;
-    this->coord->SetInterval(10, [this, &count]() -> uint64_t {
+    coord::timer::SetInterval(10, [this, &count]() -> uint64_t {
         count = count + 1;
         if (count > 10) {
-            return this->coord->StopTimer();
+            return coord::timer::StopTimer();
         }
         return 0;        
     });
-    this->coord->loopTest();
 }
 
 TEST_F(TestTimer, IntervalReduce) {
     uint64_t interval = 10;
-    this->coord->SetInterval(interval, [this, &interval]() {
+    coord::timer::SetInterval(interval, [this, &interval]() {
         interval = interval - 1;
-        //printf("fff %ld %ld\n", interval, this->coord->Time());
         if (interval <= 0) {
-            return this->coord->StopTimer();
+            return coord::timer::StopTimer();
         }
         return interval;        
     });
-    this->coord->loopTest();
 }
 
 
 TEST_F(TestTimer, Cron) {
-    this->coord->SetCron("* * * * * *", [this]() {
-        this->coord->Destory(0);      
+    coord::timer::SetCron("* * * * * *", [this]() {
     });
-    this->coord->loopTest();
 } 

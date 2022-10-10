@@ -5,6 +5,12 @@
 #include <iostream>
 #include <cstdlib>
 
+
+int onStart(coord::Coord* coord) {
+    printf("onStart\n");
+    return 0;
+}
+
 int onAwake(coord::Coord* coord) {
     //printf("onAwake\n");
     return 0;

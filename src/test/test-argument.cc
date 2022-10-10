@@ -7,27 +7,15 @@ public:
     }
 
     void SetUp() {
-        coord::Coord* coord = coord::NewCoord();
-        this->coord = coord;
-        coord::Argv argv;
-        argv.Name = "test";
-        argv.ConfigPath = "test/test.ini";
-        int err = coord->beforeTest(argv);
-        ASSERT_EQ(err, 0);
-        coord->CoreLogSetPriority(coord::log4cc::INFO);
     }
 
     void TearDown() {
-        int err = this->coord->afterTest();
-        ASSERT_EQ(err, 0);
-        delete this->coord;
     } 
 public:
-    coord::Coord* coord;
 };
 
 TEST_F(TestArgument, Basic) {
-    coord::Argument args(this->coord);
+    coord::Argument args(coorda);
     args.AddNumber(2);
     args.AddString("hello");
     args.AddBool(true);
@@ -44,7 +32,7 @@ TEST_F(TestArgument, Basic) {
 }
 
 TEST_F(TestArgument, Serialize) {
-    coord::Argument args1(this->coord);
+    coord::Argument args1(coorda);
     args1.AddNumber(2);
     args1.AddString("hello");
     args1.AddBool(true);
@@ -55,7 +43,7 @@ TEST_F(TestArgument, Serialize) {
     coord::byte_slice buffer1;
     ASSERT_EQ(args1.Serialize(buffer1), 0);
 
-    coord::Argument args2(this->coord);
+    coord::Argument args2(coorda);
     ASSERT_EQ(args2.Parse(buffer1), 0);
 
     ASSERT_EQ(args1.Count(), args2.Count());
@@ -72,7 +60,7 @@ TEST_F(TestArgument, Serialize) {
 
 
 TEST_F(TestArgument, SerializeBench) {
-    coord::Argument args1(this->coord);
+    coord::Argument args1(coorda);
     args1.AddNumber(2);
     args1.AddString("hello");
     args1.AddBool(true);
@@ -85,7 +73,7 @@ TEST_F(TestArgument, SerializeBench) {
         coord::byte_slice buffer1;
         ASSERT_EQ(args1.Serialize(buffer1), 0);
 
-        coord::Argument args2(this->coord);
+        coord::Argument args2(coorda);
         ASSERT_EQ(args2.Parse(buffer1), 0);
 
         ASSERT_EQ(args1.Count(), args2.Count());
@@ -102,12 +90,12 @@ TEST_F(TestArgument, SerializeBench) {
 }
 
 TEST_F(TestArgument, TestTable) {
-    coord::Argument args1(this->coord);
+    coord::Argument args1(coorda);
     args1.AddNumber(2);
     args1.AddString("hello");
     args1.AddBool(true);
     args1.AddNil();
-    coord::script::Variable table1(this->coord);
+    coord::script::Variable table1(coorda);
     table1.SetTable();
     table1.Set("HELLo", "world");
     args1.AddTable(table1);
@@ -116,7 +104,7 @@ TEST_F(TestArgument, TestTable) {
     coord::byte_slice buffer1;
     ASSERT_EQ(args1.Serialize(buffer1), 0);
 
-    coord::Argument args2(this->coord);
+    coord::Argument args2(coorda);
     ASSERT_EQ(args2.Parse(buffer1), 0);
 
     ASSERT_EQ(args2.IsTable(4), true);

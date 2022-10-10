@@ -7,31 +7,19 @@ public:
     }
 
     void SetUp() {
-        coord::Coord* coord = coord::NewCoord();
-        this->coord = coord;
-        coord::Argv argv;
-        argv.Name = "test";
-        argv.ConfigPath = "test/test.ini";
-        int err = coord->beforeTest(argv);
-        ASSERT_EQ(err, 0);
     }
 
     void TearDown() {
-        int err = this->coord->afterTest();
-        ASSERT_EQ(err, 0);
-        delete this->coord;
     } 
 public:
-    coord::Coord* coord;
 };
 
 TEST_F(TestAction, Basic) {
-    auto anim = this->coord->Action->Begin();
+    auto anim = coorda->Action->Begin();
     anim->Run(
         anim->Sequence(
             anim->Sequence(
                 anim->Call([this](coord::action::Action* action) {
-                   // printf("ggggggggg11\n");
                     action->Next();
                 }),
                 nullptr
@@ -40,26 +28,23 @@ TEST_F(TestAction, Basic) {
             anim->Parallel(
                 anim->Wait(200),
                 anim->Call([this](coord::action::Action* action) {
-                 //   printf("ggggggggg22\n");
                     action->Next();
                 }),
                 anim->Call([this](coord::action::Action* action) {
-                   // printf("ggggggggg33\n");
                     action->Next();
                 }),
                 nullptr
             ),
             anim->Call([this](coord::action::Action* action) {
-              //  printf("ggggggggg1\n");
                 action->Next();
             }),
             anim->Call([this](coord::action::Action* action) {
-               // printf("ggggggggg2\n");
                 action->Next();
+                coorda->Destory(0);
             }),
             nullptr
         )
     );
-    this->coord->loopTest();
+    //coorda->loopTest();
 }
 

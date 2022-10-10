@@ -41,7 +41,7 @@ TEST_F(TestCluster, Basic) {
         printf("recv result %p\n", result);
         printf("%s\n", result->String());
     });
-    this->coord->loopTest();
+    //coorda->loopTest();
 }
 
  

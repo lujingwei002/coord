@@ -36,13 +36,18 @@
     return err;
 }*/
 
+int onStart(coord::Coord* coord) {
+    printf("onStart\n");
+    return RUN_ALL_TESTS();
+}
+
 int onAwake(coord::Coord* coord) {
-    //printf("onAwake\n");
+    printf("onAwake\n");
     return 0;
 }
 
 void onDestory(coord::Coord* coord) {
-    //printf("onDestory\n");
+    printf("onDestory\n");
 }
 
 class Environment : public testing::Environment {
@@ -53,9 +58,9 @@ public:
     }
 
     virtual void TearDown() {
-       int err = coorda->afterTest();
-       ASSERT_EQ(err, 0);
-       delete coorda;
+       //int err = coorda->afterTest();
+       //ASSERT_EQ(err, 0);
+       //delete coorda;
        // std::cout << "Environment TearDown" << std::endl;
        coord::Destory();
     }
@@ -89,10 +94,13 @@ int main(int argc,char **argv){
     coord::Coord* coord = coord::NewCoord();
     args.Name = "test";
     args.ConfigPath = "test/test.ini";
-    int err = coord->beforeTest(args);
+    printf("aaaaaaaa1\n");
+    int err = coord->Main(args);
+    printf("aaaaaaaa2\n");
     if (err) {
         printf("set up fail, error=%d\n", err);
         return err;
     }
-    return RUN_ALL_TESTS();
+    delete coord;
+    return err;
 }

@@ -24,3 +24,4 @@
 #define ErrorInvalidPassword        -20
 #define ErrorInvalidDb              -21
 #define ErrorScript                 -22
+#define ErrorJoin                   -23

@@ -109,6 +109,11 @@ public:
 
 TimerMgr* newTimerMgr(Coord *coord);
 
+int SetTimeout(uint64_t timeout, TimeoutFunc func);
+int SetInterval(uint64_t repeat, TimeoutFunc func);
+int SetCron(const char* expression, CronFunc func);
+uint64_t StopTimer();
+
 }//tolua_export
 }//tolua_export
 

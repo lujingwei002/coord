@@ -119,5 +119,13 @@ public:
 };//tolua_export
 
 
+JsonRef NewObject();
+JsonRef Parse(const std::string& data);
+JsonRef NewArray();                             
+JsonRef NewString(const char* data = nullptr);
+JsonRef NewNull();
+JsonRef NewBool(bool value);
+
+
 }//tolua_export
 }//tolua_export

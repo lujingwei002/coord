@@ -1,5 +1,4 @@
 
-
 class TestJson : public testing::Test {
 public:
     static void SetUpTestCase() {
@@ -17,7 +16,8 @@ public:
 
 TEST_F(TestJson, Basic) {
     // {}
-    auto json = coorda->Json->NewObject();  
+    auto json = coord::json::NewObject();  
+
     // 获取不存在的字段
     ASSERT_EQ(json->GetString("version"), nullptr);
     // {"version": "1.0.0"}
@@ -51,7 +51,7 @@ TEST_F(TestJson, Basic) {
 
     // 序列化 -》 反序列化
     std::string str1 = json->ToString();
-    auto json2 = coorda->Json->Parse(str1);
+    auto json2 = coord::json::Parse(str1);
     // 序列化
     std::string str2 = json2->ToString();
     ASSERT_STREQ(str2.c_str(), R"({"gameArr": [{"name": "game1"}], "score": 1.23, "user": {"name": "ljw"}, "version": "1.0.0"})");
@@ -59,7 +59,7 @@ TEST_F(TestJson, Basic) {
 }
 
 TEST_F(TestJson, Array) {
-    auto json = coorda->Json->NewArray();   
+    auto json = coord::json::NewArray();   
     auto book1 = json->AddObject();
     book1->SetString("name", "c++");
     auto book2 = json->AddObject();
@@ -69,23 +69,23 @@ TEST_F(TestJson, Array) {
 }
 
 TEST_F(TestJson, String) {
-    auto json1 = coorda->Json->NewString();   
+    auto json1 = coord::json::NewString();   
     ASSERT_STREQ(json1->ToString(), R"("")");
-    auto json2 = coorda->Json->NewString("hello");   
+    auto json2 = coord::json::NewString("hello");   
     ASSERT_STREQ(json2->ToString(), R"("hello")");
 }
 
 TEST_F(TestJson, Null) {
-    auto json1 = coorda->Json->NewNull();   
+    auto json1 = coord::json::NewNull();   
     ASSERT_STREQ(json1->ToString(), R"(null)");
 }
 
 TEST_F(TestJson, Bool) {
-    auto json1 = coorda->Json->NewBool(true);   
+    auto json1 = coord::json::NewBool(true);   
     ASSERT_STREQ(json1->ToString(), R"(true)");
 }
 
 TEST_F(TestJson, Parse) {
-    auto json = coorda->Json->Parse(R"({"nickname": "ljw"})");
+    auto json = coord::json::Parse(R"({"nickname": "ljw"})");
     ASSERT_STREQ(json->ToString(), R"({"nickname": "ljw"})");
 }

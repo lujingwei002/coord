@@ -13,6 +13,23 @@ namespace timer {
 RC_IMPLEMENT(timer, "coord::timer::timer")
 RC_IMPLEMENT(cron, "coord::timer::cron")
 
+
+int SetTimeout(uint64_t timeout, TimeoutFunc func) {
+    return coorda->Timer->SetTimeout(timeout, func);
+}
+
+int SetInterval(uint64_t repeat, TimeoutFunc func) {
+    return coorda->Timer->SetInterval(repeat, func);
+}
+
+int SetCron(const char* expression, CronFunc func) {
+    return coorda->Timer->SetCron(expression, func);
+}
+
+uint64_t StopTimer() {
+    return std::numeric_limits<uint64_t>::max();
+}
+
 void uv_timer_cb (uv_timer_t *handle) {
     timer* t = (timer*)handle->data;
     uint64_t repeated = t->exec();
